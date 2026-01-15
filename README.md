@@ -29,6 +29,14 @@ LifeGrid generates high-resolution, data-driven wallpapers that help you visuali
   - **Backend**: Serverless Cloudflare Worker with Rust-based SVG rendering (`resvg`).
   - **Security**: Strict Zod schema validation & XSS protection.
 
+## Screenshots
+
+|   |   |
+|:---:|:---:|
+| <img src="screenshots/IMG_7398.PNG" width="280"> | <img src="screenshots/IMG_7399.PNG" width="280"> |
+| <img src="screenshots/IMG_7400.PNG" width="280"> | <img src="screenshots/IMG_7401.PNG" width="280"> |
+
+
 ## Getting Started
 
 ### Prerequisites
