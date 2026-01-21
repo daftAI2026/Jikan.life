@@ -147,6 +147,14 @@ body {
 .nav-links {
   display: flex;
   gap: var(--space-8);
+  align-items: center;
+}
+
+.nav-github {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .nav-link {
@@ -1144,6 +1152,20 @@ body {
   margin: 0 auto;
 }
 
+.footer-github {
+  color: white;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.github-footer-href{ 
+  text-decoration: none;
+  color: white;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
 .footer-brand {
   display: inline-flex;
   align-items: center;
