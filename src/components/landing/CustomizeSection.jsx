@@ -67,7 +67,7 @@ function CanvasPreview({ config }) {
         const ctx = canvas.getContext('2d')
 
         // 根据选中的设备获取尺寸
-        const device = getDevice(config.device) || devices[4]; // 默认 iPhone 14 Pro / 15 / 15 Pro / 16
+        const device = getDevice(config.device) || devices[0]; // 默认 iPhone 17 Pro Max
         const baseWidth = device.width;
         const baseHeight = device.height;
         const clockHeight = device.clockHeight;
@@ -160,7 +160,7 @@ export function CustomizeSection({ selectedType }) {
         lifespan: 80,
         goalName: '',
         goalDate: '',
-        device: 'iPhone 14 Pro / 15 / 15 Pro / 16',
+        device: 'iPhone 17 Pro Max',
     })
     const [copied, setCopied] = useState(false)
 

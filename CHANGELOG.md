@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Default Device**: Set the default device to iPhone 17 Pro Max for a better out-of-the-box experience on modern premium devices.
+
 ### Internationalization
 - **Android Setup**: Synchronized instruction structure and added missing warning badges for Traditional Chinese and Japanese translations.
 
