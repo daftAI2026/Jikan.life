@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 - **GEB Protocol**: Achieved full compliance with the Fractal Documentation Protocol across the entire codebase (L1/L2/L3 maps aligned).
 
+### Internationalization
+- **Landing Page**: Completed i18n integration for `SetupSection` and `CustomizeSection`, enabling rich text translations via `HtmlDesc`.
+- **Placeholders**: Localized all input placeholders and form prompts.
+
+### Infrastructure
+- **Cloudflare**: Renamed worker service to `jikan` in `wrangler.toml`.
+
 ## [1.0.0] - 2026-02-02
 
 ### Architecture

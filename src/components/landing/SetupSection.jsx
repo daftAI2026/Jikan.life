@@ -54,64 +54,24 @@ function StepTimeline({ steps }) {
 export function SetupSection() {
     const { t } = useI18n()
 
+    // 使用 dangerouslySetInnerHTML 渲染带 HTML 的翻译，需要包装组件
+    const HtmlDesc = ({ htmlKey }) => (
+        <span dangerouslySetInnerHTML={{ __html: t(htmlKey) }} />
+    )
+
     const IOS_STEPS = [
-        { number: 1, title: t('setup.ios.step1'), description: <span>{t('setup.ios.step1Desc')}</span> },
-        {
-            number: 2,
-            title: t('setup.ios.step2'),
-            description: (
-                <span>
-                    Shortcuts App → Automation Tab → New Automation<br />
-                    Time of Day: <Strong>6:00 AM</Strong> → Repeat <Strong>Daily</Strong><br />
-                    Select <Strong>Run Immediately</Strong> → Create New Shortcut
-                </span>
-            )
-        },
-        {
-            number: 3,
-            title: t('setup.ios.step3'),
-            description: (
-                <span>
-                    <Strong>1. Get Contents of URL:</Strong><br />
-                    <CodeSnippet>https://jikan.flydogcn.workers.dev/generate?...</CodeSnippet><br /><br />
-                    <Strong>2. Set Wallpaper Photo:</Strong><br />
-                    Choose "Lock Screen" as the target.
-                </span>
-            )
-        },
-        {
-            number: 4,
-            title: t('setup.ios.step4'),
-            description: (
-                <span>
-                    In "Set Wallpaper Photo", tap arrow (→):<br />
-                    <HighlightBadge>Disable <Strong>Crop to Subject</Strong> and <Strong>Show Preview</Strong></HighlightBadge>
-                </span>
-            )
-        }
+        { number: 1, title: t('setup.ios.step1'), description: <HtmlDesc htmlKey="setup.ios.step1Desc" /> },
+        { number: 2, title: t('setup.ios.step2'), description: <HtmlDesc htmlKey="setup.ios.step2Desc" /> },
+        { number: 3, title: t('setup.ios.step3'), description: <HtmlDesc htmlKey="setup.ios.step3Desc" /> },
+        { number: 4, title: t('setup.ios.step4'), description: <HtmlDesc htmlKey="setup.ios.step4Desc" /> }
     ]
 
     const ANDROID_STEPS = [
-        { number: 1, title: t('setup.android.step1'), description: <span>{t('setup.android.step1Desc')}</span> },
-        { number: 2, title: t('setup.android.step2'), description: <span>Install <Strong>MacroDroid</Strong> from Google Play Store.</span> },
-        { number: 3, title: t('setup.android.step3'), description: <span>Trigger: Date/Time → Day/Time <CodeSnippet>00:01:00</CodeSnippet> → Active all weekdays</span> },
-        {
-            number: 4,
-            title: t('setup.android.step4'),
-            description: (
-                <span>
-                    <Strong>4.1 Download Image</Strong><br />
-                    Web Interactions → HTTP Request (GET)<br />
-                    Paste URL. Enable "Block next actions"<br />
-                    Tick "Save response" → <CodeSnippet>/Download/lifegrid.png</CodeSnippet><br /><br />
-                    <Strong>4.2 Set Wallpaper</Strong><br />
-                    Device Settings → Set Wallpaper<br />
-                    Select <CodeSnippet>/Download/lifegrid.png</CodeSnippet><br />
-                    <HighlightBadge>Use exact same filename</HighlightBadge>
-                </span>
-            )
-        },
-        { number: 5, title: t('setup.android.step5'), description: <span>Give macro a name → Tap <Strong>Create Macro</Strong></span> }
+        { number: 1, title: t('setup.android.step1'), description: <HtmlDesc htmlKey="setup.android.step1Desc" /> },
+        { number: 2, title: t('setup.android.step2'), description: <HtmlDesc htmlKey="setup.android.step2Desc" /> },
+        { number: 3, title: t('setup.android.step3'), description: <HtmlDesc htmlKey="setup.android.step3Desc" /> },
+        { number: 4, title: t('setup.android.step4'), description: <HtmlDesc htmlKey="setup.android.step4Desc" /> },
+        { number: 5, title: t('setup.android.step5'), description: <HtmlDesc htmlKey="setup.android.step5Desc" /> }
     ]
 
     return (
