@@ -7,8 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
+- **Lifespan Input**: Fixed "jumping numbers" bug when deleting digits by deferring range clamping (50-120) to `onBlur`.
+- **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
+- **i18n Reactivity**: Fixed a critical bug where the `TypesSection` did not refresh translations on language change. Implemented `useMemo` with `t` dependency and refactored `TypeCard` to remove redundant state.
+- **Goal Card**: Fixed duplicated "Daily Updates" text and restored original design (Bold "Daily" + Small "UPDATES").
+
 ### Changed
+- **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.
 - **Default Device**: Set the default device to iPhone 17 Pro Max for a better out-of-the-box experience on modern premium devices.
+
+### Internationalization
+- **Full Card i18n**: Completed internationalization for all card stats and status labels across all supported languages.
 
 ### Internationalization
 - **Android Setup**: Synchronized instruction structure and added missing warning badges for Traditional Chinese and Japanese translations.

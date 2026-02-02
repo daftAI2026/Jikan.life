@@ -42,7 +42,12 @@ export const i18nData = {
     'type.goal.name': 'Goal Countdown',
     'type.goal.description': 'Count down to what matters. Big launch, vacation, or life milestone.',
     'type.goal.statGoals': 'Goals',
-    'type.goal.statUpdates': 'Daily Updates',
+    'type.goal.statUpdates': 'Updates',
+    'type.goal.valueDaily': 'Daily',
+
+    // Stat Values
+    'type.life.valueWeeks': '4,160',
+    'type.life.valueYears': '80',
 
     // Common Button
     'button.select': 'Select',
@@ -202,7 +207,12 @@ export const i18nData = {
     'type.goal.name': '目标倒计时',
     'type.goal.description': '倒数时光。为产品发布、假期或人生里程碑而准备。',
     'type.goal.statGoals': '目标',
-    'type.goal.statUpdates': '每日更新',
+    'type.goal.statUpdates': '更新',
+    'type.goal.valueDaily': '每日',
+
+    // 统计数值
+    'type.life.valueWeeks': '4,160',
+    'type.life.valueYears': '80',
 
     // 通用按钮
     'button.select': '选择',
@@ -362,7 +372,12 @@ export const i18nData = {
     'type.goal.name': '目標倒計時',
     'type.goal.description': '倒數時光。為產品發佈、假期或人生里程碑而準備。',
     'type.goal.statGoals': '目標',
-    'type.goal.statUpdates': '每日更新',
+    'type.goal.statUpdates': '更新',
+    'type.goal.valueDaily': '每日',
+
+    // 統計數值
+    'type.life.valueWeeks': '4,160',
+    'type.life.valueYears': '80',
 
     // 通用按鈕
     'button.select': '選擇',
@@ -522,7 +537,12 @@ export const i18nData = {
     'type.goal.name': '目標カウントダウン',
     'type.goal.description': '時刻を数える。大型ローンチ、休暇、または人生の大切なマイルストーンへの準備。',
     'type.goal.statGoals': '目標',
-    'type.goal.statUpdates': '毎日更新',
+    'type.goal.statUpdates': '更新',
+    'type.goal.valueDaily': '毎日',
+
+    // 統計値
+    'type.life.valueWeeks': '4,160',
+    'type.life.valueYears': '80',
 
     // 共通ボタン
     'button.select': '選択',

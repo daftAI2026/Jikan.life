@@ -367,6 +367,8 @@ export function CustomizeSection({ selectedType }) {
                                         value={config.dob}
                                         onChange={(v) => updateConfig('dob', v)}
                                         placeholder={t('placeholder.selectDate')}
+                                        maxDate={new Date()}
+                                        className="shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(0,0,0,0.06)]"
                                     />
                                 </div>
                                 <div className="space-y-3">
@@ -376,8 +378,35 @@ export function CustomizeSection({ selectedType }) {
                                     </label>
                                     <Input
                                         type="number"
+                                        className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]"
                                         value={config.lifespan}
-                                        onChange={(e) => updateConfig('lifespan', parseInt(e.target.value) || 80)}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // 允许空字符串和任意数字，不做范围限制
+                                            if (val === '') {
+                                                updateConfig('lifespan', '');
+                                                return;
+                                            }
+                                            const num = parseInt(val, 10);
+                                            if (!isNaN(num)) {
+                                                // 直接更新，不钳制范围
+                                                updateConfig('lifespan', num);
+                                            }
+                                        }}
+                                        onBlur={() => {
+                                            // 失焦时做范围校验和钳制
+                                            const val = config.lifespan;
+                                            if (val === '' || isNaN(parseInt(val, 10))) {
+                                                updateConfig('lifespan', 80);
+                                                return;
+                                            }
+                                            const num = parseInt(val, 10);
+                                            // 钳制到 50-120 范围
+                                            const clamped = Math.min(120, Math.max(50, num));
+                                            if (num !== clamped) {
+                                                updateConfig('lifespan', clamped);
+                                            }
+                                        }}
                                         min={50}
                                         max={120}
                                     />
@@ -403,6 +432,8 @@ export function CustomizeSection({ selectedType }) {
                                         value={config.goalDate}
                                         onChange={(v) => updateConfig('goalDate', v)}
                                         placeholder={t('placeholder.selectTargetDate')}
+                                        minDate={new Date()}
+                                        className="shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(0,0,0,0.06)]"
                                     />
                                 </div>
                             </div>

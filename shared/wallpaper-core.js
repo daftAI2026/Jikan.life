@@ -301,9 +301,10 @@ export function computeGoalLayout(options) {
     } = options;
 
     // Center point (adjusted for clock)
+    const clockSpace = height * clockHeight;
     const centerX = width / 2;
     const centerY = clockSpace + (height - clockSpace) * 0.4;
-    const ringRadius = width * 0.28; // 修正：原版是 0.28
+    const ringRadius = width * 0.28;
 
     let daysRemaining = 0;
     let progress = 0;

@@ -7,7 +7,7 @@
 import { ArrowRight, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useI18n } from "@/lib/I18nContext"
 
 // --- Helper Functions ---
@@ -101,18 +101,20 @@ function GoalVisual({ t }) {
 
 function TypeCard({ type, isSelected, onSelect, t }) {
     const Visual = type.visual
-    const [dynamicStats, setDynamicStats] = useState(type.stats);
 
-    useEffect(() => {
+    // 哥，这里之前用 state 存 dynamicStats 是错误的，导致语言切换不更新
+    // 应该根据 type 动态计算，保持单一真相源
+    const currentStats = useMemo(() => {
         if (type.id === 'year') {
             const { day, week, percent } = getYearStats();
-            setDynamicStats([
+            return [
                 { label: t('type.year.statDay'), value: day },
                 { label: t('type.year.statWeek'), value: week },
                 { label: t('type.year.statComplete'), value: `${percent}%` },
-            ]);
+            ];
         }
-    }, [type.id, t]);
+        return type.stats;
+    }, [type.id, type.stats, t]);
 
     return (
         <article
@@ -136,11 +138,11 @@ function TypeCard({ type, isSelected, onSelect, t }) {
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{type.description}</p>
 
                 <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-5">
-                    {dynamicStats.map((stat, i) => (
+                    {currentStats.map((stat, i) => (
                         <div key={i} className="flex flex-col flex-1 relative">
                             <span className="text-lg font-mono font-semibold leading-none mb-1">{stat.value}</span>
                             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</span>
-                            {i < dynamicStats.length - 1 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border" />}
+                            {i < currentStats.length - 1 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border" />}
                         </div>
                     ))}
                 </div>
@@ -166,7 +168,7 @@ export function TypesSection({ onSelectType }) {
         onSelectType?.(typeId)
     }
 
-    const TYPES = [
+    const TYPES = useMemo(() => [
         {
             id: 'year',
             index: 1,
@@ -186,8 +188,8 @@ export function TypesSection({ onSelectType }) {
             description: t('type.life.description'),
             visual: LifeVisual,
             stats: [
-                { label: t('type.life.statWeeks'), value: '4,160' },
-                { label: t('type.life.statYears'), value: '80' },
+                { label: t('type.life.statWeeks'), value: t('type.life.valueWeeks') },
+                { label: t('type.life.statYears'), value: t('type.life.valueYears') },
             ]
         },
         {
@@ -198,10 +200,10 @@ export function TypesSection({ onSelectType }) {
             visual: GoalVisual,
             stats: [
                 { label: t('type.goal.statGoals'), value: '∞' },
-                { label: t('type.goal.statUpdates'), value: t('type.goal.statUpdates') },
+                { label: t('type.goal.statUpdates'), value: t('type.goal.valueDaily') },
             ]
         }
-    ]
+    ], [t])
 
     return (
         <section id="types" className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
