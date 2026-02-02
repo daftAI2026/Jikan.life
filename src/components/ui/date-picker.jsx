@@ -17,7 +17,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, className }) {
+function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, className, minDate, maxDate }) {
     // 将字符串日期转换为 Date 对象
     const selectedDate = value ? new Date(value) : undefined
 
@@ -28,6 +28,24 @@ function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, cl
             onChange(isoDate)
         }
     }
+
+    // 构建日期禁用函数
+    const disabledMatcher = React.useMemo(() => {
+        const matchers = []
+        if (minDate) {
+            // 禁用 minDate 之前的所有日期
+            matchers.push({ before: minDate })
+        }
+        if (maxDate) {
+            // 禁用 maxDate 之后的所有日期
+            matchers.push({ after: maxDate })
+        }
+        return matchers.length > 0 ? matchers : undefined
+    }, [minDate, maxDate])
+
+    // 计算年份范围
+    const fromYear = minDate?.getFullYear() || 1900
+    const toYear = maxDate?.getFullYear() || 2100
 
     return (
         <Popover>
@@ -48,8 +66,12 @@ function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, cl
             <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                     mode="single"
+                    captionLayout="dropdown"
                     selected={selectedDate}
                     onSelect={handleSelect}
+                    disabled={disabledMatcher}
+                    fromYear={fromYear}
+                    toYear={toYear}
                     initialFocus
                 />
             </PopoverContent>
