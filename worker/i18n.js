@@ -36,7 +36,7 @@ export const wallpaperI18n = {
         complete: (n) => `${n}% 完了`,
         weeksLeft: (n) => `残り ${n.toLocaleString()} 週`,
         weekLeft: (n) => `残り ${n} 週`,
-        lived: (n) => `${n}% 生きた`,
+        lived: (n) => `${n}% 経過`,
     },
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "jikan-life",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "LifeGrid - Dynamic wallpaper generator",
   "main": "worker/index.js",
   "type": "module",

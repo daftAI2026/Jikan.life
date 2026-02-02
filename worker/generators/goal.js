@@ -101,5 +101,5 @@ export function generateGoalCountdown(options) {
         });
     }
 
-    return createSVG(width, height, content);
+    return createSVG(width, height, content, lang);
 }
