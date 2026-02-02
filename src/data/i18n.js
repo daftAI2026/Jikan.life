@@ -443,9 +443,9 @@ export const i18nData = {
     'setup.android.step3Desc': '點擊 <strong>觸發條件</strong> → <strong>日期/時間</strong>：<br>時間：<span class="code-snippet">00:01:00</span><br>日期：<strong>全選</strong> (週一至週日)<br>鬧鐘：<strong>關閉 (OFF)</strong>',
     'setup.android.step4': '配置動作',
     'setup.android.step4_1': '下載桌布',
-    'setup.android.step4_1Desc': '動作 → <strong>+</strong> → 網路互動 → <strong>HTTP 請求</strong> (GET)<br>貼上 URL。啟用<em>完成前阻止下一個動作</em><br>勾選<em>保存回應</em> → 檔案名稱：<span class="code-snippet">wallpaper.png</span><br><span class="text-[10px] opacity-70 mt-1 block">💡 記住保存的資料夾，下一步會用到</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>點擊 <strong>動作</strong> → <strong>+</strong></li><li>選擇 <strong>網路互動</strong> → <strong>HTTP 請求</strong></li><li>選擇 <strong>GET</strong> 方法</li><li>貼上您複製的 URL</li><li>啟用 <em>完成前阻止下一個動作</em></li><li>啟用 <em>保存 HTTP 回應到檔案</em></li><li>選擇資料夾並輸入檔案名稱：<span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 請記住這個資料夾，下一步會用到</span>',
     'setup.android.step4_2': '設定桌布',
-    'setup.android.step4_2Desc': '動作 → <strong>裝置設定</strong> → <strong>設定桌布</strong><br>選擇 <strong>圖像</strong> → <strong>主螢幕與鎖定螢幕</strong><br>使用 <strong>動態檔案名稱</strong> → 選擇檔案：<span class="code-snippet">wallpaper.png</span>',
+    'setup.android.step4_2Desc': '<ul class="step-list-ul"><li>點擊 <strong>動作</strong> → <strong>裝置設定</strong> → <strong>設定桌布</strong></li><li>選擇 <strong>圖像</strong> → 點擊確定</li><li>選擇 <strong>主螢幕與鎖定螢幕</strong></li><li>選擇 <strong>動態檔案名稱</strong></li><li>選擇<em>同一資料夾</em></li><li>輸入相同檔案名稱：<span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': '完成與測試',
     'setup.android.step5Desc': '點擊右上角的三個點 <strong>(⋮)</strong> 並選擇 <strong>測試巨集 (Test Macro)</strong> 以驗證設定。',
 
@@ -603,9 +603,9 @@ export const i18nData = {
     'setup.android.step3Desc': '<strong>トリガー</strong> → <strong>日付/時刻</strong> をタップ：<br>時刻：<span class="code-snippet">00:01:00</span><br>曜日：<strong>すべて選択</strong> (月〜日)<br>アラーム：<strong>オフ (OFF)</strong>',
     'setup.android.step4': 'アクションを設定',
     'setup.android.step4_1': '壁紙をダウンロード',
-    'setup.android.step4_1Desc': 'アクション → <strong>+</strong> → ウェブ操作 → <strong>HTTP リクエスト</strong> (GET)<br>URL を貼り付け。<em>次のアクションをブロック</em>を有効化<br><em>レスポンスを保存</em>にチェック → ファイル名：<span class="code-snippet">wallpaper.png</span><br><span class="text-[10px] opacity-70 mt-1 block">💡 保存先のフォルダを覚えておいてください（次の手順で使用します）</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li><strong>アクション</strong> → <strong>+</strong> をタップ</li><li><strong>ウェブ操作</strong> → <strong>HTTP リクエスト</strong> を選択</li><li><strong>GET</strong> を選択</li><li>コピーした URL を貼り付け</li><li><em>次のアクションまでブロック</em> を有効化</li><li><em>HTTP レスポンスをファイルに保存</em> を有効化</li><li>フォルダを選択してファイル名を入力：<span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 このフォルダを覚えておいてください（次の手順で使用します）</span>',
     'setup.android.step4_2': '壁紙を設定',
-    'setup.android.step4_2Desc': 'アクション → <strong>デバイス設定</strong> → <strong>壁纸を設定</strong><br><strong>画像</strong> → <strong>ホーム画面とロック画面</strong>を選択<br><strong>動的なファイル名</strong>を使用 → ファイルを選択：<span class="code-snippet">wallpaper.png</span>',
+    'setup.android.step4_2Desc': '<ul class="step-list-ul"><li><strong>アクション</strong> → <strong>デバイス設定</strong> → <strong>壁紙を設定</strong> をタップ</li><li><strong>画像</strong> → OK をタップ</li><li><strong>ホーム画面とロック画面</strong> を選択</li><li><strong>動的なファイル名</strong> を選択</li><li><em>同じフォルダ</em> を選択</li><li>同じファイル名を入力：<span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': '完了とテスト',
     'setup.android.step5Desc': '右上の三点リーダー <strong>(⋮)</strong> をタップし、<strong>マクロをテスト (Test Macro)</strong> を選択して動作を確認します。',
 
