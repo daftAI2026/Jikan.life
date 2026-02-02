@@ -1,4 +1,9 @@
 /**
+ * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal}.js, ./validation.js, @resvg/resvg-wasm
+ * [OUTPUT]: 对外提供 default.fetch (Cloudflare Worker Handler)
+ * [POS]: worker/index.js - Worker 核心入口，负责路由分发、WASM 初始化与图像生成
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * 
  * Life Calendar Wallpaper - Cloudflare Worker
  * 
  * Generates dynamic wallpaper images based on:
@@ -26,10 +31,37 @@ async function initializeWasm() {
     }
 }
 
-let fontBuffers = [];
+// ============================================================================
+// 字体加载管理
+// Inter: 基础拉丁字体（始终加载）
+// Noto Sans: CJK 字体（按语言按需加载）
+// ============================================================================
 
-async function loadFonts() {
-    if (fontBuffers.length > 0) return;
+let interFontBuffers = [];      // Inter 字体缓存
+let cjkFontBuffers = new Map(); // CJK 字体缓存 { lang -> Uint8Array[] }
+
+// CJK 字体 URL 映射
+const CJK_FONT_URLS = {
+    'zh-CN': [
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-400-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-500-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-700-normal.woff2'
+    ],
+    'zh-TW': [
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-tc@latest/chinese-traditional-400-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-tc@latest/chinese-traditional-500-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-tc@latest/chinese-traditional-700-normal.woff2'
+    ],
+    'ja': [
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-400-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-500-normal.woff2',
+        'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-700-normal.woff2'
+    ]
+};
+
+// 加载基础 Inter 字体
+async function loadInterFonts() {
+    if (interFontBuffers.length > 0) return;
 
     try {
         const fonts = [
@@ -41,12 +73,40 @@ async function loadFonts() {
 
         const responses = await Promise.all(fonts.map(url => fetch(url)));
         const buffers = await Promise.all(responses.map(res => res.arrayBuffer()));
-
-        fontBuffers = buffers.map(buffer => new Uint8Array(buffer));
-        console.log('Fonts loaded successfully');
+        interFontBuffers = buffers.map(buffer => new Uint8Array(buffer));
+        console.log('Inter fonts loaded');
     } catch (e) {
-        console.error('Failed to load fonts:', e);
+        console.error('Failed to load Inter fonts:', e);
     }
+}
+
+// 加载 CJK 字体（按语言按需加载）
+async function loadCJKFonts(lang) {
+    if (lang === 'en') return [];  // 英文无需 CJK
+    if (cjkFontBuffers.has(lang)) return cjkFontBuffers.get(lang);
+
+    const urls = CJK_FONT_URLS[lang];
+    if (!urls) return [];
+
+    try {
+        const responses = await Promise.all(urls.map(url => fetch(url)));
+        const buffers = await Promise.all(responses.map(res => res.arrayBuffer()));
+        const fontData = buffers.map(buffer => new Uint8Array(buffer));
+        cjkFontBuffers.set(lang, fontData);
+        console.log(`CJK fonts loaded for ${lang}`);
+        return fontData;
+    } catch (e) {
+        console.error(`Failed to load CJK fonts for ${lang}:`, e);
+        return [];
+    }
+}
+
+// 获取完整字体列表（Inter + CJK）
+async function loadFonts(lang = 'en') {
+    await loadInterFonts();
+    const cjkFonts = await loadCJKFonts(lang);
+    // CJK 字体在前，Inter 在后作为 fallback
+    return [...cjkFonts, ...interFontBuffers];
 }
 
 export default {
@@ -203,7 +263,8 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         }
 
         // Convert SVG to PNG using resvg
-        await Promise.all([initializeWasm(), loadFonts()]);
+        await initializeWasm();
+        const fontBuffers = await loadFonts(validated.lang);
 
         const resvg = new Resvg(svg, {
             fitTo: {
@@ -211,8 +272,8 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
             },
             font: {
                 loadSystemFonts: false,
-                defaultFontFamily: 'Inter',
-                fontBuffers: fontBuffers // Pass the loaded font buffers
+                defaultFontFamily: 'Noto Sans SC, Noto Sans TC, Noto Sans JP, Inter',
+                fontBuffers: fontBuffers
             }
         });
 
