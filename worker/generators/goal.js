@@ -1,0 +1,105 @@
+/**
+ * [INPUT]: 依赖 shared/wallpaper-core.js, ../svg.js, ../timezone.js
+ * [OUTPUT]: generateGoalCountdown 函数 (SVG string)
+ * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局
+ * [PROTOCOL]: 变更时更新此头部，然后同步检查 shared/wallpaper-core.js
+ */
+
+import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
+import { getDateInTimezone, getDaysBetween } from '../timezone.js';
+import { computeGoalLayout } from '../../shared/wallpaper-core.js';
+
+/**
+ * Generate Goal Countdown Wallpaper
+ * Shows countdown to a specific goal date with circular progress
+ */
+export function generateGoalCountdown(options) {
+    const {
+        width,
+        height,
+        bgColor,
+        accentColor,
+        timezone,
+        goalDate,
+        goalName = 'Goal',
+        clockHeight = 0.18,
+        lang = 'en'
+    } = options;
+
+    // Use shared core for layout computation
+    const layout = computeGoalLayout({
+        width,
+        height,
+        bgColor,
+        accentColor,
+        clockHeight,
+        lang,
+        goalDate,
+        goalName: decodeURIComponent(goalName)
+    });
+
+    const { ring, safeAccent } = layout;
+
+    let content = '';
+
+    // Background
+    content += rect(0, 0, width, height, parseColor(bgColor));
+
+    // Background circle
+    const strokeWidth = width * 0.035;
+    content += `<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${svgContrastAlpha(bgColor, 0.1)}" stroke-width="${strokeWidth}" fill="none" />`;
+
+    // Progress arc
+    if (ring.progress > 0) {
+        const endAngle = ring.progress * 360;
+        content += arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, parseColor(safeAccent), strokeWidth);
+    }
+
+    // Days number
+    content += text(ring.centerX, ring.centerY - height * 0.015, layout.daysRemaining.toString(), {
+        fill: parseColor(safeAccent),
+        fontSize: layout.numberFontSize,
+        fontWeight: '700',
+        textAnchor: 'middle',
+        dominantBaseline: 'middle'
+    });
+
+    // "days left" label
+    content += text(ring.centerX, layout.labelY, layout.daysLeftText, {
+        fill: svgContrastAlpha(bgColor, 0.5),
+        fontSize: layout.labelFontSize,
+        fontWeight: '400',
+        textAnchor: 'middle',
+        dominantBaseline: 'middle'
+    });
+
+    // Goal name
+    if (layout.goalName) {
+        content += text(ring.centerX, layout.goalNameY, layout.goalName, {
+            fill: svgContrastAlpha(bgColor, 0.9),
+            fontSize: layout.nameFontSize,
+            fontWeight: '600',
+            textAnchor: 'middle',
+            dominantBaseline: 'middle'
+        });
+    }
+
+    // Target date (New)
+    if (goalDate) {
+        const targetDate = new Date(goalDate);
+        const dateStr = targetDate.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        content += text(ring.centerX, layout.targetDateY, dateStr, {
+            fill: svgContrastAlpha(bgColor, 0.4),
+            fontSize: width * 0.028,
+            fontWeight: '400',
+            textAnchor: 'middle',
+            dominantBaseline: 'middle'
+        });
+    }
+
+    return createSVG(width, height, content);
+}
