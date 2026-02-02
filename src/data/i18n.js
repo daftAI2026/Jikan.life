@@ -46,6 +46,7 @@ export const i18nData = {
 
     // Common Button
     'button.select': 'Select',
+    'button.selected': 'Selected',
 
     // Customize Section
     'customize.header': 'Personalize',
@@ -108,7 +109,7 @@ export const i18nData = {
     'setup.ios.step2': 'Create Automation',
     'setup.ios.step2Desc': 'Shortcuts App → Automation Tab → New Automation<br>Time of Day: <strong>6:00 AM</strong> → Repeat <strong>Daily</strong><br>Select <strong>Run Immediately</strong> → Create New Shortcut',
     'setup.ios.step3': 'Configure Shortcut',
-    'setup.ios.step3Desc': '<strong>1. Get Contents of URL:</strong><br><span class="code-snippet">https://lifegrid.aradhyaxstudy.workers.dev/generate?...</span><br><br><strong>2. Set Wallpaper Photo:</strong><br>Choose "Lock Screen" as the target.',
+    'setup.ios.step3Desc': '<strong>1. Get Contents of URL:</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. Set Wallpaper Photo:</strong><br>Choose "Lock Screen" as the target.',
     'setup.ios.step4': 'Finalize',
     'setup.ios.step4Desc': 'In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong>',
     'setup.ios.step4Warning': 'In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong>',
@@ -127,6 +128,17 @@ export const i18nData = {
 
     // Footer
     'footer.tagline': 'Time, visualized.',
+    'footer.product': 'Product',
+    'footer.features': 'Features',
+    'footer.pricing': 'Pricing',
+    'footer.changelog': 'Changelog',
+    'footer.resources': 'Resources',
+    'footer.docs': 'Documentation',
+    'footer.design': 'Design System',
+    'footer.about': 'About',
+    'footer.license': 'License',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
 
     // Language Selector
     'lang.select': 'Language',
@@ -184,6 +196,7 @@ export const i18nData = {
 
     // 通用按钮
     'button.select': '选择',
+    'button.selected': '已选择',
 
     // 自定义部分
     'customize.header': '个性化',
@@ -246,7 +259,7 @@ export const i18nData = {
     'setup.ios.step2': '创建自动化',
     'setup.ios.step2Desc': '快捷指令应用 → 自动化标签 → 新建自动化<br>时间：<strong>上午 6:00</strong> → 重复 <strong>每天</strong><br>选择 <strong>立即运行</strong> → 创建新快捷指令',
     'setup.ios.step3': '配置快捷指令',
-    'setup.ios.step3Desc': '<strong>1. 获取 URL 的内容：</strong><br><span class="code-snippet">https://lifegrid.aradhyaxstudy.workers.dev/generate?...</span><br><br><strong>2. 设置墙纸：</strong><br>选择"锁屏"作为目标。',
+    'setup.ios.step3Desc': '<strong>1. 获取 URL 的内容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 设置墙纸：</strong><br>选择"锁屏"作为目标。',
     'setup.ios.step4': '完成',
     'setup.ios.step4Desc': '在"设置墙纸"中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
     'setup.ios.step4Warning': '在"设置墙纸"中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
@@ -264,7 +277,18 @@ export const i18nData = {
     'setup.android.step5Desc': '给宏起个名字 → 点击 <strong>创建宏</strong>',
 
     // 页脚
-    'footer.tagline': '时间，可视化。',
+    'footer.tagline': '人生不只是格子。让时间可视化，让每天都有意义。',
+    'footer.product': '产品',
+    'footer.features': '功能特性',
+    'footer.pricing': '定价方案',
+    'footer.changelog': '更新日志',
+    'footer.resources': '资源',
+    'footer.docs': '使用文档',
+    'footer.design': '设计系统',
+    'footer.about': '关于',
+    'footer.license': '开源协议',
+    'footer.privacy': '隐私政策',
+    'footer.terms': '服务条款',
 
     // 语言选择器
     'lang.select': '语言',
@@ -322,6 +346,7 @@ export const i18nData = {
 
     // 通用按鈕
     'button.select': '選擇',
+    'button.selected': '已選擇',
 
     // 自訂部分
     'customize.header': '個人化',
@@ -384,7 +409,7 @@ export const i18nData = {
     'setup.ios.step2': '建立自動化',
     'setup.ios.step2Desc': '捷徑應用 → 自動化標籤 → 新建自動化<br>時間：<strong>上午 6:00</strong> → 重複 <strong>每天</strong><br>選擇 <strong>立即執行</strong> → 建立新捷徑',
     'setup.ios.step3': '設定捷徑',
-    'setup.ios.step3Desc': '<strong>1. 取得 URL 的內容：</strong><br><span class="code-snippet">https://lifegrid.aradhyaxstudy.workers.dev/generate?...</span><br><br><strong>2. 設定桌布：</strong><br>選擇「鎖定螢幕」作為目標。',
+    'setup.ios.step3Desc': '<strong>1. 取得 URL 的內容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 設定桌布：</strong><br>選擇「鎖定螢幕」作為目標。',
     'setup.ios.step4': '完成',
     'setup.ios.step4Desc': '在「設定桌布」中，點擊箭頭 (→)：<br>關閉 <strong>裁切到主體</strong><br>關閉 <strong>顯示預覽</strong>',
     'setup.ios.step4Warning': '在「設定桌布」中，點擊箭頭 (→)：<br>關閉 <strong>裁切到主體</strong><br>關閉 <strong>顯示預覽</strong>',
@@ -402,7 +427,18 @@ export const i18nData = {
     'setup.android.step5Desc': '給巨集起個名稱 → 點擊 <strong>建立巨集</strong>',
 
     // 頁腳
-    'footer.tagline': '時間，可視化。',
+    'footer.tagline': '人生不只是格子。讓時間可視化，讓每天都有意義。',
+    'footer.product': '產品',
+    'footer.features': '功能特性',
+    'footer.pricing': '定價方案',
+    'footer.changelog': '更新日誌',
+    'footer.resources': '資源',
+    'footer.docs': '使用文檔',
+    'footer.design': '設計系統',
+    'footer.about': '關於',
+    'footer.license': '開源協議',
+    'footer.privacy': '隱私政策',
+    'footer.terms': '服務條款',
 
     // 語言選擇器
     'lang.select': '語言',
@@ -460,6 +496,7 @@ export const i18nData = {
 
     // 共通ボタン
     'button.select': '選択',
+    'button.selected': '選択済み',
 
     // カスタマイズセクション
     'customize.header': 'パーソナライズ',
@@ -522,7 +559,7 @@ export const i18nData = {
     'setup.ios.step2': 'オートメーションを作成',
     'setup.ios.step2Desc': 'ショートカットアプリ → オートメーションタブ → 新規オートメーション<br>時間：<strong>午前 6:00</strong> → <strong>毎日</strong>繰り返す<br><strong>今すぐ実行</strong>を選択 → 新規ショートカットを作成',
     'setup.ios.step3': 'ショートカットを設定',
-    'setup.ios.step3Desc': '<strong>1. URL のコンテンツを取得：</strong><br><span class="code-snippet">https://lifegrid.aradhyaxstudy.workers.dev/generate?...</span><br><br><strong>2. 壁紙を設定：</strong><br>ターゲットとして「ロック画面」を選択します。',
+    'setup.ios.step3Desc': '<strong>1. URL のコンテンツを取得：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 壁紙を設定：</strong><br>ターゲットとして「ロック画面」を選択します。',
     'setup.ios.step4': '完了',
     'setup.ios.step4Desc': '「壁紙を設定」で矢印 (→) をタップ：<br>「サブジェクトへのトリミング」をオフ<br>「プレビューを表示」をオフ',
     'setup.ios.step4Warning': '「壁紙を設定」で矢印 (→) をタップ：<br>「サブジェクトへのトリミング」をオフ<br>「プレビューを表示」をオフ',
@@ -540,7 +577,18 @@ export const i18nData = {
     'setup.android.step5Desc': 'マクロに名前を付ける → <strong>マクロを作成</strong>をタップ',
 
     // フッター
-    'footer.tagline': '時間、ビジュアル化。',
+    'footer.tagline': '人生は格子だけじゃない。時間をビジュアル化して、毎日を意味あるものに。',
+    'footer.product': 'プロダクト',
+    'footer.features': '機能',
+    'footer.pricing': '価格',
+    'footer.changelog': '変更履歴',
+    'footer.resources': 'リソース',
+    'footer.docs': 'ドキュメント',
+    'footer.design': 'デザインシステム',
+    'footer.about': 'について',
+    'footer.license': 'ライセンス',
+    'footer.privacy': 'プライバシーポリシー',
+    'footer.terms': '利用規約',
 
     // 言語セレクター
     'lang.select': '言語',

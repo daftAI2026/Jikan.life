@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/lib/motion, @/components/ui/button
- * [OUTPUT]: Hero Section 组件 (原项目风格 + Framer Motion)
+ * [INPUT]: 依赖 framer-motion, lucide-react, @/lib/motion, @/components/ui/button, @/lib/I18nContext
+ * [OUTPUT]: Hero Section 组件 (原项目风格 + Framer Motion + i18n)
  * [POS]: Landing 核心 - Above the Fold 首屏，动画网格背景
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -11,8 +11,11 @@ import {
     fadeInUp,
     staggerContainer,
 } from "@/lib/motion"
+import { useI18n } from "@/lib/I18nContext"
 
 export function Hero() {
+    const { t } = useI18n()
+
     // 生成 12 个网格单元的延迟
     const gridCells = Array.from({ length: 12 }, (_, i) => ({
         delay: i,
@@ -40,22 +43,22 @@ export function Hero() {
                     className="hero-eyebrow"
                     variants={fadeInUp}
                 >
-                    Dynamic Wallpapers
+                    {t('hero.eyebrow')}
                 </motion.p>
 
                 <motion.h1
                     className="hero-title"
                     variants={fadeInUp}
                 >
-                    Your time.<br />
-                    <span className="hero-title-accent">Visualized.</span>
+                    {t('hero.title')}<br />
+                    <span className="hero-title-accent">{t('hero.titleAccent')}</span>
                 </motion.h1>
 
                 <motion.p
                     className="hero-subtitle"
                     variants={fadeInUp}
                 >
-                    Wallpapers that update daily. Track your year, your life, or countdown to your goals.
+                    {t('hero.subtitle')}
                 </motion.p>
 
                 <motion.div variants={fadeInUp}>
@@ -64,7 +67,7 @@ export function Hero() {
                         className="hero-cta font-semibold rounded-2xl h-14 px-8 text-lg hover:translate-y-[-2px] hover:shadow-xl transition-all"
                     >
                         <a href="#types">
-                            <span>Get Started</span>
+                            <span>{t('hero.cta')}</span>
                             <ArrowDown className="ml-2 h-5 w-5 animate-bounce" />
                         </a>
                     </Button>
