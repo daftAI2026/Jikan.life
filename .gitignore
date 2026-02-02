@@ -34,3 +34,5 @@ IMPLEMENTATION_SUMMARY.md
 .agent/
 TODO.md
 GettingKnow.md
+# Build Artifacts
+dist/

@@ -652,3 +652,61 @@
     height: 30px;
   }
 }
+
+/* ============================================
+   Setup Section - 代码片段和高亮样式
+   (适配 i18n HTML 注入内容)
+   ============================================ */
+.code-snippet {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--foreground);
+  word-break: break-all;
+}
+
+.highlight-badge {
+  display: block;
+  width: fit-content;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: color-mix(in oklch, var(--destructive) 15%, transparent);
+  border: 1px solid color-mix(in oklch, var(--destructive) 30%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--destructive);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/**
+ * [INPUT]: 无
+ * [OUTPUT]: 教程列表样式
+ * [POS]: SetupSection 的注入 HTML 样式
+ * [PROTOCOL]: 变更时检查列表间距
+ */
+.step-list-ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+.step-list-ul li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+.step-list-ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
+}
