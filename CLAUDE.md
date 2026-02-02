@@ -2,6 +2,7 @@
 Vite + React + Tailwind CSS v4 + Cloudflare Workers
 
 <directory>
+.github/ - GitHub 自动化配置 (Actions, Workflow)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件
   │   ├── landing/ - Landing Page Section 组件
