@@ -8,7 +8,7 @@
 #   - 其他 → 返回 index.html (SPA)
 # ============================================================================
 
-name = "jikan-life"
+name = "jikan"
 main = "worker/index.js"
 compatibility_date = "2026-01-30"
 compatibility_flags = ["nodejs_compat"]
