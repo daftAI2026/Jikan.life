@@ -71,5 +71,5 @@ export function generateLifeCalendar(options) {
         escape: false
     });
 
-    return createSVG(width, height, content);
+    return createSVG(width, height, content, lang);
 }

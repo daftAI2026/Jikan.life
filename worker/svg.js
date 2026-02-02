@@ -9,9 +9,15 @@
 /**
  * Create SVG document wrapper
  */
-export function createSVG(width, height, content) {
+export function createSVG(width, height, content, lang = 'en') {
+    // Determine the font family based on language
+    let fontFamily = 'Inter, -apple-system, sans-serif';
+    if (lang === 'zh-CN') fontFamily = 'Noto Sans SC, Inter, sans-serif';
+    else if (lang === 'zh-TW') fontFamily = 'Noto Sans TC, Inter, sans-serif';
+    else if (lang === 'ja') fontFamily = 'Noto Sans JP, Inter, sans-serif';
+
     return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${fontFamily}">
   <defs>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap');
@@ -43,7 +49,7 @@ export function text(x, y, content, options = {}) {
         fill = '#ffffff',
         fontSize = 16,
         fontWeight = '400',
-        fontFamily = 'Inter, sans-serif',
+        fontFamily = 'inherit',
         textAnchor = 'start',
         dominantBaseline = 'auto',
         escape = true
