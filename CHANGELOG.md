@@ -15,10 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Internationalization
 - **Landing Page**: Completed i18n integration for `SetupSection` and `CustomizeSection`, enabling rich text translations via `HtmlDesc`.
+- **Setup Refinements**: Extensively updated Android (MacroDroid) and iOS setup instructions for better clarity across all supported languages (EN, CN, TW, JA).
 - **Placeholders**: Localized all input placeholders and form prompts.
 
 ### Infrastructure
 - **Cloudflare**: Renamed worker service to `jikan` in `wrangler.toml`.
+- **Git Maintenance**: Added `dist/` to `.gitignore` and removed existing build artifacts from version control.
+
+### UI/UX
+- **Styles**: Added specific styling for code snippets and highlight badges within i18n instructions.
 
 ## [1.0.0] - 2026-02-02
 
