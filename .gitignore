@@ -26,9 +26,11 @@ yarn-error.log*
 internal_docs/
 
 # AI/Process Documentation (not project code)
+CODE_OF_CONDUCT.md
 AGENT.md
 IMPLEMENTATION_SUMMARY.md
 # Local Dev Config & Workflows
 .gitmessage
 .agent/
 TODO.md
+GettingKnow.md
