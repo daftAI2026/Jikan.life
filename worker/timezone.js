@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 无
+ * [OUTPUT]: 对外提供时区/日期计算工具 (getDateInTimezone, getDayOfYear)
+ * [POS]: worker/ 核心工具，处理跨时区日期逻辑
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 // Country to timezone mapping
 export const countryTimezones = {
     'af': 'Asia/Kabul',

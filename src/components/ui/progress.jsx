@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-progress
+ * [OUTPUT]: 对外提供 Progress 相关组件
+ * [POS]: ui/ 进度条组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"

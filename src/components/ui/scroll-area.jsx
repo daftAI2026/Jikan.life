@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-scroll-area
+ * [OUTPUT]: 对外提供 ScrollArea 组件
+ * [POS]: ui/ 滚动区域组件，自定义滚动条样式
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
@@ -33,9 +39,9 @@ function ScrollBar({
       className={cn(
         "flex touch-none p-px transition-colors select-none",
         orientation === "vertical" &&
-          "h-full w-2.5 border-l border-l-transparent",
+        "h-full w-2.5 border-l border-l-transparent",
         orientation === "horizontal" &&
-          "h-2.5 flex-col border-t border-t-transparent",
+        "h-2.5 flex-col border-t border-t-transparent",
         className
       )}
       {...props}>

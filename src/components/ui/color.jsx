@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 react-aria-components
+ * [OUTPUT]: 对外提供 Color 相关原子组件 (ColorWheel, ColorArea, etc.)
+ * [POS]: ui/ 颜色选择器底层原语
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import {
   ColorArea as AriaColorArea,
   ColorField as AriaColorField,

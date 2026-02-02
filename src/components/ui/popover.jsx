@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-popover
+ * [OUTPUT]: 对外提供 Popover 相关组件
+ * [POS]: ui/ 气泡弹出框组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 

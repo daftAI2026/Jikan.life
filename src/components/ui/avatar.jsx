@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-avatar
+ * [OUTPUT]: 对外提供 Avatar 相关组件
+ * [POS]: ui/ 头像组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 

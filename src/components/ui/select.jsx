@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-select
+ * [OUTPUT]: 对外提供 Select 相关组件
+ * [POS]: ui/ 下拉选择组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"

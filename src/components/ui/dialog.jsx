@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-dialog
+ * [OUTPUT]: 对外提供 Dialog 相关组件
+ * [POS]: ui/ 对话框/模态框组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"

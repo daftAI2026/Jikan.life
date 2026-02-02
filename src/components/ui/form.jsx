@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 react-hook-form, @radix-ui/react-slot
+ * [OUTPUT]: 对外提供 Form 相关组件及 hooks
+ * [POS]: ui/ 表单组件封装
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client";
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
