@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 sonner, lucide-react, next-themes
+ * [OUTPUT]: 对外提供 Toaster 组件
+ * [POS]: ui/ Toast 通知组件封装
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import {
   CircleCheckIcon,
   InfoIcon,

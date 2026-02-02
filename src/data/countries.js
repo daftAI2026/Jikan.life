@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 无
+ * [OUTPUT]: 对外提供 countries 列表, getTimezone 函数
+ * [POS]: data/ 静态数据，提供全球国家代码与时区映射
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 // Complete country list with timezone mappings
 export const countries = [
   { code: "AF", name: "Afghanistan", timezone: "Asia/Kabul" },

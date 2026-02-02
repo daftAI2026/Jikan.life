@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-checkbox
+ * [OUTPUT]: 对外提供 Checkbox 相关组件
+ * [POS]: ui/ 复选框组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"

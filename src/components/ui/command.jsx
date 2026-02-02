@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 cmdk
+ * [OUTPUT]: 对外提供 Command (命令面板) 相关组件
+ * [POS]: ui/ 命令菜单组件，通常用于搜索或快捷操作
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import { SearchIcon } from "lucide-react"

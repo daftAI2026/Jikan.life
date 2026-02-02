@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-switch
+ * [OUTPUT]: 对外提供 Switch 组件
+ * [POS]: ui/ 开关组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"

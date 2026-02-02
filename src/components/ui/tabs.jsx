@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-tabs
+ * [OUTPUT]: 对外提供 Tabs 相关组件
+ * [POS]: ui/ 标签页组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { cva } from "class-variance-authority";

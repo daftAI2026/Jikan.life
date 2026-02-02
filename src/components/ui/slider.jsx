@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-slider
+ * [OUTPUT]: 对外提供 Slider 组件
+ * [POS]: ui/ 滑块组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 

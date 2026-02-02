@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 react-day-picker
+ * [OUTPUT]: 对外提供 Calendar 组件
+ * [POS]: ui/ 日历组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import {
   ChevronDownIcon,

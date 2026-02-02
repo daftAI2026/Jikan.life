@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 react
+ * [OUTPUT]: 对外提供 Textarea 组件
+ * [POS]: ui/ 多行文本输入组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 class-variance-authority
+ * [OUTPUT]: 对外提供 Alert 相关组件
+ * [POS]: ui/ 警告提示组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import { cva } from "class-variance-authority";
 

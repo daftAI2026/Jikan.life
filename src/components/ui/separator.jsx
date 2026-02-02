@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-separator
+ * [OUTPUT]: 对外提供 Separator 相关组件
+ * [POS]: ui/ 分割线组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"

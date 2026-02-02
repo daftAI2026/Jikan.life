@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 无
+ * [OUTPUT]: 对外提供 devices 列表及查询函数 (getDevice, getDevicesByCategory)
+ * [POS]: data/ 静态数据，定义 iPhone/Android/iPad 屏幕规格与 notch 参数
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 // Complete device resolutions for wallpapers
 // Includes all iPhone models through iPhone 17 series
 

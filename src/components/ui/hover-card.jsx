@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-hover-card
+ * [OUTPUT]: 对外提供 HoverCard 相关组件
+ * [POS]: ui/ 悬停卡片组件，用于展示预览信息
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 import * as React from "react"
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 

@@ -1,3 +1,9 @@
+/**
+ * [INPUT]: 依赖 @radix-ui/react-accordion
+ * [OUTPUT]: 对外提供 Accordion 相关组件
+ * [POS]: ui/ 手风琴折叠组件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 "use client"
 
 import * as React from "react"
