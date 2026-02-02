@@ -317,7 +317,7 @@ export function CustomizeSection({ selectedType }) {
                                 </label>
                                 <Select value={config.country} onValueChange={(v) => updateConfig('country', v)} disabled={!config.selectedType}>
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select country..." />
+                                        <SelectValue placeholder={t('placeholder.selectCountry')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {countries.map((country) => {
@@ -366,7 +366,7 @@ export function CustomizeSection({ selectedType }) {
                                     <DatePicker
                                         value={config.dob}
                                         onChange={(v) => updateConfig('dob', v)}
-                                        placeholder="Select date..."
+                                        placeholder={t('placeholder.selectDate')}
                                     />
                                 </div>
                                 <div className="space-y-3">
@@ -394,7 +394,7 @@ export function CustomizeSection({ selectedType }) {
                                         type="text"
                                         value={config.goalName}
                                         onChange={(e) => updateConfig('goalName', e.target.value)}
-                                        placeholder="Product Launch"
+                                        placeholder={t('placeholder.goalName')}
                                     />
                                 </div>
                                 <div className="space-y-3">
@@ -402,7 +402,7 @@ export function CustomizeSection({ selectedType }) {
                                     <DatePicker
                                         value={config.goalDate}
                                         onChange={(v) => updateConfig('goalDate', v)}
-                                        placeholder="Select target date..."
+                                        placeholder={t('placeholder.selectTargetDate')}
                                     />
                                 </div>
                             </div>
@@ -447,7 +447,7 @@ export function CustomizeSection({ selectedType }) {
                                 {config.selectedType ? (
                                     <span className="text-xs text-muted-foreground">{selectedDevice.width} × {selectedDevice.height}</span>
                                 ) : (
-                                    <span className="text-xs text-amber-500">Select type first</span>
+                                    <span className="text-xs text-amber-500">{t('placeholder.selectTypeFirst')}</span>
                                 )}
                             </label>
                             <Select

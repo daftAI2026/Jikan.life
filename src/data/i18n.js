@@ -151,6 +151,13 @@ export const i18nData = {
     'goal.dayLeft': 'day left',
     'goal.daysLeft': 'days left',
 
+    // Placeholders
+    'placeholder.selectCountry': 'Select country...',
+    'placeholder.selectDate': 'Select date...',
+    'placeholder.selectTargetDate': 'Select target date...',
+    'placeholder.goalName': 'Product Launch',
+    'placeholder.selectTypeFirst': 'Select type first',
+
     // Debug messages
     'debug.autoDetectFailed': 'Could not auto-detect country',
     'debug.copyFailed': 'Failed to copy:',
@@ -300,6 +307,13 @@ export const i18nData = {
     // 目标相关
     'goal.dayLeft': '天剩余',
     'goal.daysLeft': '天剩余',
+
+    // 占位符
+    'placeholder.selectCountry': '选择国家...',
+    'placeholder.selectDate': '选择日期...',
+    'placeholder.selectTargetDate': '选择目标日期...',
+    'placeholder.goalName': '产品发布',
+    'placeholder.selectTypeFirst': '请先选择类型',
 
     // 调试信息
     'debug.autoDetectFailed': '无法自动检测国家',
@@ -451,6 +465,13 @@ export const i18nData = {
     'goal.dayLeft': '天',
     'goal.daysLeft': '天',
 
+    // 占位符
+    'placeholder.selectCountry': '選擇國家...',
+    'placeholder.selectDate': '選擇日期...',
+    'placeholder.selectTargetDate': '選擇目標日期...',
+    'placeholder.goalName': '產品發佈',
+    'placeholder.selectTypeFirst': '請先選擇類型',
+
     // 調試訊息
     'debug.autoDetectFailed': '無法自動偵測國家',
     'debug.copyFailed': '複製失敗：',
@@ -600,6 +621,13 @@ export const i18nData = {
     // ゴール関連
     'goal.dayLeft': '日残り',
     'goal.daysLeft': '日残り',
+
+    // プレースホルダ
+    'placeholder.selectCountry': '国を選択...',
+    'placeholder.selectDate': '日付を選択...',
+    'placeholder.selectTargetDate': '目標日を選択...',
+    'placeholder.goalName': '製品ローンチ',
+    'placeholder.selectTypeFirst': 'まずタイプを選択',
 
     // デバッグメッセージ
     'debug.autoDetectFailed': '国を自動検出できませんでした',
