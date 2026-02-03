@@ -1,82 +1,31 @@
 /**
- * [INPUT]: 无
- * [OUTPUT]: 对外提供时区/日期计算工具 (getDateInTimezone, getDayOfYear)
+ * [INPUT]: 依赖 shared/countries.js
+ * [OUTPUT]: 对外提供时区/日期计算工具 (getDateInTimezone, getDayOfYear, normalizeTimezone)
  * [POS]: worker/ 核心工具，处理跨时区日期逻辑
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-// Country to timezone mapping
-export const countryTimezones = {
-    'af': 'Asia/Kabul',
-    'al': 'Europe/Tirane',
-    'dz': 'Africa/Algiers',
-    'ar': 'America/Argentina/Buenos_Aires',
-    'au': 'Australia/Sydney',
-    'at': 'Europe/Vienna',
-    'bd': 'Asia/Dhaka',
-    'be': 'Europe/Brussels',
-    'br': 'America/Sao_Paulo',
-    'ca': 'America/Toronto',
-    'cl': 'America/Santiago',
-    'cn': 'Asia/Shanghai',
-    'co': 'America/Bogota',
-    'hr': 'Europe/Zagreb',
-    'cz': 'Europe/Prague',
-    'dk': 'Europe/Copenhagen',
-    'eg': 'Africa/Cairo',
-    'fi': 'Europe/Helsinki',
-    'fr': 'Europe/Paris',
-    'de': 'Europe/Berlin',
-    'gr': 'Europe/Athens',
-    'hk': 'Asia/Hong_Kong',
-    'hu': 'Europe/Budapest',
-    'is': 'Atlantic/Reykjavik',
-    'in': 'Asia/Kolkata',
-    'id': 'Asia/Jakarta',
-    'ir': 'Asia/Tehran',
-    'iq': 'Asia/Baghdad',
-    'ie': 'Europe/Dublin',
-    'il': 'Asia/Jerusalem',
-    'it': 'Europe/Rome',
-    'jp': 'Asia/Tokyo',
-    'ke': 'Africa/Nairobi',
-    'kr': 'Asia/Seoul',
-    'kw': 'Asia/Kuwait',
-    'my': 'Asia/Kuala_Lumpur',
-    'mx': 'America/Mexico_City',
-    'ma': 'Africa/Casablanca',
-    'nl': 'Europe/Amsterdam',
-    'nz': 'Pacific/Auckland',
-    'ng': 'Africa/Lagos',
-    'no': 'Europe/Oslo',
-    'pk': 'Asia/Karachi',
-    'pe': 'America/Lima',
-    'ph': 'Asia/Manila',
-    'pl': 'Europe/Warsaw',
-    'pt': 'Europe/Lisbon',
-    'qa': 'Asia/Qatar',
-    'ro': 'Europe/Bucharest',
-    'ru': 'Europe/Moscow',
-    'sa': 'Asia/Riyadh',
-    'sg': 'Asia/Singapore',
-    'za': 'Africa/Johannesburg',
-    'es': 'Europe/Madrid',
-    'se': 'Europe/Stockholm',
-    'ch': 'Europe/Zurich',
-    'tw': 'Asia/Taipei',
-    'th': 'Asia/Bangkok',
-    'tr': 'Europe/Istanbul',
-    'ua': 'Europe/Kyiv',
-    'ae': 'Asia/Dubai',
-    'gb': 'Europe/London',
-    'us': 'America/New_York',
-    'vn': 'Asia/Ho_Chi_Minh'
-};
+import { countryTimezones, getTimezone as getSharedTimezone } from '../shared/countries.js';
+
+export { countryTimezones };
 
 /**
  * Get timezone from country code
  */
 export function getTimezone(countryCode) {
-    return countryTimezones[countryCode.toLowerCase()] || 'UTC';
+    return getSharedTimezone(countryCode);
+}
+
+/**
+ * Normalize timezone string (IANA). Returns null when invalid.
+ */
+export function normalizeTimezone(timezone) {
+    if (!timezone) return null;
+    try {
+        new Intl.DateTimeFormat('en-CA', { timeZone: timezone }).format(new Date());
+        return timezone;
+    } catch (e) {
+        return null;
+    }
 }
 
 /**

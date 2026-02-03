@@ -15,6 +15,7 @@ export const wallpaperSchema = z.object({
     height: z.coerce.number().int().min(300, "Height too small").max(8000, "Height too large").default(2532),
     clockHeight: z.coerce.number().min(0).max(0.5).default(0.18),
     lang: z.enum(['en', 'zh-CN', 'zh-TW', 'ja']).default('en'),  // 壁纸语言
+    tz: z.string().max(100).optional(),
 
     // Life Calendar specific
     dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format").optional(),

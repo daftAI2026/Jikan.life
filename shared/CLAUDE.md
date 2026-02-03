@@ -2,7 +2,8 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
-wallpaper-core.js: 壁纸渲染同构核心，导出 computeYearLayout/computeLifeLayout/computeGoalLayout + 颜色工具 + i18n
+wallpaper-core.js: 壁纸渲染同构核心，导出 computeYearLayout/computeLifeLayout/computeGoalLayout + 日期/颜色工具 + i18n
+countries.js: 国家/地区数据与时区映射，前后端共享
 
 ## 设计原则
 

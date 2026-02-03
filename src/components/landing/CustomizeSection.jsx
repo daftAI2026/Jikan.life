@@ -24,7 +24,7 @@ import { FieldGroup } from "@/components/ui/field"
 import { parseDate } from "@internationalized/date"
 import { CalendarIcon } from "lucide-react"
 import { ColorPicker } from "@/components/ui/color-picker"
-import { countries } from "@/data/countries"
+import { countries, getTimezone } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
 import { drawYearProgress, drawLifeCalendar, drawGoalCountdown } from "@/lib/renderer"
 import { getSafeAccent } from "../../../shared/wallpaper-core"
@@ -157,6 +157,7 @@ export function CustomizeSection({ selectedType }) {
     const [config, setConfig] = useState({
         selectedType: selectedType || null,
         country: '',
+        timezone: '',
         wallpaperLang: 'en',
         bgColor: '#000000',
         accentColor: '#FFFFFF',
@@ -197,6 +198,11 @@ export function CustomizeSection({ selectedType }) {
                     country: country.code,
                     timezone: country.timezone
                 }))
+            } else if (tz) {
+                setConfig(prev => ({
+                    ...prev,
+                    timezone: tz
+                }))
             }
         } catch (e) {
             console.warn("Auto-detect country failed", e);
@@ -210,6 +216,10 @@ export function CustomizeSection({ selectedType }) {
 
         setConfig(prev => {
             const next = { ...prev, [key]: value };
+
+            if (key === 'country') {
+                next.timezone = getTimezone(value);
+            }
 
             // 如果修改了背景色或强调色，需要同步安全色
             if (key === 'bgColor' || key === 'originalAccentColor') {
@@ -243,6 +253,8 @@ export function CustomizeSection({ selectedType }) {
         params.set('height', selectedDevice.height.toString())
         params.set('clockHeight', selectedDevice.clockHeight.toString())
         params.set('lang', config.wallpaperLang)
+        if (config.country) params.set('country', config.country)
+        if (config.timezone) params.set('tz', config.timezone)
         if (config.selectedType === 'life' && config.dob) {
             params.set('dob', config.dob)
             params.set('lifespan', config.lifespan.toString())
