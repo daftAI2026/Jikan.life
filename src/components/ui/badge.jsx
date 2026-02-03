@@ -10,28 +10,29 @@ import { cn } from "@/lib/utils"
 
 /* ========================================
    徽章样式配置 - 渐变 + 微拟物
+   使用 CSS 变量实现主题感知阴影
    ======================================== */
 
 const BADGE_STYLES = {
   default: {
     background: 'linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 80%, black) 100%)',
-    boxShadow: '0 2px 6px color-mix(in srgb, var(--primary) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.15)',
+    boxShadow: '0 2px 6px color-mix(in srgb, var(--primary) 30%, transparent), var(--neumorphic-highlight)',
   },
   secondary: {
     background: 'linear-gradient(135deg, var(--secondary) 0%, color-mix(in srgb, var(--secondary) 85%, black) 100%)',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.08)',
+    boxShadow: 'var(--neumorphic-badge-sm), var(--neumorphic-badge-highlight)',
   },
   destructive: {
     background: 'linear-gradient(135deg, var(--destructive) 0%, color-mix(in srgb, var(--destructive) 80%, black) 100%)',
-    boxShadow: '0 2px 6px color-mix(in srgb, var(--destructive) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.15)',
+    boxShadow: '0 2px 6px color-mix(in srgb, var(--destructive) 30%, transparent), var(--neumorphic-highlight)',
   },
   outline: {
     background: 'transparent',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+    boxShadow: 'var(--neumorphic-badge-highlight)',
   },
   gradient: {
     background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
-    boxShadow: '0 2px 8px color-mix(in srgb, var(--primary) 25%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)',
+    boxShadow: '0 2px 8px color-mix(in srgb, var(--primary) 25%, transparent), inset 0 1px 0 hsl(0 0% 100% / 0.2)',
   },
 }
 

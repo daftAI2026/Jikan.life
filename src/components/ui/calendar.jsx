@@ -1,182 +1,316 @@
 /**
- * [INPUT]: 依赖 react-day-picker
- * [OUTPUT]: 对外提供 Calendar 组件
- * [POS]: ui/ 日历组件
+ * [INPUT]: 依赖 react-aria-components, @internationalized/date
+ * [OUTPUT]: JollyCalendar, JollyRangeCalendar, MonthYearPicker (日历组件，基于 react-aria)
+ * [POS]: ui/ 日历组件，支持单选、范围选择、月份/年份快速选择
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
+import { getLocalTimeZone, today } from "@internationalized/date"
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"
 import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "lucide-react"
-import { DayPicker, getDefaultClassNames } from "react-day-picker";
+  Button as AriaButton,
+  Calendar as AriaCalendar,
+  CalendarCell as AriaCalendarCell,
+  CalendarGrid as AriaCalendarGrid,
+  CalendarGridBody as AriaCalendarGridBody,
+  CalendarGridHeader as AriaCalendarGridHeader,
+  CalendarHeaderCell as AriaCalendarHeaderCell,
+  CalendarStateContext,
+  Heading as AriaHeading,
+  RangeCalendar as AriaRangeCalendar,
+  RangeCalendarStateContext as AriaRangeCalendarStateContext,
+  composeRenderProps,
+  Text,
+  useLocale,
+} from "react-aria-components";
 
 import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  captionLayout = "label",
-  buttonVariant = "ghost",
-  formatters,
-  components,
-  ...props
+const Calendar = AriaCalendar
+
+const RangeCalendar = AriaRangeCalendar
+
+/* ========================================================================
+   Month and Year Picker - 月份/年份快速选择
+   ======================================================================== */
+function MonthYearPicker({
+  minYear,
+  maxYear,
 }) {
-  const defaultClassNames = getDefaultClassNames()
+  const state = React.useContext(CalendarStateContext)
+  if (!state) return null
 
-  return (
-    <DayPicker
-      showOutsideDays={showOutsideDays}
-      className={cn(
-        "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
-        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
-        className
-      )}
-      captionLayout={captionLayout}
-      formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
-        ...formatters,
-      }}
-      classNames={{
-        root: cn("w-fit", defaultClassNames.root),
-        months: cn("flex gap-4 flex-col md:flex-row relative", defaultClassNames.months),
-        month: cn("flex flex-col w-full gap-4", defaultClassNames.month),
-        nav: cn(
-          "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between",
-          defaultClassNames.nav
-        ),
-        button_previous: cn(
-          buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
-          defaultClassNames.button_previous
-        ),
-        button_next: cn(
-          buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
-          defaultClassNames.button_next
-        ),
-        month_caption: cn(
-          "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
-          defaultClassNames.month_caption
-        ),
-        dropdowns: cn(
-          "w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5",
-          defaultClassNames.dropdowns
-        ),
-        dropdown_root: cn(
-          "relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md",
-          defaultClassNames.dropdown_root
-        ),
-        dropdown: cn("absolute bg-popover inset-0 opacity-0", defaultClassNames.dropdown),
-        caption_label: cn("select-none font-medium", captionLayout === "label"
-          ? "text-sm"
-          : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5", defaultClassNames.caption_label),
-        table: "w-full border-collapse",
-        weekdays: cn("flex", defaultClassNames.weekdays),
-        weekday: cn(
-          "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none",
-          defaultClassNames.weekday
-        ),
-        week: cn("flex w-full mt-2", defaultClassNames.week),
-        week_number_header: cn("select-none w-(--cell-size)", defaultClassNames.week_number_header),
-        week_number: cn(
-          "text-[0.8rem] select-none text-muted-foreground",
-          defaultClassNames.week_number
-        ),
-        day: cn(
-          "relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none",
-          props.showWeekNumber
-            ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-            : "[&:first-child[data-selected=true]_button]:rounded-l-md",
-          defaultClassNames.day
-        ),
-        range_start: cn("rounded-l-md bg-accent", defaultClassNames.range_start),
-        range_middle: cn("rounded-none", defaultClassNames.range_middle),
-        range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
-        today: cn(
-          "bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none",
-          defaultClassNames.today
-        ),
-        outside: cn(
-          "text-muted-foreground aria-selected:text-muted-foreground",
-          defaultClassNames.outside
-        ),
-        disabled: cn("text-muted-foreground opacity-50", defaultClassNames.disabled),
-        hidden: cn("invisible", defaultClassNames.hidden),
-        ...classNames,
-      }}
-      components={{
-        Root: ({ className, rootRef, ...props }) => {
-          return (<div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />);
-        },
-        Chevron: ({ className, orientation, ...props }) => {
-          if (orientation === "left") {
-            return (<ChevronLeftIcon className={cn("size-4", className)} {...props} />);
-          }
-
-          if (orientation === "right") {
-            return (<ChevronRightIcon className={cn("size-4", className)} {...props} />);
-          }
-
-          return (<ChevronDownIcon className={cn("size-4", className)} {...props} />);
-        },
-        DayButton: CalendarDayButton,
-        WeekNumber: ({ children, ...props }) => {
-          return (
-            <td {...props}>
-              <div
-                className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
-              </div>
-            </td>
-          );
-        },
-        ...components,
-      }}
-      {...props} />
-  );
-}
-
-function CalendarDayButton({
-  className,
-  day,
-  modifiers,
-  ...props
-}) {
-  const defaultClassNames = getDefaultClassNames()
-
-  const ref = React.useRef(null)
-  React.useEffect(() => {
-    if (modifiers.focused) ref.current?.focus()
-  }, [modifiers.focused])
-
-  return (
-    <Button
-      ref={ref}
-      variant="ghost"
-      size="icon"
-      data-day={day.date.toLocaleDateString()}
-      data-selected-single={
-        modifiers.selected &&
-        !modifiers.range_start &&
-        !modifiers.range_end &&
-        !modifiers.range_middle
+  const months = React.useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(state.locale, { month: "long" })
+    return Array.from({ length: 12 }, (_, index) => {
+      const date = state.focusedDate.set({ month: index + 1 })
+      return {
+        value: index + 1,
+        label: formatter.format(date.toDate(state.timeZone)),
       }
-      data-range-start={modifiers.range_start}
-      data-range-end={modifiers.range_end}
-      data-range-middle={modifiers.range_middle}
-      className={cn(
-        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
-        defaultClassNames.day,
-        className
-      )}
+    })
+  }, [state.focusedDate, state.locale, state.timeZone])
+
+  const years = React.useMemo(() => {
+    const currentYear = state.focusedDate.year
+    const startYear = minYear ?? currentYear - 100
+    const endYear = maxYear ?? currentYear + 20
+    const range = []
+    for (let i = startYear; i <= endYear; i++) {
+      range.push(i)
+    }
+    return range
+  }, [maxYear, minYear, state.focusedDate.year])
+
+  return (
+    <div className="flex gap-2 px-1 pb-2" onClick={(e) => e.stopPropagation()}>
+      <Select
+        value={state.focusedDate.month.toString()}
+        onValueChange={(value) => {
+          state.setFocusedDate(state.focusedDate.set({ month: parseInt(value) }))
+        }}
+        modal={false}
+      >
+        <SelectTrigger className="h-8 flex-1">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          position="popper"
+          sideOffset={4}
+          className="z-[200]"
+          portalled={false}
+          preventAutoFocus>
+          {months.map((month) => (
+            <SelectItem key={month.value} value={month.value.toString()}>
+              {month.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={state.focusedDate.year.toString()}
+        onValueChange={(value) => {
+          state.setFocusedDate(state.focusedDate.set({ year: parseInt(value) }))
+        }}
+        modal={false}
+      >
+        <SelectTrigger className="h-8 w-24">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          position="popper"
+          sideOffset={4}
+          className="z-[200]"
+          portalled={false}
+          preventAutoFocus>
+          {years.map((year) => (
+            <SelectItem key={year} value={year.toString()}>
+              {year}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+const CalendarHeading = (props) => {
+  let { direction } = useLocale()
+
+  return (
+    <header className="flex w-full items-center gap-1 px-1 pb-4" {...props}>
+      <AriaButton
+        slot="previous"
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "size-7 bg-transparent p-0 opacity-50",
+          /* Hover */
+          "data-[hovered]:opacity-100"
+        )}>
+        {direction === "rtl" ? (
+          <ChevronRight aria-hidden className="size-4" />
+        ) : (
+          <ChevronLeft aria-hidden className="size-4" />
+        )}
+      </AriaButton>
+      <AriaHeading className="grow text-center text-sm font-medium" />
+      <AriaButton
+        slot="next"
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "size-7 bg-transparent p-0 opacity-50",
+          /* Hover */
+          "data-[hovered]:opacity-100"
+        )}>
+        {direction === "rtl" ? (
+          <ChevronLeft aria-hidden className="size-4" />
+        ) : (
+          <ChevronRight aria-hidden className="size-4" />
+        )}
+      </AriaButton>
+    </header>
+  );
+}
+
+const CalendarGrid = ({
+  className,
+  ...props
+}) => (
+  <AriaCalendarGrid
+    className={cn(" border-separate border-spacing-x-0 border-spacing-y-1 ", className)}
+    {...props} />
+)
+
+const CalendarGridHeader = ({
+  ...props
+}) => (
+  <AriaCalendarGridHeader {...props} />
+)
+
+const CalendarHeaderCell = ({
+  className,
+  ...props
+}) => (
+  <AriaCalendarHeaderCell
+    className={cn(
+      "w-9 rounded-md text-[0.8rem] font-normal text-muted-foreground",
+      className
+    )}
+    {...props} />
+)
+
+const CalendarGridBody = ({
+  className,
+  ...props
+}) => (
+  <AriaCalendarGridBody className={cn("[&>tr>td]:p-0", className)} {...props} />
+)
+
+const CalendarCell = ({
+  className,
+  ...props
+}) => {
+  const isRange = Boolean(React.useContext(AriaRangeCalendarStateContext))
+  return (
+    <AriaCalendarCell
+      className={composeRenderProps(className, (className, renderProps) =>
+        cn(
+          buttonVariants({ variant: "ghost" }),
+          "relative flex size-9 items-center justify-center p-0 text-sm font-normal",
+          /* Disabled */
+          renderProps.isDisabled && "text-muted-foreground opacity-50",
+          /* Selected */
+          renderProps.isSelected &&
+            "bg-primary text-primary-foreground data-[focused]:bg-primary  data-[focused]:text-primary-foreground",
+          /* Hover */
+          renderProps.isHovered &&
+            renderProps.isSelected &&
+            (renderProps.isSelectionStart ||
+              renderProps.isSelectionEnd ||
+              !isRange) &&
+            "data-[hovered]:bg-primary data-[hovered]:text-primary-foreground",
+          /* Selection Start/End */
+          renderProps.isSelected &&
+            isRange &&
+            !renderProps.isSelectionStart &&
+            !renderProps.isSelectionEnd &&
+            "rounded-none bg-accent text-accent-foreground",
+          /* Outside Month */
+          renderProps.isOutsideMonth &&
+            "text-muted-foreground opacity-50 data-[selected]:bg-accent/50 data-[selected]:text-muted-foreground data-[selected]:opacity-30",
+          /* Current Date */
+          renderProps.date.compare(today(getLocalTimeZone())) === 0 &&
+            !renderProps.isSelected &&
+            "bg-accent text-accent-foreground",
+          /* Unavailable Date */
+          renderProps.isUnavailable && "cursor-default text-destructive ",
+          renderProps.isInvalid &&
+            "bg-destructive text-destructive-foreground data-[focused]:bg-destructive data-[hovered]:bg-destructive data-[focused]:text-destructive-foreground data-[hovered]:text-destructive-foreground",
+          className
+        ))}
       {...props} />
   );
 }
 
-export { Calendar, CalendarDayButton }
+function JollyCalendar(
+  {
+    errorMessage,
+    className,
+    ...props
+  }
+) {
+  return (
+    <Calendar
+      className={composeRenderProps(className, (className) =>
+        cn("w-fit", className))}
+      {...props}>
+      <CalendarHeading />
+      <CalendarGrid>
+        <CalendarGridHeader>
+          {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+        </CalendarGridHeader>
+        <CalendarGridBody>
+          {(date) => <CalendarCell date={date} />}
+        </CalendarGridBody>
+      </CalendarGrid>
+      {errorMessage && (
+        <Text className="text-sm text-destructive" slot="errorMessage">
+          {errorMessage}
+        </Text>
+      )}
+    </Calendar>
+  );
+}
+
+function JollyRangeCalendar(
+  {
+    errorMessage,
+    className,
+    ...props
+  }
+) {
+  return (
+    <RangeCalendar
+      className={composeRenderProps(className, (className) =>
+        cn("w-fit", className))}
+      {...props}>
+      <CalendarHeading />
+      <CalendarGrid>
+        <CalendarGridHeader>
+          {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+        </CalendarGridHeader>
+        <CalendarGridBody>
+          {(date) => <CalendarCell date={date} />}
+        </CalendarGridBody>
+      </CalendarGrid>
+      {errorMessage && (
+        <Text slot="errorMessage" className="text-sm text-destructive">
+          {errorMessage}
+        </Text>
+      )}
+    </RangeCalendar>
+  );
+}
+
+export {
+  Calendar,
+  CalendarCell,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHeader,
+  CalendarHeaderCell,
+  CalendarHeading,
+  MonthYearPicker,
+  RangeCalendar,
+  JollyCalendar,
+  JollyRangeCalendar,
+}

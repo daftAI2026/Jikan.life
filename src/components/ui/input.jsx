@@ -11,11 +11,12 @@ import { gentle } from "@/lib/motion"
 
 /* ========================================
    输入框样式 - 内凹微拟物效果
+   使用 CSS 变量实现主题感知阴影
    ======================================== */
 
 const INPUT_STYLE = {
-  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 2px rgba(0,0,0,0.06)',
-  focusBoxShadow: 'inset 0 2px 4px rgba(0,0,0,0.08), 0 0 0 3px color-mix(in srgb, var(--ring) 25%, transparent)',
+  boxShadow: 'var(--neumorphic-input)',
+  focusBoxShadow: 'var(--neumorphic-input-focus)',
 }
 
 const Input = React.forwardRef(({ className, type, style, ...props }, ref) => {
@@ -30,7 +31,7 @@ const Input = React.forwardRef(({ className, type, style, ...props }, ref) => {
     <motion.input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-xl border border-input bg-background px-4 py-2 text-base",
+        "flex h-10 w-full rounded-md border border-input bg-background px-4 py-2 text-base",
         "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
         "placeholder:text-muted-foreground",
         "focus-visible:outline-none",
