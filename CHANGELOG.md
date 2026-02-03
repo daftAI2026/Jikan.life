@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
 - **Lifespan Input**: Fixed "jumping numbers" bug when deleting digits by deferring range clamping (50-120) to `onBlur`.
 - **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
