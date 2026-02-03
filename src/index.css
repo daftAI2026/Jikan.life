@@ -262,6 +262,39 @@
   --shadow-2xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.15);
 
   --tracking-normal: 0em;
+
+  /* ========================================
+     微拟物阴影系统 (Neumorphism Shadows)
+     单一真相源：所有组件阴影从此继承
+     ======================================== */
+
+  /* 凸起元素 (Elevated) - 外投影 + 顶部高光 */
+  --neumorphic-elevated: 0 8px 24px hsl(0 0% 0% / 0.12), 
+                         0 4px 8px hsl(0 0% 0% / 0.08);
+  --neumorphic-elevated-hover: 0 16px 40px hsl(0 0% 0% / 0.16), 
+                               0 8px 16px hsl(0 0% 0% / 0.1);
+  --neumorphic-highlight: inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  --neumorphic-highlight-hover: inset 0 1px 0 hsl(0 0% 100% / 0.15);
+
+  /* 内凹元素 (Inset) - 内阴影 */
+  --neumorphic-inset: inset 0 2px 6px hsl(0 0% 0% / 0.15), 
+                      inset 0 1px 2px hsl(0 0% 0% / 0.1);
+  --neumorphic-inset-hover: inset 0 2px 8px hsl(0 0% 0% / 0.18), 
+                            inset 0 1px 3px hsl(0 0% 0% / 0.12);
+
+  /* 扁平元素 (Flat) - 极轻阴影 */
+  --neumorphic-flat: 0 1px 3px hsl(0 0% 0% / 0.08);
+  --neumorphic-flat-hover: 0 4px 12px hsl(0 0% 0% / 0.12);
+
+  /* 输入框 (Input) - 内凹 + Focus 环 */
+  --neumorphic-input: inset 0 2px 4px hsl(0 0% 0% / 0.1), 
+                      inset 0 1px 2px hsl(0 0% 0% / 0.06);
+  --neumorphic-input-focus: inset 0 2px 4px hsl(0 0% 0% / 0.08), 
+                            0 0 0 3px color-mix(in srgb, var(--ring) 25%, transparent);
+
+  /* 徽章 (Badge) - 小阴影 + 高光 */
+  --neumorphic-badge-sm: 0 1px 4px hsl(0 0% 0% / 0.1);
+  --neumorphic-badge-highlight: inset 0 1px 0 hsl(0 0% 100% / 0.08);
 }
 
 /*---break---
@@ -372,6 +405,39 @@
   --shadow-xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.06), 1px 8px 10px 0px hsl(0 0% 0% / 0.06);
 
   --shadow-2xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.15);
+
+  /* ========================================
+     深色模式微拟物阴影 (Dark Mode Neumorphism)
+     使用浅色阴影以在深色背景上可见
+     ======================================== */
+
+  /* 凸起元素 - 浅色外投影 */
+  --neumorphic-elevated: 0 8px 24px hsl(0 0% 100% / 0.08), 
+                         0 4px 8px hsl(0 0% 100% / 0.05);
+  --neumorphic-elevated-hover: 0 16px 40px hsl(0 0% 100% / 0.12), 
+                               0 8px 16px hsl(0 0% 100% / 0.08);
+  --neumorphic-highlight: inset 0 1px 0 hsl(0 0% 100% / 0.05);
+  --neumorphic-highlight-hover: inset 0 1px 0 hsl(0 0% 100% / 0.08);
+
+  /* 内凹元素 - 浅色内阴影 */
+  --neumorphic-inset: inset 0 2px 6px hsl(0 0% 100% / 0.1), 
+                      inset 0 1px 2px hsl(0 0% 100% / 0.06);
+  --neumorphic-inset-hover: inset 0 2px 8px hsl(0 0% 100% / 0.12), 
+                            inset 0 1px 3px hsl(0 0% 100% / 0.08);
+
+  /* 扁平元素 */
+  --neumorphic-flat: 0 1px 3px hsl(0 0% 100% / 0.06);
+  --neumorphic-flat-hover: 0 4px 12px hsl(0 0% 100% / 0.1);
+
+  /* 输入框 */
+  --neumorphic-input: inset 0 2px 4px hsl(0 0% 100% / 0.08), 
+                      inset 0 1px 2px hsl(0 0% 100% / 0.04);
+  --neumorphic-input-focus: inset 0 2px 4px hsl(0 0% 100% / 0.06), 
+                            0 0 0 3px color-mix(in srgb, var(--ring) 25%, transparent);
+
+  /* 徽章 */
+  --neumorphic-badge-sm: 0 1px 4px hsl(0 0% 100% / 0.08);
+  --neumorphic-badge-highlight: inset 0 1px 0 hsl(0 0% 100% / 0.05);
 }
 
 /*---break---

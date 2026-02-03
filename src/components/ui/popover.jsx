@@ -1,95 +1,49 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-popover
- * [OUTPUT]: 对外提供 Popover 相关组件
- * [POS]: ui/ 气泡弹出框组件
+ * [INPUT]: 依赖 react-aria-components
+ * [OUTPUT]: Popover, PopoverTrigger, PopoverDialog (基于 react-aria 的气泡弹出)
+ * [POS]: UI组件层 - 气泡弹出组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+"use client"
+
 import * as React from "react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
+import {
+  Dialog as AriaDialog,
+  DialogTrigger as AriaDialogTrigger,
+  Popover as AriaPopover,
+  composeRenderProps,
+} from "react-aria-components";
 
 import { cn } from "@/lib/utils"
 
-function Popover({
-  ...props
-}) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />;
-}
+const PopoverTrigger = AriaDialogTrigger
 
-function PopoverTrigger({
-  ...props
-}) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
-}
-
-function PopoverContent({
+const Popover = ({
   className,
-  align = "center",
-  sideOffset = 4,
+  offset = 4,
   ...props
-}) {
-  return (
-    <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
-        data-slot="popover-content"
-        align={align}
-        sideOffset={sideOffset}
-        className={cn(
-          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
-          className
-        )}
-        {...props} />
-    </PopoverPrimitive.Portal>
-  );
-}
+}) => (
+  <AriaPopover
+    offset={offset}
+    className={composeRenderProps(className, (className) =>
+      cn(
+        "z-50 rounded-xl border bg-popover text-popover-foreground shadow-md outline-none",
+        /* Entering */
+        "data-[entering]:animate-in data-[entering]:fade-in-0 data-[entering]:zoom-in-95",
+        /* Exiting */
+        "data-[exiting]:animate-out data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95",
+        /* Placement */
+        "data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2",
+        className
+      ))}
+    {...props} />
+)
 
-function PopoverAnchor({
-  ...props
-}) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
-}
-
-function PopoverHeader({
+function PopoverDialog({
   className,
   ...props
 }) {
-  return (
-    <div
-      data-slot="popover-header"
-      className={cn("flex flex-col gap-1 text-sm", className)}
-      {...props} />
-  );
+  return (<AriaDialog className={cn("p-4 outline outline-0", className)} {...props} />);
 }
 
-function PopoverTitle({
-  className,
-  ...props
-}) {
-  return (
-    <div
-      data-slot="popover-title"
-      className={cn("font-medium", className)}
-      {...props} />
-  );
-}
-
-function PopoverDescription({
-  className,
-  ...props
-}) {
-  return (
-    <p
-      data-slot="popover-description"
-      className={cn("text-muted-foreground", className)}
-      {...props} />
-  );
-}
-
-export {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverAnchor,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverDescription,
-}
+export { Popover, PopoverTrigger, PopoverDialog }

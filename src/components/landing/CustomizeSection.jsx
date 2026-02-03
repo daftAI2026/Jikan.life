@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext
- * [OUTPUT]: Customize Section 组件 (预览 + 配置面板)
+ * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date
+ * [OUTPUT]: Customize Section 组件 (预览 + 配置面板，使用 JollyUI DatePicker)
  * [POS]: Landing Page 第三部分，用户配置壁纸参数
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -17,7 +17,12 @@ import {
     SelectGroup,
     SelectLabel,
 } from "@/components/ui/select"
-import { DatePicker } from "@/components/ui/date-picker"
+import { JollyDatePicker, DatePicker, DatePickerContent } from "@/components/ui/date-picker"
+import { DateInput } from "@/components/ui/datefield"
+import { Calendar, CalendarCell, CalendarGrid, CalendarGridBody, CalendarGridHeader, CalendarHeaderCell, CalendarHeading, MonthYearPicker } from "@/components/ui/calendar"
+import { FieldGroup } from "@/components/ui/field"
+import { parseDate } from "@internationalized/date"
+import { CalendarIcon } from "lucide-react"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { countries } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
@@ -37,7 +42,7 @@ function DeviceFrame({ children }) {
             style={{
                 width: '260px',
                 height: '530px',
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)'
+                boxShadow: 'var(--neumorphic-elevated), var(--neumorphic-highlight)'
             }}
         >
             {/* Notch */}
@@ -277,11 +282,11 @@ export function CustomizeSection({ selectedType }) {
         <section id="customize" className="py-24 border-t border-border">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
-                    className="grid items-start gap-12"
+                    className="grid gap-12"
                     style={{ gridTemplateColumns: '1fr 2fr' }}
                 >
                     {/* Left: Preview Panel */}
-                    <div className="flex flex-col items-center sticky top-24">
+                    <div className="flex flex-col items-center sticky top-24 h-fit">
                         <DeviceFrame>
                             <CanvasPreview config={config} />
                         </DeviceFrame>
@@ -364,12 +369,40 @@ export function CustomizeSection({ selectedType }) {
                                         <span className="text-xs text-muted-foreground invisible">placeholder</span>
                                     </label>
                                     <DatePicker
-                                        value={config.dob}
-                                        onChange={(v) => updateConfig('dob', v)}
-                                        placeholder={t('placeholder.selectDate')}
-                                        maxDate={new Date()}
-                                        className="shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(0,0,0,0.06)]"
-                                    />
+                                        value={config.dob ? parseDate(config.dob) : null}
+                                        onChange={(date) => {
+                                            if (date) {
+                                                updateConfig('dob', date.toString())
+                                            } else {
+                                                updateConfig('dob', '')
+                                            }
+                                        }}
+                                        maxValue={parseDate(new Date().toISOString().split('T')[0])}
+                                    >
+                                        <FieldGroup>
+                                            <DateInput className="flex-1" variant="ghost" />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+                                                <CalendarIcon aria-hidden className="size-4" />
+                                            </Button>
+                                        </FieldGroup>
+                                        <DatePickerContent>
+                                            <Calendar>
+                                                <CalendarHeading />
+                                                <MonthYearPicker />
+                                                <CalendarGrid>
+                                                    <CalendarGridHeader>
+                                                        {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+                                                    </CalendarGridHeader>
+                                                    <CalendarGridBody>
+                                                        {(date) => <CalendarCell date={date} />}
+                                                    </CalendarGridBody>
+                                                </CalendarGrid>
+                                            </Calendar>
+                                        </DatePickerContent>
+                                    </DatePicker>
                                 </div>
                                 <div className="space-y-3">
                                     <label className="flex items-baseline justify-between text-sm">
@@ -429,12 +462,40 @@ export function CustomizeSection({ selectedType }) {
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium">{t('config.targetDate')}</label>
                                     <DatePicker
-                                        value={config.goalDate}
-                                        onChange={(v) => updateConfig('goalDate', v)}
-                                        placeholder={t('placeholder.selectTargetDate')}
-                                        minDate={new Date()}
-                                        className="shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(0,0,0,0.06)]"
-                                    />
+                                        value={config.goalDate ? parseDate(config.goalDate) : null}
+                                        onChange={(date) => {
+                                            if (date) {
+                                                updateConfig('goalDate', date.toString())
+                                            } else {
+                                                updateConfig('goalDate', '')
+                                            }
+                                        }}
+                                        minValue={parseDate(new Date().toISOString().split('T')[0])}
+                                    >
+                                        <FieldGroup>
+                                            <DateInput className="flex-1" variant="ghost" />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+                                                <CalendarIcon aria-hidden className="size-4" />
+                                            </Button>
+                                        </FieldGroup>
+                                        <DatePickerContent>
+                                            <Calendar>
+                                                <CalendarHeading />
+                                                <MonthYearPicker />
+                                                <CalendarGrid>
+                                                    <CalendarGridHeader>
+                                                        {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+                                                    </CalendarGridHeader>
+                                                    <CalendarGridBody>
+                                                        {(date) => <CalendarCell date={date} />}
+                                                    </CalendarGridBody>
+                                                </CalendarGrid>
+                                            </Calendar>
+                                        </DatePickerContent>
+                                    </DatePicker>
                                 </div>
                             </div>
                         )}

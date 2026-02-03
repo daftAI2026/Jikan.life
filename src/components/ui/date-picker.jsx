@@ -1,82 +1,160 @@
 /**
- * [INPUT]: 依赖 @/components/ui/calendar, @/components/ui/popover, @/components/ui/button
- * [OUTPUT]: DatePicker 组件 (shadcn 官方模式: Popover + Calendar)
- * [POS]: UI组件层 - 日期选择器，使用设计系统标准模式
+ * [INPUT]: 依赖 react-aria-components, @internationalized/date
+ * [OUTPUT]: JollyDatePicker, JollyDateRangePicker (带输入框的日期选择器)
+ * [POS]: UI组件层 - 日期选择器，基于 react-aria-components，支持键盘输入和日历选择
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import * as React from "react"
-import { format } from "date-fns"
+"use client";
 import { CalendarIcon } from "lucide-react"
+import {
+  DatePicker as AriaDatePicker,
+  DateRangePicker as AriaDateRangePicker,
+  Dialog as AriaDialog,
+  composeRenderProps,
+  Text,
+} from "react-aria-components";
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+
+import { Button } from "./button"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+  Calendar,
+  CalendarCell,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHeader,
+  CalendarHeaderCell,
+  CalendarHeading,
+  RangeCalendar,
+} from "./calendar"
+import { DateInput } from "./datefield"
+import { FieldError, FieldGroup, Label } from "./field"
+import { Popover } from "./popover"
 
-function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, className, minDate, maxDate }) {
-    // 将字符串日期转换为 Date 对象
-    const selectedDate = value ? new Date(value) : undefined
+const DatePicker = AriaDatePicker
 
-    const handleSelect = (date) => {
-        if (date) {
-            // 输出为 ISO 日期字符串 (YYYY-MM-DD)
-            const isoDate = format(date, "yyyy-MM-dd")
-            onChange(isoDate)
-        }
-    }
+const DateRangePicker = AriaDateRangePicker
 
-    // 构建日期禁用函数
-    const disabledMatcher = React.useMemo(() => {
-        const matchers = []
-        if (minDate) {
-            // 禁用 minDate 之前的所有日期
-            matchers.push({ before: minDate })
-        }
-        if (maxDate) {
-            // 禁用 maxDate 之后的所有日期
-            matchers.push({ after: maxDate })
-        }
-        return matchers.length > 0 ? matchers : undefined
-    }, [minDate, maxDate])
+const DatePickerContent = ({
+  className,
+  popoverClassName,
+  ...props
+}) => (
+  <Popover
+    className={composeRenderProps(popoverClassName, (className) =>
+      cn("w-auto p-3", className))}>
+    <AriaDialog
+      className={cn(
+        "flex w-full flex-col space-y-4 outline-none sm:flex-row sm:space-x-4 sm:space-y-0",
+        className
+      )}
+      {...props} />
+  </Popover>
+)
 
-    // 计算年份范围
-    const fromYear = minDate?.getFullYear() || 1900
-    const toYear = maxDate?.getFullYear() || 2100
-
-    return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !value && "text-muted-foreground",
-                        className
-                    )}
-                    disabled={disabled}
-                >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {value ? format(selectedDate, "PPP") : <span>{placeholder}</span>}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                    mode="single"
-                    captionLayout="dropdown"
-                    selected={selectedDate}
-                    onSelect={handleSelect}
-                    disabled={disabledMatcher}
-                    fromYear={fromYear}
-                    toYear={toYear}
-                    initialFocus
-                />
-            </PopoverContent>
-        </Popover>
-    )
+function JollyDatePicker(
+  {
+    label,
+    description,
+    errorMessage,
+    className,
+    ...props
+  }
+) {
+  return (
+    <DatePicker
+      className={composeRenderProps(className, (className) =>
+        cn("group flex flex-col gap-2", className))}
+      {...props}>
+      <Label>{label}</Label>
+      <FieldGroup>
+        <DateInput className="flex-1" variant="ghost" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+          <CalendarIcon aria-hidden className="size-4" />
+        </Button>
+      </FieldGroup>
+      {description && (
+        <Text className="text-sm text-muted-foreground" slot="description">
+          {description}
+        </Text>
+      )}
+      <FieldError>{errorMessage}</FieldError>
+      <DatePickerContent>
+        <Calendar>
+          <CalendarHeading />
+          <CalendarGrid>
+            <CalendarGridHeader>
+              {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+            </CalendarGridHeader>
+            <CalendarGridBody>
+              {(date) => <CalendarCell date={date} />}
+            </CalendarGridBody>
+          </CalendarGrid>
+        </Calendar>
+      </DatePickerContent>
+    </DatePicker>
+  );
 }
 
-export { DatePicker }
+function JollyDateRangePicker(
+  {
+    label,
+    description,
+    errorMessage,
+    className,
+    ...props
+  }
+) {
+  return (
+    <DateRangePicker
+      className={composeRenderProps(className, (className) =>
+        cn("group flex flex-col gap-2", className))}
+      {...props}>
+      <Label>{label}</Label>
+      <FieldGroup>
+        <DateInput variant="ghost" slot={"start"} />
+        <span aria-hidden className="px-2 text-sm text-muted-foreground">
+          -
+        </span>
+        <DateInput className="flex-1" variant="ghost" slot={"end"} />
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+          <CalendarIcon aria-hidden className="size-4" />
+        </Button>
+      </FieldGroup>
+      {description && (
+        <Text className="text-sm text-muted-foreground" slot="description">
+          {description}
+        </Text>
+      )}
+      <FieldError>{errorMessage}</FieldError>
+      <DatePickerContent>
+        <RangeCalendar>
+          <CalendarHeading />
+          <CalendarGrid>
+            <CalendarGridHeader>
+              {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+            </CalendarGridHeader>
+            <CalendarGridBody>
+              {(date) => <CalendarCell date={date} />}
+            </CalendarGridBody>
+          </CalendarGrid>
+        </RangeCalendar>
+      </DatePickerContent>
+    </DateRangePicker>
+  );
+}
+
+export {
+  DatePicker,
+  DatePickerContent,
+  DateRangePicker,
+  JollyDatePicker,
+  JollyDateRangePicker,
+}

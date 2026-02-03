@@ -11,20 +11,21 @@ import { snappy } from "@/lib/motion"
 
 /* ========================================
    卡片样式配置 - 微拟物三变体
+   使用 CSS 变量实现主题感知阴影
    ======================================== */
 
 const CARD_STYLES = {
   elevated: {
-    boxShadow: '0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1)',
-    hoverBoxShadow: '0 16px 40px rgba(0,0,0,0.16), 0 8px 16px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15)',
+    boxShadow: 'var(--neumorphic-elevated), var(--neumorphic-highlight)',
+    hoverBoxShadow: 'var(--neumorphic-elevated-hover), var(--neumorphic-highlight-hover)',
   },
   inset: {
-    boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.15), inset 0 1px 2px rgba(0,0,0,0.1)',
-    hoverBoxShadow: 'inset 0 2px 8px rgba(0,0,0,0.18), inset 0 1px 3px rgba(0,0,0,0.12)',
+    boxShadow: 'var(--neumorphic-inset)',
+    hoverBoxShadow: 'var(--neumorphic-inset-hover)',
   },
   flat: {
-    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-    hoverBoxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+    boxShadow: 'var(--neumorphic-flat)',
+    hoverBoxShadow: 'var(--neumorphic-flat-hover)',
   },
 }
 

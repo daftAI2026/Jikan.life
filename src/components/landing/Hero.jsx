@@ -66,9 +66,9 @@ export function Hero() {
                         asChild
                         className="hero-cta font-semibold rounded-2xl h-14 px-8 text-lg hover:translate-y-[-2px] hover:shadow-xl transition-all"
                     >
-                        <a href="#types">
+                        <a href="#types" className="flex items-center gap-2 whitespace-nowrap">
                             <span>{t('hero.cta')}</span>
-                            <ArrowDown className="ml-2 h-5 w-5 animate-bounce" />
+                            <ArrowDown className="h-5 w-5" style={{ animation: 'bounce 2s infinite' }} />
                         </a>
                     </Button>
                 </motion.div>

@@ -24,6 +24,7 @@ yarn-error.log*
 .idea/
 
 internal_docs/
+tests/
 
 # AI/Process Documentation (not project code)
 CODE_OF_CONDUCT.md
@@ -32,6 +33,7 @@ IMPLEMENTATION_SUMMARY.md
 # Local Dev Config & Workflows
 .gitmessage
 .agent/
+.codex/
 TODO.md
 GettingKnow.md
 # Build Artifacts

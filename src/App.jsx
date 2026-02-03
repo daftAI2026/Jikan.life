@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react-router-dom, framer-motion (AnimatePresence, MotionConfig), @/components/
- * [OUTPUT]: 对外提供 App 根组件 (Apple 级页面过渡)
- * [POS]: 项目根组件，负责路由配置与骨架布局，集成 reduced motion 支持
+ * [INPUT]: 依赖 react-router-dom, framer-motion, @/components/, react-aria-components (I18nProvider)
+ * [OUTPUT]: 对外提供 App 根组件 (Apple 级页面过渡 + 国际化)
+ * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
@@ -38,6 +38,26 @@ function AnimatedRoutes() {
 }
 
 import { I18nProvider } from "@/lib/I18nContext"
+import { I18nProvider as AriaI18nProvider } from "react-aria-components"
+import { useI18n } from "@/lib/I18nContext"
+
+/* ========================================
+   Aria I18n Wrapper - 同步语言到 react-aria
+   ======================================== */
+function AriaI18nWrapper({ children }) {
+    const { lang } = useI18n()
+    
+    // 将我们的语言代码映射到 react-aria 的 locale
+    const ariaLocale = lang === 'zh-CN' ? 'zh-CN' : 
+                       lang === 'zh-TW' ? 'zh-TW' : 
+                       lang === 'ja' ? 'ja-JP' : 'en-US'
+    
+    return (
+        <AriaI18nProvider locale={ariaLocale}>
+            {children}
+        </AriaI18nProvider>
+    )
+}
 
 /* ========================================
    App 根组件
@@ -45,17 +65,19 @@ import { I18nProvider } from "@/lib/I18nContext"
 function App() {
     return (
         <I18nProvider>
-            <MotionConfig reducedMotion="user">
-                <BrowserRouter>
-                    <div className="relative flex min-h-screen flex-col bg-background">
-                        <Header />
-                        <main className="flex-1 flex flex-col">
-                            <AnimatedRoutes />
-                        </main>
-                        <Toaster />
-                    </div>
-                </BrowserRouter>
-            </MotionConfig>
+            <AriaI18nWrapper>
+                <MotionConfig reducedMotion="user">
+                    <BrowserRouter>
+                        <div className="relative flex min-h-screen flex-col bg-background">
+                            <Header />
+                            <main className="flex-1 flex flex-col">
+                                <AnimatedRoutes />
+                            </main>
+                            <Toaster />
+                        </div>
+                    </BrowserRouter>
+                </MotionConfig>
+            </AriaI18nWrapper>
         </I18nProvider>
     )
 }

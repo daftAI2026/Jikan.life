@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
     Popover,
-    PopoverContent,
+    PopoverDialog,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import {
@@ -112,7 +112,7 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                         </div>
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-3 rounded-xl" align="start">
+                <PopoverDialog className="w-64 p-3 rounded-xl">
                     <div className="flex flex-col gap-3">
                         {/* 1. Color Area (HSB) */}
                         <ColorArea
@@ -204,7 +204,7 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                             )}
                         </div>
                     </div>
-                </PopoverContent>
+                </PopoverDialog>
             </Popover>
         </JollyColorPicker>
     )
