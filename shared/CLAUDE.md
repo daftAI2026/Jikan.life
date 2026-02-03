@@ -4,6 +4,7 @@
 成员清单
 wallpaper-core.js: 壁纸渲染同构核心，导出 computeYearLayout/computeLifeLayout/computeGoalLayout + 日期/颜色工具 + i18n
 countries.js: 国家/地区数据与时区映射，前后端共享
+palettes.js: 共享配色预设，导出 PALETTE_PRESETS/DEFAULT_PALETTE，前后端统一读取入口
 
 ## 设计原则
 

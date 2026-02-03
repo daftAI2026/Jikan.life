@@ -65,7 +65,7 @@ export default function Home() {
                 </div>
 
                 {/* Background Decoration */}
-                <div className="absolute top-0 left-1/2 -z-10 h-[600px] w-full -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--primary-muted)_0%,transparent_70%)] opacity-20 blur-3xl" />
+                <div className="absolute top-0 left-1/2 -z-10 h-[600px] w-full -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] opacity-20 blur-3xl" />
             </section>
 
             {/* Feature Section */}

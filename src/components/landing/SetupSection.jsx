@@ -13,7 +13,7 @@ import { useI18n } from "@/lib/I18nContext"
 
 function CodeSnippet({ children }) {
     return (
-        <code className="inline-block px-2 py-0.5 rounded bg-muted/80 dark:bg-black/60 text-foreground font-mono text-xs border border-border break-all">
+        <code className="inline-block px-2 py-0.5 rounded bg-muted/80 dark:bg-foreground/60 text-foreground font-mono text-xs border border-border break-all">
             {children}
         </code>
     )
