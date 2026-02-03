@@ -135,7 +135,7 @@ function TypeCard({ type, isSelected, onSelect, t }) {
                     <h3 className="text-lg font-semibold tracking-tight">{type.name}</h3>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{type.description}</p>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed min-h-12 line-clamp-2">{type.description}</p>
 
                 <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-5">
                     {currentStats.map((stat, i) => (
