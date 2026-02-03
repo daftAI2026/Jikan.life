@@ -1,5 +1,5 @@
 /**
- * [INPUT]: variant, size, isLoading, leftIcon, rightIcon, asChild, className
+ * [INPUT]: variant, size, isLoading, leftIcon, rightIcon, asChild, className, onPress
  * [OUTPUT]: Apple 级交互按钮组件（Spring 物理 + 微拟物）
  * [POS]: UI基础层 - 核心交互原语，融合 Spring 动效
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -9,6 +9,8 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
 import { motion } from "framer-motion"
 import { Loader2 } from "lucide-react"
+import { mergeProps, usePress } from "react-aria"
+import { ButtonContext } from "react-aria-components"
 import { cn } from "@/lib/utils"
 import { snappy } from "@/lib/motion"
 
@@ -106,28 +108,88 @@ const Button = React.forwardRef(({
   rightIcon,
   children,
   style,
+  onPress,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onMouseDown,
+  onMouseUp,
   ...props
 }, ref) => {
+  const domRef = React.useRef(null)
+  React.useImperativeHandle(ref, () => domRef.current)
+  const contextProps = React.useContext(ButtonContext) || {}
+  const {
+    onPress: contextOnPress,
+    isDisabled: contextIsDisabled,
+    style: contextStyle,
+    className: contextClassName,
+    ...contextRest
+  } = contextProps
   const [isHovered, setIsHovered] = React.useState(false)
   const [isPressed, setIsPressed] = React.useState(false)
+  const isDisabled = isLoading || props.disabled || contextIsDisabled
 
   const styleConfig = BUTTON_STYLES[variant] || BUTTON_STYLES.default
   const needsCustomStyle = !['ghost', 'link'].includes(variant)
 
+  const mergedStyle = {
+    ...contextStyle,
+    ...style,
+  }
+
   const combinedStyle = needsCustomStyle ? {
     background: styleConfig.background,
     boxShadow: isHovered ? styleConfig.hoverBoxShadow : styleConfig.boxShadow,
-    ...style,
-  } : style
+    ...mergedStyle,
+  } : mergedStyle
+
+  const { pressProps } = usePress({
+    ref: domRef,
+    isDisabled,
+    onPress: (event) => {
+      contextOnPress?.(event)
+      onPress?.(event)
+      onClick?.(event)
+    },
+  })
+
+  const interactionProps = mergeProps(pressProps, {
+    onMouseEnter: (event) => {
+      setIsHovered(true)
+      onMouseEnter?.(event)
+    },
+    onMouseLeave: (event) => {
+      setIsHovered(false)
+      setIsPressed(false)
+      onMouseLeave?.(event)
+    },
+    onMouseDown: (event) => {
+      setIsPressed(true)
+      onMouseDown?.(event)
+    },
+    onMouseUp: (event) => {
+      setIsPressed(false)
+      onMouseUp?.(event)
+    },
+  })
+
+  const mergedProps = mergeProps(
+    contextRest,
+    props,
+    interactionProps
+  )
+  const { className: _mergedClassName, style: _mergedStyle, ...domProps } = mergedProps
+  const resolvedClassName = cn(contextClassName, className)
 
   // asChild 时使用 Slot，否则使用 motion.button
   if (asChild) {
     return (
       <Slot
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+        className={cn(buttonVariants({ variant, size, className: resolvedClassName }))}
+        ref={domRef}
         style={combinedStyle}
-        {...props}
+        {...domProps}
       >
         {children}
       </Slot>
@@ -136,21 +198,17 @@ const Button = React.forwardRef(({
 
   return (
     <motion.button
-      className={cn(buttonVariants({ variant, size, className }))}
-      ref={ref}
-      disabled={isLoading || props.disabled}
+      className={cn(buttonVariants({ variant, size, className: resolvedClassName }))}
+      ref={domRef}
+      disabled={isDisabled}
       style={combinedStyle}
-      onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e) }}
-      onMouseLeave={(e) => { setIsHovered(false); setIsPressed(false); props.onMouseLeave?.(e) }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
+      {...domProps}
       animate={{
         scale: isPressed ? 0.96 : isHovered ? 1.02 : 1,
         y: isHovered && !isPressed ? -2 : 0,
       }}
       transition={snappy}
       whileTap={{ scale: 0.96 }}
-      {...props}
     >
       {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : leftIcon}
       {children}
