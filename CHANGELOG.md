@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Goal Card**: Fixed duplicated "Daily Updates" text and restored original design (Bold "Daily" + Small "UPDATES").
 
 ### Changed
+- Simplified the landing footer to reduce visual clutter while keeping branded social links.
 - UI date controls: standardized date field primitives to improve keyboard input reliability and visual consistency.
 - **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.
 - **Default Device**: Set the default device to iPhone 17 Pro Max for a better out-of-the-box experience on modern premium devices.

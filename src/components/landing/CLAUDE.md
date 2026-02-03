@@ -13,7 +13,7 @@ Testimonials.jsx: 用户评价，3 列评价卡片 + 星级 + 头像
 Pricing.jsx: 定价对比，3 列定价卡片 + 功能列表
 FAQ.jsx: 常见问题，shadcn Accordion 组件
 FinalCTA.jsx: 终极转化入口，渐变背景 + 双 CTA
-LandingFooter.jsx: 站点底部，4 列链接 + 社交图标
+LandingFooter.jsx: 极简站点底部，仅版权信息 + 社交入口
 SetupSection.jsx: iOS/Android 设置教程，Tabs 平台切换 + 步骤时间线
 
 
