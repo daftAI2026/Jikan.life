@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date
+ * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date, shared/palettes, shared/wallpaper-core
  * [OUTPUT]: Customize Section 组件 (预览 + 配置面板，使用 JollyUI DatePicker)
  * [POS]: Landing Page 第三部分，用户配置壁纸参数
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -28,6 +28,7 @@ import { countries, getTimezone } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
 import { drawYearProgress, drawLifeCalendar, drawGoalCountdown } from "@/lib/renderer"
 import { getSafeAccent } from "../../../shared/wallpaper-core"
+import { DEFAULT_PALETTE, PALETTE_PRESETS } from "../../../shared/palettes"
 import { useI18n } from "@/lib/I18nContext"
 import { cn } from "@/lib/utils"
 
@@ -46,7 +47,7 @@ function DeviceFrame({ children }) {
             }}
         >
             {/* Notch */}
-            <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-black rounded-b-2xl z-10" />
+            <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-foreground rounded-b-2xl z-10" />
             {/* Screen */}
             <div className="w-full h-full bg-background rounded-[32px] overflow-hidden flex items-center justify-center">
                 {children}
@@ -154,20 +155,22 @@ function ColorPreset({ bg, accent, onClick, disabled }) {
 
 export function CustomizeSection({ selectedType }) {
     const { t, lang } = useI18n()
-    const [config, setConfig] = useState({
+    const defaultPalette = DEFAULT_PALETTE
+    const defaultAccent = getSafeAccent(defaultPalette.bg, defaultPalette.accent)
+    const [config, setConfig] = useState(() => ({
         selectedType: selectedType || null,
         country: '',
         timezone: '',
         wallpaperLang: 'en',
-        bgColor: '#000000',
-        accentColor: '#FFFFFF',
-        originalAccentColor: '#FFFFFF', // 用户原始选择的强调色
+        bgColor: defaultPalette.bg,
+        accentColor: defaultAccent,
+        originalAccentColor: defaultPalette.accent, // 用户原始选择的强调色
         dob: '',
         lifespan: 80,
         goalName: '',
         goalDate: '',
         device: 'iPhone 17 Pro Max',
-    })
+    }))
     const [copied, setCopied] = useState(false)
 
     // 同步壁纸语言与 UI 语言 (用户未手动修改时)
@@ -534,13 +537,15 @@ export function CustomizeSection({ selectedType }) {
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <ColorPreset bg="#000000" accent="#FFFFFF" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#FFFFFF" accent="#000000" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#FF3B30" accent="#FFFFFF" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#34C759" accent="#FFFFFF" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#007AFF" accent="#FFFFFF" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#5856D6" accent="#FFFFFF" onClick={applyPreset} disabled={!config.selectedType} />
-                                <ColorPreset bg="#f5f5f7" accent="#1d1d1f" onClick={applyPreset} disabled={!config.selectedType} />
+                                {PALETTE_PRESETS.map((preset) => (
+                                    <ColorPreset
+                                        key={preset.id}
+                                        bg={preset.bg}
+                                        accent={preset.accent}
+                                        onClick={applyPreset}
+                                        disabled={!config.selectedType}
+                                    />
+                                ))}
                             </div>
                         </div>
 
@@ -551,7 +556,7 @@ export function CustomizeSection({ selectedType }) {
                                 {config.selectedType ? (
                                     <span className="text-xs text-muted-foreground">{selectedDevice.width} × {selectedDevice.height}</span>
                                 ) : (
-                                    <span className="text-xs text-amber-500">{t('placeholder.selectTypeFirst')}</span>
+                                    <span className="text-xs text-accent">{t('placeholder.selectTypeFirst')}</span>
                                 )}
                             </label>
                             <Select

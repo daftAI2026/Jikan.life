@@ -82,7 +82,7 @@ function ColorThumb({
     <AriaColorThumb
       className={composeRenderProps(className, (className) =>
         cn(
-          "z-10 box-border size-5 rounded-[50%] border-2 border-white shadow-md",
+          "z-10 box-border size-5 rounded-[50%] border-2 border-foreground shadow-md",
           /* Focus Visible */
           "data-[focus-visible]:size-6",
           className
@@ -113,7 +113,7 @@ function ColorSwatchPickerItem({
         cn(
           "size-8 overflow-hidden rounded-md border-2 ring-offset-background transition-colors",
           /* Selected */
-          "data-[selected]:border-white",
+          "data-[selected]:border-foreground",
           /* Disabled */
           "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
           /* Focus Visible */

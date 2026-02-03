@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
+- Restore react-aria trigger wiring so date and color picker popovers open reliably without altering button styling.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
 - **Lifespan Input**: Fixed "jumping numbers" bug when deleting digits by deferring range clamping (50-120) to `onBlur`.
 - **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hardened date/time rendering against DST and timezone drift while unifying shared country mappings for consistent previews and caching.
 - Changelog: merge duplicate Internationalization heading to keep Unreleased sections consistent.
 - Simplified the landing footer to reduce visual clutter while keeping branded social links.
+- Preserve the original neumorphic button feel and centralize palette presets so UI styling stays consistent across frontend and worker.
 - UI date controls: standardized date field primitives to improve keyboard input reliability and visual consistency.
 - **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.
 - **Default Device**: Set the default device to iPhone 17 Pro Max for a better out-of-the-box experience on modern premium devices.
