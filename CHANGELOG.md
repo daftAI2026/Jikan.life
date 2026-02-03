@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
 - **Lifespan Input**: Fixed "jumping numbers" bug when deleting digits by deferring range clamping (50-120) to `onBlur`.
 - **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Hardened date/time rendering against DST and timezone drift while unifying shared country mappings for consistent previews and caching.
+- Changelog: merge duplicate Internationalization heading to keep Unreleased sections consistent.
 - Simplified the landing footer to reduce visual clutter while keeping branded social links.
 - UI date controls: standardized date field primitives to improve keyboard input reliability and visual consistency.
 - **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.
@@ -23,8 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Internationalization
 - **Full Card i18n**: Completed internationalization for all card stats and status labels across all supported languages.
-
-### Internationalization
 - **Android Setup**: Synchronized instruction structure and added missing warning badges for Traditional Chinese and Japanese translations.
 
 ## [1.0.1] - 2026-02-02
