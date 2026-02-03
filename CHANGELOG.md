@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Goal Card**: Fixed duplicated "Daily Updates" text and restored original design (Bold "Daily" + Small "UPDATES").
 
 ### Changed
+- Hardened date/time rendering against DST and timezone drift while unifying shared country mappings for consistent previews and caching.
 - Simplified the landing footer to reduce visual clutter while keeping branded social links.
 - UI date controls: standardized date field primitives to improve keyboard input reliability and visual consistency.
 - **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.

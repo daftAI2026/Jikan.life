@@ -12,7 +12,7 @@
  * - Goal countdown (days until target)
  */
 
-import { getTimezone } from './timezone.js';
+import { getTimezone, getDateInTimezone, normalizeTimezone } from './timezone.js';
 import { generateYearCalendar } from './generators/year.js';
 import { generateLifeCalendar } from './generators/life.js';
 import { generateGoalCountdown } from './generators/goal.js';
@@ -171,8 +171,8 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         // Validate and parse parameters
         const validated = validateParams(url);
 
-        // Get timezone from country
-        const timezone = getTimezone(validated.country);
+        // Get timezone from query or country
+        const timezone = normalizeTimezone(validated.tz) || getTimezone(validated.country);
 
         // Build options object
         const options = {
@@ -204,9 +204,10 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
                 break;
         }
 
-        // Generate cache key based on parameters and current date
-        const today = new Date().toISOString().split('T')[0];
-        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${today}`;
+        // Generate cache key based on parameters and current date in user timezone
+        const cacheDate = getDateInTimezone(timezone);
+        const cacheDay = `${cacheDate.year}-${String(cacheDate.month).padStart(2, '0')}-${String(cacheDate.day).padStart(2, '0')}`;
+        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${cacheDay}`;
 
         // Build a cache request URL to use with caches.default (Cloudflare Workers)
         // Only enable server-side caching for the non-user-specific `year` type
@@ -310,6 +311,5 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         return new Response('Internal Server Error', { status: 500, headers: corsHeaders });
     }
 }
-
 
 

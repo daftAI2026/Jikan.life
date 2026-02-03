@@ -33,6 +33,11 @@ export function getDayOfYear() {
     return coreDayOfYear(now.getFullYear(), now.getMonth() + 1, now.getDate());
 }
 
+function getLocalToday() {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+}
+
 /* ========================================================================
    drawStats - Canvas text rendering helper
    ======================================================================== */
@@ -102,6 +107,7 @@ export function drawYearProgress(ctx, width, height, config, clockHeight) {
    ======================================================================== */
 
 export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
+    const today = getLocalToday();
     const layout = computeLifeLayout({
         width,
         height,
@@ -110,7 +116,8 @@ export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
         clockHeight,
         lang: config.wallpaperLang,
         dob: config.dob,
-        lifespan: config.lifespan
+        lifespan: config.lifespan,
+        today
     });
 
     // Draw dots
@@ -136,6 +143,7 @@ export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
    ======================================================================== */
 
 export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
+    const today = getLocalToday();
     const layout = computeGoalLayout({
         width,
         height,
@@ -144,7 +152,8 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
         clockHeight,
         lang: config.wallpaperLang,
         goalDate: config.goalDate,
-        goalName: config.goalName
+        goalName: config.goalName,
+        today
     });
 
     const { ring, safeAccent, bgColor } = layout;

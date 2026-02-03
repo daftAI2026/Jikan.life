@@ -6,7 +6,7 @@
  */
 
 import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
-import { getDateInTimezone, getDaysBetween } from '../timezone.js';
+import { getDateInTimezone } from '../timezone.js';
 import { computeGoalLayout } from '../../shared/wallpaper-core.js';
 
 /**
@@ -26,7 +26,19 @@ export function generateGoalCountdown(options) {
         lang = 'en'
     } = options;
 
+    const decodeGoalName = (value) => {
+        if (typeof value !== 'string') return value;
+        if (!/%[0-9A-Fa-f]{2}/.test(value)) return value;
+        try {
+            return decodeURIComponent(value);
+        } catch (e) {
+            return value;
+        }
+    };
+
     // Use shared core for layout computation
+    const today = getDateInTimezone(timezone);
+
     const layout = computeGoalLayout({
         width,
         height,
@@ -35,53 +47,57 @@ export function generateGoalCountdown(options) {
         clockHeight,
         lang,
         goalDate,
-        goalName: decodeURIComponent(goalName)
+        goalName: decodeGoalName(goalName),
+        today
     });
 
     const { ring, safeAccent } = layout;
 
-    let content = '';
+    const content = [];
+    const bgFill = parseColor(bgColor);
+    const accentFill = parseColor(safeAccent);
+    const ringMuted = svgContrastAlpha(bgColor, 0.1);
 
     // Background
-    content += rect(0, 0, width, height, parseColor(bgColor));
+    content.push(rect(0, 0, width, height, bgFill));
 
     // Background circle
     const strokeWidth = width * 0.035;
-    content += `<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${svgContrastAlpha(bgColor, 0.1)}" stroke-width="${strokeWidth}" fill="none" />`;
+    content.push(`<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${ringMuted}" stroke-width="${strokeWidth}" fill="none" />`);
 
     // Progress arc
     if (ring.progress > 0) {
         const endAngle = ring.progress * 360;
-        content += arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, parseColor(safeAccent), strokeWidth);
+        content.push(arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, accentFill, strokeWidth));
     }
 
     // Days number
-    content += text(ring.centerX, ring.centerY - height * 0.015, layout.daysRemaining.toString(), {
-        fill: parseColor(safeAccent),
+    content.push(text(ring.centerX, ring.centerY - height * 0.015, layout.daysRemaining.toString(), {
+        fill: accentFill,
         fontSize: layout.numberFontSize,
         fontWeight: '700',
         textAnchor: 'middle',
         dominantBaseline: 'middle'
-    });
+    }));
 
     // "days left" label
-    content += text(ring.centerX, layout.labelY, layout.daysLeftText, {
+    content.push(text(ring.centerX, layout.labelY, layout.daysLeftText, {
         fill: svgContrastAlpha(bgColor, 0.5),
         fontSize: layout.labelFontSize,
         fontWeight: '400',
         textAnchor: 'middle',
         dominantBaseline: 'middle'
-    });
+    }));
 
     // Goal name
     if (layout.goalName) {
-        content += text(ring.centerX, layout.goalNameY, layout.goalName, {
+        content.push(text(ring.centerX, layout.goalNameY, layout.goalName, {
             fill: svgContrastAlpha(bgColor, 0.9),
             fontSize: layout.nameFontSize,
             fontWeight: '600',
             textAnchor: 'middle',
             dominantBaseline: 'middle'
-        });
+        }));
     }
 
     // Target date (New)
@@ -92,14 +108,14 @@ export function generateGoalCountdown(options) {
             day: 'numeric',
             year: 'numeric'
         });
-        content += text(ring.centerX, layout.targetDateY, dateStr, {
+        content.push(text(ring.centerX, layout.targetDateY, dateStr, {
             fill: svgContrastAlpha(bgColor, 0.4),
             fontSize: width * 0.028,
             fontWeight: '400',
             textAnchor: 'middle',
             dominantBaseline: 'middle'
-        });
+        }));
     }
 
-    return createSVG(width, height, content, lang);
+    return createSVG(width, height, content.join(''), lang);
 }
