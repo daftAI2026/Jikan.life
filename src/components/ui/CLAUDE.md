@@ -36,6 +36,7 @@ slider.jsx: 滑块
 calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/月份年份选择，年份范围可配置
 date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出
 datefield.jsx: 日期/时间输入字段，支持键盘输入和格式化
+color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等
 color-picker.jsx: JollyUI(react-aria) 颜色选择器，支持 HSBA/RGBA + EyeDropper 吸管
 field.jsx: 表单字段容器，react-aria-components 基础组件
 
