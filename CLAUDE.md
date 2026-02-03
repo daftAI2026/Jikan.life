@@ -14,6 +14,7 @@ src/ - React 前端源代码 (Vite 驱动)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
   └── generators/ - SVG 生成逻辑 adapters
 shared/ - 前后端共享核心逻辑
+scripts/ - 开发校验脚本
 </directory>
 
 <config>

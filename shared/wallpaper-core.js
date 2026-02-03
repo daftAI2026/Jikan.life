@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无依赖（纯函数模块）
- * [OUTPUT]: 布局计算、颜色工具、i18n 文本生成
+ * [OUTPUT]: 布局计算、日期/颜色工具、i18n 文本生成
  * [POS]: shared/ 下的同构核心，供 Frontend Canvas 和 Worker SVG 共享
  * [PROTOCOL]: 变更时同步更新 renderer.js 和 worker/generators/*.js
  */
@@ -70,12 +70,46 @@ export function getSafeAccent(bgHex, accentHex) {
    Date Utilities
    ======================================================================== */
 
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+export function toDayNumber({ year, month, day }) {
+    return Math.floor(Date.UTC(year, month - 1, day) / MS_PER_DAY);
+}
+
+function normalizeDateInput(input) {
+    if (!input) return null;
+    if (typeof input === 'string') {
+        const parts = input.split('-');
+        if (parts.length !== 3) return null;
+        const year = Number(parts[0]);
+        const month = Number(parts[1]);
+        const day = Number(parts[2]);
+        if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
+        return { year, month, day };
+    }
+
+    if (typeof input === 'object' && typeof input.year === 'number' && typeof input.month === 'number' && typeof input.day === 'number') {
+        return { year: input.year, month: input.month, day: input.day };
+    }
+
+    const date = new Date(input);
+    if (Number.isNaN(date.getTime())) return null;
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+}
+
+function getLocalToday() {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+}
+
+function clampNumber(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+}
+
 export function getDayOfYear(year, month, day) {
-    const date = new Date(year, month - 1, day);
-    const start = new Date(year, 0, 0);
-    const diff = date - start;
-    const oneDay = 1000 * 60 * 60 * 24;
-    return Math.floor(diff / oneDay);
+    const dayNumber = toDayNumber({ year, month, day });
+    const startOfYear = toDayNumber({ year, month: 1, day: 1 });
+    return dayNumber - startOfYear + 1;
 }
 
 export function isLeapYear(year) {
@@ -217,7 +251,8 @@ export function computeLifeLayout(options) {
         clockHeight = 0.22,
         lang = 'en',
         dob,
-        lifespan = 80
+        lifespan = 80,
+        today
     } = options;
 
     const cols = 52;
@@ -235,15 +270,7 @@ export function computeLifeLayout(options) {
         (availableWidth - (gap * (cols - 1))) / cols,
         (availableHeight - (gap * (rows - 1))) / rows
     );
-    const radius = cellSize / 2 - 0.5;
-
-    let weeksLived = 0;
-    if (dob) {
-        const dobDate = new Date(dob);
-        const now = new Date();
-        const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-        weeksLived = Math.floor((now - dobDate) / msPerWeek);
-    }
+    const radius = Math.max(0, cellSize / 2 - 0.5);
 
     const gridWidth = (cellSize * cols) + (gap * (cols - 1));
     const gridHeight = (cellSize * rows) + (gap * (rows - 1));
@@ -252,6 +279,19 @@ export function computeLifeLayout(options) {
 
     const totalWeeks = rows * cols;
     const safeAccent = getSafeAccent(bgColor, accentColor);
+
+    const todayDate = normalizeDateInput(today) || getLocalToday();
+    const dobDate = normalizeDateInput(dob);
+
+    let rawWeeksLived = 0;
+    if (dobDate && todayDate) {
+        rawWeeksLived = Math.floor((toDayNumber(todayDate) - toDayNumber(dobDate)) / 7);
+    }
+
+    const weeksLived = clampNumber(rawWeeksLived, 0, totalWeeks);
+    const weeksLeft = Math.max(0, totalWeeks - weeksLived);
+    const percent = totalWeeks === 0 ? 0 : clampNumber(Math.round((weeksLived / totalWeeks) * 100), 0, 100);
+    const hasCurrentWeek = rawWeeksLived >= 0 && rawWeeksLived < totalWeeks;
 
     // Generate dot data
     const dots = [];
@@ -262,14 +302,12 @@ export function computeLifeLayout(options) {
         const cy = startY + row * (cellSize + gap) + cellSize / 2;
 
         const isLived = i < weeksLived;
-        const isCurrentWeek = i === weeksLived;
+        const isCurrentWeek = hasCurrentWeek && i === rawWeeksLived;
 
         dots.push({ cx, cy, isLived, isCurrentWeek, radius });
     }
 
     // Stats
-    const weeksLeft = totalWeeks - weeksLived;
-    const percent = Math.round((weeksLived / totalWeeks) * 100);
     const statsY = startY + gridHeight + (height * 0.035);
 
     const weeksText = getWallpaperText(lang, weeksLeft === 1 ? 'weekLeft' : 'weeksLeft', weeksLeft.toLocaleString());
@@ -297,7 +335,8 @@ export function computeGoalLayout(options) {
         clockHeight = 0.22,
         lang = 'en',
         goalDate,
-        goalName
+        goalName,
+        today
     } = options;
 
     // Center point (adjusted for clock)
@@ -308,13 +347,16 @@ export function computeGoalLayout(options) {
 
     let daysRemaining = 0;
     let progress = 0;
-    if (goalDate) {
-        const goal = new Date(goalDate);
-        const now = new Date();
-        daysRemaining = Math.max(0, Math.ceil((goal - now) / (1000 * 60 * 60 * 24)));
-        // 修正：原版 progress 计算逻辑
-        const totalDays = Math.max(daysRemaining + 1, 365);
-        progress = Math.min(1, 1 - (daysRemaining / totalDays));
+    const todayDate = normalizeDateInput(today) || getLocalToday();
+    const goal = normalizeDateInput(goalDate);
+    if (goal && todayDate) {
+        daysRemaining = Math.max(0, toDayNumber(goal) - toDayNumber(todayDate));
+        if (daysRemaining === 0) {
+            progress = 1;
+        } else {
+            const totalDays = Math.max(daysRemaining + 1, 365);
+            progress = clampNumber(1 - (daysRemaining / totalDays), 0, 1);
+        }
     }
 
     const safeAccent = getSafeAccent(bgColor, accentColor);

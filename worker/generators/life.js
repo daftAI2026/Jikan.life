@@ -6,7 +6,7 @@
  */
 
 import { createSVG, rect, circle, text, parseColor, colorWithAlpha, contrastAlpha as svgContrastAlpha } from '../svg.js';
-import { getDateInTimezone, getWeeksBetween } from '../timezone.js';
+import { getDateInTimezone } from '../timezone.js';
 import { computeLifeLayout } from '../../shared/wallpaper-core.js';
 
 /**
@@ -27,6 +27,8 @@ export function generateLifeCalendar(options) {
     } = options;
 
     // Use shared core for layout computation
+    const today = getDateInTimezone(timezone);
+
     const layout = computeLifeLayout({
         width,
         height,
@@ -35,13 +37,18 @@ export function generateLifeCalendar(options) {
         clockHeight,
         lang,
         dob,
-        lifespan
+        lifespan,
+        today
     });
 
-    let content = '';
+    const content = [];
+    const bgFill = parseColor(bgColor);
+    const accentFill = parseColor(layout.safeAccent);
+    const accentMuted = colorWithAlpha(accentFill, 0.75);
+    const pendingFill = svgContrastAlpha(bgColor, 0.06);
 
     // Background
-    content += rect(0, 0, width, height, parseColor(bgColor));
+    content.push(rect(0, 0, width, height, bgFill));
 
     // Week grid (dots)
     for (const dot of layout.dots) {
@@ -49,27 +56,27 @@ export function generateLifeCalendar(options) {
         let radius = dot.radius;
 
         if (dot.isCurrentWeek) {
-            fillColor = parseColor(layout.safeAccent);
+            fillColor = accentFill;
             radius = dot.radius * 1.15;
         } else if (dot.isLived) {
-            fillColor = colorWithAlpha(parseColor(layout.safeAccent), 0.75);
+            fillColor = accentMuted;
         } else {
-            fillColor = svgContrastAlpha(bgColor, 0.06);
+            fillColor = pendingFill;
         }
 
-        content += circle(dot.cx, dot.cy, radius, fillColor);
+        content.push(circle(dot.cx, dot.cy, radius, fillColor));
     }
 
     // Stats text
-    const statsContent = `<tspan fill="${parseColor(layout.safeAccent)}" font-family="Inter" font-weight="500">${layout.stats.weeksText}</tspan>` +
+    const statsContent = `<tspan fill="${accentFill}" font-family="Inter" font-weight="500">${layout.stats.weeksText}</tspan>` +
         `<tspan fill="${svgContrastAlpha(bgColor, 0.5)}" font-family="Inter" font-weight="500"> · ${layout.stats.livedText}</tspan>`;
 
-    content += text(layout.stats.centerX, layout.stats.y, statsContent, {
+    content.push(text(layout.stats.centerX, layout.stats.y, statsContent, {
         fontSize: layout.fontSize,
         textAnchor: 'middle',
         dominantBaseline: 'middle',
         escape: false
-    });
+    }));
 
-    return createSVG(width, height, content, lang);
+    return createSVG(width, height, content.join(''), lang);
 }
