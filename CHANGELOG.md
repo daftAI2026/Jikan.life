@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Worker Cache**: Fixed cross-language cache collision by including `lang` and `format` in cache key calculation.
 - Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
 - Restore react-aria trigger wiring so date and color picker popovers open reliably without altering button styling.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
