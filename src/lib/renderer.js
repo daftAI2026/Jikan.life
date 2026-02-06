@@ -15,7 +15,8 @@ import {
     getDayOfYear as coreDayOfYear,
     getDaysInYear,
     isLeapYear,
-    getWallpaperText
+    getWallpaperText,
+    formatGoalDate
 } from '../../shared/wallpaper-core.js';
 
 // Re-export utilities for backward compatibility
@@ -196,12 +197,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
 
     // Target date (New)
     if (config.goalDate) {
-        const targetDate = new Date(config.goalDate);
-        const dateStr = targetDate.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        });
+        const dateStr = formatGoalDate(config.goalDate, config.wallpaperLang);
         ctx.fillStyle = contrastAlpha(bgColor, 0.4);
         ctx.font = `400 ${width * 0.028}px Inter, sans-serif`;
         ctx.fillText(dateStr, ring.centerX, layout.targetDateY);
