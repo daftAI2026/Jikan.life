@@ -23,7 +23,9 @@ export function generateYearCalendar(options) {
         accentColor,
         timezone,
         clockHeight = 0.22,
-        lang = 'en'
+        lang = 'en',
+        cols,
+        padding
     } = options;
 
     // Get current date in user's timezone
@@ -39,7 +41,9 @@ export function generateYearCalendar(options) {
         lang,
         year,
         month,
-        day
+        day,
+        cols,
+        padding
     });
 
     const content = [];

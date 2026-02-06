@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无
  * [OUTPUT]: 对外提供 devices 列表及查询函数 (getDevice, getDevicesByCategory)
- * [POS]: data/ 静态数据，定义 iPhone/Android/iPad 屏幕规格与 notch 参数
+ * [POS]: data/ 静态数据，定义 iPhone/Android/iPad 屏幕规格、notch 参数、**Year布局 cols/padding 覆盖**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 // Complete device resolutions for wallpapers
@@ -15,7 +15,9 @@ export const devices = [
         height: 2868,
         category: "iPhone",
         notchHeight: 0.12,  // Dynamic Island - percentage from top
-        clockHeight: 0.18   // Space needed for clock/date
+        clockHeight: 0.24,  // Space needed for clock/date (adjusted for 16-col grid)
+        cols: 16,           // Year grid columns
+        padding: 0.1797     // Left/right padding ratio
     },
     {
         name: "iPhone 17 Pro",
@@ -23,7 +25,9 @@ export const devices = [
         height: 2622,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.18
+        clockHeight: 0.24,
+        cols: 16,
+        padding: 0.1797
     },
     {
         name: "iPhone 17",
@@ -31,7 +35,9 @@ export const devices = [
         height: 2556,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.18
+        clockHeight: 0.24,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== Dynamic Island 6.7" (14 Pro Max, 15 Plus/Pro Max, 16 Plus) =====
@@ -41,7 +47,9 @@ export const devices = [
         height: 2796,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.18
+        clockHeight: 0.24,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== Dynamic Island 6.1" (14 Pro, 15/Pro, 16) =====
@@ -51,7 +59,9 @@ export const devices = [
         height: 2556,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.18
+        clockHeight: 0.24,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== Notch 6.7" (13 Pro Max, 14 Plus) =====
@@ -61,7 +71,9 @@ export const devices = [
         height: 2778,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.25
+        clockHeight: 0.31,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== Notch 6.1" (13/13 Pro, 14) =====
@@ -71,7 +83,9 @@ export const devices = [
         height: 2532,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.25
+        clockHeight: 0.31,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== Notch 5.4" (13 mini) =====
@@ -81,7 +95,9 @@ export const devices = [
         height: 2340,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.25
+        clockHeight: 0.31,
+        cols: 16,
+        padding: 0.1797
     },
 
     // ===== iPhone SE =====

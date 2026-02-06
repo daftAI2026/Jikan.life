@@ -5,7 +5,7 @@
 utils.js: shadcn/ui 核心工具，提供 cn() 类名合并函数
 motion.js: Apple 级 Framer Motion 动画预设库
 I18nContext.jsx: React Context 国际化适配器，提供 I18nProvider 和 useI18n hook
-renderer.js: 核心壁纸 Canvas 渲染引擎，导出 drawYearProgress/drawLifeCalendar/drawGoalCountdown
+renderer.js: 核心壁纸 Canvas 渲染引擎，导出 drawYearProgress/drawLifeCalendar/drawGoalCountdown，**透传设备级 cols/padding 参数**
 
 ## motion.js 动画系统
 

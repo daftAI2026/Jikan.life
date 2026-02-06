@@ -14,8 +14,12 @@ export const wallpaperSchema = z.object({
     width: z.coerce.number().int().min(300, "Width too small").max(8000, "Width too large").default(1170),
     height: z.coerce.number().int().min(300, "Height too small").max(8000, "Height too large").default(2532),
     clockHeight: z.coerce.number().min(0).max(0.5).default(0.18),
-    lang: z.enum(['en', 'zh-CN', 'zh-TW', 'ja']).default('en'),  // 壁纸语言
+    lang: z.enum(['en', 'zh-CN', 'zh-TW', 'ja']).default('en'),
     tz: z.string().max(100).optional(),
+
+    // Grid Override (Optional)
+    cols: z.coerce.number().int().min(1).max(53).optional(),
+    padding: z.coerce.number().min(0).max(0.5).optional(),
 
     // Life Calendar specific
     dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format").optional(),

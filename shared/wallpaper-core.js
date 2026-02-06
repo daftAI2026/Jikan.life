@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无依赖（纯函数模块）
- * [OUTPUT]: 布局计算、日期/颜色工具、i18n 文本生成
+ * [OUTPUT]: 布局计算（**Year 支持 cols/padding 覆盖**）、日期/颜色工具、i18n 文本生成
  * [POS]: shared/ 下的同构核心，供 Frontend Canvas 和 Worker SVG 共享
  * [PROTOCOL]: 变更时同步更新 renderer.js 和 worker/generators/*.js
  */
@@ -208,17 +208,22 @@ export function computeYearLayout(options) {
         lang = 'en',
         year,
         month,
-        day
+        day,
+        cols: optCols,
+        padding: optPadding
     } = options;
 
     const dayOfYear = getDayOfYear(year, month, day);
     const totalDays = getDaysInYear(year);
 
-    const cols = 15;
+    // ========== 设备级参数 (支持覆盖) ==========
+    const cols = optCols ?? 15;
+    const paddingRatio = optPadding ?? 0.20;
+
     const rows = Math.ceil(totalDays / cols);
 
     const clockSpace = height * (clockHeight + 0.05);
-    const padding = width * 0.20;
+    const padding = width * paddingRatio;
 
     const availableWidth = width - (padding * 2);
     const gap = Math.max(3, width * 0.008);

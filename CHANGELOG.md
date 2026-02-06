@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.
+
 ### Fixed
 - **Worker Cache**: Fixed cross-language cache collision by including `lang` and `format` in cache key calculation.
 - Types cards: clamp descriptions to two lines to keep card heights consistent across languages.

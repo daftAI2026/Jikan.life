@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js
  * [OUTPUT]: 对外提供 drawYearProgress, drawLifeCalendar, drawGoalCountdown (Canvas 2D)
- * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局
+ * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局，**传递设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -82,7 +82,9 @@ export function drawYearProgress(ctx, width, height, config, clockHeight) {
         lang: config.wallpaperLang,
         year: now.getFullYear(),
         month: now.getMonth() + 1,
-        day: now.getDate()
+        day: now.getDate(),
+        cols: config.cols,
+        padding: config.padding
     });
 
     // Draw dots
