@@ -186,7 +186,9 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
             dob: validated.dob,
             lifespan: validated.lifespan,
             goalDate: validated.goal,
-            goalName: validated.goalName
+            goalName: validated.goalName,
+            cols: validated.cols,
+            padding: validated.padding
         };
 
         // Generate SVG based on type

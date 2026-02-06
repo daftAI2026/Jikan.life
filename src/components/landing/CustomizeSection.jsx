@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date, shared/palettes, shared/wallpaper-core
  * [OUTPUT]: Customize Section 组件 (预览 + 配置面板，使用 JollyUI DatePicker)
- * [POS]: Landing Page 第三部分，用户配置壁纸参数
+ * [POS]: Landing Page 第三部分，用户配置壁纸参数，**透传设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState, useEffect, useRef, useCallback } from "react"
@@ -95,12 +95,19 @@ function CanvasPreview({ config }) {
         ctx.fillStyle = config.bgColor;
         ctx.fillRect(0, 0, width, height);
 
+        // 合并设备级参数到 config
+        const renderConfig = {
+            ...config,
+            cols: device.cols,
+            padding: device.padding
+        };
+
         if (config.selectedType === 'year') {
-            drawYearProgress(ctx, width, height, config, clockHeight);
+            drawYearProgress(ctx, width, height, renderConfig, clockHeight);
         } else if (config.selectedType === 'life') {
-            drawLifeCalendar(ctx, width, height, config, clockHeight);
+            drawLifeCalendar(ctx, width, height, renderConfig, clockHeight);
         } else if (config.selectedType === 'goal') {
-            drawGoalCountdown(ctx, width, height, config, clockHeight);
+            drawGoalCountdown(ctx, width, height, renderConfig, clockHeight);
         }
     }, [config])
 
@@ -256,6 +263,8 @@ export function CustomizeSection({ selectedType }) {
         params.set('height', selectedDevice.height.toString())
         params.set('clockHeight', selectedDevice.clockHeight.toString())
         params.set('lang', config.wallpaperLang)
+        if (selectedDevice.cols) params.set('cols', selectedDevice.cols.toString())
+        if (selectedDevice.padding) params.set('padding', selectedDevice.padding.toString())
         if (config.country) params.set('country', config.country)
         if (config.timezone) params.set('tz', config.timezone)
         if (config.selectedType === 'life' && config.dob) {
