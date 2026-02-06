@@ -7,7 +7,7 @@
 
 import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
 import { getDateInTimezone } from '../timezone.js';
-import { computeGoalLayout } from '../../shared/wallpaper-core.js';
+import { computeGoalLayout, formatGoalDate } from '../../shared/wallpaper-core.js';
 
 /**
  * Generate Goal Countdown Wallpaper
@@ -102,12 +102,7 @@ export function generateGoalCountdown(options) {
 
     // Target date (New)
     if (goalDate) {
-        const targetDate = new Date(goalDate);
-        const dateStr = targetDate.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        });
+        const dateStr = formatGoalDate(goalDate, lang);
         content.push(text(ring.centerX, layout.targetDateY, dateStr, {
             fill: svgContrastAlpha(bgColor, 0.4),
             fontSize: width * 0.028,

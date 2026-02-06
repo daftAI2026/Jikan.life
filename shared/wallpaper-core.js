@@ -120,6 +120,31 @@ export function getDaysInYear(year) {
     return isLeapYear(year) ? 366 : 365;
 }
 
+/**
+ * Format goal date for display
+ * @param {string} dateStr - ISO date string (YYYY-MM-DD)
+ * @param {string} lang - Language code
+ * @returns {string} Formatted date string
+ */
+export function formatGoalDate(dateStr, lang = 'en') {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '';
+
+    const localeMap = {
+        'en': 'en-US',
+        'zh-CN': 'zh-CN',
+        'zh-TW': 'zh-TW',
+        'ja': 'ja-JP'
+    };
+    const locale = localeMap[lang] || 'en-US';
+
+    return date.toLocaleDateString(locale, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+}
+
 /* ========================================================================
    Wallpaper Text i18n
    ======================================================================== */
