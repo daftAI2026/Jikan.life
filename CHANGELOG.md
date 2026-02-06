@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
 - **i18n Reactivity**: Fixed a critical bug where the `TypesSection` did not refresh translations on language change. Implemented `useMemo` with `t` dependency and refactored `TypeCard` to remove redundant state.
 - **Goal Card**: Fixed duplicated "Daily Updates" text and restored original design (Bold "Daily" + Small "UPDATES").
+- **iOS Automation Setup**: Fixed a missing "Tap Next" step and refined the flow with the "+ (Upper-right corner)" prompt for better UX.
+- **Reference Documentation**: Added `src/data/terminology-reference.md` as the unified source of truth for iOS (Shortcuts) and Android (MacroDroid) setup terminology.
 
 ### Changed
 - Hardened date/time rendering against DST and timezone drift while unifying shared country mappings for consistent previews and caching.
@@ -28,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Internationalization
 - **Full Card i18n**: Completed internationalization for all card stats and status labels across all supported languages.
 - **Android Setup**: Synchronized instruction structure and added missing warning badges for Traditional Chinese and Japanese translations.
+- **Official Terminology Alignment**: Fully aligned iOS setup instructions (Shortcuts/Automation) with Apple's official standards across English, Simplified Chinese, Traditional Chinese, and Japanese. Refined key terms like "Create Personal Automation", "Specific Time", and "Set Wallpaper Photo".
+- **UX Layout**: Standardized iOS Step 2 into a bulleted list with nested "Time of Day" configurations across all languages.
 
 ## [1.0.1] - 2026-02-02
 

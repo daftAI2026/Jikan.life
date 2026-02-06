@@ -111,10 +111,10 @@ export const i18nData = {
     // Setup Steps - iOS
     'setup.ios.step1': 'Copy URL',
     'setup.ios.step1Desc': 'Configure your wallpaper above and copy the generated URL',
-    'setup.ios.step2': 'Create Automation',
-    'setup.ios.step2Desc': 'Shortcuts App → Automation Tab → New Automation<br>Time of Day: <strong>6:00 AM</strong> → Repeat <strong>Daily</strong><br>Select <strong>Run Immediately</strong> → Create New Shortcut',
+    'setup.ios.step2': 'Create Personal Automation',
+    'setup.ios.step2Desc': '<ul class="step-list-ul"><li>Open <strong>Shortcuts App</strong> → <strong>Automation </strong>Tab</li><li>Tap <strong>+ </strong>(Upper-right corner)</li><li><strong>Time of Day</strong>: <ul class="step-list-ul"><li><strong>6:00 AM</strong></li><li>Repeat: <strong>Daily</strong></li><li>Select <strong>Run Immediately</strong></li></ul></li><li>Tap <strong>Next</strong></li><li>Tap <strong>Create New Shortcut</strong></li></ul>',
     'setup.ios.step3': 'Configure Shortcut',
-    'setup.ios.step3Desc': '<strong>1. Get Contents of URL:</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. Set Wallpaper Photo:</strong><br>Choose "Lock Screen" as the target.',
+    'setup.ios.step3Desc': '<strong>1. Get Contents of URL:</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. Set Wallpaper Photo:</strong><br>Choose only <strong>Lock Screen</strong> as the target.',
     'setup.ios.step4': 'Finalize',
     'setup.ios.step4Desc': '<span class="highlight-badge">In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong></span>',
     'setup.ios.step4Warning': 'In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong>',
@@ -276,13 +276,13 @@ export const i18nData = {
     // 设置步骤 - iOS
     'setup.ios.step1': '复制 URL',
     'setup.ios.step1Desc': '在上方配置你的壁纸并复制生成的 URL',
-    'setup.ios.step2': '创建自动化',
-    'setup.ios.step2Desc': '快捷指令应用 → 自动化标签 → 新建自动化<br>时间：<strong>上午 6:00</strong> → 重复 <strong>每天</strong><br>选择 <strong>立即运行</strong> → 创建新快捷指令',
+    'setup.ios.step2': '创建个人自动化',
+    'setup.ios.step2Desc': '<ul class="step-list-ul"><li>打开 <strong>快捷指令</strong> → <strong>自动化</strong> 标签页</li><li>点击右上角的 <strong>+</strong></li><li><strong>特定时间</strong>：<ul class="step-list-ul"><li><strong>上午 6:00</strong></li><li>重复：<strong>每天</strong></li><li>选择 <strong>立即运行</strong></li></ul></li><li>点击 <strong>下一步</strong></li><li>点击 <strong>创建新快捷指令</strong></li></ul>',
     'setup.ios.step3': '配置快捷指令',
-    'setup.ios.step3Desc': '<strong>1. 获取 URL 的内容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 设置墙纸：</strong><br>选择"锁屏"作为目标。',
+    'setup.ios.step3Desc': '<strong>1. 获取 URL 的内容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 设定墙纸照片：</strong><br>仅选择 <strong>锁屏</strong> 作为目标。',
     'setup.ios.step4': '完成',
-    'setup.ios.step4Desc': '<span class="highlight-badge">在"设置墙纸"中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong></span>',
-    'setup.ios.step4Warning': '在"设置墙纸"中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
+    'setup.ios.step4Desc': '<span class="highlight-badge">在“设定墙纸照片”中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong></span>',
+    'setup.ios.step4Warning': '在“设定墙纸照片”中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
 
     // 设置步骤 - Android
     'setup.android.step1': '复制 URL',
@@ -441,13 +441,13 @@ export const i18nData = {
     // 設定步驟 - iOS
     'setup.ios.step1': '複製 URL',
     'setup.ios.step1Desc': '在上方設定你的桌布並複製產生的 URL',
-    'setup.ios.step2': '建立自動化',
-    'setup.ios.step2Desc': '捷徑應用 → 自動化標籤 → 新建自動化<br>時間：<strong>上午 6:00</strong> → 重複 <strong>每天</strong><br>選擇 <strong>立即執行</strong> → 建立新捷徑',
+    'setup.ios.step2': '製作新的個人自動化操作',
+    'setup.ios.step2Desc': '<ul class="step-list-ul"><li>開啟 <strong>捷徑</strong> → <strong>自動化</strong> 標籤頁</li><li>點擊右上角的 <strong>+</strong></li><li><strong>特定時間</strong>：<ul class="step-list-ul"><li><strong>上午 6:00</strong></li><li>重複：<strong>每天</strong></li><li>選擇 <strong>立即執行</strong></li></ul></li><li>點擊 <strong>下一步</strong></li><li>點擊 <strong>建立新捷徑</strong></li></ul>',
     'setup.ios.step3': '設定捷徑',
-    'setup.ios.step3Desc': '<strong>1. 取得 URL 的內容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 設定桌布：</strong><br>選擇「鎖定螢幕」作為目標。',
+    'setup.ios.step3Desc': '<strong>1. 取得 URL 的內容：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 設定背景圖片：</strong><br>僅選擇 <strong>鎖定螢幕</strong> 作為目標。',
     'setup.ios.step4': '完成',
-    'setup.ios.step4Desc': '<span class="highlight-badge">在「設定桌布」中，點擊箭頭 (→)：<br>關閉 <strong>裁切到主體</strong><br>關閉 <strong>顯示預覽</strong></span>',
-    'setup.ios.step4Warning': '在「設定桌布」中，點擊箭頭 (→)：<br>關閉 <strong>裁切到主體</strong><br>關閉 <strong>顯示預覽</strong>',
+    'setup.ios.step4Desc': '<span class="highlight-badge">在「設定背景圖片」中，點擊箭頭 (→)：<br>關閉 <strong>裁切主體</strong><br>關閉 <strong>顯示預覽</strong></span>',
+    'setup.ios.step4Warning': '在「設定背景圖片」中，點擊箭頭 (→)：<br>關閉 <strong>裁切主體</strong><br>關閉 <strong>顯示預覽</strong>',
 
     // 設定步驟 - Android
     'setup.android.step1': '複製 URL',
@@ -606,13 +606,13 @@ export const i18nData = {
     // セットアップステップ - iOS
     'setup.ios.step1': 'URL をコピー',
     'setup.ios.step1Desc': '上で壁紙を設定し、生成された URL をコピーします',
-    'setup.ios.step2': 'オートメーションを作成',
-    'setup.ios.step2Desc': 'ショートカットアプリ → オートメーションタブ → 新規オートメーション<br>時間：<strong>午前 6:00</strong> → <strong>毎日</strong>繰り返す<br><strong>今すぐ実行</strong>を選択 → 新規ショートカットを作成',
+    'setup.ios.step2': '個人用オートメーションを作成',
+    'setup.ios.step2Desc': '<ul class="step-list-ul"><li><strong>ショートカット</strong>アプリ → <strong>オートメーション</strong>タブ</li><li>右上の <strong>+</strong> をタップ</li><li><strong>時刻</strong>：<ul class="step-list-ul"><li><strong>午前 6:00</strong></li><li>繰り返す：<strong>毎日</strong></li><li><strong>今すぐ実行</strong>を選択</li></ul></li><li><strong>次へ</strong>をタップ</li><li><strong>新規ショートカットを作成</strong>をタップ</li></ul>',
     'setup.ios.step3': 'ショートカットを設定',
-    'setup.ios.step3Desc': '<strong>1. URL のコンテンツを取得：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 壁紙を設定：</strong><br>ターゲットとして「ロック画面」を選択します。',
+    'setup.ios.step3Desc': '<strong>1. URL のコンテンツを取得：</strong><br><span class="code-snippet">https://jikan.flydogcn.workers.dev/generate?...</span><br><br><strong>2. 壁紙を設定：</strong><br>ターゲットとして <strong>ロック画面</strong> のみを選択します。',
     'setup.ios.step4': '完了',
-    'setup.ios.step4Desc': '<span class="highlight-badge">「壁紙を設定」で矢印 (→) をタップ：<br>「サブジェクトへのトリミング」をオフ<br>「プレビューを表示」をオフ</span>',
-    'setup.ios.step4Warning': '「壁紙を設定」で矢印 (→) をタップ：<br>「サブジェクトへのトリミング」をオフ<br>「プレビューを表示」をオフ',
+    'setup.ios.step4Desc': '<span class="highlight-badge">「壁紙を設定」で矢印 (→) をタップ：<br>「被写体を切り取る」をオフ<br>「プレビューを表示」をオフ</span>',
+    'setup.ios.step4Warning': '「壁紙を設定」で矢印 (→) をタップ：<br>「被写体を切り取る」をオフ<br>「プレビューを表示」をオフ',
 
     // セットアップステップ - Android
     'setup.android.step1': 'URL をコピー',
