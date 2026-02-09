@@ -13,7 +13,7 @@ import { useI18n } from "@/lib/I18nContext"
 
 function CodeSnippet({ children }) {
     return (
-        <code className="inline-block px-2 py-0.5 rounded bg-muted/80 dark:bg-foreground/60 text-foreground font-mono text-xs border border-border break-all">
+        <code className="inline-block px-2 py-0.5 rounded bg-muted/80 text-foreground font-mono text-xs border border-border break-all">
             {children}
         </code>
     )
@@ -22,7 +22,7 @@ function CodeSnippet({ children }) {
 function HighlightBadge({ children }) {
     return (
         <span className="highlight-badge flex items-start gap-2 text-left">
-            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
             <span>{children}</span>
         </span>
     )
@@ -56,7 +56,7 @@ function StepTimeline({ steps }) {
             {steps.map((step, index) => (
                 <motion.div key={step.number} variants={staggerItem} className="relative flex gap-4">
                     {index < steps.length - 1 && <div className="absolute left-[19px] top-[40px] w-[2px] h-[calc(100%-24px)] bg-border" aria-hidden="true" />}
-                    <div className="relative z-10 flex-shrink-0">
+                    <div className="relative z-10 shrink-0">
                         <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm shadow-md">{step.number}</div>
                     </div>
                     <div className="flex-1 pb-10">

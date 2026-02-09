@@ -119,13 +119,13 @@ function TypeCard({ type, isSelected, onSelect, t }) {
     return (
         <article
             className={cn(
-                "group relative bg-card border border-border rounded-2xl overflow-hidden cursor-pointer transition-all duration-300",
-                "hover:border-primary/50 hover:-translate-y-1 hover:shadow-xl",
-                isSelected ? "border-primary ring-1 ring-primary" : ""
+                "group relative bg-surface-elevated ring-1 ring-line rounded-2xl overflow-hidden cursor-pointer transition-all duration-300",
+                "hover:ring-primary/50 hover:-translate-y-1 hover:shadow-xl",
+                isSelected ? "ring-2 ring-primary" : ""
             )}
             onClick={() => onSelect(type.id)}
         >
-            <div className="h-[200px] bg-muted/30 flex items-center justify-center border-b border-border overflow-hidden relative">
+            <div className="h-[200px] bg-muted/30 flex items-center justify-center border-b border-line overflow-hidden relative">
                 <Visual t={t} />
             </div>
 
@@ -137,7 +137,7 @@ function TypeCard({ type, isSelected, onSelect, t }) {
 
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed min-h-12 line-clamp-2">{type.description}</p>
 
-                <div className="flex items-center gap-4 py-4 border-t border-b border-border/50 mb-5">
+                <div className="flex items-center gap-4 py-4 border-t border-b border-line mb-5">
                     {currentStats.map((stat, i) => (
                         <div key={i} className="flex flex-col flex-1 relative">
                             <span className="text-lg font-mono font-semibold leading-none mb-1">{stat.value}</span>

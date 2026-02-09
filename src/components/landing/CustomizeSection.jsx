@@ -303,7 +303,7 @@ export function CustomizeSection({ selectedType }) {
     }
 
     return (
-        <section id="customize" className="py-24 border-t border-border">
+        <section id="customize" className="py-24 border-t border-line">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     className="grid gap-12"
@@ -332,7 +332,7 @@ export function CustomizeSection({ selectedType }) {
                         </div>
 
                         {/* Selected Type */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-md text-sm mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted ring-1 ring-line rounded-md text-sm mb-8">
                             <span className="text-muted-foreground">{t('customize.selected')}</span>
                             <span className="font-medium">{TYPE_NAMES[config.selectedType] || t('customize.selectedNone')}</span>
                         </div>
@@ -386,7 +386,7 @@ export function CustomizeSection({ selectedType }) {
 
                         {/* Life Calendar Config */}
                         {config.selectedType === 'life' && (
-                            <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg border border-border mb-6">
+                            <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg ring-1 ring-line mb-6">
                                 <div className="space-y-3">
                                     <label className="flex items-baseline justify-between text-sm">
                                         <span className="font-medium">{t('config.dateOfBirth')}</span>
@@ -408,7 +408,7 @@ export function CustomizeSection({ selectedType }) {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+                                                className="mr-1 size-6 data-focus-visible:ring-offset-0">
                                                 <CalendarIcon aria-hidden className="size-4" />
                                             </Button>
                                         </FieldGroup>
@@ -501,7 +501,7 @@ export function CustomizeSection({ selectedType }) {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+                                                className="mr-1 size-6 data-focus-visible:ring-offset-0">
                                                 <CalendarIcon aria-hidden className="size-4" />
                                             </Button>
                                         </FieldGroup>

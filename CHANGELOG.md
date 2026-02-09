@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Theme System**: Consolidated `:root` + `.dark` CSS variable blocks into native `light-dark()` for automatic theme adaptation, eliminating all `dark:` prefixes from component classNames.
+- **Semantic Layer Tokens**: Introduced `--surface-base`, `--surface-elevated`, `--surface-overlay`, and `--line` CSS variables for consistent visual hierarchy.
+- **Border → Ring Migration**: Replaced `border border-border` with `ring-1 ring-line` in Landing cards and config panels for sharper, layout-neutral visual separation.
+- **Tailwind v4 Syntax**: Migrated legacy shorthand (`data-[disabled]` → `data-disabled`, `flex-shrink-0` → `shrink-0`, `z-[150]` → `z-150`, etc.) across all UI components.
+
 ### Added
 - **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.
 

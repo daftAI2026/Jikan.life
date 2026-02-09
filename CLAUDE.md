@@ -3,6 +3,7 @@ Vite + React + Tailwind CSS v4 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
+doc/ - 项目文档与知识库
 public/ - 前端静态资源 (Vite public)
 screenshots/ - 产品/营销截图资产
 dist-worker/ - Worker 构建产物 (生成)
