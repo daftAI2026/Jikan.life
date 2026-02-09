@@ -15,7 +15,7 @@ export const devices = [
         height: 2868,
         category: "iPhone",
         notchHeight: 0.12,  // Dynamic Island - percentage from top
-        clockHeight: 0.24,  // Space needed for clock/date (adjusted for 16-col grid)
+        clockHeight: 0.217,  // Space needed for clock/date (adjusted for 16-col grid)
         cols: 16,           // Year grid columns
         padding: 0.1797     // Left/right padding ratio
     },
@@ -25,7 +25,7 @@ export const devices = [
         height: 2622,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.24,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
@@ -35,7 +35,7 @@ export const devices = [
         height: 2556,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.24,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
@@ -47,7 +47,7 @@ export const devices = [
         height: 2796,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.24,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
@@ -59,7 +59,7 @@ export const devices = [
         height: 2556,
         category: "iPhone",
         notchHeight: 0.12,
-        clockHeight: 0.24,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
@@ -71,7 +71,7 @@ export const devices = [
         height: 2778,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.31,
+        clockHeight: 0.287,
         cols: 16,
         padding: 0.1797
     },
@@ -83,7 +83,7 @@ export const devices = [
         height: 2532,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.31,
+        clockHeight: 0.287,
         cols: 16,
         padding: 0.1797
     },
@@ -95,7 +95,7 @@ export const devices = [
         height: 2340,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.31,
+        clockHeight: 0.287,
         cols: 16,
         padding: 0.1797
     },
