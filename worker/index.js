@@ -209,7 +209,7 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         // Generate cache key based on parameters and current date in user timezone
         const cacheDate = getDateInTimezone(timezone);
         const cacheDay = `${cacheDate.year}-${String(cacheDate.month).padStart(2, '0')}-${String(cacheDate.day).padStart(2, '0')}`;
-        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${validated.lang}-${validated.format}-${cacheDay}`;
+        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${validated.clockHeight}-${validated.cols ?? 'default'}-${validated.padding ?? 'default'}-${validated.lang}-${validated.format}-${cacheDay}`;
 
         // Build a cache request URL to use with caches.default (Cloudflare Workers)
         // Only enable server-side caching for the non-user-specific `year` type

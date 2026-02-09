@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.
 
 ### Fixed
-- **Worker Cache**: Fixed cross-language cache collision by including `lang` and `format` in cache key calculation.
+- **Worker Cache**: Fixed cache collision by including `lang`, `format`, `clockHeight`, `cols`, and `padding` in cache key calculation.
 - Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
 - Restore react-aria trigger wiring so date and color picker popovers open reliably without altering button styling.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
