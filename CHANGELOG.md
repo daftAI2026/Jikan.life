@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preview Scaling**: Switched to "cover" scaling in the registry preview pane to ensure wallpapers correctly fill the simulated device screen.
 - **Registry Workspace**: Implemented a split-pane workspace in the Design System Registry (`/registry`) with a live configuration sidebar and instant preview pane.
 - **Wallpaper Configuration Hook**: Introduced `useRegistryWallpaperConfig` to centralize wallpaper state, palette logic, and URL generation for all registry demos.
+- **Kumo Submodule**: Formalized `vendor/kumo` as a tracked Git submodule to manage upstream design system dependencies.
+
 
 - **Registry Social Links**: Integrated Xiaohongshu and GitHub navigation into the Registry topbar, replacing static version strings with branded iconography.
 - **Workspace Directory**: Created `src/pages/registry/sections/workspace` to host isolated feature previews within the registry shell.
