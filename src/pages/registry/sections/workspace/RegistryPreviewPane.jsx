@@ -9,6 +9,8 @@ import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/ren
 
 function RegistryPreviewPane({ config, selectedDevice, t }) {
     const canvasRef = useRef(null)
+    const SCREEN_WIDTH = 240
+    const SCREEN_HEIGHT = 510
 
     const drawPreview = useCallback(() => {
         const canvas = canvasRef.current
@@ -16,9 +18,8 @@ function RegistryPreviewPane({ config, selectedDevice, t }) {
 
         const baseWidth = selectedDevice.width
         const baseHeight = selectedDevice.height
-        const maxWidth = 220
-        const maxHeight = 470
-        const scale = Math.min(maxWidth / baseWidth, maxHeight / baseHeight)
+        // Use "cover" scaling so wallpaper fills the phone screen area.
+        const scale = Math.max(SCREEN_WIDTH / baseWidth, SCREEN_HEIGHT / baseHeight)
         const width = Math.max(1, Math.floor(baseWidth * scale))
         const height = Math.max(1, Math.floor(baseHeight * scale))
         const dpr = window.devicePixelRatio || 1
@@ -52,7 +53,7 @@ function RegistryPreviewPane({ config, selectedDevice, t }) {
         }
 
         drawGoalCountdown(ctx, width, height, renderConfig, selectedDevice.clockHeight)
-    }, [config, selectedDevice])
+    }, [config, selectedDevice, SCREEN_HEIGHT, SCREEN_WIDTH])
 
     useEffect(() => {
         drawPreview()

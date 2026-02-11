@@ -196,10 +196,10 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                     )}
                                 </div>
 
-                                <div className="mb-1">
+                                <div className="mb-0 min-h-[28px]">
                                     <h3
                                         className={cn(
-                                            "text-base leading-tight font-semibold transition-colors",
+                                            "text-lg leading-tight font-semibold transition-colors",
                                             isSelected
                                                 ? "text-kumo-default"
                                                 : "text-kumo-strong group-hover:text-kumo-default"
@@ -209,10 +209,12 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                     </h3>
                                 </div>
 
-                                <p className="mb-2 text-xs leading-5 text-kumo-subtle">{style.description}</p>
+                                <p className="mb-2 h-[60px] overflow-hidden text-xs leading-5 text-kumo-subtle line-clamp-3">
+                                    {style.description}
+                                </p>
 
                                 <div
-                                    className="grid items-center divide-x divide-kumo-line border-y border-kumo-line py-2"
+                                    className="mt-auto grid items-center divide-x divide-kumo-line border-y border-kumo-line py-2"
                                     style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
                                 >
                                     {stats.map((stat, statIndex) => (
@@ -303,7 +305,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
             <aside
                 data-sidebar-open={sidebarOpen}
                 className={cn(
-                    "fixed inset-y-0 left-12 z-40 hidden w-64 flex-col bg-kumo-elevated md:flex",
+                    "fixed inset-y-0 left-12 z-40 hidden w-[290px] flex-col bg-kumo-elevated md:flex",
                     "transition-transform duration-300 ease-out will-change-transform",
                     sidebarOpen ? "translate-x-0 border-r border-kumo-line" : "-translate-x-full"
                 )}
