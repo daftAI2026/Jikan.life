@@ -33,13 +33,6 @@ function getFlagEmoji(code) {
     return String.fromCodePoint(...codePoints)
 }
 
-function getTypeName(type, t) {
-    if (type === "year") return t("type.year.name")
-    if (type === "life") return t("type.life.name")
-    if (type === "goal") return t("type.goal.name")
-    return t("customize.selectedNone")
-}
-
 function getInitialConfig(selectedType) {
     const bgColor = normalizeHexColor(DEFAULT_PALETTE.bg, "#000000")
     const originalAccentColor = normalizeHexColor(DEFAULT_PALETTE.accent, "#FFFFFF")
@@ -96,7 +89,6 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
     }, [])
 
     const selectedDevice = useMemo(() => getDevice(config.device) ?? devices[0], [config.device])
-    const typeName = useMemo(() => getTypeName(config.selectedType, t), [config.selectedType, t])
     const palettePresets = useMemo(
         () =>
             PALETTE_PRESETS.map((preset) => ({
@@ -238,7 +230,6 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
         t,
         config,
         copied,
-        typeName,
         selectedDevice,
         palettePresets,
         countryOptions,

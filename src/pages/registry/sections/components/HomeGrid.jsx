@@ -32,7 +32,6 @@ function HomeGrid({ selectedStyle }) {
                     t={viewModel.t}
                     config={viewModel.config}
                     copied={viewModel.copied}
-                    typeName={viewModel.typeName}
                     selectedDevice={viewModel.selectedDevice}
                     palettePresets={viewModel.palettePresets}
                     countryOptions={viewModel.countryOptions}

@@ -195,14 +195,14 @@ export const i18nData = {
 
     // 年进度卡
     'type.year.name': '年度进度',
-    'type.year.description': '365 天网格一览。眼见你的年度逐日填满。',
+    'type.year.description': '365 天网格一览。\n眼见你的年度逐日填满。',
     'type.year.statDay': '天',
     'type.year.statWeek': '周',
     'type.year.statComplete': '完成度',
 
     // 生命日历卡
     'type.life.name': '生命日历',
-    'type.life.description': '将人生的每一周化作点阵。每一周都值得铭记。',
+    'type.life.description': '将人生的每一周化作点阵。\n每一周都值得铭记。',
     'type.life.statWeeks': '总周数',
     'type.life.statYears': '年',
 
@@ -363,14 +363,14 @@ export const i18nData = {
 
     // 年進度卡
     'type.year.name': '年度進度',
-    'type.year.description': '365 天網格一覽。眼見你的年度逐日填滿。',
+    'type.year.description': '365 天網格一覽。\n眼見你的年度逐日填滿。',
     'type.year.statDay': '天',
     'type.year.statWeek': '週',
     'type.year.statComplete': '完成度',
 
     // 生命日曆卡
     'type.life.name': '生命日曆',
-    'type.life.description': '將人生的每一週化作點陣。每一週都值得銘記。',
+    'type.life.description': '將人生的每一週化作點陣。\n每一週都值得銘記。',
     'type.life.statWeeks': '總週數',
     'type.life.statYears': '年',
 
@@ -538,13 +538,13 @@ export const i18nData = {
 
     // 人生カレンダーカード
     'type.life.name': '人生カレンダー',
-    'type.life.description': '人生の毎週をドット化。毎週の価値を視覚化。',
+    'type.life.description': '人生の毎週をドット化。\n毎週の価値を視覚化。',
     'type.life.statWeeks': '総週数',
     'type.life.statYears': '年',
 
     // 目標カウントダウンカード
     'type.goal.name': '目標カウントダウン',
-    'type.goal.description': '時刻を数える。大型ローンチ、休暇、または人生の大切なマイルストーンへの準備。',
+    'type.goal.description': '時刻を数える。\n大型ローンチ、休暇、または人生の大切なマイルストーンへの準備。',
     'type.goal.statGoals': '目標',
     'type.goal.statUpdates': '更新',
     'type.goal.valueDaily': '毎日',

@@ -384,6 +384,51 @@ test("Registry settings wallpaper language uses flag + name rendering", () => {
   assert.match(source, /option\.name/)
 })
 
+test("Registry settings does not render selected type badge", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const homeGridSource = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
+  const hookSource = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+
+  assert.doesNotMatch(source, /customize\.selected/)
+  assert.doesNotMatch(homeGridSource, /typeName={viewModel\.typeName}/)
+  assert.doesNotMatch(hookSource, /typeName/)
+  assert.doesNotMatch(hookSource, /getTypeName/)
+})
+
+test("Registry settings URL block uses responsive row and flexible input", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /className="space-y-4"/)
+  assert.match(source, /flex flex-col gap-2 sm:flex-row sm:items-center/)
+  assert.match(source, /className="min-w-0 flex-1 font-mono text-xs"/)
+})
+
+test("Registry goal config keeps xl two-column layout with stacked label/input", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /config\.selectedType === "goal"/)
+  assert.match(source, /grid grid-cols-1 gap-5 rounded-lg border border-kumo-line bg-kumo-control p-5 xl:grid-cols-2/)
+  assert.match(source, /label className="block text-sm font-medium text-kumo-default"/)
+})
+
+test("Registry wallpaper language field keeps consistent label-to-control spacing", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /config\.wallpaperLang/)
+  assert.match(source, /space-y-4/)
+  assert.match(source, /label className="flex items-baseline justify-between text-sm"/)
+  assert.match(source, /text-xs text-kumo-subtle invisible/)
+})
+
+test("Registry life config uses label hints for date of birth and lifespan", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /config\.selectedType === "life"/)
+  assert.match(source, /t\("config\.dateOfBirthHint"\)/)
+  assert.match(source, /t\("config\.lifespanHint"\)/)
+  assert.match(source, /label className="flex items-baseline justify-between text-sm"/)
+})
+
 test("Registry menu accessibility labels are present in i18n", () => {
   const source = readSource("src/data/i18n.js")
 

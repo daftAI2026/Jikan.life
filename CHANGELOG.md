@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Registry UI UX Refinement**: Harmonized vertical spacing and label alignment in the Registry Settings, adding visual hints for Life and Goal configurations.
+- **Registry URL Panel**: Enhanced the generated URL panel with a responsive, flexible layout that adapts to container width and improves mobile accessibility.
 - **Font Unification**: Centralized font family logic in `shared/wallpaper-core.js` to ensure consistent CJK rendering across Canvas preview and Worker SVG generation.
-- **Registry Language Selector**: Integrated a dedicated language selector into the Registry shell for independent testing of localized wallpaper content.
-- **Registry Shell Layout**: Refined the three-column layout (Sidebar/Preview/Settings) and enforced `fixed` positioning for the topbar to ensure a stable workspace.
+
 
 
 - **Registry Social Links**: Integrated Xiaohongshu and GitHub navigation into the Registry topbar, replacing static version strings with branded iconography.

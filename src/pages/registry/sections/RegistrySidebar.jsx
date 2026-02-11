@@ -97,7 +97,7 @@ function GoalVisual({ dayLabel }) {
                     />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="font-mono text-2xl leading-none font-bold text-kumo-contrast">42</span>
+                    <span className="text-2xl leading-none font-bold text-kumo-contrast">42</span>
                     <span className="mt-1 text-[10px] uppercase tracking-wider text-kumo-subtle">
                         {dayLabel}
                     </span>
@@ -159,8 +159,8 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
 
     const navContent = (
         <div className="flex h-full min-h-0 flex-col bg-kumo-elevated text-kumo-strong">
-            <div className="px-1 pb-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-kumo-subtle">
+            <div className="px-1 pb-1">
+                <p className="text-xs leading-4 font-semibold text-kumo-subtle">
                     {t("types.header")}
                 </p>
             </div>
@@ -216,7 +216,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                     </h3>
                                 </div>
 
-                                <p className="mb-2 h-[60px] overflow-hidden text-xs leading-5 text-kumo-subtle line-clamp-3">
+                                <p className="mb-2 h-[60px] overflow-hidden text-xs leading-5 whitespace-pre-line text-kumo-subtle line-clamp-3">
                                     {style.description}
                                 </p>
 
@@ -236,8 +236,14 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                                     : "px-2"
                                             )}
                                         >
-                                            <p className="font-mono text-lg leading-none text-kumo-default">
-                                                {stat.value}
+                                            <p className="text-lg leading-none font-medium text-kumo-default">
+                                                <span
+                                                    className={cn(
+                                                        stat.value === "∞" && "inline-block origin-center scale-[1.16]"
+                                                    )}
+                                                >
+                                                    {stat.value}
+                                                </span>
                                             </p>
                                             <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
                                                 {stat.label}
@@ -255,7 +261,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
 
     return (
         <>
-            <div className="fixed inset-x-0 top-0 z-50 flex h-[49px] items-center justify-between border-b border-kumo-line bg-kumo-elevated px-3 md:hidden">
+            <div className="fixed inset-x-0 top-0 z-50 flex h-[49px] items-center justify-between border-b border-kumo-line bg-kumo-elevated px-3 text-kumo-default md:hidden">
                 <Button
                     variant="ghost"
                     shape="square"
@@ -270,12 +276,12 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
 
             <aside
                 className={cn(
-                    "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-kumo-line bg-kumo-elevated md:hidden",
+                    "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-kumo-line bg-kumo-elevated text-kumo-default md:hidden",
                     "transition-transform duration-300 will-change-transform",
                     mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
-                <div className="flex h-[49px] flex-none items-center justify-between border-b border-kumo-line px-3">
+                <div className="flex h-[49px] flex-none items-center justify-between border-b border-kumo-line px-3 text-kumo-default">
                     <h1 className="text-base font-medium">Jikan</h1>
                     <Button
                         variant="ghost"
@@ -305,14 +311,14 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                 </div>
             </div>
 
-            <div className="pointer-events-none fixed top-0 left-12 z-50 hidden h-[49px] items-center px-3 font-medium select-none md:flex">
+            <div className="pointer-events-none fixed top-0 left-12 z-50 hidden h-[49px] items-center px-3 font-medium text-kumo-default select-none md:flex">
                 <h1 className="text-base">Jikan</h1>
             </div>
 
             <aside
                 data-sidebar-open={sidebarOpen}
                 className={cn(
-                    "fixed inset-y-0 left-12 z-40 hidden w-[290px] flex-col bg-kumo-elevated md:flex",
+                    "fixed inset-y-0 left-12 z-40 hidden w-[290px] flex-col bg-kumo-elevated text-kumo-default md:flex",
                     "transition-transform duration-300 ease-out will-change-transform",
                     sidebarOpen ? "translate-x-0 border-r border-kumo-line" : "-translate-x-full"
                 )}

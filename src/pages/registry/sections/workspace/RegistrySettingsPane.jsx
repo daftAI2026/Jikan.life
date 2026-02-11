@@ -10,7 +10,6 @@ function RegistrySettingsPane({
     t,
     config,
     copied,
-    typeName,
     selectedDevice,
     palettePresets,
     countryOptions,
@@ -23,7 +22,7 @@ function RegistrySettingsPane({
 
     return (
         <div className="h-full overflow-y-auto px-8 py-8">
-            <div className="mx-auto w-full max-w-[760px] space-y-7">
+            <div className="mx-auto w-full max-w-[760px] space-y-8">
                 <div className="space-y-3">
                     <p className="text-xs font-semibold tracking-[0.2em] text-kumo-subtle uppercase">
                         {t("customize.header")}
@@ -31,14 +30,10 @@ function RegistrySettingsPane({
                     <h2 className="text-5xl leading-none font-semibold tracking-tight text-kumo-strong">
                         {t("customize.title")}
                     </h2>
-                    <div className="inline-flex items-center gap-2 rounded-md border border-kumo-line bg-kumo-control px-3 py-1.5 text-sm">
-                        <span className="text-kumo-subtle">{t("customize.selected")}</span>
-                        <strong className="font-medium text-kumo-default">{typeName}</strong>
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <label className="flex items-baseline justify-between text-sm">
                             <span className="font-medium text-kumo-default">{t("config.location")}</span>
                             <span className="text-xs text-kumo-subtle">{t("config.locationHint")}</span>
@@ -62,9 +57,12 @@ function RegistrySettingsPane({
                         </Select>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-kumo-default">
-                            {t("config.wallpaperLang")}
+                    <div className="space-y-4">
+                        <label className="flex items-baseline justify-between text-sm">
+                            <span className="font-medium text-kumo-default">{t("config.wallpaperLang")}</span>
+                            <span className="text-xs text-kumo-subtle invisible">
+                                {t("config.locationHint")}
+                            </span>
                         </label>
                         <Select
                             className="w-full"
@@ -97,10 +95,11 @@ function RegistrySettingsPane({
                 </div>
 
                 {config.selectedType === "life" && (
-                    <div className="grid grid-cols-1 gap-4 rounded-lg border border-kumo-line bg-kumo-control p-4 xl:grid-cols-2">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-kumo-default">
-                                {t("config.dateOfBirth")}
+                    <div className="grid grid-cols-1 gap-5 rounded-lg border border-kumo-line bg-kumo-control p-5 xl:grid-cols-2">
+                        <div className="space-y-4">
+                            <label className="flex items-baseline justify-between text-sm">
+                                <span className="font-medium text-kumo-default">{t("config.dateOfBirth")}</span>
+                                <span className="text-xs text-kumo-subtle">{t("config.dateOfBirthHint")}</span>
                             </label>
                             <Input
                                 type="date"
@@ -109,9 +108,10 @@ function RegistrySettingsPane({
                                 disabled={!typeReady}
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-kumo-default">
-                                {t("config.lifespan")}
+                        <div className="space-y-4">
+                            <label className="flex items-baseline justify-between text-sm">
+                                <span className="font-medium text-kumo-default">{t("config.lifespan")}</span>
+                                <span className="text-xs text-kumo-subtle">{t("config.lifespanHint")}</span>
                             </label>
                             <Input
                                 type="number"
@@ -127,9 +127,9 @@ function RegistrySettingsPane({
                 )}
 
                 {config.selectedType === "goal" && (
-                    <div className="grid grid-cols-1 gap-4 rounded-lg border border-kumo-line bg-kumo-control p-4 xl:grid-cols-2">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-kumo-default">
+                    <div className="grid grid-cols-1 gap-5 rounded-lg border border-kumo-line bg-kumo-control p-5 xl:grid-cols-2">
+                        <div className="space-y-4">
+                            <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.goalName")}
                             </label>
                             <Input
@@ -139,8 +139,8 @@ function RegistrySettingsPane({
                                 disabled={!typeReady}
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-kumo-default">
+                        <div className="space-y-4">
+                            <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.targetDate")}
                             </label>
                             <Input
@@ -156,7 +156,7 @@ function RegistrySettingsPane({
                 <div className="space-y-4">
                     <label className="text-sm font-medium text-kumo-default">{t("config.colors")}</label>
                     <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <span className="text-xs text-kumo-subtle">{t("config.background")}</span>
                             <div className="flex items-center gap-2">
                                 <input
@@ -175,7 +175,7 @@ function RegistrySettingsPane({
                             </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <span className="text-xs text-kumo-subtle">{t("config.accent")}</span>
                             <div className="flex items-center gap-2">
                                 <input
@@ -218,7 +218,7 @@ function RegistrySettingsPane({
                     </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-4">
                     <label className="flex items-baseline justify-between text-sm">
                         <span className="font-medium text-kumo-default">{t("config.device")}</span>
                         <span className="text-xs text-kumo-subtle">
@@ -242,13 +242,13 @@ function RegistrySettingsPane({
                     </Select>
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-kumo-default">{t("config.url")}</label>
-                    <div className="flex items-center gap-2">
+                <div className="space-y-4">
+                    <label className="block text-sm font-medium text-kumo-default">{t("config.url")}</label>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <Input
                             value={url || t("url.placeholder")}
                             readOnly
-                            className="font-mono text-xs"
+                            className="min-w-0 flex-1 font-mono text-xs"
                             disabled={!typeReady}
                         />
                         <Button
