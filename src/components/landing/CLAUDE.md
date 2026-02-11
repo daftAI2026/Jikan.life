@@ -31,7 +31,8 @@ Hero → LogoBar → Problem → Features → HowItWorks → Testimonials → Pr
 
 **设计约束**:
 - 颜色: 仅使用 CSS 变量 (var(--primary) 等)
-- 组件: 仅使用 shadcn/ui 组件 (Button, Card, Badge, Accordion 等)
+- 组件: 仅使用 components/ui (Kumo 适配层 + react-aria)
+- 图标: 统一 @phosphor-icons/react
 - 圆角: 最小 16px，推荐 20-24px
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

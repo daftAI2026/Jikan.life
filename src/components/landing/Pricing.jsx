@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/components/ui/
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/
  * [OUTPUT]: Pricing Section (Apple Spring 动效)
  * [POS]: Landing 定价层 - Spring stagger + highlighted 弹入
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { Check, X } from "lucide-react"
+import { Check, X } from "@phosphor-icons/react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"

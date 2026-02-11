@@ -1,28 +1,19 @@
 /**
- * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date, shared/palettes, shared/wallpaper-core
+ * [INPUT]: 依赖 @/components/ui/*, @/data/countries, @/data/devices, @/lib/renderer, @/lib/I18nContext, @internationalized/date, shared/palettes, shared/wallpaper-core, @phosphor-icons/react
  * [OUTPUT]: Customize Section 组件 (预览 + 配置面板，使用 JollyUI DatePicker)
  * [POS]: Landing Page 第三部分，用户配置壁纸参数，**透传设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Copy, Check } from "lucide-react"
+import { Copy, Check, Calendar as CalendarIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    SelectGroup,
-    SelectLabel,
-} from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 import { JollyDatePicker, DatePicker, DatePickerContent } from "@/components/ui/date-picker"
 import { DateInput } from "@/components/ui/datefield"
 import { Calendar, CalendarCell, CalendarGrid, CalendarGridBody, CalendarGridHeader, CalendarHeaderCell, CalendarHeading, MonthYearPicker } from "@/components/ui/calendar"
 import { FieldGroup } from "@/components/ui/field"
 import { parseDate } from "@internationalized/date"
-import { CalendarIcon } from "lucide-react"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { countries, getTimezone } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
@@ -39,11 +30,10 @@ import { cn } from "@/lib/utils"
 function DeviceFrame({ children }) {
     return (
         <div
-            className="relative bg-muted rounded-[40px] p-[10px]"
+            className="relative bg-muted rounded-[40px] p-[10px] shadow-xl ring-1 ring-border/40"
             style={{
                 width: '260px',
                 height: '530px',
-                boxShadow: 'var(--neumorphic-elevated), var(--neumorphic-highlight)'
             }}
         >
             {/* Notch */}
@@ -301,6 +291,11 @@ export function CustomizeSection({ selectedType }) {
         Android: devices.filter(d => d.category === 'Android'),
         iPad: devices.filter(d => d.category === 'iPad'),
     }
+    const deviceOptions = [
+        ...devicesByCategory.iPhone,
+        ...devicesByCategory.Android,
+        ...devicesByCategory.iPad,
+    ]
 
     return (
         <section id="customize" className="py-24 border-t border-line">
@@ -344,25 +339,28 @@ export function CustomizeSection({ selectedType }) {
                                     <span className="font-medium">{t('config.location')}</span>
                                     <span className="text-xs text-muted-foreground">{t('config.locationHint')}</span>
                                 </label>
-                                <Select value={config.country} onValueChange={(v) => updateConfig('country', v)} disabled={!config.selectedType}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder={t('placeholder.selectCountry')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {countries.map((country) => {
-                                            // 国家代码转国旗 emoji (例: US -> 🇺🇸)
-                                            const flag = country.code
-                                                .toUpperCase()
-                                                .split('')
-                                                .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-                                                .join('')
-                                            return (
-                                                <SelectItem key={country.code} value={country.code}>
-                                                    {flag} {country.name}
-                                                </SelectItem>
-                                            )
-                                        })}
-                                    </SelectContent>
+                                <Select
+                                    value={config.country}
+                                    onValueChange={(value) => {
+                                        if (value == null) return
+                                        updateConfig('country', value)
+                                    }}
+                                    disabled={!config.selectedType}
+                                    placeholder={t('placeholder.selectCountry')}
+                                    className="w-full"
+                                >
+                                    {countries.map((country) => {
+                                        const flag = country.code
+                                            .toUpperCase()
+                                            .split('')
+                                            .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+                                            .join('')
+                                        return (
+                                            <Select.Option key={country.code} value={country.code}>
+                                                {flag} {country.name}
+                                            </Select.Option>
+                                        )
+                                    })}
                                 </Select>
                             </div>
                             <div className="space-y-3">
@@ -370,16 +368,19 @@ export function CustomizeSection({ selectedType }) {
                                     <span className="font-medium">{t('config.wallpaperLang')}</span>
                                     <span className="text-xs text-muted-foreground invisible">Placeholder</span>
                                 </label>
-                                <Select value={config.wallpaperLang} onValueChange={(v) => updateConfig('wallpaperLang', v)} disabled={!config.selectedType}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="en">🇺🇸 English</SelectItem>
-                                        <SelectItem value="zh-CN">🇨🇳 简体中文</SelectItem>
-                                        <SelectItem value="zh-TW">🇨🇳 繁體中文</SelectItem>
-                                        <SelectItem value="ja">🇯🇵 日本語</SelectItem>
-                                    </SelectContent>
+                                <Select
+                                    value={config.wallpaperLang}
+                                    onValueChange={(value) => {
+                                        if (value == null) return
+                                        updateConfig('wallpaperLang', value)
+                                    }}
+                                    disabled={!config.selectedType}
+                                    className="w-full"
+                                >
+                                    <Select.Option value="en">🇺🇸 English</Select.Option>
+                                    <Select.Option value="zh-CN">🇨🇳 简体中文</Select.Option>
+                                    <Select.Option value="zh-TW">🇨🇳 繁體中文</Select.Option>
+                                    <Select.Option value="ja">🇯🇵 日本語</Select.Option>
                                 </Select>
                             </div>
                         </div>
@@ -570,32 +571,18 @@ export function CustomizeSection({ selectedType }) {
                             </label>
                             <Select
                                 value={config.device}
-                                onValueChange={(v) => updateConfig('device', v)}
+                                onValueChange={(value) => {
+                                    if (value == null) return
+                                    updateConfig('device', value)
+                                }}
                                 disabled={!config.selectedType}
+                                className="w-full"
                             >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>iPhone</SelectLabel>
-                                        {devicesByCategory.iPhone.map(d => (
-                                            <SelectItem key={d.name} value={d.name}>{d.name}</SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                    <SelectGroup>
-                                        <SelectLabel>Android</SelectLabel>
-                                        {devicesByCategory.Android.map(d => (
-                                            <SelectItem key={d.name} value={d.name}>{d.name}</SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                    <SelectGroup>
-                                        <SelectLabel>iPad</SelectLabel>
-                                        {devicesByCategory.iPad.map(d => (
-                                            <SelectItem key={d.name} value={d.name}>{d.name}</SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
+                                {deviceOptions.map((device) => (
+                                    <Select.Option key={device.name} value={device.name}>
+                                        {device.name}
+                                    </Select.Option>
+                                ))}
                             </Select>
                         </div>
 

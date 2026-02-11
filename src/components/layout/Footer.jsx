@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 lucide-react (图标), @/components/ui/separator
+ * [INPUT]: 依赖 @phosphor-icons/react (图标), @/components/ui/separator
  * [OUTPUT]: 对外提供 Footer 组件
  * [POS]: 布局组件，包含版权和底部信息
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Separator } from "@/components/ui/separator"
-import { Heart } from "lucide-react"
+import { Heart } from "@phosphor-icons/react"
 
 export function Footer() {
     return (

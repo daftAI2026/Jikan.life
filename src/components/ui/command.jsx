@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 cmdk
+ * [INPUT]: 依赖 cmdk, @phosphor-icons/react
  * [OUTPUT]: 对外提供 Command (命令面板) 相关组件
  * [POS]: ui/ 命令菜单组件，通常用于搜索或快捷操作
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
-import { SearchIcon } from "lucide-react"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -66,7 +66,7 @@ function CommandInput({
     <div
       data-slot="command-input-wrapper"
       className="flex h-9 items-center gap-2 border-b px-3">
-      <SearchIcon className="size-4 shrink-0 opacity-50" />
+      <MagnifyingGlass className="size-4 shrink-0 opacity-50" weight="bold" />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(

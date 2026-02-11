@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-radio-group
+ * [INPUT]: 依赖 @radix-ui/react-radio-group, @phosphor-icons/react
  * [OUTPUT]: 对外提供 RadioGroup 相关组件
  * [POS]: ui/ 单选框组组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
-import { CircleIcon } from "lucide-react"
+import { Circle } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -37,8 +37,10 @@ function RadioGroupItem({
       <RadioGroupPrimitive.Indicator
         data-slot="radio-group-indicator"
         className="relative flex items-center justify-center">
-        <CircleIcon
-          className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2" />
+        <Circle
+          className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2"
+          weight="fill"
+        />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );

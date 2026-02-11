@@ -1,25 +1,15 @@
 /**
- * [INPUT]: 依赖 @/components/ui/color, react-aria-components, @/components/ui/popover, @/components/ui/select, @/components/ui/button, lucide-react
+ * [INPUT]: 依赖 @/components/ui/color, react-aria-components, @/components/ui/popover, @/components/ui/select, @/components/ui/button, @phosphor-icons/react
  * [OUTPUT]: 完整 JollyUI 风格 ColorPicker (EyeDropper + Multi-ColorSpace)
  * [POS]: UI组件层
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-    Popover,
-    PopoverDialog,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Popover } from "@/components/ui/popover"
+import { Select } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { Pipette } from "lucide-react"
+import { Eyedropper } from "@phosphor-icons/react"
 import { useState, useMemo, useContext } from "react"
 import {
     ColorArea,
@@ -62,7 +52,7 @@ function EyeDropperButton() {
             }}
             title="Pick a color from screen"
         >
-            <Pipette className="h-4 w-4" />
+            <Eyedropper className="h-4 w-4" weight="bold" />
         </Button>
     )
 }
@@ -91,28 +81,29 @@ export function ColorPicker({ value, onChange, className, disabled }) {
 
     return (
         <JollyColorPicker value={colorObject} onChange={handleColorChange}>
-            <PopoverTrigger>
-                <Button
-                    variant="outline"
-                    disabled={disabled}
-                    className={cn(
-                        "w-full justify-start text-left font-normal rounded-xl px-2",
-                        className
-                    )}
-                >
-                    <div className="w-full flex items-center gap-2">
-                        <ColorSwatch
-                            color={colorObject}
-                            className="size-6 rounded-md border border-border shrink-0"
-                        />
-                        <span className="truncate font-mono text-sm uppercase text-muted-foreground">
-                            {colorObject.toString('hex')}
-                        </span>
-                    </div>
-                </Button>
-                <Popover>
-                    <PopoverDialog className="w-64 p-3 rounded-xl">
-                        <div className="flex flex-col gap-3">
+            <Popover>
+                <Popover.Trigger asChild>
+                    <Button
+                        variant="outline"
+                        disabled={disabled}
+                        className={cn(
+                            "w-full justify-start text-left font-normal rounded-xl px-2",
+                            className
+                        )}
+                    >
+                        <div className="w-full flex items-center gap-2">
+                            <ColorSwatch
+                                color={colorObject}
+                                className="size-6 rounded-md border border-border shrink-0"
+                            />
+                            <span className="truncate font-mono text-sm uppercase text-muted-foreground">
+                                {colorObject.toString('hex')}
+                            </span>
+                        </div>
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Content className="w-64 rounded-xl p-3" sideOffset={8}>
+                    <div className="flex flex-col gap-3">
                             {/* 1. Color Area (HSB) */}
                             <ColorArea
                                 colorSpace="hsb"
@@ -134,16 +125,15 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                             <div className="flex items-center gap-2">
                                 <EyeDropperButton />
 
-                                <Select value={colorSpace} onValueChange={setColorSpace}>
-                                    <SelectTrigger className="h-8 flex-1 rounded-xl text-xs font-medium uppercase">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent position="popper" className="rounded-xl">
-                                        <SelectItem value="hex" className="text-xs">HEX</SelectItem>
-                                        <SelectItem value="rgb" className="text-xs">RGB</SelectItem>
-                                        <SelectItem value="hsl" className="text-xs">HSL</SelectItem>
-                                        <SelectItem value="hsb" className="text-xs">HSB</SelectItem>
-                                    </SelectContent>
+                                <Select
+                                    value={colorSpace}
+                                    onValueChange={setColorSpace}
+                                    className="h-8 flex-1 rounded-xl text-xs font-medium uppercase"
+                                >
+                                    <Select.Option value="hex">HEX</Select.Option>
+                                    <Select.Option value="rgb">RGB</Select.Option>
+                                    <Select.Option value="hsl">HSL</Select.Option>
+                                    <Select.Option value="hsb">HSB</Select.Option>
                                 </Select>
                             </div>
 
@@ -203,9 +193,8 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                                 )}
                             </div>
                         </div>
-                    </PopoverDialog>
-                </Popover>
-            </PopoverTrigger>
+                </Popover.Content>
+            </Popover>
         </JollyColorPicker>
     )
 }

@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Kumo Infrastructure**: Introduced `vendor/kumo` as the primitive core and established a decoupled UI component library in `src/components/ui`.
+- **Design System Registry**: Implemented a comprehensive Component Registry at `/registry` for visual testing and documentation of Kumo primitives.
+- **GEB Protocol v2**: Established recursive `CLAUDE.md` maps across all core directories (`/src/components`, `/src/lib`, `/src/pages`) to ensure architectural alignment.
+- **Kumo Shell**: Created `KumoShell.jsx` as the new layout foundation for Kumo-based pages.
+- **Behavioral Testing**: Added `tests/kumo-migration.behavior.test.js` to validate design system token compliance and layout integrity.
+
 ### Changed
-- **Theme System**: Consolidated `:root` + `.dark` CSS variable blocks into native `light-dark()` for automatic theme adaptation, eliminating all `dark:` prefixes from component classNames.
-- **Semantic Layer Tokens**: Introduced `--surface-base`, `--surface-elevated`, `--surface-overlay`, and `--line` CSS variables for consistent visual hierarchy.
-- **Border → Ring Migration**: Replaced `border border-border` with `ring-1 ring-line` in Landing cards and config panels for sharper, layout-neutral visual separation.
-- **Tailwind v4 Syntax**: Migrated legacy shorthand (`data-[disabled]` → `data-disabled`, `flex-shrink-0` → `shrink-0`, `z-[150]` → `z-150`, etc.) across all UI components.
+- **UI Primitives Migration**: Refactored 20+ base components (Button, Input, Select, etc.) to use Kumo-style tokens and `react-aria-components` for enhanced accessibility.
+- **Global Theme Engine**: Upgraded `src/index.css` to use Tailwind v4 compatible theme tokens and native `light-dark()` color schemes.
+- **Site Layout**: Updated `src/pages/Home.jsx` and `src/pages/DesignSystem.jsx` to reflect the new infrastructure.
 
 ### Added
 - **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.

@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 react-aria-components, @internationalized/date
+ * [INPUT]: 依赖 react-aria-components, @internationalized/date, @phosphor-icons/react
  * [OUTPUT]: JollyDatePicker, JollyDateRangePicker (带输入框的日期选择器)
  * [POS]: UI组件层 - 日期选择器，基于 react-aria-components，支持键盘输入和日历选择
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 "use client";
-import { CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon } from "@phosphor-icons/react"
 import {
   DatePicker as AriaDatePicker,
   DateRangePicker as AriaDateRangePicker,
@@ -73,7 +73,7 @@ function JollyDatePicker(
           variant="ghost"
           size="icon"
           className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
-          <CalendarIcon aria-hidden className="size-4" />
+          <CalendarIcon aria-hidden className="size-4" weight="bold" />
         </Button>
       </FieldGroup>
       {description && (

@@ -4,11 +4,12 @@
  * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom"
 import { AnimatePresence, MotionConfig, motion } from "framer-motion"
-import { Header } from "@/components/layout/Header"
+import { KumoShell } from "@/components/layout/KumoShell"
 import LandingPage from "@/pages/LandingPage"
 import DesignSystem from "@/pages/DesignSystem"
+import RegistryHome from "@/pages/registry/RegistryHome"
 import { Toaster } from "@/components/ui/sonner"
 import { pageTransition } from "@/lib/motion"
 
@@ -29,8 +30,11 @@ function AnimatedRoutes() {
                 className="flex-1"
             >
                 <Routes location={location}>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/design" element={<DesignSystem />} />
+                    <Route path="/" element={<RegistryHome />} />
+                    <Route element={<AppShell />}>
+                        <Route path="/app" element={<LandingPage />} />
+                        <Route path="/design" element={<DesignSystem />} />
+                    </Route>
                 </Routes>
             </motion.div>
         </AnimatePresence>
@@ -69,10 +73,7 @@ function App() {
                 <MotionConfig reducedMotion="user">
                     <BrowserRouter>
                         <div className="relative flex min-h-screen flex-col bg-background">
-                            <Header />
-                            <main className="flex-1 flex flex-col">
-                                <AnimatedRoutes />
-                            </main>
+                            <AnimatedRoutes />
                             <Toaster />
                         </div>
                     </BrowserRouter>
@@ -83,3 +84,13 @@ function App() {
 }
 
 export default App
+
+function AppShell() {
+    return (
+        <KumoShell>
+            <div className="flex flex-1 flex-col">
+                <Outlet />
+            </div>
+        </KumoShell>
+    )
+}

@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-accordion
+ * [INPUT]: 依赖 @radix-ui/react-accordion, @phosphor-icons/react
  * [OUTPUT]: 对外提供 Accordion 相关组件
  * [POS]: ui/ 手风琴折叠组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -8,7 +8,7 @@
 
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
-import { ChevronDownIcon } from "lucide-react"
+import { CaretDown } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -45,7 +45,7 @@ function AccordionTrigger({
         )}
         {...props}>
         {children}
-        <ChevronDownIcon
+        <CaretDown
           className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>

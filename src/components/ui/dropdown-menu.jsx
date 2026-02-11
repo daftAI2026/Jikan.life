@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-dropdown-menu
+ * [INPUT]: 依赖 @radix-ui/react-dropdown-menu, @phosphor-icons/react
  * [OUTPUT]: 对外提供 DropdownMenu 相关组件
  * [POS]: ui/ 下拉菜单组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
+import { Check, CaretRight, Circle } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -90,7 +90,7 @@ function DropdownMenuCheckboxItem({
       <span
         className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <Check className="size-4" weight="bold" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -120,7 +120,7 @@ function DropdownMenuRadioItem({
       <span
         className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <Circle className="size-2 fill-current" weight="fill" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -188,7 +188,7 @@ function DropdownMenuSubTrigger({
       )}
       {...props}>
       {children}
-      <ChevronRightIcon className="ml-auto size-4" />
+      <CaretRight className="ml-auto size-4" weight="bold" />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }

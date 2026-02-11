@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 react-aria-components, @internationalized/date
+ * [INPUT]: 依赖 react-aria-components, @internationalized/date, @phosphor-icons/react, @/components/ui/select, @/components/ui/button, @/lib/utils
  * [OUTPUT]: JollyCalendar, JollyRangeCalendar, MonthYearPicker (日历组件，基于 react-aria)
  * [POS]: ui/ 日历组件，支持单选、范围选择、月份/年份快速选择
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
 import { getLocalTimeZone, today } from "@internationalized/date"
-import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"
+import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 import {
   Button as AriaButton,
   Calendar as AriaCalendar,
@@ -26,13 +26,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 
 const Calendar = AriaCalendar
 
@@ -75,49 +69,33 @@ function MonthYearPicker({
       <Select
         value={state.focusedDate.month.toString()}
         onValueChange={(value) => {
-          state.setFocusedDate(state.focusedDate.set({ month: parseInt(value) }))
+          if (value == null) return
+          const nextValue = Number.parseInt(String(value), 10)
+          state.setFocusedDate(state.focusedDate.set({ month: nextValue }))
         }}
-        modal={false}
+        className="h-8 flex-1"
       >
-        <SelectTrigger className="h-8 flex-1">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent
-          position="popper"
-          sideOffset={4}
-          className="z-[200]"
-          portalled={false}
-          preventAutoFocus>
-          {months.map((month) => (
-            <SelectItem key={month.value} value={month.value.toString()}>
-              {month.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        {months.map((month) => (
+          <Select.Option key={month.value} value={month.value.toString()}>
+            {month.label}
+          </Select.Option>
+        ))}
       </Select>
 
       <Select
         value={state.focusedDate.year.toString()}
         onValueChange={(value) => {
-          state.setFocusedDate(state.focusedDate.set({ year: parseInt(value) }))
+          if (value == null) return
+          const nextValue = Number.parseInt(String(value), 10)
+          state.setFocusedDate(state.focusedDate.set({ year: nextValue }))
         }}
-        modal={false}
+        className="h-8 w-24"
       >
-        <SelectTrigger className="h-8 w-24">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent
-          position="popper"
-          sideOffset={4}
-          className="z-[200]"
-          portalled={false}
-          preventAutoFocus>
-          {years.map((year) => (
-            <SelectItem key={year} value={year.toString()}>
-              {year}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        {years.map((year) => (
+          <Select.Option key={year} value={year.toString()}>
+            {year}
+          </Select.Option>
+        ))}
       </Select>
     </div>
   )
@@ -137,9 +115,9 @@ const CalendarHeading = (props) => {
           "data-[hovered]:opacity-100"
         )}>
         {direction === "rtl" ? (
-          <ChevronRight aria-hidden className="size-4" />
+          <CaretRight aria-hidden className="size-4" />
         ) : (
-          <ChevronLeft aria-hidden className="size-4" />
+          <CaretLeft aria-hidden className="size-4" />
         )}
       </AriaButton>
       <AriaHeading className="grow text-center text-sm font-medium" />
@@ -152,9 +130,9 @@ const CalendarHeading = (props) => {
           "data-[hovered]:opacity-100"
         )}>
         {direction === "rtl" ? (
-          <ChevronLeft aria-hidden className="size-4" />
+          <CaretLeft aria-hidden className="size-4" />
         ) : (
-          <ChevronRight aria-hidden className="size-4" />
+          <CaretRight aria-hidden className="size-4" />
         )}
       </AriaButton>
     </header>

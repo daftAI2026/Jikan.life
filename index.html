@@ -1,12 +1,38 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<!--
+[INPUT]: 依赖 /Users/luo/Desktop/ClaudeCode/Jikan.life/src/main.jsx 作为应用入口
+[OUTPUT]: 对外提供 Kumo 风格的 HTML 基础结构与主题初始化
+[POS]: 项目根页面模板，承载全局 meta、字体与 theme 引导
+[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+<html lang="en" class="bg-kumo-elevated" data-mode="light">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="kumo-version" content="1.0.0" />
+    <meta name="docs-version" content="1.0.0" />
+    <meta name="build-commit" content="4ee7723" />
+    <meta name="build-date" content="2024-01-01T00:00:00.000Z" />
+    <title>Kumo</title>
+    <meta name="description" content="Kumo – a modern component library" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JIKAN | 人生不只是格子</title>
-    <meta name="description" content="动态人生进度墙纸生成器，支持 Vite + React + Tailwind CSS v4" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=optional"
+    />
+    <script>
+        (function () {
+            const stored = localStorage.getItem("theme")
+            if (stored) {
+                document.documentElement.setAttribute("data-mode", stored)
+            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                document.documentElement.setAttribute("data-mode", "dark")
+            }
+        })()
+    </script>
 </head>
 
 <body>

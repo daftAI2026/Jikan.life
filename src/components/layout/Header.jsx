@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 lucide-react, react, @/components/ui/button, @/components/ui/dropdown-menu, @/lib/I18nContext
+ * [INPUT]: 依赖 @phosphor-icons/react, react, @/components/ui/button, @/components/ui/dropdown-menu, @/lib/I18nContext
  * [OUTPUT]: 对外提供 Header 组件 (固定导航栏)
  * [POS]: 布局组件，全站顶部导航，三段式布局: Logo | 导航链接 | 工具栏
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState, useEffect } from "react"
-import { Github, Sun, Moon } from "lucide-react"
+import { GithubLogo, Sun, Moon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -23,30 +23,25 @@ const LANG_CONFIG = {
 }
 
 export function Header() {
-    const [theme, setTheme] = useState('dark')
+    const [mode, setMode] = useState(() => {
+        if (typeof document === "undefined") {
+            return "light"
+        }
+        const savedMode = localStorage.getItem("mode")
+        return savedMode || document.documentElement.dataset.mode || "light"
+    })
     const { lang, setLanguage, t } = useI18n()
 
-    // 初始化主题
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') || 'dark'
-        setTheme(savedTheme)
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
+        if (typeof document === "undefined") {
+            return
         }
-    }, [])
+        document.documentElement.setAttribute("data-mode", mode)
+        localStorage.setItem("mode", mode)
+    }, [mode])
 
-    // 切换主题
     const toggleTheme = () => {
-        const newTheme = theme === 'dark' ? 'light' : 'dark'
-        setTheme(newTheme)
-        localStorage.setItem('theme', newTheme)
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
+        setMode((prevMode) => (prevMode === "dark" ? "light" : "dark"))
     }
 
     return (
@@ -91,8 +86,14 @@ export function Header() {
                         aria-label="Toggle theme"
                         className="relative"
                     >
-                        <Sun className={`h-[1.2rem] w-[1.2rem] transition-all ${theme === 'light' ? 'rotate-0 scale-100' : '-rotate-90 scale-0'}`} />
-                        <Moon className={`absolute h-[1.2rem] w-[1.2rem] transition-all ${theme === 'dark' ? 'rotate-0 scale-100' : 'rotate-90 scale-0'}`} />
+                        <Sun
+                            weight="bold"
+                            className={`h-[1.2rem] w-[1.2rem] transition-all ${mode === 'light' ? 'rotate-0 scale-100' : '-rotate-90 scale-0'}`}
+                        />
+                        <Moon
+                            weight="bold"
+                            className={`absolute h-[1.2rem] w-[1.2rem] transition-all ${mode === 'dark' ? 'rotate-0 scale-100' : 'rotate-90 scale-0'}`}
+                        />
                     </Button>
 
                     {/* Language Selector (DropdownMenu) */}
@@ -125,7 +126,7 @@ export function Header() {
                             rel="noopener noreferrer"
                             aria-label="JIKAN on GitHub"
                         >
-                            <Github className="h-[1.2rem] w-[1.2rem]" />
+                            <GithubLogo className="h-[1.2rem] w-[1.2rem]" weight="fill" />
                         </a>
                     </Button>
                 </div>

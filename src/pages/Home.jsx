@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/components/ui/ (button, card, badge)
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/ (button, card, badge)
  * [OUTPUT]: 对外提供 Home 页面组件
  * [POS]: 首页内容，包含 Hero 区域和功能亮点
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { Sparkles, ArrowRight, Smartphone, Clock, Palette } from "lucide-react"
+import { Star, ArrowRight, DeviceMobile, Clock, Palette } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import { Button as ShadcnButton } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,7 +23,7 @@ export default function Home() {
                             transition={{ duration: 0.5 }}
                         >
                             <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium">
-                                <Sparkles className="mr-2 h-3.5 w-3.5 text-primary" />
+                                <Star className="mr-2 h-3.5 w-3.5 text-primary" />
                                 Vite + React + Tailwind v4 强力驱动
                             </Badge>
                         </motion.div>
@@ -73,7 +73,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {[
                         {
-                            icon: <Smartphone className="h-6 w-6" />,
+                            icon: <DeviceMobile className="h-6 w-6" />,
                             title: "设备完美适配",
                             description: "针对主流 iPhone 型号进行像素级适配，完美避开刘海与灵动岛。"
                         },

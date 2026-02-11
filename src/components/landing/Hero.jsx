@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/lib/motion, @/components/ui/button, @/lib/I18nContext
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/lib/motion, @/components/ui/button, @/lib/I18nContext
  * [OUTPUT]: Hero Section 组件 (原项目风格 + Framer Motion + i18n)
  * [POS]: Landing 核心 - Above the Fold 首屏，动画网格背景
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { ArrowDown } from "lucide-react"
+import { ArrowDown } from "@phosphor-icons/react"
 import {
     fadeInUp,
     staggerContainer,

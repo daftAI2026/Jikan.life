@@ -17,6 +17,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/src',
+            'match-sorter': '/src/lib/match-sorter-shim.js',
         },
     },
     server: {

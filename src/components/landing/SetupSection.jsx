@@ -1,14 +1,15 @@
 /**
- * [INPUT]: 依赖 @/components/ui (Tabs, Badge), @/lib/motion, framer-motion, @/lib/I18nContext
+ * [INPUT]: 依赖 react (useState), @/components/ui (Tabs, Badge), @/lib/motion, framer-motion, @/lib/I18nContext, @phosphor-icons/react
  * [OUTPUT]: 对外提供 SetupSection 组件 (iOS/Android 设置教程 + i18n)
  * [POS]: landing/ 的设置教程模块，位于 Customize 之后
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Tabs } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { staggerContainer, staggerItem, fadeInUp, viewportConfig } from "@/lib/motion"
-import { Apple, Smartphone, AlertTriangle } from "lucide-react"
+import { AppleLogo, DeviceMobile, WarningCircle } from "@phosphor-icons/react"
 import { useI18n } from "@/lib/I18nContext"
 
 function CodeSnippet({ children }) {
@@ -22,7 +23,7 @@ function CodeSnippet({ children }) {
 function HighlightBadge({ children }) {
     return (
         <span className="highlight-badge flex items-start gap-2 text-left">
-            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+            <WarningCircle className="w-4 h-4 mt-0.5 shrink-0" />
             <span>{children}</span>
         </span>
     )
@@ -76,6 +77,7 @@ function StepTimeline({ steps }) {
 
 export function SetupSection() {
     const { t } = useI18n()
+    const [activeTab, setActiveTab] = useState("ios")
 
     // 使用 dangerouslySetInnerHTML 渲染带 HTML 的翻译，需要包装组件
     const HtmlDesc = ({ htmlKey }) => (
@@ -115,6 +117,27 @@ export function SetupSection() {
         { number: 5, title: t('setup.android.step5'), description: <HtmlDesc htmlKey="setup.android.step5Desc" /> }
     ]
 
+    const tabs = [
+        {
+            value: "ios",
+            label: (
+                <span className="inline-flex items-center gap-2">
+                    <AppleLogo className="w-4 h-4" />{t('setup.ios')}
+                </span>
+            ),
+            className: "rounded-full",
+        },
+        {
+            value: "android",
+            label: (
+                <span className="inline-flex items-center gap-2">
+                    <DeviceMobile className="w-4 h-4" />{t('setup.android')}
+                </span>
+            ),
+            className: "rounded-full",
+        },
+    ]
+
     return (
         <section id="setup" className="py-24 px-6 bg-background">
             <div className="max-w-5xl mx-auto">
@@ -124,26 +147,24 @@ export function SetupSection() {
                 </motion.div>
 
                 <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={viewportConfig}>
-                    <Tabs defaultValue="ios" className="w-full">
-                        <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2 mb-12 p-1 bg-muted/50 rounded-full">
-                            <TabsTrigger value="ios" className="gap-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                                <Apple className="w-4 h-4" />{t('setup.ios')}
-                            </TabsTrigger>
-                            <TabsTrigger value="android" className="gap-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                                <Smartphone className="w-4 h-4" />{t('setup.android')}
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="ios" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-                            <div className="bg-card/30 rounded-[32px] p-8 md:p-12 border shadow-xl backdrop-blur-md">
-                                <StepTimeline steps={IOS_STEPS} />
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="android" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-                            <div className="bg-card/30 rounded-[32px] p-8 md:p-12 border shadow-xl backdrop-blur-md">
-                                <StepTimeline steps={ANDROID_STEPS} />
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+                    <Tabs
+                        variant="segmented"
+                        tabs={tabs}
+                        selectedValue={activeTab}
+                        onValueChange={setActiveTab}
+                        className="w-full"
+                        listClassName="grid w-full max-w-xs mx-auto grid-cols-2 mb-12 p-1 bg-muted/50 rounded-full"
+                        indicatorClassName="rounded-full"
+                    />
+                    {activeTab === "ios" ? (
+                        <div className="bg-card/30 rounded-[32px] p-8 md:p-12 border shadow-xl backdrop-blur-md">
+                            <StepTimeline steps={IOS_STEPS} />
+                        </div>
+                    ) : (
+                        <div className="bg-card/30 rounded-[32px] p-8 md:p-12 border shadow-xl backdrop-blur-md">
+                            <StepTimeline steps={ANDROID_STEPS} />
+                        </div>
+                    )}
                 </motion.div>
             </div>
         </section>

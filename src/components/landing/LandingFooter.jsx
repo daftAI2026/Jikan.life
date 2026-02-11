@@ -1,16 +1,17 @@
 /**
- * [INPUT]: 依赖 lucide-react (图标), react-icons/si (品牌图标)
+ * [INPUT]: 依赖 @phosphor-icons/react (图标), @/components/icons/BrandLogos, @/data/social-links
  * [OUTPUT]: Landing Footer 组件
  * [POS]: Landing 底部层 - 极简版权信息 + 社交入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Heart } from "lucide-react"
-import { SiGithub, SiXiaohongshu } from "react-icons/si"
+import { Heart, GithubLogo } from "@phosphor-icons/react"
+import { XiaohongshuLogo } from "@/components/icons/BrandLogos"
+import { SOCIAL_LINKS } from "@/data/social-links"
 
-const SOCIAL_LINKS = [
-    { icon: SiGithub, href: "https://github.com/daftAI2026/Jikan.life", label: "GitHub", className: "size-5" },
-    { icon: SiXiaohongshu, href: "https://www.xiaohongshu.com/user/profile/5f4696c800000000010011f6?xsec_token=ABdWCr27MLyMrcQicvc41Q6L70BC6otUUSq7zILtfu1vE=&xsec_source=pc_note", label: "Xiaohongshu", className: "size-9" },
-]
+const SOCIAL_ICON_MAP = {
+    github: GithubLogo,
+    xiaohongshu: XiaohongshuLogo,
+}
 
 export function LandingFooter() {
     return (
@@ -21,11 +22,15 @@ export function LandingFooter() {
                         &copy; {new Date().getFullYear()} JIKAN. Built with <Heart className="h-3 w-3 fill-primary text-primary" /> for life.
                     </p>
                     <div className="flex items-center gap-4">
-                        {SOCIAL_LINKS.map((social) => (
-                            <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={social.label}>
-                                <social.icon className={social.className} />
-                            </a>
-                        ))}
+                        {SOCIAL_LINKS.map((social) => {
+                            const Icon = SOCIAL_ICON_MAP[social.id]
+                            if (!Icon) return null
+                            return (
+                                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={social.label}>
+                                    <Icon className={social.className} />
+                                </a>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

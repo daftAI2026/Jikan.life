@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-checkbox
+ * [INPUT]: 依赖 @radix-ui/react-checkbox, @phosphor-icons/react
  * [OUTPUT]: 对外提供 Checkbox 相关组件
  * [POS]: ui/ 复选框组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -8,7 +8,7 @@
 
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import { CheckIcon } from "lucide-react"
+import { Check } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -27,7 +27,7 @@ function Checkbox({
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
         className="grid place-content-center text-current transition-none">
-        <CheckIcon className="size-3.5" />
+        <Check className="size-3.5" weight="bold" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

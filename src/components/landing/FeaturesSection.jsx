@@ -1,18 +1,18 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/components/ui/ (Card, Badge)
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/ (Card, Badge)
  * [OUTPUT]: Features Section (Apple Spring + Bento Grid)
  * [POS]: Landing 功能层 - Spring stagger 进场 + hover lift
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { Smartphone, Clock, Palette, Globe, Zap, Shield } from "lucide-react"
+import { DeviceMobile, Clock, Palette, Globe, Lightning, Shield } from "@phosphor-icons/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { fadeInUp, staggerContainer, staggerItem, viewportConfig, scaleIn } from "@/lib/motion"
 
 const FEATURES = [
     {
-        icon: Smartphone,
+        icon: DeviceMobile,
         title: "设备完美适配",
         description: "针对主流 iPhone 型号进行像素级适配，完美避开刘海与灵动岛。",
         span: "col-span-1 md:col-span-2",
@@ -37,7 +37,7 @@ const FEATURES = [
         span: "col-span-1"
     },
     {
-        icon: Zap,
+        icon: Lightning,
         title: "极速生成",
         description: "毫秒级响应，SVG 矢量渲染确保清晰。",
         span: "col-span-1"

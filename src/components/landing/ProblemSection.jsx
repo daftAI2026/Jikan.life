@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/components/ui/ (Card)
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/ (Card)
  * [OUTPUT]: Problem-Agitation Section (Apple Spring 动效)
  * [POS]: Landing 痛点层 - Spring stagger 进场
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { X } from "lucide-react"
+import { X } from "@phosphor-icons/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { fadeInUp, staggerContainer, staggerItem, viewportConfig } from "@/lib/motion"
 

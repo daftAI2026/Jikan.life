@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 lucide-react, react, @/components/ui/button, @/lib/I18nContext
+ * [INPUT]: 依赖 @phosphor-icons/react, react, @/components/ui/button, @/lib/I18nContext
  * [OUTPUT]: Types Section 组件 (展示三种壁纸类型 + i18n)
  * [POS]: Landing Page 第二部分，展示核心产品功能
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight, Check } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useState, useEffect, useMemo } from "react"

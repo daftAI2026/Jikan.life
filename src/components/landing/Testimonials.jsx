@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 framer-motion, lucide-react, @/components/ui/
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/
  * [OUTPUT]: Testimonials Section (Apple Spring 动效)
  * [POS]: Landing 社证层 - Spring stagger 进场
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { Quote, Star } from "lucide-react"
+import { Quotes, Star } from "@phosphor-icons/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -95,7 +95,7 @@ export function Testimonials() {
                                             whileHover={{ scale: 1.2, rotate: -5 }}
                                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                         >
-                                            <Quote className="h-8 w-8" />
+                                            <Quotes className="h-8 w-8" />
                                         </motion.div>
 
                                         {/* Star Rating */}

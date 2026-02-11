@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 shadcn/ui 全量组件库 + 微拟物升级版
+ * [INPUT]: 依赖 @/components/ui (Button, Card, Badge, Input, Label, Switch, Progress, Separator)
  * [OUTPUT]: 对外提供 DesignSystem 展示组件
- * [POS]: 用于开发调试和规范验证的页面，展示微拟物设计语言
+ * [POS]: 用于开发调试和规范验证的页面，展示当前 UI 设计语言
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"

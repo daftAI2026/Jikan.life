@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-dialog
+ * [INPUT]: 依赖 @radix-ui/react-dialog, @phosphor-icons/react
  * [OUTPUT]: 对外提供 Sheet (抽屉) 相关组件
  * [POS]: ui/ 侧边抽屉组件，用于移动端导航或详细信息展示
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
-import { XIcon } from "lucide-react"
+import { X } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -78,7 +78,7 @@ function SheetContent({
         {showCloseButton && (
           <SheetPrimitive.Close
             className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
-            <XIcon className="size-4" />
+            <X className="size-4" weight="bold" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

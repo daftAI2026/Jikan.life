@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 @radix-ui/react-navigation-menu
+ * [INPUT]: 依赖 @radix-ui/react-navigation-menu, @phosphor-icons/react
  * [OUTPUT]: 对外提供 NavigationMenu 相关组件
  * [POS]: ui/ 导航菜单组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -7,7 +7,7 @@
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
-import { ChevronDownIcon } from "lucide-react"
+import { CaretDown } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -71,7 +71,7 @@ function NavigationMenuTrigger({
       className={cn(navigationMenuTriggerStyle(), "group", className)}
       {...props}>
       {children}{" "}
-      <ChevronDownIcon
+      <CaretDown
         className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
         aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
