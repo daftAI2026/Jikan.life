@@ -120,6 +120,13 @@ html {
     margin-left: 48px;
   }
 }
+
+/* Registry language dropdown: align popup's left edge with trigger */
+.registry-language-select-open [data-side][data-align] > .p-1\.5 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* ============================================
    Navigation - 从原项目迁移 (HEAD commit)
    三段式布局 + 主题切换 + 语言选择器

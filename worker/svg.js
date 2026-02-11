@@ -5,16 +5,13 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 // SVG utility functions for building wallpaper graphics
+import { getWallpaperFontFamily } from '../shared/wallpaper-core.js';
 
 /**
  * Create SVG document wrapper
  */
 export function createSVG(width, height, content, lang = 'en') {
-    // Determine the font family based on language
-    let fontFamily = 'Inter, -apple-system, sans-serif';
-    if (lang === 'zh-CN') fontFamily = 'Noto Sans SC, Inter, sans-serif';
-    else if (lang === 'zh-TW') fontFamily = 'Noto Sans TC, Inter, sans-serif';
-    else if (lang === 'ja') fontFamily = 'Noto Sans JP, Inter, sans-serif';
+    const fontFamily = getWallpaperFontFamily(lang);
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${fontFamily}">

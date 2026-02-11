@@ -16,6 +16,7 @@ import {
     getDaysInYear,
     isLeapYear,
     getWallpaperText,
+    getWallpaperFontFamily,
     formatGoalDate
 } from '../../shared/wallpaper-core.js';
 
@@ -45,9 +46,10 @@ function getLocalToday() {
 
 export function drawStats(ctx, width, y, text1, text2, config, fontScale = 1) {
     const safeAccent = getSafeAccent(config.bgColor, config.accentColor);
+    const fontFamily = getWallpaperFontFamily(config.wallpaperLang);
 
-    const font1 = `500 ${width * 0.032 * fontScale}px Inter, sans-serif`;
-    const font2 = `500 ${width * 0.032 * fontScale}px "SF Mono", "Menlo", "Courier New", monospace`;
+    const font1 = `500 ${width * 0.032 * fontScale}px ${fontFamily}`;
+    const font2 = `500 ${width * 0.032 * fontScale}px ${fontFamily}`;
 
     ctx.font = font1;
     const w1 = ctx.measureText(text1).width;
@@ -160,6 +162,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     });
 
     const { ring, safeAccent, bgColor } = layout;
+    const fontFamily = getWallpaperFontFamily(config.wallpaperLang);
 
     // Background ring
     ctx.strokeStyle = contrastAlpha(bgColor, 0.1);
@@ -180,20 +183,20 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
 
     // Days number (center)
     ctx.fillStyle = safeAccent;
-    ctx.font = `bold ${layout.numberFontSize}px Inter, sans-serif`;
+    ctx.font = `700 ${layout.numberFontSize}px ${fontFamily}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(layout.daysRemaining.toString(), ring.centerX, ring.centerY - 4);
 
     // "X days left" label
     ctx.fillStyle = contrastAlpha(bgColor, 0.5);
-    ctx.font = `${layout.labelFontSize}px Inter, sans-serif`;
+    ctx.font = `400 ${layout.labelFontSize}px ${fontFamily}`;
     ctx.fillText(layout.daysLeftText, ring.centerX, layout.labelY);
 
     // Goal name
     if (layout.goalName) {
         ctx.fillStyle = contrastAlpha(bgColor, 0.9);
-        ctx.font = `600 ${layout.nameFontSize}px Inter, sans-serif`;
+        ctx.font = `600 ${layout.nameFontSize}px ${fontFamily}`;
         ctx.fillText(layout.goalName, ring.centerX, layout.goalNameY);
     }
 
@@ -201,7 +204,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     if (config.goalDate) {
         const dateStr = formatGoalDate(config.goalDate, config.wallpaperLang);
         ctx.fillStyle = contrastAlpha(bgColor, 0.4);
-        ctx.font = `400 ${width * 0.028}px Inter, sans-serif`;
+        ctx.font = `400 ${width * 0.028}px ${fontFamily}`;
         ctx.fillText(dateStr, ring.centerX, layout.targetDateY);
     }
 }

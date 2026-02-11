@@ -8,11 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Registry UI Refinement**: Increased sidebar width for better readability and added `line-clamp-3` to style descriptions for visual consistency.
-- **Preview Scaling**: Switched to "cover" scaling in the registry preview pane to ensure wallpapers correctly fill the simulated device screen.
-- **Registry Workspace**: Implemented a split-pane workspace in the Design System Registry (`/registry`) with a live configuration sidebar and instant preview pane.
-- **Wallpaper Configuration Hook**: Introduced `useRegistryWallpaperConfig` to centralize wallpaper state, palette logic, and URL generation for all registry demos.
-- **Kumo Submodule**: Formalized `vendor/kumo` as a tracked Git submodule to manage upstream design system dependencies.
+- **Font Unification**: Centralized font family logic in `shared/wallpaper-core.js` to ensure consistent CJK rendering across Canvas preview and Worker SVG generation.
+- **Registry Language Selector**: Integrated a dedicated language selector into the Registry shell for independent testing of localized wallpaper content.
+- **Registry Shell Layout**: Refined the three-column layout (Sidebar/Preview/Settings) and enforced `fixed` positioning for the topbar to ensure a stable workspace.
 
 
 - **Registry Social Links**: Integrated Xiaohongshu and GitHub navigation into the Registry topbar, replacing static version strings with branded iconography.

@@ -61,7 +61,7 @@ function RegistryPreviewPane({ config, selectedDevice, t }) {
 
     return (
         <div className="flex h-full min-h-[420px] flex-col items-center justify-center gap-4 px-6 py-8">
-            <div className="relative h-[530px] w-[260px] rounded-[40px] bg-kumo-recessed p-[10px] shadow-xl ring-1 ring-kumo-line">
+            <div className="relative h-[530px] w-[260px] rounded-[40px] bg-kumo-recessed p-[10px] ring-1 ring-kumo-line">
                 <div className="absolute top-[10px] left-1/2 z-10 h-[28px] w-[100px] -translate-x-1/2 rounded-b-2xl bg-kumo-strong" />
                 <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[32px] bg-kumo-base">
                     {config.selectedType ? (

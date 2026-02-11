@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useMemo/useState), @cloudflare/kumo(Button/cn), @phosphor-icons/react(XIcon), KumoMenuIcon
+ * [INPUT]: 依赖 react(useMemo/useState), @cloudflare/kumo(Button/cn), @phosphor-icons/react(XIcon), KumoMenuIcon, @/lib/I18nContext
  * [OUTPUT]: 对外提供 RegistrySidebar 受控侧边栏组件（支持 selectedStyle/onStyleChange）
  * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -8,24 +8,7 @@ import { useMemo, useState } from "react"
 import { Button, cn } from "@cloudflare/kumo"
 import { XIcon } from "@phosphor-icons/react"
 import { KumoMenuIcon } from "./KumoMenuIcon"
-
-const STYLE_CARDS = [
-    {
-        id: "year",
-        title: "Year Progress",
-        description: "Every day of the year as a grid. Watch your year fill up, one square at a time.",
-    },
-    {
-        id: "life",
-        title: "Life Calendar",
-        description: "Every week of your life as a dot. A powerful reminder to make each week count.",
-    },
-    {
-        id: "goal",
-        title: "Goal Countdown",
-        description: "Count down to what matters. Big launch, vacation, or life milestone.",
-    },
-]
+import { useI18n } from "@/lib/I18nContext"
 
 function getDayOfYear() {
     const now = new Date()
@@ -86,7 +69,7 @@ function LifeVisual() {
     )
 }
 
-function GoalVisual() {
+function GoalVisual({ dayLabel }) {
     return (
         <div className="flex h-full items-center justify-center">
             <div className="relative h-[100px] w-[100px]">
@@ -115,7 +98,9 @@ function GoalVisual() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="font-mono text-2xl leading-none font-bold text-kumo-contrast">42</span>
-                    <span className="mt-1 text-[10px] uppercase tracking-wider text-kumo-subtle">DAY</span>
+                    <span className="mt-1 text-[10px] uppercase tracking-wider text-kumo-subtle">
+                        {dayLabel}
+                    </span>
                 </div>
             </div>
         </div>
@@ -123,27 +108,49 @@ function GoalVisual() {
 }
 
 function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", onStyleChange }) {
+    const { t } = useI18n()
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+    const styleCards = useMemo(
+        () => [
+            {
+                id: "year",
+                title: t("type.year.name"),
+                description: t("type.year.description"),
+            },
+            {
+                id: "life",
+                title: t("type.life.name"),
+                description: t("type.life.description"),
+            },
+            {
+                id: "goal",
+                title: t("type.goal.name"),
+                description: t("type.goal.description"),
+            },
+        ],
+        [t]
+    )
 
     const yearStats = useMemo(() => getYearStats(), [])
     const cardStats = useMemo(
         () => ({
             year: [
-                { label: "DAY", value: String(yearStats.day) },
-                { label: "WEEK", value: String(yearStats.week) },
-                { label: "COMPLETE", value: `${yearStats.percent}%` },
+                { label: t("type.year.statDay"), value: String(yearStats.day) },
+                { label: t("type.year.statWeek"), value: String(yearStats.week) },
+                { label: t("type.year.statComplete"), value: `${yearStats.percent}%` },
             ],
             life: [
-                { label: "TOTAL WEEKS", value: "4,160" },
-                { label: "YEARS", value: "80" },
+                { label: t("type.life.statWeeks"), value: t("type.life.valueWeeks") },
+                { label: t("type.life.statYears"), value: t("type.life.valueYears") },
             ],
             goal: [
-                { label: "GOALS", value: "∞" },
-                { label: "UPDATES", value: "Daily" },
+                { label: t("type.goal.statGoals"), value: "∞" },
+                { label: t("type.goal.statUpdates"), value: t("type.goal.valueDaily") },
             ],
         }),
-        [yearStats.day, yearStats.week, yearStats.percent]
+        [t, yearStats.day, yearStats.week, yearStats.percent]
     )
 
     const handleStyleSelect = (styleId) => {
@@ -154,12 +161,12 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
         <div className="flex h-full min-h-0 flex-col bg-kumo-elevated text-kumo-strong">
             <div className="px-1 pb-2">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-kumo-subtle">
-                    Choose Your Style
+                    {t("types.header")}
                 </p>
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">
-                {STYLE_CARDS.map((style, index) => {
+                {styleCards.map((style, index) => {
                     const isSelected = selectedStyle === style.id
                     const stats = cardStats[style.id]
 
@@ -191,7 +198,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                     )}
                                     {style.id === "goal" && (
                                         <div className="origin-center scale-[0.8]">
-                                            <GoalVisual />
+                                            <GoalVisual dayLabel={t("type.year.statDay")} />
                                         </div>
                                     )}
                                 </div>
@@ -252,7 +259,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                 <Button
                     variant="ghost"
                     shape="square"
-                    aria-label="Open menu"
+                    aria-label={t("registry.menu.open")}
                     onClick={() => setMobileMenuOpen((v) => !v)}
                 >
                     <KumoMenuIcon />
@@ -273,7 +280,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                     <Button
                         variant="ghost"
                         shape="square"
-                        aria-label="Close menu"
+                        aria-label={t("registry.menu.close")}
                         onClick={() => setMobileMenuOpen(false)}
                     >
                         <XIcon size={20} />
@@ -288,7 +295,7 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                         <Button
                             variant="ghost"
                             shape="square"
-                            aria-label="Toggle sidebar"
+                            aria-label={t("registry.sidebar.toggle")}
                             aria-pressed={sidebarOpen}
                             onClick={() => setSidebarOpen((v) => !v)}
                         >

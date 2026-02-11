@@ -154,6 +154,9 @@ export const i18nData = {
     'lang.zh-CN': '简体中文',
     'lang.zh-TW': '繁體中文',
     'lang.ja': '日本語',
+    'registry.menu.open': 'Open menu',
+    'registry.menu.close': 'Close menu',
+    'registry.sidebar.toggle': 'Toggle sidebar',
 
     // Goal-related
     'goal.dayLeft': 'day left',
@@ -319,6 +322,9 @@ export const i18nData = {
     'lang.zh-CN': '简体中文',
     'lang.zh-TW': '繁體中文',
     'lang.ja': '日本語',
+    'registry.menu.open': '打开菜单',
+    'registry.menu.close': '关闭菜单',
+    'registry.sidebar.toggle': '切换侧栏',
 
     // 目标相关
     'goal.dayLeft': '天剩余',
@@ -484,6 +490,9 @@ export const i18nData = {
     'lang.zh-CN': '简体中文',
     'lang.zh-TW': '繁體中文',
     'lang.ja': '日本語',
+    'registry.menu.open': '開啟選單',
+    'registry.menu.close': '關閉選單',
+    'registry.sidebar.toggle': '切換側欄',
 
     // 目標相關
     'goal.dayLeft': '天',
@@ -649,6 +658,9 @@ export const i18nData = {
     'lang.zh-CN': '简体中文',
     'lang.zh-TW': '繁體中文',
     'lang.ja': '日本語',
+    'registry.menu.open': 'メニューを開く',
+    'registry.menu.close': 'メニューを閉じる',
+    'registry.sidebar.toggle': 'サイドバーを切り替える',
 
     // ゴール関連
     'goal.dayLeft': '日残り',
@@ -679,8 +691,16 @@ export const countryToLang = {
   JP: 'ja',
 };
 
+// 语言展示元数据（单一真相源）
+export const LANGUAGE_META = [
+  { code: 'en', flag: '🇺🇸', short: 'EN', labelKey: 'lang.en' },
+  { code: 'zh-CN', flag: '🇨🇳', short: 'CN', labelKey: 'lang.zh-CN' },
+  { code: 'zh-TW', flag: '🇨🇳', short: 'TW', labelKey: 'lang.zh-TW' },
+  { code: 'ja', flag: '🇯🇵', short: 'JP', labelKey: 'lang.ja' },
+];
+
 // 默认语言
 export const DEFAULT_LANG = 'en';
 
 // 支持的所有语言
-export const SUPPORTED_LANGS = ['en', 'zh-CN', 'zh-TW', 'ja'];
+export const SUPPORTED_LANGS = LANGUAGE_META.map((item) => item.code);

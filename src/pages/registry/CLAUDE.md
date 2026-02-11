@@ -4,11 +4,13 @@
 成员清单
 RegistryHome.jsx: Registry 根页面，维护 selectedStyle 单一状态并编排双栏工作区
 registry-data.js: Registry 旧版导航与示例数据（备用）
-sections/RegistryTopbar.jsx: 顶栏区域，展示 GitHub 与小红书社交入口
+sections/RegistryTopbar.jsx: 顶栏区域，左侧挂载 UI 语言切换，右侧展示 GitHub 与小红书社交入口
 sections/RegistrySidebar.jsx: 本地受控侧栏，保留 Kumo 动效并向工作区分发 style 选择
 sections/ThemeToggle.jsx: vendor Kumo ThemeToggle 的薄包装（同源挂载）
+sections/LanguageSelect.jsx: Registry UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端保留右下角入口）
 sections/SearchDialog.jsx: vendor Kumo SearchDialog 的薄包装（同源挂载）
 sections/KumoMenuIcon.jsx: vendor Kumo KumoMenuIcon 的薄包装（同源挂载）
+sections/CLAUDE.md: sections 子模块文档
 sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层
 sections/workspace/useRegistryWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
 sections/workspace/RegistryPreviewPane.jsx: 左侧手机预览画布
@@ -36,5 +38,6 @@ ThemeToggle/SearchDialog/KumoMenuIcon 继续同源薄包装；Sidebar 与 HomeGr
 2026-02-10: 新增 Kumo 首页复刻组件与布局模块。
 2026-02-11: 改为 vendor/kumo 同源挂载，移除手写实现偏差。
 2026-02-11: 首页改造为 preview|settings 双栏，新增 workspace 子模块并实现 style cards 联动。
+2026-02-11: 新增 LanguageSelect 入口并将 Registry UI 文案切换为 useI18n 驱动；语言控件迁移到顶栏左侧，触发器改为“线框地球图标+语言名”，菜单保持“国旗+语言名”并保留默认选中勾。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

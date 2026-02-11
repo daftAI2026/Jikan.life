@@ -213,7 +213,22 @@ test("Registry layout mirrors Kumo home layout", () => {
   assert.match(source, /RegistrySidebar/)
   assert.match(source, /HomeGrid/)
   assert.match(source, /ThemeToggle/)
+  assert.match(source, /LanguageSelect/)
   assert.match(source, /md:pr-12/)
+})
+
+test("Registry topbar mounts language selector near left side", () => {
+  const source = readSource("src/pages/registry/sections/RegistryTopbar.jsx")
+
+  assert.match(source, /<LanguageSelect\s*\/>/)
+  assert.match(source, /<div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">/)
+})
+
+test("RegistryHome keeps language selector as mobile fallback", () => {
+  const source = readSource("src/pages/registry/RegistryHome.jsx")
+
+  assert.match(source, /<LanguageSelect\s*\/>/)
+  assert.match(source, /fixed right-2 bottom-2 z-50 md:hidden/)
 })
 
 test("Registry topbar shows GitHub and Xiaohongshu links", () => {
@@ -230,13 +245,55 @@ test("Registry topbar shows GitHub and Xiaohongshu links", () => {
 test("Kumo home components are present", () => {
   const homeGrid = path.join("src/pages/registry/sections/components", "HomeGrid.jsx")
   const themeToggle = path.join("src/pages/registry/sections", "ThemeToggle.jsx")
+  const languageSelect = path.join("src/pages/registry/sections", "LanguageSelect.jsx")
   const searchDialog = path.join("src/pages/registry/sections", "SearchDialog.jsx")
   const menuIcon = path.join("src/pages/registry/sections", "KumoMenuIcon.jsx")
 
   assert.ok(fs.existsSync(path.join(process.cwd(), homeGrid)))
   assert.ok(fs.existsSync(path.join(process.cwd(), themeToggle)))
+  assert.ok(fs.existsSync(path.join(process.cwd(), languageSelect)))
   assert.ok(fs.existsSync(path.join(process.cwd(), searchDialog)))
   assert.ok(fs.existsSync(path.join(process.cwd(), menuIcon)))
+})
+
+test("LanguageSelect uses Kumo Select and I18n state", () => {
+  const source = readSource("src/pages/registry/sections/LanguageSelect.jsx")
+
+  assert.match(source, /@cloudflare\/kumo/)
+  assert.match(source, /@phosphor-icons\/react/)
+  assert.match(source, /\bSelect\b/)
+  assert.match(source, /\bGlobe\b/)
+  assert.match(source, /useState/)
+  assert.match(source, /onOpenChange/)
+  assert.match(source, /useI18n/)
+  assert.match(source, /setLanguage/)
+  assert.match(source, /LANGUAGE_META/)
+  assert.match(source, /t\("lang\.select"\)/)
+  assert.match(source, /inline-flex items-center/)
+  assert.match(source, /triggerLabel/)
+  assert.match(source, /menuFlag/)
+  assert.match(source, /menuLabel/)
+  assert.match(source, /registry-language-select-open/)
+  assert.match(source, /\[\&>span:first-child\]:h-full/)
+  assert.match(source, /\[\&>span:first-child\]:items-center/)
+  assert.match(source, /\[\&>\*:last-child\]:hidden/)
+  assert.match(source, /justify-start/)
+  assert.match(source, /px-2/)
+  assert.match(source, /min-w-\[104px\]/)
+  assert.match(source, /not-disabled:hover:!bg-kumo-tint/)
+  assert.doesNotMatch(source, /🌐/)
+  assert.match(source, /meta\.flag/)
+  assert.doesNotMatch(source, /compact/)
+  assert.doesNotMatch(source, /meta\.short/)
+})
+
+test("Registry language dropdown aligns left edge with trigger", () => {
+  const source = readSource("src/index.css")
+
+  assert.match(source, /registry-language-select-open/)
+  assert.match(source, /\[data-side\]\[data-align\] > \.p-1\\\.5/)
+  assert.match(source, /padding-left:\s*0/)
+  assert.match(source, /padding-right:\s*0/)
 })
 
 test("Registry wrappers are source-aligned to vendor/kumo", () => {
@@ -286,11 +343,46 @@ test("Registry sidebar is local controlled implementation", () => {
   const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
 
   assert.match(source, /data-sidebar-open={sidebarOpen}/)
-  assert.match(source, /Choose Your Style/)
-  assert.match(source, /Year Progress/)
-  assert.match(source, /Life Calendar/)
-  assert.match(source, /Goal Countdown/)
+  assert.match(source, /t\("types\.header"\)/)
+  assert.match(source, /t\("type\.year\.name"\)/)
+  assert.match(source, /t\("type\.life\.name"\)/)
+  assert.match(source, /t\("type\.goal\.name"\)/)
+  assert.match(source, /t\("registry\.menu\.open"\)/)
+  assert.match(source, /t\("registry\.menu\.close"\)/)
+  assert.match(source, /t\("registry\.sidebar\.toggle"\)/)
+  assert.doesNotMatch(source, /Choose Your Style/)
+  assert.doesNotMatch(source, /Year Progress/)
+  assert.doesNotMatch(source, /Life Calendar/)
+  assert.doesNotMatch(source, /Goal Countdown/)
   assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SidebarNav/)
+})
+
+test("Registry workspace no longer hardcodes UI language to English", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+
+  assert.match(source, /useI18n/)
+  assert.match(source, /LANGUAGE_META/)
+  assert.match(source, /const\s+\{\s*t\s*\}\s*=\s*useI18n\(\)/)
+  assert.match(source, /flag:\s*meta\.flag/)
+  assert.match(source, /name:\s*t\(meta\.labelKey\)/)
+  assert.doesNotMatch(source, /REGISTRY_UI_LANG/)
+  assert.doesNotMatch(source, /createEnglishTranslator/)
+})
+
+test("Registry settings wallpaper language uses flag + name rendering", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /inline-flex items-center gap-1\.5/)
+  assert.match(source, /option\.flag/)
+  assert.match(source, /option\.name/)
+})
+
+test("Registry menu accessibility labels are present in i18n", () => {
+  const source = readSource("src/data/i18n.js")
+
+  assert.match(source, /'registry\.menu\.open'/)
+  assert.match(source, /'registry\.menu\.close'/)
+  assert.match(source, /'registry\.sidebar\.toggle'/)
 })
 
 test("HomeGrid provides split workspace layout", () => {
@@ -344,4 +436,30 @@ test("Neumorphic variables are fully removed from src", () => {
     0,
     `--neumorphic-* still used in: ${offenders.join(", ")}`
   )
+})
+
+test("Wallpaper preview and worker share one language font strategy", async () => {
+  const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
+  const { getWallpaperFontFamily } = await import(`file://${corePath}`)
+  const rendererSource = readSource("src/lib/renderer.js")
+  const svgSource = readSource("worker/svg.js")
+  const yearSource = readSource("worker/generators/year.js")
+  const lifeSource = readSource("worker/generators/life.js")
+  const indexSource = readSource("index.html")
+
+  assert.equal(typeof getWallpaperFontFamily, "function")
+  assert.equal(getWallpaperFontFamily("en"), '"Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("zh-CN"), '"Noto Sans SC", "Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("zh-TW"), '"Noto Sans TC", "Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("ja"), '"Noto Sans JP", "Inter", sans-serif')
+
+  assert.match(rendererSource, /getWallpaperFontFamily/)
+  assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
+  assert.match(svgSource, /getWallpaperFontFamily/)
+  assert.doesNotMatch(yearSource, /font-family="Inter"/)
+  assert.doesNotMatch(lifeSource, /font-family="Inter"/)
+
+  assert.match(indexSource, /Noto\+Sans\+SC/)
+  assert.match(indexSource, /Noto\+Sans\+TC/)
+  assert.match(indexSource, /Noto\+Sans\+JP/)
 })

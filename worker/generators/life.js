@@ -68,8 +68,8 @@ export function generateLifeCalendar(options) {
     }
 
     // Stats text
-    const statsContent = `<tspan fill="${accentFill}" font-family="Inter" font-weight="500">${layout.stats.weeksText}</tspan>` +
-        `<tspan fill="${svgContrastAlpha(bgColor, 0.5)}" font-family="Inter" font-weight="500"> · ${layout.stats.livedText}</tspan>`;
+    const statsContent = `<tspan fill="${accentFill}" font-weight="500">${layout.stats.weeksText}</tspan>` +
+        `<tspan fill="${svgContrastAlpha(bgColor, 0.5)}" font-weight="500"> · ${layout.stats.livedText}</tspan>`;
 
     content.push(text(layout.stats.centerX, layout.stats.y, statsContent, {
         fontSize: layout.fontSize,

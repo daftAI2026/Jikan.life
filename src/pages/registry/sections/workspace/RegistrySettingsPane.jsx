@@ -74,13 +74,22 @@ function RegistrySettingsPane({
                             }}
                             renderValue={(value) => {
                                 const option = languageOptions.find((item) => item.value === value)
-                                return option?.label ?? "English"
+                                if (!option) return "🇺🇸 English"
+                                return (
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="leading-none">{option.flag}</span>
+                                        <span className="leading-none">{option.name}</span>
+                                    </span>
+                                )
                             }}
                             disabled={!typeReady}
                         >
                             {languageOptions.map((option) => (
                                 <Select.Option key={option.value} value={option.value}>
-                                    {option.label}
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="leading-none">{option.flag}</span>
+                                        <span className="leading-none">{option.name}</span>
+                                    </span>
                                 </Select.Option>
                             ))}
                         </Select>

@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-useRegistryWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作，并固定 Registry 页英文文案
+useRegistryWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）
 RegistryPreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
 RegistrySettingsPane.jsx: 右侧属性面板，提供位置/语言/颜色/设备/URL 与类型条件字段
 
@@ -17,5 +17,7 @@ workspace/ - Registry 双栏工作区子模块 (3 files)
 
 变更日志
 2026-02-11: 新增 preview|settings 双栏工作区，实现与左侧 style cards 的直接联动。
+2026-02-11: 移除固定英文翻译器，改为使用 useI18n 提供的全局 t()。
+2026-02-11: Wallpaper Language 下拉改为与顶部语言菜单一致的“国旗 + 原名”渲染语义与间距。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

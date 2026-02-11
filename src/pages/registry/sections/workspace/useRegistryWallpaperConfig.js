@@ -1,13 +1,14 @@
 /**
- * [INPUT]: 依赖 react hooks, @/data/countries, @/data/devices, @/data/i18n, shared/palettes, shared/wallpaper-core
+ * [INPUT]: 依赖 react hooks, @/lib/I18nContext, @/data/countries, @/data/devices, shared/palettes, shared/wallpaper-core
  * [OUTPUT]: 对外提供 useRegistryWallpaperConfig hook（统一管理 preview|settings 的配置状态与动作）
- * [POS]: registry/sections/workspace 的状态核心，作为 selectedStyle -> wallpaper config 的单一真相源，并固定 Registry 页英文文案
+ * [POS]: registry/sections/workspace 的状态核心，作为 selectedStyle -> wallpaper config 的单一真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { countries, getTimezone } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
-import { i18nData } from "@/data/i18n"
+import { LANGUAGE_META } from "@/data/i18n"
+import { useI18n } from "@/lib/I18nContext"
 import { DEFAULT_PALETTE, PALETTE_PRESETS } from "../../../../../shared/palettes"
 import { getSafeAccent } from "../../../../../shared/wallpaper-core"
 
@@ -15,19 +16,6 @@ const STYLE_TO_TYPE = {
     year: "year",
     life: "life",
     goal: "goal",
-}
-
-const REGISTRY_UI_LANG = "en"
-const REGISTRY_TRANSLATIONS = i18nData[REGISTRY_UI_LANG] || i18nData.en || {}
-
-function createEnglishTranslator() {
-    return (key, params = {}) => {
-        let text = REGISTRY_TRANSLATIONS[key] || i18nData.en?.[key] || key
-        for (const [paramKey, paramValue] of Object.entries(params)) {
-            text = text.replace(`{${paramKey}}`, String(paramValue))
-        }
-        return text
-    }
 }
 
 function normalizeHexColor(value, fallback) {
@@ -84,7 +72,7 @@ function resolveSelectedType(selectedStyle) {
 }
 
 function useRegistryWallpaperConfig({ selectedStyle }) {
-    const t = useMemo(() => createEnglishTranslator(), [])
+    const { t } = useI18n()
     const selectedType = resolveSelectedType(selectedStyle)
     const [config, setConfig] = useState(() => getInitialConfig(selectedType))
     const [copied, setCopied] = useState(false)
@@ -129,13 +117,13 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
     )
 
     const languageOptions = useMemo(
-        () => [
-            { value: "en", label: "🇺🇸 English" },
-            { value: "zh-CN", label: "🇨🇳 简体中文" },
-            { value: "zh-TW", label: "🇨🇳 繁體中文" },
-            { value: "ja", label: "🇯🇵 日本語" },
-        ],
-        []
+        () =>
+            LANGUAGE_META.map((meta) => ({
+                value: meta.code,
+                flag: meta.flag,
+                name: t(meta.labelKey),
+            })),
+        [t]
     )
 
     const deviceOptions = useMemo(() => devices.map((device) => device.name), [])

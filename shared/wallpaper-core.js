@@ -190,6 +190,17 @@ export function getWallpaperText(lang, key, value) {
     return text.replace('{n}', value);
 }
 
+const WALLPAPER_FONT_FAMILY = {
+    en: '"Inter", sans-serif',
+    'zh-CN': '"Noto Sans SC", "Inter", sans-serif',
+    'zh-TW': '"Noto Sans TC", "Inter", sans-serif',
+    ja: '"Noto Sans JP", "Inter", sans-serif'
+};
+
+export function getWallpaperFontFamily(lang = 'en') {
+    return WALLPAPER_FONT_FAMILY[lang] || WALLPAPER_FONT_FAMILY.en;
+}
+
 /* ========================================================================
    Year Progress Layout Computation
    ======================================================================== */
