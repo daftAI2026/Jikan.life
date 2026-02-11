@@ -8,22 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Registry Workspace**: Implemented a split-pane workspace in the Design System Registry (`/registry`) with a live configuration sidebar and instant preview pane.
+- **Wallpaper Configuration Hook**: Introduced `useRegistryWallpaperConfig` to centralize wallpaper state, palette logic, and URL generation for all registry demos.
+- **Registry Social Links**: Integrated Xiaohongshu and GitHub navigation into the Registry topbar, replacing static version strings with branded iconography.
+- **Workspace Directory**: Created `src/pages/registry/sections/workspace` to host isolated feature previews within the registry shell.
 - **Kumo Infrastructure**: Introduced `vendor/kumo` as the primitive core and established a decoupled UI component library in `src/components/ui`.
+
+### Changed
+- **Registry Architecture**: Decoupled the Registry Sidebar from Kumo's vendor components to provide a tailored navigation experience for Jikan.life's design system style selector.
+- **Registry Navigation**: Refactored `RegistryHome` to use `selectedStyle` as the single source of truth for component switching.
+- **Behavioral Testing**: Expanded `tests/kumo-migration.behavior.test.js` to cover local workspace implementations and social link validation.
+- **UI Primitives Migration**: Refactored 20+ base components (Button, Input, Select, etc.) to use Kumo-style tokens and `react-aria-components` for enhanced accessibility.
+
+### Added (Previous)
 - **Design System Registry**: Implemented a comprehensive Component Registry at `/registry` for visual testing and documentation of Kumo primitives.
 - **GEB Protocol v2**: Established recursive `CLAUDE.md` maps across all core directories (`/src/components`, `/src/lib`, `/src/pages`) to ensure architectural alignment.
 - **Kumo Shell**: Created `KumoShell.jsx` as the new layout foundation for Kumo-based pages.
-- **Behavioral Testing**: Added `tests/kumo-migration.behavior.test.js` to validate design system token compliance and layout integrity.
-
-### Changed
-- **UI Primitives Migration**: Refactored 20+ base components (Button, Input, Select, etc.) to use Kumo-style tokens and `react-aria-components` for enhanced accessibility.
-- **Global Theme Engine**: Upgraded `src/index.css` to use Tailwind v4 compatible theme tokens and native `light-dark()` color schemes.
-- **Site Layout**: Updated `src/pages/Home.jsx` and `src/pages/DesignSystem.jsx` to reflect the new infrastructure.
-
-### Added
 - **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.
 
-### Fixed
+### Fixed (Previous)
 - **Worker Cache**: Fixed cache collision by including `lang`, `format`, `clockHeight`, `cols`, and `padding` in cache key calculation.
+
+
 - Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
 - Restore react-aria trigger wiring so date and color picker popovers open reliably without altering button styling.
 - **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).

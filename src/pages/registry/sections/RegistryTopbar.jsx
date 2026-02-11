@@ -1,28 +1,49 @@
 /**
- * [INPUT]: 无
+ * [INPUT]: 依赖 @phosphor-icons/react(GithubLogo), @/components/icons/BrandLogos, @/data/social-links
  * [OUTPUT]: 对外提供 RegistryTopbar 顶部栏
- * [POS]: pages/registry/sections 的顶栏区域，复刻 Kumo Header
+ * [POS]: pages/registry/sections 的顶栏区域，承载右上角社交入口（GitHub + 小红书）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { GithubLogo } from "@phosphor-icons/react"
+import { XiaohongshuLogo } from "@/components/icons/BrandLogos"
+import { SOCIAL_LINKS } from "@/data/social-links"
 
-const KUMO_VERSION = "1.5.0"
-const KUMO_GITHUB_URL = "https://github.com/cloudflare/kumo"
+const SOCIAL_ICON_MAP = {
+    github: GithubLogo,
+    xiaohongshu: XiaohongshuLogo,
+}
+const TOPBAR_SOCIAL_ORDER = ["xiaohongshu", "github"]
 
 function RegistryTopbar() {
+    const orderedSocialLinks = TOPBAR_SOCIAL_ORDER
+        .map((id) => SOCIAL_LINKS.find((item) => item.id === id))
+        .filter(Boolean)
+
     return (
         <header className="sticky top-0 z-10 border-b border-kumo-line bg-kumo-elevated md:pr-12">
             <div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">
-                <a
-                    href={KUMO_GITHUB_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-auto font-mono text-sm text-kumo-subtle transition-colors hover:text-kumo-default"
-                >
-                    @cloudflare/kumo
-                    <span className="ml-1 rounded bg-kumo-control px-1.5 py-0.5 text-xs">
-                        v{KUMO_VERSION}
-                    </span>
-                </a>
+                <div className="ml-auto flex items-center gap-4">
+                    {orderedSocialLinks.map((social) => {
+                        const Icon = SOCIAL_ICON_MAP[social.id]
+                        if (!Icon) return null
+
+                        return (
+                            <a
+                                key={social.id}
+                                href={social.href}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={social.label}
+                                className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                <Icon
+                                    className={social.className}
+                                    weight={social.id === "github" ? "fill" : undefined}
+                                />
+                            </a>
+                        )
+                    })}
+                </div>
             </div>
         </header>
     )

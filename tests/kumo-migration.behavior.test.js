@@ -216,11 +216,15 @@ test("Registry layout mirrors Kumo home layout", () => {
   assert.match(source, /md:pr-12/)
 })
 
-test("Registry topbar shows package and version", () => {
+test("Registry topbar shows GitHub and Xiaohongshu links", () => {
   const source = readSource("src/pages/registry/sections/RegistryTopbar.jsx")
 
-  assert.match(source, /@cloudflare\/kumo/)
-  assert.match(source, /KUMO_VERSION/)
+  assert.match(source, /SOCIAL_LINKS/)
+  assert.match(source, /TOPBAR_SOCIAL_ORDER\s*=\s*\["xiaohongshu",\s*"github"\]/)
+  assert.match(source, /GithubLogo/)
+  assert.match(source, /XiaohongshuLogo/)
+  assert.match(source, /aria-label={social.label}/)
+  assert.doesNotMatch(source, /<span className=/)
 })
 
 test("Kumo home components are present", () => {
@@ -236,14 +240,10 @@ test("Kumo home components are present", () => {
 })
 
 test("Registry wrappers are source-aligned to vendor/kumo", () => {
-  const sidebar = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
-  const homeGrid = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
   const themeToggle = readSource("src/pages/registry/sections/ThemeToggle.jsx")
   const searchDialog = readSource("src/pages/registry/sections/SearchDialog.jsx")
   const menuIcon = readSource("src/pages/registry/sections/KumoMenuIcon.jsx")
 
-  assert.match(sidebar, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SidebarNav/)
-  assert.match(homeGrid, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/demos\/HomeGrid/)
   assert.match(themeToggle, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/ThemeToggle/)
   assert.match(searchDialog, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SearchDialog/)
   assert.match(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/KumoMenuIcon/)
@@ -273,10 +273,33 @@ test("SidebarNav is non-scrollable and renders three style cards", () => {
   assert.match(source, /h-\[100px\] w-\[100px\]/)
 })
 
-test("HomeGrid is mounted from vendor source", () => {
+test("RegistryHome keeps selectedStyle as single source of truth", () => {
+  const source = readSource("src/pages/registry/RegistryHome.jsx")
+
+  assert.match(source, /useState\(["']year["']\)/)
+  assert.match(source, /selectedStyle={selectedStyle}/)
+  assert.match(source, /onStyleChange={setSelectedStyle}/)
+  assert.match(source, /<HomeGrid\s+selectedStyle={selectedStyle}/)
+})
+
+test("Registry sidebar is local controlled implementation", () => {
+  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
+
+  assert.match(source, /data-sidebar-open={sidebarOpen}/)
+  assert.match(source, /Choose Your Style/)
+  assert.match(source, /Year Progress/)
+  assert.match(source, /Life Calendar/)
+  assert.match(source, /Goal Countdown/)
+  assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SidebarNav/)
+})
+
+test("HomeGrid provides split workspace layout", () => {
   const source = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
 
-  assert.match(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/demos\/HomeGrid/)
+  assert.match(source, /data-registry-workspace/)
+  assert.match(source, /data-registry-pane=["']preview["']/)
+  assert.match(source, /data-registry-pane=["']settings["']/)
+  assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/demos\/HomeGrid/)
 })
 
 test("No unsupported Text variants are used in src", () => {
