@@ -18,10 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Kumo Infrastructure**: Introduced `vendor/kumo` as the primitive core and established a decoupled UI component library in `src/components/ui`.
 
 ### Changed
+- **Vendor Decoupling**: Refactored `ThemeToggle`, `SearchDialog`, and `KumoMenuIcon` in the registry to be local implementations, removing direct source dependencies on `vendor/kumo` documentation components.
+- **Registry Test Hardening**: Updated behavior tests to validate local workspace implementations and localized string rendering, replacing legacy vendor-based assertions.
 - **Registry Architecture**: Decoupled the Registry Sidebar from Kumo's vendor components to provide a tailored navigation experience for Jikan.life's design system style selector.
 - **Registry Navigation**: Refactored `RegistryHome` to use `selectedStyle` as the single source of truth for component switching.
 - **Behavioral Testing**: Expanded `tests/kumo-migration.behavior.test.js` to cover local workspace implementations and social link validation.
 - **UI Primitives Migration**: Refactored 20+ base components (Button, Input, Select, etc.) to use Kumo-style tokens and `react-aria-components` for enhanced accessibility.
+
 
 ### Added (Previous)
 - **Design System Registry**: Implemented a comprehensive Component Registry at `/registry` for visual testing and documentation of Kumo primitives.

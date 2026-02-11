@@ -296,30 +296,37 @@ test("Registry language dropdown aligns left edge with trigger", () => {
   assert.match(source, /padding-right:\s*0/)
 })
 
-test("Registry wrappers are source-aligned to vendor/kumo", () => {
+test("Registry wrappers are local and avoid vendor docs imports", () => {
   const themeToggle = readSource("src/pages/registry/sections/ThemeToggle.jsx")
   const searchDialog = readSource("src/pages/registry/sections/SearchDialog.jsx")
   const menuIcon = readSource("src/pages/registry/sections/KumoMenuIcon.jsx")
 
-  assert.match(themeToggle, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/ThemeToggle/)
-  assert.match(searchDialog, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SearchDialog/)
-  assert.match(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/KumoMenuIcon/)
+  assert.match(themeToggle, /function ThemeToggle/)
+  assert.match(themeToggle, /@cloudflare\/kumo/)
+  assert.match(themeToggle, /document\.documentElement\.setAttribute\("data-mode"/)
+
+  assert.match(searchDialog, /function SearchDialog/)
+  assert.doesNotMatch(searchDialog, /vendor\/kumo\/packages\/kumo-docs-astro/)
+
+  assert.match(menuIcon, /function KumoMenuIcon/)
+  assert.match(menuIcon, /clipPathId/)
+  assert.doesNotMatch(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro/)
 })
 
-test("SidebarNav is non-scrollable and renders three style cards", () => {
-  const source = readSource("vendor/kumo/packages/kumo-docs-astro/src/components/SidebarNav.tsx")
+test("RegistrySidebar is non-scrollable and renders three style cards", () => {
+  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
 
   assert.doesNotMatch(source, /overflow-y-auto/)
   assert.match(source, /h-full/)
-  assert.match(source, /selectedStyle/)
+  assert.match(source, /selectedStyle = "year"/)
   assert.match(source, /id:\s*"year"/)
   assert.match(source, /id:\s*"life"/)
   assert.match(source, /id:\s*"goal"/)
   assert.match(source, /border-t border-kumo-line/)
-  assert.match(source, /Choose Your Style/)
-  assert.match(source, /Year Progress/)
-  assert.match(source, /Life Calendar/)
-  assert.match(source, /Goal Countdown/)
+  assert.match(source, /t\("types\.header"\)/)
+  assert.match(source, /t\("type\.year\.name"\)/)
+  assert.match(source, /t\("type\.life\.name"\)/)
+  assert.match(source, /t\("type\.goal\.name"\)/)
   assert.doesNotMatch(source, /<span>Select<\/span>/)
   assert.doesNotMatch(source, /button\.selected/)
   assert.doesNotMatch(source, /["']Selected["']/)
