@@ -53,7 +53,7 @@ function YearVisual() {
                     key={i}
                     className={cn(
                         "w-[10px] h-[10px] rounded-full transition-colors duration-500",
-                        i < filledCount ? "bg-foreground" : "bg-foreground/10"
+                        i < filledCount ? "bg-kumo-contrast" : "bg-kumo-fill"
                     )}
                 />
             ))}
@@ -72,7 +72,7 @@ function LifeVisual() {
                     key={i}
                     className={cn(
                         "w-[6px] h-[6px] rounded-full transition-colors duration-500",
-                        i < filledCount ? "bg-foreground" : "bg-foreground/10"
+                        i < filledCount ? "bg-kumo-contrast" : "bg-kumo-fill"
                     )}
                 />
             ))}
@@ -85,8 +85,8 @@ function GoalVisual({ t }) {
         <div className="flex items-center justify-center h-full">
             <div className="relative w-[100px] h-[100px]">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" className="text-foreground/10" />
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeDasharray="283" strokeDashoffset="100" className="text-foreground transition-all duration-1000 ease-out" />
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" className="text-kumo-fill" />
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeDasharray="283" strokeDashoffset="100" className="text-kumo-contrast transition-all duration-1000 ease-out" />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-2xl font-bold font-mono leading-none">42</span>
@@ -119,13 +119,13 @@ function TypeCard({ type, isSelected, onSelect, t }) {
     return (
         <article
             className={cn(
-                "group relative bg-surface-elevated ring-1 ring-line rounded-2xl overflow-hidden cursor-pointer transition-all duration-300",
-                "hover:ring-primary/50 hover:-translate-y-1 hover:shadow-xl",
-                isSelected ? "ring-2 ring-primary" : ""
+                "group relative bg-kumo-base shadow-xs ring ring-kumo-line rounded-2xl overflow-hidden cursor-pointer transition-all duration-300",
+                "hover:ring-kumo-ring hover:-translate-y-1 hover:shadow-sm",
+                isSelected ? "ring-2 ring-kumo-contrast" : ""
             )}
             onClick={() => onSelect(type.id)}
         >
-            <div className="h-[200px] bg-muted/30 flex items-center justify-center border-b border-line overflow-hidden relative">
+            <div className="h-[200px] bg-kumo-elevated flex items-center justify-center border-b border-kumo-line overflow-hidden relative">
                 <Visual t={t} />
             </div>
 
@@ -137,12 +137,12 @@ function TypeCard({ type, isSelected, onSelect, t }) {
 
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed min-h-12 line-clamp-2">{type.description}</p>
 
-                <div className="flex items-center gap-4 py-4 border-t border-b border-line mb-5">
+                <div className="flex items-center gap-4 py-4 border-t border-b border-kumo-line mb-5">
                     {currentStats.map((stat, i) => (
                         <div key={i} className="flex flex-col flex-1 relative">
                             <span className="text-lg font-mono font-semibold leading-none mb-1">{stat.value}</span>
                             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</span>
-                            {i < currentStats.length - 1 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border" />}
+                            {i < currentStats.length - 1 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-8 bg-kumo-line" />}
                         </div>
                     ))}
                 </div>

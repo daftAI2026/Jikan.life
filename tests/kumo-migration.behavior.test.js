@@ -249,6 +249,30 @@ test("Registry wrappers are source-aligned to vendor/kumo", () => {
   assert.match(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/KumoMenuIcon/)
 })
 
+test("SidebarNav is non-scrollable and renders three style cards", () => {
+  const source = readSource("vendor/kumo/packages/kumo-docs-astro/src/components/SidebarNav.tsx")
+
+  assert.doesNotMatch(source, /overflow-y-auto/)
+  assert.match(source, /h-full/)
+  assert.match(source, /selectedStyle/)
+  assert.match(source, /id:\s*"year"/)
+  assert.match(source, /id:\s*"life"/)
+  assert.match(source, /id:\s*"goal"/)
+  assert.match(source, /border-t border-kumo-line/)
+  assert.match(source, /Choose Your Style/)
+  assert.match(source, /Year Progress/)
+  assert.match(source, /Life Calendar/)
+  assert.match(source, /Goal Countdown/)
+  assert.doesNotMatch(source, /<span>Select<\/span>/)
+  assert.doesNotMatch(source, /button\.selected/)
+  assert.doesNotMatch(source, /["']Selected["']/)
+  assert.doesNotMatch(source, /CheckIcon/)
+  assert.doesNotMatch(source, /ArrowRightIcon/)
+  assert.match(source, /gap-\[4px\]/)
+  assert.match(source, /h-\[10px\] w-\[10px\]/)
+  assert.match(source, /h-\[100px\] w-\[100px\]/)
+})
+
 test("HomeGrid is mounted from vendor source", () => {
   const source = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
 
