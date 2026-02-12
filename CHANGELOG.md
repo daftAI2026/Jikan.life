@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **GEB Protocol v2 Enforcement**: Achieved 100% fractal documentation coverage across `src/components/ui/`, `src/pages/registry/`, and `tests/` with recursive `CLAUDE.md` maps and L3 header contracts.
+- **Fractal Testing Map**: Introduced `tests/CLAUDE.md` as the semantic anchor for behavioral test suites, ensuring architectural intent is preserved as features evolve.
 - **Direct Popover Re-export**: Switched `src/components/ui/popover.jsx` to direct Kumo re-export, reducing wrapper overhead and aligning with the primitive-first strategy.
-- **Color Primitive UX Fix**: Removed `overflow-hidden` from color sliders and area primitives to prevent clipping of interactive thumbs, ensuring smooth touch and mouse interaction.
-- **Unified Brand Iconography**: Migrated Registry topbar to use `GitHubInvertocatLogo` for visual consistency with modern GitHub branding.
-- **Button Component Adapter**: Introduced a powerful `Button` adapter that maps legacy Radix/Shadcn variants (`outline`, `link`, `accent`) to Kumo primitives while maintaining `react-aria` context compatibility and `asChild` support.
+
 
 
 

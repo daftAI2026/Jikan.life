@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react-aria-components
- * [OUTPUT]: 对外提供 Color 相关原子组件 (ColorWheel, ColorArea, etc.)
- * [POS]: ui/ 颜色选择器底层原语
+ * [OUTPUT]: 对外提供 Color 相关原子组件 (ColorWheel, ColorArea, SliderTrack, ColorThumb 等)
+ * [POS]: ui/ 颜色选择器底层原语，约束手柄可视性与可拖拽行为
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import {

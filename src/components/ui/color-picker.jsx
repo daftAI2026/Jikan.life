@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 @/components/ui/color, react-aria-components, @/components/ui/popover, @/components/ui/select, @/components/ui/button, @phosphor-icons/react
- * [OUTPUT]: 完整 JollyUI 风格 ColorPicker (EyeDropper + Multi-ColorSpace)
- * [POS]: UI组件层
+ * [INPUT]: 依赖 @/components/ui/color, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/button, @phosphor-icons/react
+ * [OUTPUT]: ColorPicker 组件（Kumo Popover.Trigger/Content + 色域/色相 + EyeDropper + 多色彩空间输入）
+ * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"

@@ -25,7 +25,7 @@ dropdown-menu.jsx: 下拉菜单
 navigation-menu.jsx: 导航菜单
 avatar.jsx: 头像
 table.jsx: 表格
-popover.jsx: 气泡弹出，Kumo Popover 适配层
+popover.jsx: 气泡弹出，直接 re-export Kumo Popover 原语（避免自写 overlay 链）
 tooltip.jsx: 工具提示，Kumo Tooltip 适配层
 hover-card.jsx: 悬停卡片
 scroll-area.jsx: 滚动区域
@@ -37,7 +37,7 @@ calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/
 date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出
 datefield.jsx: 日期/时间输入字段，支持键盘输入和格式化
 color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等
-color-picker.jsx: JollyUI(react-aria) 颜色选择器，支持 HSBA/RGBA + EyeDropper 吸管
+color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，支持 HSBA/RGBA + EyeDropper
 field.jsx: 表单字段容器，react-aria-components 基础组件
 
 **设计语言**: Kumo UI (Base UI) + Kumo Token Bridge
@@ -45,5 +45,9 @@ field.jsx: 表单字段容器，react-aria-components 基础组件
 - 阴影: 使用 Kumo Surface + Tailwind shadow，禁止 --neumorphic-*
 - 图标: 统一 @phosphor-icons/react
 - 动画: 交互使用 lib/motion.js 的 Spring 预设
+
+变更日志
+2026-02-12: ColorPicker 弹层链路回归主线同构（Kumo Popover + Kumo Select），移除跨体系弹层混搭。
+2026-02-12: ColorArea/SliderTrack 禁止 `overflow-hidden` 裁切 Thumb，确保颜色手柄完整可见。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

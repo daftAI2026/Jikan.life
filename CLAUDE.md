@@ -17,6 +17,7 @@ src/ - React 前端源代码 (Vite 驱动)
   ├── data/ - 静态数据 (i18n, countries, devices)
   ├── lib/ - 工具库 (renderer, motion, utils)
   └── assets/ - 静态资源
+tests/ - Node 原生行为回归测试 (UI 迁移护栏 + 日期组件护栏)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
   └── generators/ - SVG 生成逻辑 adapters
 shared/ - 前后端共享核心逻辑
@@ -45,5 +46,6 @@ package.json - 统一依赖管理
 - **分形同构**: 代码与文档必须保持一致 (GEB Protocol)
 - **渲染统一**: 前端 (Canvas) 与 后端 (SVG) 必须共享核心计算逻辑 (`shared/wallpaper-core.js`)
 - **设计规范**: 一切 UI 必须基于 Kumo UI 组件与 CSS 变量
+- **弹层同构**: ColorPicker 链路统一使用 Kumo Popover + Kumo Select，禁止跨体系混搭导致 z-index 竞争
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
 - **同源挂载**: Registry 首页优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差
