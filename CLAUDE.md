@@ -48,5 +48,6 @@ package.json - 统一依赖管理
 - **设计规范**: 一切 UI 必须基于 Kumo UI 组件与 CSS 变量
 - **弹层同构**: ColorPicker 链路统一使用 Kumo Popover + Kumo Select，禁止跨体系混搭导致 z-index 竞争
 - **颜色桥接**: ColorPicker 对外仅传 `hex`，内部必须维持 Color 对象状态桥，避免触底拖拽时 HSB 通道被回流重置
+- **职责隔离**: ColorPicker 的状态桥接逻辑独立在 `src/components/ui/use-color-picker-state-bridge.js`，渲染组件不再内嵌同步实现
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
 - **同源挂载**: Registry 首页优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差

@@ -13,5 +13,6 @@ kumo-migration.behavior.test.js: Kumo 迁移行为护栏，约束 Button/Select/
 
 变更日志
 2026-02-12: `kumo-migration.behavior.test.js` 增加 ColorPicker 状态桥接与禁用实验性 pointer-bridge 的护栏断言，防止底边跳左问题回归。
+2026-02-12: `kumo-migration.behavior.test.js` 追加“状态桥 hook 外提后路径与同步保护语义”断言，防止 hook 回流到组件内并导致职责回退。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

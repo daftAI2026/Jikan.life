@@ -146,13 +146,17 @@ test("ColorPicker uses Kumo popover trigger/content structure without shadcn sel
 
 test("ColorPicker avoids duplicate border ownership on ColorArea and SliderTrack", () => {
   const source = readSource("src/components/ui/color-picker.jsx")
+  const bridgeSource = readSource("src/components/ui/use-color-picker-state-bridge.js")
 
   assert.match(source, /className="h-40 w-full shrink-0"/)
   assert.match(source, /className="h-3 w-full rounded-full"/)
-  assert.match(source, /function useColorPickerStateBridge\(value\)/)
+  assert.match(source, /import \{ useColorPickerStateBridge \} from "@\/components\/ui\/use-color-picker-state-bridge"/)
+  assert.doesNotMatch(source, /function useColorPickerStateBridge\(value\)/)
   assert.match(source, /const \{ internalColor, setInternalColor \} = useColorPickerStateBridge\(value\)/)
-  assert.match(source, /if \(externalColor\.toString\('hex'\) !== internalColor\.toString\('hex'\)\)/)
   assert.match(source, /setInternalColor\(newColor\)/)
+  assert.match(bridgeSource, /export function useColorPickerStateBridge\(value\)/)
+  assert.match(bridgeSource, /const \[internalColor, setInternalColor\] = useState\(externalColor\)/)
+  assert.match(bridgeSource, /if \(externalColor\.toString\('hex'\) !== internalColor\.toString\('hex'\)\)/)
   assert.doesNotMatch(source, /ColorAreaAbsolutePointerBridge/)
   assert.doesNotMatch(source, /BOTTOM_EPSILON/)
   assert.doesNotMatch(source, /pointer-events-none/)
