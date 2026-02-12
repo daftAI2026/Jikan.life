@@ -144,11 +144,28 @@ test("ColorPicker uses Kumo popover trigger/content structure without shadcn sel
   assert.doesNotMatch(source, /SelectValue/)
 })
 
+test("ColorPicker avoids duplicate border ownership on ColorArea and SliderTrack", () => {
+  const source = readSource("src/components/ui/color-picker.jsx")
+
+  assert.match(source, /className="h-40 w-full shrink-0"/)
+  assert.match(source, /className="h-3 w-full rounded-full"/)
+  assert.match(source, /function useColorPickerStateBridge\(value\)/)
+  assert.match(source, /const \{ internalColor, setInternalColor \} = useColorPickerStateBridge\(value\)/)
+  assert.match(source, /if \(externalColor\.toString\('hex'\) !== internalColor\.toString\('hex'\)\)/)
+  assert.match(source, /setInternalColor\(newColor\)/)
+  assert.doesNotMatch(source, /ColorAreaAbsolutePointerBridge/)
+  assert.doesNotMatch(source, /BOTTOM_EPSILON/)
+  assert.doesNotMatch(source, /pointer-events-none/)
+  assert.doesNotMatch(source, /h-40 w-full[^\n]*border/)
+  assert.doesNotMatch(source, /h-3 w-full rounded-full[^\n]*border/)
+})
+
 test("Color primitives avoid overflow clipping so thumbs stay visible", () => {
   const source = readSource("src/components/ui/color.jsx")
 
-  assert.match(source, /size-\[192px\] shrink-0 rounded-md border border-border shadow-md/)
-  assert.match(source, /h-7 w-\[192px\] rounded-md border border-border/)
+  assert.match(source, /size-\[192px\] shrink-0 rounded-md ring-1 ring-kumo-fill shadow-sm/)
+  assert.match(source, /h-7 w-\[192px\] rounded-md ring-1 ring-kumo-fill/)
+  assert.match(source, /z-20 box-border size-5 rounded-\[50%\] border-2 border-foreground shadow-md/)
   assert.doesNotMatch(source, /size-\[192px\] shrink-0 overflow-hidden/)
   assert.doesNotMatch(source, /h-7 w-\[192px\] overflow-hidden/)
 })

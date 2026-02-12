@@ -55,7 +55,7 @@ function ColorArea({
     <AriaColorArea
       className={composeRenderProps(className, (className) =>
         cn(
-          "size-[192px] shrink-0 rounded-md border border-border shadow-md",
+          "size-[192px] shrink-0 rounded-md ring-1 ring-kumo-fill shadow-sm",
           className
         ))}
       {...props} />
@@ -69,7 +69,7 @@ function SliderTrack({
   return (
     <AriaSliderTrack
       className={composeRenderProps(className, (className) =>
-        cn("h-7 w-[192px] rounded-md border border-border ", className))}
+        cn("h-7 w-[192px] rounded-md ring-1 ring-kumo-fill", className))}
       {...props} />
   );
 }
@@ -82,7 +82,7 @@ function ColorThumb({
     <AriaColorThumb
       className={composeRenderProps(className, (className) =>
         cn(
-          "z-10 box-border size-5 rounded-[50%] border-2 border-foreground shadow-md",
+          "z-20 box-border size-5 rounded-[50%] border-2 border-foreground shadow-md",
           /* Focus Visible */
           "data-[focus-visible]:size-6",
           className

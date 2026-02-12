@@ -10,7 +10,7 @@ import { Popover } from "@/components/ui/popover"
 import { Select } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { Eyedropper } from "@phosphor-icons/react"
-import { useState, useMemo, useContext } from "react"
+import { useState, useMemo, useContext, useEffect } from "react"
 import {
     ColorArea,
     ColorField,
@@ -23,7 +23,6 @@ import {
 import {
     ColorPickerStateContext,
     Input as AriaInput,
-    Label as AriaLabel,
     parseColor,
 } from "react-aria-components"
 
@@ -58,11 +57,11 @@ function EyeDropperButton() {
 }
 
 /* ========================================================================
-   ColorPicker Component
+   Color State Bridge Hook
+   说明：桥接外部 hex 受控值与内部 Color 对象，避免触底黑色回流抹掉 HSB 通道语义
    ======================================================================== */
-export function ColorPicker({ value, onChange, className, disabled }) {
-    // Safe parser
-    const colorObject = useMemo(() => {
+function useColorPickerStateBridge(value) {
+    const externalColor = useMemo(() => {
         try {
             return parseColor(value ?? "#000000")
         } catch {
@@ -70,17 +69,37 @@ export function ColorPicker({ value, onChange, className, disabled }) {
         }
     }, [value])
 
+    const [internalColor, setInternalColor] = useState(externalColor)
+
+    useEffect(() => {
+        if (externalColor.toString('hex') !== internalColor.toString('hex')) {
+            setInternalColor(externalColor)
+        }
+    }, [externalColor, internalColor])
+
+    return {
+        internalColor,
+        setInternalColor,
+    }
+}
+
+/* ========================================================================
+   ColorPicker Component
+   ======================================================================== */
+export function ColorPicker({ value, onChange, className, disabled }) {
+    const { internalColor, setInternalColor } = useColorPickerStateBridge(value)
+
     const [colorSpace, setColorSpace] = useState("hex")
 
-    // Handle color change from Aria component
     const handleColorChange = (newColor) => {
+        setInternalColor(newColor)
         if (onChange) {
             onChange(newColor.toString('hex'))
         }
     }
 
     return (
-        <JollyColorPicker value={colorObject} onChange={handleColorChange}>
+        <JollyColorPicker value={internalColor} onChange={handleColorChange}>
             <Popover>
                 <Popover.Trigger asChild>
                     <Button
@@ -93,11 +112,11 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                     >
                         <div className="w-full flex items-center gap-2">
                             <ColorSwatch
-                                color={colorObject}
+                                color={internalColor}
                                 className="size-6 rounded-md border border-border shrink-0"
                             />
                             <span className="truncate font-mono text-sm uppercase text-muted-foreground">
-                                {colorObject.toString('hex')}
+                                {internalColor.toString('hex')}
                             </span>
                         </div>
                     </Button>
@@ -109,14 +128,14 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                                 colorSpace="hsb"
                                 xChannel="saturation"
                                 yChannel="brightness"
-                                className="h-40 w-full rounded-md border border-border shrink-0"
+                                className="h-40 w-full shrink-0"
                             >
-                                <ColorThumb className="z-20" />
+                                <ColorThumb />
                             </ColorArea>
 
                             {/* 2. Hue Slider */}
-                            <ColorSlider channel="hue" colorSpace="hsb" className="w-full">
-                                <SliderTrack className="h-3 w-full rounded-full border border-border">
+                            <ColorSlider channel="hue" colorSpace="hsb" className="mt-1 w-full">
+                                <SliderTrack className="h-3 w-full rounded-full">
                                     <ColorThumb className="top-1/2" />
                                 </SliderTrack>
                             </ColorSlider>
@@ -141,7 +160,7 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                             <div className="flex gap-2">
                                 {colorSpace === "hex" && (
                                     <Input
-                                        value={colorObject.toString('hex')}
+                                        value={internalColor.toString('hex')}
                                         onChange={(e) => {
                                             try {
                                                 handleColorChange(parseColor(e.target.value))
