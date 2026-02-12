@@ -17,5 +17,6 @@ public 目录仅放静态可直接托管文件，不写业务逻辑代码。
 
 变更日志
 2026-02-11: 新增 api/component-registry 静态接口文件，支撑 Kumo 同源挂载搜索能力。
+2026-02-12: 将 GitHub 小图标资源迁移至 `src/components/icons/`，避免无业务关联的品牌资产散落在 public 根目录。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖 framer-motion, @phosphor-icons/react, @/components/ui/ (Button)
+ * [INPUT]: 依赖 framer-motion, @phosphor-icons/react(ArrowRight), @/components/icons/BrandLogos, @/components/ui/ (Button)
  * [OUTPUT]: Final CTA Section (Apple Spring 动效)
  * [POS]: Landing 终结层 - 优雅 Spring 进场
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { motion } from "framer-motion"
-import { ArrowRight, GithubLogo } from "@phosphor-icons/react"
+import { ArrowRight } from "@phosphor-icons/react"
+import { GitHubInvertocatLogo } from "@/components/icons/BrandLogos"
 import { Button } from "@/components/ui/button"
 import { fadeInUp, staggerContainer, viewportConfig, scaleIn, pulseAnimation } from "@/lib/motion"
 
@@ -77,7 +78,7 @@ export function FinalCTA() {
                         <Button
                             variant="outline"
                             size="xl"
-                            leftIcon={<GithubLogo className="h-5 w-5" />}
+                            leftIcon={<GitHubInvertocatLogo className="h-5 w-5" />}
                             asChild
                         >
                             <a href="https://github.com/nicholasxuu/LifeProgressWidget" target="_blank" rel="noreferrer">

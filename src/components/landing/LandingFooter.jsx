@@ -1,15 +1,15 @@
 /**
- * [INPUT]: 依赖 @phosphor-icons/react (图标), @/components/icons/BrandLogos, @/data/social-links
+ * [INPUT]: 依赖 @phosphor-icons/react(Heart), @/components/icons/BrandLogos, @/data/social-links
  * [OUTPUT]: Landing Footer 组件
  * [POS]: Landing 底部层 - 极简版权信息 + 社交入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Heart, GithubLogo } from "@phosphor-icons/react"
-import { XiaohongshuLogo } from "@/components/icons/BrandLogos"
+import { Heart } from "@phosphor-icons/react"
+import { GitHubInvertocatLogo, XiaohongshuLogo } from "@/components/icons/BrandLogos"
 import { SOCIAL_LINKS } from "@/data/social-links"
 
 const SOCIAL_ICON_MAP = {
-    github: GithubLogo,
+    github: GitHubInvertocatLogo,
     xiaohongshu: XiaohongshuLogo,
 }
 

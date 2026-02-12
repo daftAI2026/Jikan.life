@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Direct Popover Re-export**: Switched `src/components/ui/popover.jsx` to direct Kumo re-export, reducing wrapper overhead and aligning with the primitive-first strategy.
+- **Color Primitive UX Fix**: Removed `overflow-hidden` from color sliders and area primitives to prevent clipping of interactive thumbs, ensuring smooth touch and mouse interaction.
+- **Unified Brand Iconography**: Migrated Registry topbar to use `GitHubInvertocatLogo` for visual consistency with modern GitHub branding.
 - **Button Component Adapter**: Introduced a powerful `Button` adapter that maps legacy Radix/Shadcn variants (`outline`, `link`, `accent`) to Kumo primitives while maintaining `react-aria` context compatibility and `asChild` support.
-- **Premium ColorPicker Migration**: Migrated Registry settings to the local `ColorPicker` component, featuring contrast awareness and WCAG level displays for professional design system testing.
-- **Registry UI UX Refinement**: Harmonized vertical spacing and label alignment in the Registry Settings, adding visual hints for Life and Goal configurations.
+
 
 
 

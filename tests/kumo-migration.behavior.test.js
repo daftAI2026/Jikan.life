@@ -105,7 +105,7 @@ test("KumoShell defines sidebar and content slots", () => {
   assert.match(source, /<main/)
 })
 
-test("P0 UI components are backed by Kumo primitives (popover uses shared react-aria wrapper)", () => {
+test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo primitive)", () => {
   const button = readSource("src/components/ui/button.jsx")
   const input = readSource("src/components/ui/input.jsx")
   const select = readSource("src/components/ui/select.jsx")
@@ -122,9 +122,7 @@ test("P0 UI components are backed by Kumo primitives (popover uses shared react-
   assert.match(tabs, /@cloudflare\/kumo\/components\/tabs/)
   assert.match(switchControl, /@cloudflare\/kumo\/components\/switch/)
   assert.match(tooltip, /@cloudflare\/kumo\/components\/tooltip/)
-  assert.match(popover, /DialogTrigger as AriaDialogTrigger/)
-  assert.match(popover, /Popover as AriaPopover/)
-  assert.match(popover, /function PopoverDialog/)
+  assert.match(popover, /@cloudflare\/kumo\/components\/popover/)
 })
 
 test("Calendar avoids shadcn Select subcomponents", () => {
@@ -135,16 +133,24 @@ test("Calendar avoids shadcn Select subcomponents", () => {
   assert.doesNotMatch(source, /SelectValue/)
 })
 
-test("ColorPicker uses grouped popover structure without shadcn select subcomponents", () => {
+test("ColorPicker uses Kumo popover trigger/content structure without shadcn select subcomponents", () => {
   const source = readSource("src/components/ui/color-picker.jsx")
 
-  assert.match(source, /from "@\/components\/ui\/popover"/)
-  assert.match(source, /Popover,\s*PopoverDialog,\s*PopoverTrigger/s)
-  assert.match(source, /PopoverTrigger>/)
-  assert.match(source, /<PopoverDialog/)
+  assert.match(source, /import \{ Popover \} from "@\/components\/ui\/popover"/)
+  assert.match(source, /<Popover\.Trigger asChild>/)
+  assert.match(source, /<Popover\.Content/)
   assert.doesNotMatch(source, /SelectContent/)
   assert.doesNotMatch(source, /SelectTrigger/)
   assert.doesNotMatch(source, /SelectValue/)
+})
+
+test("Color primitives avoid overflow clipping so thumbs stay visible", () => {
+  const source = readSource("src/components/ui/color.jsx")
+
+  assert.match(source, /size-\[192px\] shrink-0 rounded-md border border-border shadow-md/)
+  assert.match(source, /h-7 w-\[192px\] rounded-md border border-border/)
+  assert.doesNotMatch(source, /size-\[192px\] shrink-0 overflow-hidden/)
+  assert.doesNotMatch(source, /h-7 w-\[192px\] overflow-hidden/)
 })
 
 test("No shadcn Select subcomponents remain in src", () => {
@@ -240,7 +246,7 @@ test("Registry topbar shows GitHub and Xiaohongshu links", () => {
 
   assert.match(source, /SOCIAL_LINKS/)
   assert.match(source, /TOPBAR_SOCIAL_ORDER\s*=\s*\["xiaohongshu",\s*"github"\]/)
-  assert.match(source, /GithubLogo/)
+  assert.match(source, /(GithubLogo|GitHubInvertocatLogo)/)
   assert.match(source, /XiaohongshuLogo/)
   assert.match(source, /aria-label={social.label}/)
   assert.doesNotMatch(source, /<span className=/)

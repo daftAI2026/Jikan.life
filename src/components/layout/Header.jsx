@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖 @phosphor-icons/react, react, @/components/ui/button, @/components/ui/dropdown-menu, @/lib/I18nContext
+ * [INPUT]: 依赖 @phosphor-icons/react(Sun/Moon), react, @/components/icons/BrandLogos, @/components/ui/button, @/components/ui/dropdown-menu, @/lib/I18nContext
  * [OUTPUT]: 对外提供 Header 组件 (固定导航栏)
  * [POS]: 布局组件，全站顶部导航，三段式布局: Logo | 导航链接 | 工具栏
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState, useEffect } from "react"
-import { GithubLogo, Sun, Moon } from "@phosphor-icons/react"
+import { Sun, Moon } from "@phosphor-icons/react"
+import { GitHubInvertocatLogo } from "@/components/icons/BrandLogos"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -126,7 +127,7 @@ export function Header() {
                             rel="noopener noreferrer"
                             aria-label="JIKAN on GitHub"
                         >
-                            <GithubLogo className="h-[1.2rem] w-[1.2rem]" weight="fill" />
+                            <GitHubInvertocatLogo className="h-[1.2rem] w-[1.2rem]" />
                         </a>
                     </Button>
                 </div>
