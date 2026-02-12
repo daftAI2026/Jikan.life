@@ -7,59 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-02-13
+
 ### Added
-- **ColorPicker State Bridging**: Extracted state synchronization logic into `useColorPickerStateBridge` to resolve HSB channel jumping and edge-case reset bugs in the premium color picker.
-- **UI Logic Decoupling**: Refactored `ColorPicker` to separate heavy HSB/HEX conversion logic from rendering, improving component performance and maintainability.
-- **GEB Protocol v2 Enforcement**: Achieved 100% fractal documentation coverage across `src/components/ui/`, `src/pages/registry/`, and `tests/` with recursive `CLAUDE.md` maps and L3 header contracts.
-
-
-
-
-
-
-
-
-- **Registry Social Links**: Integrated Xiaohongshu and GitHub navigation into the Registry topbar, replacing static version strings with branded iconography.
-- **Workspace Directory**: Created `src/pages/registry/sections/workspace` to host isolated feature previews within the registry shell.
-- **Kumo Infrastructure**: Introduced `vendor/kumo` as the primitive core and established a decoupled UI component library in `src/components/ui`.
+- **Design System Registry**: Implemented a comprehensive Component Registry at `/registry` with a split-pane workspace, live configuration, and instant preview.
+- **Kumo Infrastructure**: Introduced `vendor/kumo` as a tracked Git submodule and established a decoupled UI component library in `src/components/ui`.
+- **GEB Protocol v2**: Achieved 100% fractal documentation coverage across core directories with recursive `CLAUDE.md` maps and L3 header contracts.
+- **Advanced UI Components**: 
+    - **ColorPicker**: Premium implementation with WCAG contrast intelligence and state-bridging for smooth HSB/HEX sync.
+    - **Button Adapter**: Intelligent wrapper mapping legacy variants to Kumo primitives with `react-aria` support.
+    - **Popover**: Direct high-performance re-export of Kumo primitives.
+- **Wallpaper Refinements**: Support for device-level `cols` and `padding` overrides; centralized font rendering for consistent CJK support.
+- **Registry Features**: Integrated Xiaohongshu/GitHub social links and localized wallpaper testing shell.
 
 ### Changed
-- **Vendor Decoupling**: Refactored `ThemeToggle`, `SearchDialog`, and `KumoMenuIcon` in the registry to be local implementations, removing direct source dependencies on `vendor/kumo` documentation components.
-- **Registry Test Hardening**: Updated behavior tests to validate local workspace implementations and localized string rendering, replacing legacy vendor-based assertions.
-- **Registry Architecture**: Decoupled the Registry Sidebar from Kumo's vendor components to provide a tailored navigation experience for Jikan.life's design system style selector.
-- **Registry Navigation**: Refactored `RegistryHome` to use `selectedStyle` as the single source of truth for component switching.
-- **Behavioral Testing**: Expanded `tests/kumo-migration.behavior.test.js` to cover local workspace implementations and social link validation.
-- **UI Primitives Migration**: Refactored 20+ base components (Button, Input, Select, etc.) to use Kumo-style tokens and `react-aria-components` for enhanced accessibility.
+- **Architecture Migration**: Decoupled core registry components from vendor documentation to provide a tailored, stable design system workspace.
+- **UI Primitives Migration**: Refactored 20+ base components to use Kumo-style tokens and `react-aria-components`.
+- **Testing Evolution**: Expanded behavioral testing to cover design system compliance, workspace integrity, and localized rendering.
+- **Global Theme Engine**: Upgraded to Tailwind v4 compatible theme tokens and native `light-dark()` schemes.
 
+### Fixed
+- **State & Logic**: Resolved HSB channel jumping, DatePicker validation matchers, lifespan input clamping, and worker cache collisions.
+- **i18n & UX**: Fixed translation reactivity in `TypesSection`, corrected Goal card design, and refined iOS/Android setup instructions including terminology alignment.
+- **Visuals**: Fixed color primitive clipping (overflow-hidden) and added styling refinements like DatePicker inner shadows.
 
-### Added (Previous)
-- **Design System Registry**: Implemented a comprehensive Component Registry at `/registry` for visual testing and documentation of Kumo primitives.
-- **GEB Protocol v2**: Established recursive `CLAUDE.md` maps across all core directories (`/src/components`, `/src/lib`, `/src/pages`) to ensure architectural alignment.
-- **Kumo Shell**: Created `KumoShell.jsx` as the new layout foundation for Kumo-based pages.
-- **Year Grid Customization**: Year Progress wallpaper now supports device-level `cols` and `padding` overrides. iPhone models default to 16 columns with optimized padding for visual consistency.
-
-### Fixed (Previous)
-- **Worker Cache**: Fixed cache collision by including `lang`, `format`, `clockHeight`, `cols`, and `padding` in cache key calculation.
-
-
-- Types cards: clamp descriptions to two lines to keep card heights consistent across languages.
-- Restore react-aria trigger wiring so date and color picker popovers open reliably without altering button styling.
-- **DatePicker Validation**: Resolved issue where `fromDate`/`toDate` didn't actually disable dates. Implemented `disabled` matcher functions to correctly restrict Date of Birth (max today) and Goal (min today).
-- **Lifespan Input**: Fixed "jumping numbers" bug when deleting digits by deferring range clamping (50-120) to `onBlur`.
-- **Theme Toggle**: Fixed theme switching by correctly updating the `.dark` class on the root element to match Tailwind V4 selectors.
-- **i18n Reactivity**: Fixed a critical bug where the `TypesSection` did not refresh translations on language change. Implemented `useMemo` with `t` dependency and refactored `TypeCard` to remove redundant state.
-- **Goal Card**: Fixed duplicated "Daily Updates" text and restored original design (Bold "Daily" + Small "UPDATES").
-- **iOS Automation Setup**: Fixed a missing "Tap Next" step and refined the flow with the "+ (Upper-right corner)" prompt for better UX.
-- **Reference Documentation**: Added `src/data/terminology-reference.md` as the unified source of truth for iOS (Shortcuts) and Android (MacroDroid) setup terminology.
-
-### Changed
-- Hardened date/time rendering against DST and timezone drift while unifying shared country mappings for consistent previews and caching.
-- Changelog: merge duplicate Internationalization heading to keep Unreleased sections consistent.
-- Simplified the landing footer to reduce visual clutter while keeping branded social links.
-- Preserve the original neumorphic button feel and centralize palette presets so UI styling stays consistent across frontend and worker.
-- UI date controls: standardized date field primitives to improve keyboard input reliability and visual consistency.
-- **DatePicker Styling**: Added inner shadow to DatePicker buttons for better visual consistency with input fields and improved contrast on muted backgrounds.
-- **Default Device**: Set the default device to iPhone 17 Pro Max for a better out-of-the-box experience on modern premium devices.
 
 ### Internationalization
 - **Full Card i18n**: Completed internationalization for all card stats and status labels across all supported languages.
