@@ -11,4 +11,7 @@ kumo-migration.behavior.test.js: Kumo 迁移行为护栏，约束 Button/Select/
 开发规范
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.behavior.test.js` 的关键断言。
 
+变更日志
+2026-02-12: `kumo-migration.behavior.test.js` 增加 ColorPicker 状态桥接与禁用实验性 pointer-bridge 的护栏断言，防止底边跳左问题回归。
+
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

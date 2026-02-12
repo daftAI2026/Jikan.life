@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **GEB Protocol v2 Enforcement**: Achieved 100% fractal documentation coverage across `src/components/ui/`, `src/pages/registry/`, and `tests/` with recursive `CLAUDE.md` maps and L3 header contracts.
 - **Fractal Testing Map**: Introduced `tests/CLAUDE.md` as the semantic anchor for behavioral test suites, ensuring architectural intent is preserved as features evolve.
-- **Direct Popover Re-export**: Switched `src/components/ui/popover.jsx` to direct Kumo re-export, reducing wrapper overhead and aligning with the primitive-first strategy.
+- **Documentation Self-Healing**: Synchronized L3 headers and CLAUDE.md maps across the Registry and UI layers to eliminate semantic drift during rapid prototyping.
+
 
 
 

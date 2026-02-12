@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/color, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/button, @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（Kumo Popover.Trigger/Content + 色域/色相 + EyeDropper + 多色彩空间输入）
- * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用
+ * [OUTPUT]: ColorPicker 组件与 useColorPickerStateBridge 同步桥（保持对外 hex 协议，内部维持 Color 对象语义）
+ * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用，负责外部受控值与内部拖拽状态一致性
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"

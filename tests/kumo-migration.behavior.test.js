@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test, node:assert/strict, node:fs, node:path
- * [OUTPUT]: Kumo 迁移关键约束的回归测试（含 Popover/ColorPicker 同构链路护栏）
- * [POS]: tests/ UI 迁移护栏，防止主题/组件体系与弹层实现回退
+ * [OUTPUT]: Kumo 迁移关键约束的回归测试（含 ColorPicker 状态桥接、弹层链路与视觉样式单一来源护栏）
+ * [POS]: tests/ UI 迁移护栏，防止主题/组件体系、ColorPicker 拖拽语义与弹层实现回退
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"

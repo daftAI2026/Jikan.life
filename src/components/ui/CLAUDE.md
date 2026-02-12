@@ -36,8 +36,8 @@ slider.jsx: 滑块
 calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/月份年份选择，年份范围可配置
 date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出
 datefield.jsx: 日期/时间输入字段，支持键盘输入和格式化
-color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等
-color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，支持 HSBA/RGBA + EyeDropper
+color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，作为颜色面板视觉样式单一来源
+color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，内置 `useColorPickerStateBridge` 保持外部 hex 与内部 Color 语义一致
 field.jsx: 表单字段容器，react-aria-components 基础组件
 
 **设计语言**: Kumo UI (Base UI) + Kumo Token Bridge
@@ -49,5 +49,6 @@ field.jsx: 表单字段容器，react-aria-components 基础组件
 变更日志
 2026-02-12: ColorPicker 弹层链路回归主线同构（Kumo Popover + Kumo Select），移除跨体系弹层混搭。
 2026-02-12: ColorArea/SliderTrack 禁止 `overflow-hidden` 裁切 Thumb，确保颜色手柄完整可见。
+2026-02-12: ColorPicker 增加 `useColorPickerStateBridge`，修复触底时 `hex` 回流导致 hue/brightness 通道重置和双拇指跳左锁死。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

@@ -39,7 +39,7 @@ function LanguageSelect() {
 
     return (
         <Select
-            className="min-w-[104px] justify-start gap-1.5 bg-inherit px-2 text-kumo-default shadow-none ring-0 hover:bg-kumo-tint not-disabled:hover:!bg-kumo-tint data-[state=open]:bg-kumo-tint [&>span:first-child]:flex [&>span:first-child]:h-full [&>span:first-child]:items-center [&>*:last-child]:hidden"
+            className="min-w-[104px] justify-start gap-1.5 bg-inherit px-2 text-kumo-default shadow-none ring-0 hover:bg-kumo-tint not-disabled:hover:!bg-kumo-tint data-[state=open]:bg-kumo-tint md:-ml-2.5 [&>span:first-child]:flex [&>span:first-child]:h-full [&>span:first-child]:items-center [&>*:last-child]:hidden"
             value={lang}
             onOpenChange={(open) => setIsOpen(Boolean(open))}
             onValueChange={(value) => {
