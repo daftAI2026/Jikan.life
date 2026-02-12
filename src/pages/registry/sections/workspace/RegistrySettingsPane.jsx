@@ -1,10 +1,11 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo(Button/Input/Select), workspace 配置 hook 返回的 view model
+ * [INPUT]: 依赖 @cloudflare/kumo(Button/Input/Select), @/components/ui/color-picker, workspace 配置 hook 返回的 view model
  * [OUTPUT]: 对外提供 RegistrySettingsPane 组件（Make it yours 属性配置面板）
  * [POS]: registry/sections/workspace 的右侧设置面板，承载 location/language/colors/device/url 与 life|goal 条件字段
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button, Input, Select } from "@cloudflare/kumo"
+import { ColorPicker } from "@/components/ui/color-picker"
 
 function RegistrySettingsPane({
     t,
@@ -158,40 +159,20 @@ function RegistrySettingsPane({
                     <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                         <div className="space-y-4">
                             <span className="text-xs text-kumo-subtle">{t("config.background")}</span>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="color"
-                                    value={config.bgColor}
-                                    onChange={(event) => actions.setBackgroundColor(event.target.value)}
-                                    className="h-9 w-11 rounded border border-kumo-line bg-transparent p-1"
-                                    aria-label={t("config.background")}
-                                    disabled={!typeReady}
-                                />
-                                <Input
-                                    value={config.bgColor}
-                                    onChange={(event) => actions.setBackgroundColor(event.target.value)}
-                                    disabled={!typeReady}
-                                />
-                            </div>
+                            <ColorPicker
+                                value={config.bgColor}
+                                onChange={(value) => actions.setBackgroundColor(value)}
+                                disabled={!typeReady}
+                            />
                         </div>
 
                         <div className="space-y-4">
                             <span className="text-xs text-kumo-subtle">{t("config.accent")}</span>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="color"
-                                    value={config.originalAccentColor}
-                                    onChange={(event) => actions.setAccentColor(event.target.value)}
-                                    className="h-9 w-11 rounded border border-kumo-line bg-transparent p-1"
-                                    aria-label={t("config.accent")}
-                                    disabled={!typeReady}
-                                />
-                                <Input
-                                    value={config.originalAccentColor}
-                                    onChange={(event) => actions.setAccentColor(event.target.value)}
-                                    disabled={!typeReady}
-                                />
-                            </div>
+                            <ColorPicker
+                                value={config.originalAccentColor}
+                                onChange={(value) => actions.setAccentColor(value)}
+                                disabled={!typeReady}
+                            />
                         </div>
                     </div>
 

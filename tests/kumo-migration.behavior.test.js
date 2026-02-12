@@ -105,7 +105,7 @@ test("KumoShell defines sidebar and content slots", () => {
   assert.match(source, /<main/)
 })
 
-test("P0 UI components are backed by Kumo primitives", () => {
+test("P0 UI components are backed by Kumo primitives (popover uses shared react-aria wrapper)", () => {
   const button = readSource("src/components/ui/button.jsx")
   const input = readSource("src/components/ui/input.jsx")
   const select = readSource("src/components/ui/select.jsx")
@@ -122,7 +122,9 @@ test("P0 UI components are backed by Kumo primitives", () => {
   assert.match(tabs, /@cloudflare\/kumo\/components\/tabs/)
   assert.match(switchControl, /@cloudflare\/kumo\/components\/switch/)
   assert.match(tooltip, /@cloudflare\/kumo\/components\/tooltip/)
-  assert.match(popover, /@cloudflare\/kumo\/components\/popover/)
+  assert.match(popover, /DialogTrigger as AriaDialogTrigger/)
+  assert.match(popover, /Popover as AriaPopover/)
+  assert.match(popover, /function PopoverDialog/)
 })
 
 test("Calendar avoids shadcn Select subcomponents", () => {
@@ -133,11 +135,13 @@ test("Calendar avoids shadcn Select subcomponents", () => {
   assert.doesNotMatch(source, /SelectValue/)
 })
 
-test("ColorPicker avoids shadcn popover/select subcomponents", () => {
+test("ColorPicker uses grouped popover structure without shadcn select subcomponents", () => {
   const source = readSource("src/components/ui/color-picker.jsx")
 
-  assert.doesNotMatch(source, /PopoverDialog/)
-  assert.doesNotMatch(source, /PopoverTrigger/)
+  assert.match(source, /from "@\/components\/ui\/popover"/)
+  assert.match(source, /Popover,\s*PopoverDialog,\s*PopoverTrigger/s)
+  assert.match(source, /PopoverTrigger>/)
+  assert.match(source, /<PopoverDialog/)
   assert.doesNotMatch(source, /SelectContent/)
   assert.doesNotMatch(source, /SelectTrigger/)
   assert.doesNotMatch(source, /SelectValue/)
@@ -393,6 +397,34 @@ test("Registry settings does not render selected type badge", () => {
   assert.doesNotMatch(homeGridSource, /typeName={viewModel\.typeName}/)
   assert.doesNotMatch(hookSource, /typeName/)
   assert.doesNotMatch(hookSource, /getTypeName/)
+})
+
+test("Registry settings colors use shared ColorPicker component", () => {
+  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+
+  assert.match(source, /import\s+\{\s*ColorPicker\s*\}\s+from\s+"@\/components\/ui\/color-picker"/)
+  assert.match(source, /<ColorPicker/)
+  assert.doesNotMatch(source, /type="color"/)
+})
+
+test("Button adapter normalizes legacy props and preserves react-aria trigger compatibility", () => {
+  const source = readSource("src/components/ui/button.jsx")
+
+  assert.match(source, /usePress/)
+  assert.match(source, /ButtonContext/)
+  assert.match(source, /const LEGACY_VARIANT_TO_KUMO_VARIANT\s*=\s*\{/)
+  assert.match(source, /default:\s*"secondary"/)
+  assert.match(source, /link:\s*"ghost"/)
+  assert.match(source, /accent:\s*"primary"/)
+  assert.match(source, /const LEGACY_SIZE_TO_KUMO_SIZE\s*=\s*\{/)
+  assert.match(source, /default:\s*"base"/)
+  assert.match(source, /icon:\s*"lg"/)
+  assert.match(source, /size === "icon" \? "square" : "base"/)
+  assert.match(source, /if \(asChild\)/)
+  assert.match(source, /<Slot/)
+  assert.match(source, /variant={resolvedVariant}/)
+  assert.match(source, /size={resolvedSize}/)
+  assert.match(source, /shape={resolvedShape}/)
 })
 
 test("Registry settings URL block uses responsive row and flexible input", () => {

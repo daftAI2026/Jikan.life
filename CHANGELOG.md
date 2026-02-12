@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Button Component Adapter**: Introduced a powerful `Button` adapter that maps legacy Radix/Shadcn variants (`outline`, `link`, `accent`) to Kumo primitives while maintaining `react-aria` context compatibility and `asChild` support.
+- **Premium ColorPicker Migration**: Migrated Registry settings to the local `ColorPicker` component, featuring contrast awareness and WCAG level displays for professional design system testing.
 - **Registry UI UX Refinement**: Harmonized vertical spacing and label alignment in the Registry Settings, adding visual hints for Life and Goal configurations.
-- **Registry URL Panel**: Enhanced the generated URL panel with a responsive, flexible layout that adapts to container width and improves mobile accessibility.
-- **Font Unification**: Centralized font family logic in `shared/wallpaper-core.js` to ensure consistent CJK rendering across Canvas preview and Worker SVG generation.
+
 
 
 

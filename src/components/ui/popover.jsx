@@ -1,7 +1,46 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo/components/popover
- * [OUTPUT]: 对外提供 Popover 相关组件
- * [POS]: UI基础层 - Popover 原语
+ * [INPUT]: 依赖 react-aria-components
+ * [OUTPUT]: Popover, PopoverTrigger, PopoverDialog (基于 react-aria 的气泡弹出)
+ * [POS]: UI组件层 - 气泡弹出组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-export * from "@cloudflare/kumo/components/popover"
+"use client"
+
+import * as React from "react"
+import {
+  Dialog as AriaDialog,
+  DialogTrigger as AriaDialogTrigger,
+  Popover as AriaPopover,
+  composeRenderProps,
+} from "react-aria-components"
+import { cn } from "@/lib/utils"
+
+const PopoverTrigger = AriaDialogTrigger
+
+const Popover = ({
+  className,
+  offset = 4,
+  ...props
+}) => (
+  <AriaPopover
+    offset={offset}
+    className={composeRenderProps(className, (className) =>
+      cn(
+        "z-50 rounded-xl border bg-popover text-popover-foreground shadow-md outline-none",
+        "data-[entering]:animate-in data-[entering]:fade-in-0 data-[entering]:zoom-in-95",
+        "data-[exiting]:animate-out data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95",
+        "data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2",
+        className
+      ))}
+    {...props}
+  />
+)
+
+function PopoverDialog({
+  className,
+  ...props
+}) {
+  return (<AriaDialog className={cn("p-4 outline outline-0", className)} {...props} />)
+}
+
+export { Popover, PopoverTrigger, PopoverDialog }
