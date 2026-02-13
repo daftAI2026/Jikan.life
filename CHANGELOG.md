@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-02-14
+
 ### Added
 - **Refined Color Primitives**: Upgraded ColorThumbs with a "dot-in-ring" visual style and transitioned all color containers to `rounded-lg` for Kumo alignment.
 - **Dynamic Color Channel Mapping**: Refactored `ColorPicker` to use a declarative mapping system for RGB/HSL/HSB channels, simplifying rendering logic.

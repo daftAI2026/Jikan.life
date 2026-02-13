@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react-aria-components
- * [OUTPUT]: 对外提供 Color 相关原子组件 (ColorWheel, ColorArea, SliderTrack, ColorThumb 等)，作为颜色面板视觉样式单一来源
- * [POS]: ui/ 颜色选择器底层原语，统一圆角/描边/手柄可视性，避免上层重复样式导致脏边与裁切
+ * [OUTPUT]: 对外提供 Color 相关原子组件 (ColorWheel, ColorArea, SliderTrack, ColorThumb 等)，其中 ColorThumb 采用外圈+中心点分层样式常量
+ * [POS]: ui/ 颜色选择器底层原语，统一圆角/描边/手柄可视性，作为颜色面板视觉样式单一来源并降低边缘混色风险
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import {

@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/button, @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义）
- * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用，消费状态桥 Hook 维持受控一致性
+ * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染）
+ * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏比例布局
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/button"

@@ -36,8 +36,8 @@ slider.jsx: 滑块
 calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/月份年份选择，年份范围可配置
 date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出
 datefield.jsx: 日期/时间输入字段，支持键盘输入和格式化
-color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，作为颜色面板视觉样式单一来源
-color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，消费状态桥 hook 并维持对外 hex 协议
+color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，ColorThumb 采用外圈+中心点分层常量，作为颜色面板视觉样式单一来源
+color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `1:2+弹性输入` 布局，通道输入使用配置映射并维持对外 hex 协议
 use-color-picker-state-bridge.js: ColorPicker 状态桥 hook，负责外部受控 hex 与内部 Color 对象同步保护
 field.jsx: 表单字段容器，react-aria-components 基础组件
 
@@ -52,5 +52,8 @@ field.jsx: 表单字段容器，react-aria-components 基础组件
 2026-02-12: ColorArea/SliderTrack 禁止 `overflow-hidden` 裁切 Thumb，确保颜色手柄完整可见。
 2026-02-12: ColorPicker 增加 `useColorPickerStateBridge`，修复触底时 `hex` 回流导致 hue/brightness 通道重置和双拇指跳左锁死。
 2026-02-12: 将 `useColorPickerStateBridge` 抽离到 `use-color-picker-state-bridge.js`，ColorPicker 只保留渲染与交互编排职责。
+2026-02-13: ColorPicker 完成 KUMO 视觉同化，输入/选择器统一 token，色域改为 `aspect-square`，工具栏调整为 `吸管:颜色空间=1:2` + 剩余输入框。
+2026-02-13: ColorPicker 通道输入改为 `COLOR_SPACE_CHANNELS` 配置驱动，减少 `rgb/hsl/hsb` 重复分支。
+2026-02-13: ColorThumb 样式拆为 `BASE/OUTER_RING/CENTER_DOT/FOCUS` 常量，采用分层渲染以降低边缘混色风险。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
