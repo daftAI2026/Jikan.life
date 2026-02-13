@@ -32,6 +32,18 @@ const ColorPicker = AriaColorPicker
 
 const SliderOutput = AriaSliderOutput
 
+const COLOR_THUMB_BASE_CLASS =
+  "z-20 box-border size-5 rounded-[50%] overflow-hidden shadow-md"
+
+const COLOR_THUMB_OUTER_RING_CLASS =
+  "before:pointer-events-none before:absolute before:inset-0 before:rounded-[50%] before:bg-[var(--color-white)] before:content-['']"
+
+const COLOR_THUMB_CENTER_DOT_CLASS =
+  "after:pointer-events-none after:absolute after:top-1/2 after:left-1/2 after:size-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-[50%] after:bg-[inherit] after:content-['']"
+
+const COLOR_THUMB_FOCUS_CLASS =
+  "data-[focus-visible]:size-6 data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-ring"
+
 function ColorWheel({
   className,
   outerRadius = 100,
@@ -55,7 +67,7 @@ function ColorArea({
     <AriaColorArea
       className={composeRenderProps(className, (className) =>
         cn(
-          "size-[192px] shrink-0 rounded-md ring-1 ring-kumo-fill shadow-sm",
+          "size-[192px] shrink-0 rounded-lg ring-1 ring-kumo-line shadow-sm",
           className
         ))}
       {...props} />
@@ -69,7 +81,7 @@ function SliderTrack({
   return (
     <AriaSliderTrack
       className={composeRenderProps(className, (className) =>
-        cn("h-7 w-[192px] rounded-md ring-1 ring-kumo-fill", className))}
+        cn("h-7 w-[192px] rounded-lg ring-1 ring-kumo-line", className))}
       {...props} />
   );
 }
@@ -82,9 +94,10 @@ function ColorThumb({
     <AriaColorThumb
       className={composeRenderProps(className, (className) =>
         cn(
-          "z-20 box-border size-5 rounded-[50%] border-2 border-foreground shadow-md",
-          /* Focus Visible */
-          "data-[focus-visible]:size-6",
+          COLOR_THUMB_BASE_CLASS,
+          COLOR_THUMB_OUTER_RING_CLASS,
+          COLOR_THUMB_CENTER_DOT_CLASS,
+          COLOR_THUMB_FOCUS_CLASS,
           className
         ))}
       {...props} />

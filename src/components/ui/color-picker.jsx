@@ -27,6 +27,15 @@ import {
     parseColor,
 } from "react-aria-components"
 
+const COLOR_CHANNEL_INPUT_CLASS =
+    "flex h-9 w-full rounded-lg bg-kumo-control px-2 py-1 text-center text-xs font-mono text-kumo-default ring ring-kumo-line placeholder:text-kumo-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kumo-ring disabled:cursor-not-allowed disabled:opacity-50"
+
+const COLOR_SPACE_CHANNELS = {
+    rgb: ["red", "green", "blue"],
+    hsl: ["hue", "saturation", "lightness"],
+    hsb: ["hue", "saturation", "brightness"],
+}
+
 /* ========================================================================
    EyeDropper Button
    ======================================================================== */
@@ -42,7 +51,8 @@ function EyeDropperButton() {
         <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 shrink-0 rounded-xl"
+            shape="square"
+            className="h-9 w-9 shrink-0"
             onClick={() => {
                 // @ts-expect-error
                 new window.EyeDropper()
@@ -64,6 +74,7 @@ export function ColorPicker({ value, onChange, className, disabled }) {
     const { internalColor, setInternalColor } = useColorPickerStateBridge(value)
 
     const [colorSpace, setColorSpace] = useState("hex")
+    const channels = COLOR_SPACE_CHANNELS[colorSpace] ?? null
 
     const handleColorChange = (newColor) => {
         setInternalColor(newColor)
@@ -71,6 +82,19 @@ export function ColorPicker({ value, onChange, className, disabled }) {
             onChange(newColor.toString('hex'))
         }
     }
+
+    const renderChannelInputs = (space, channels) => (
+        <>
+            {channels.map((channel) => (
+                <ColorField key={channel} colorSpace={space} channel={channel} className="flex-1">
+                    <AriaInput
+                        className={COLOR_CHANNEL_INPUT_CLASS}
+                        placeholder={channel[0].toUpperCase()}
+                    />
+                </ColorField>
+            ))}
+        </>
+    )
 
     return (
         <JollyColorPicker value={internalColor} onChange={handleColorChange}>
@@ -80,29 +104,29 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                         variant="outline"
                         disabled={disabled}
                         className={cn(
-                            "w-full justify-start text-left font-normal rounded-xl px-2",
+                            "w-full justify-start rounded-lg px-3 text-left font-normal",
                             className
                         )}
                     >
                         <div className="w-full flex items-center gap-2">
                             <ColorSwatch
                                 color={internalColor}
-                                className="size-6 rounded-md border border-border shrink-0"
+                                className="size-6 shrink-0 rounded-md ring ring-kumo-line"
                             />
-                            <span className="truncate font-mono text-sm uppercase text-muted-foreground">
+                            <span className="truncate font-mono text-sm uppercase text-kumo-subtle">
                                 {internalColor.toString('hex')}
                             </span>
                         </div>
                     </Button>
                 </Popover.Trigger>
-                <Popover.Content className="w-64 rounded-xl p-3" sideOffset={8}>
+                <Popover.Content className="w-64 p-3" sideOffset={8}>
                     <div className="flex flex-col gap-3">
                             {/* 1. Color Area (HSB) */}
                             <ColorArea
                                 colorSpace="hsb"
                                 xChannel="saturation"
                                 yChannel="brightness"
-                                className="h-40 w-full shrink-0"
+                                className="w-full aspect-square shrink-0"
                             >
                                 <ColorThumb />
                             </ColorArea>
@@ -115,23 +139,20 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                             </ColorSlider>
 
                             {/* 3. Toolbar: EyeDropper + ColorSpace Select */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex min-w-0 items-center gap-2">
                                 <EyeDropperButton />
 
                                 <Select
                                     value={colorSpace}
                                     onValueChange={setColorSpace}
-                                    className="h-8 flex-1 rounded-xl text-xs font-medium uppercase"
+                                    className="h-9 w-[72px] shrink-0 rounded-lg text-sm font-medium uppercase"
                                 >
                                     <Select.Option value="hex">HEX</Select.Option>
                                     <Select.Option value="rgb">RGB</Select.Option>
                                     <Select.Option value="hsl">HSL</Select.Option>
                                     <Select.Option value="hsb">HSB</Select.Option>
                                 </Select>
-                            </div>
 
-                            {/* 4. Inputs */}
-                            <div className="flex gap-2">
                                 {colorSpace === "hex" && (
                                     <Input
                                         value={internalColor.toString('hex')}
@@ -141,50 +162,18 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                                             } catch { }
                                         }}
                                         maxLength={7}
-                                        className="h-8 font-mono text-xs uppercase text-center rounded-xl"
+                                        className="h-9 min-w-0 w-0 flex-1 rounded-lg text-center font-mono text-sm uppercase"
                                         placeholder="HEX"
                                     />
                                 )}
-
-                                {colorSpace === "rgb" && (
-                                    <>
-                                        {['red', 'green', 'blue'].map(channel => (
-                                            <ColorField key={channel} colorSpace="rgb" channel={channel} className="flex-1">
-                                                <AriaInput
-                                                    className="flex h-8 w-full rounded-xl border border-input bg-background px-2 py-1 text-center text-xs font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    placeholder={channel[0].toUpperCase()}
-                                                />
-                                            </ColorField>
-                                        ))}
-                                    </>
-                                )}
-
-                                {colorSpace === "hsl" && (
-                                    <>
-                                        {['hue', 'saturation', 'lightness'].map(channel => (
-                                            <ColorField key={channel} colorSpace="hsl" channel={channel} className="flex-1">
-                                                <AriaInput
-                                                    className="flex h-8 w-full rounded-xl border border-input bg-background px-2 py-1 text-center text-xs font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    placeholder={channel[0].toUpperCase()}
-                                                />
-                                            </ColorField>
-                                        ))}
-                                    </>
-                                )}
-
-                                {colorSpace === "hsb" && (
-                                    <>
-                                        {['hue', 'saturation', 'brightness'].map(channel => (
-                                            <ColorField key={channel} colorSpace="hsb" channel={channel} className="flex-1">
-                                                <AriaInput
-                                                    className="flex h-8 w-full rounded-xl border border-input bg-background px-2 py-1 text-center text-xs font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    placeholder={channel[0].toUpperCase()}
-                                                />
-                                            </ColorField>
-                                        ))}
-                                    </>
-                                )}
                             </div>
+
+                            {/* 4. Inputs */}
+                            {channels && (
+                                <div className="flex gap-2">
+                                    {renderChannelInputs(colorSpace, channels)}
+                                </div>
+                            )}
                         </div>
                 </Popover.Content>
             </Popover>
