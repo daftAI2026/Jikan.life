@@ -128,7 +128,7 @@ function RegistrySettingsPane({
                 )}
 
                 {config.selectedType === "goal" && (
-                    <div className="grid grid-cols-1 gap-5 rounded-lg border border-kumo-line bg-kumo-control p-5 xl:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                         <div className="space-y-4">
                             <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.goalName")}

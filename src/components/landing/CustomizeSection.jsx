@@ -474,7 +474,7 @@ export function CustomizeSection({ selectedType }) {
 
                         {/* Goal Config */}
                         {config.selectedType === 'goal' && (
-                            <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg border border-border mb-6">
+                            <div className="grid grid-cols-2 gap-4 mb-6">
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium">{t('config.goalName')}</label>
                                     <Input
@@ -487,6 +487,7 @@ export function CustomizeSection({ selectedType }) {
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium">{t('config.targetDate')}</label>
                                     <DatePicker
+                                        className="w-full"
                                         value={config.goalDate ? parseDate(config.goalDate) : null}
                                         onChange={(date) => {
                                             if (date) {

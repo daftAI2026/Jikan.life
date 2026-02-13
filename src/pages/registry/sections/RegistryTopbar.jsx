@@ -1,9 +1,10 @@
 /**
- * [INPUT]: 依赖 @/components/icons/BrandLogos, @/data/social-links, LanguageSelect
+ * [INPUT]: 依赖 @cloudflare/kumo(LinkButton), @/components/icons/BrandLogos, @/data/social-links, LanguageSelect
  * [OUTPUT]: 对外提供 RegistryTopbar 顶部栏（左侧语言切换 + 右侧社交入口）
  * [POS]: pages/registry/sections 的顶栏区域，承载语言切换与右上角社交入口（GitHub + 小红书）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { LinkButton } from "@cloudflare/kumo"
 import { GitHubInvertocatLogo, XiaohongshuLogo } from "@/components/icons/BrandLogos"
 import { SOCIAL_LINKS } from "@/data/social-links"
 import { LanguageSelect } from "./LanguageSelect"
@@ -23,22 +24,28 @@ function RegistryTopbar() {
         <header className="sticky top-0 z-10 border-b border-kumo-line bg-kumo-elevated md:pr-12">
             <div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">
                 <LanguageSelect />
-                <div className="ml-auto flex items-center gap-4">
+                <div className="ml-auto flex items-center gap-0.5">
                     {orderedSocialLinks.map((social) => {
                         const Icon = SOCIAL_ICON_MAP[social.id]
+                        const isXiaohongshu = social.id === "xiaohongshu"
                         if (!Icon) return null
 
                         return (
-                            <a
+                            <LinkButton
                                 key={social.id}
                                 href={social.href}
-                                target="_blank"
-                                rel="noreferrer"
+                                external
                                 aria-label={social.label}
-                                className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+                                variant="ghost"
+                                shape={isXiaohongshu ? "base" : "square"}
+                                className={
+                                    isXiaohongshu
+                                        ? "h-9 px-2.5 text-kumo-subtle hover:text-kumo-default"
+                                        : "text-kumo-subtle hover:text-kumo-default"
+                                }
                             >
                                 <Icon className={social.className} />
-                            </a>
+                            </LinkButton>
                         )
                     })}
                 </div>
