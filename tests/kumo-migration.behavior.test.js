@@ -149,7 +149,7 @@ test("ColorPicker uses KUMO visual tokens without changing state bridge behavior
   const bridgeSource = readSource("src/components/ui/use-color-picker-state-bridge.js")
 
   assert.doesNotMatch(source, /rounded-xl/)
-  assert.match(source, /className=\{cn\(\s*"w-full justify-start rounded-lg px-3 text-left font-normal"/)
+  assert.match(source, /className=\{cn\(\s*"w-full justify-start rounded-lg px-2 text-left font-normal"/)
   assert.match(source, /className="size-6 shrink-0 rounded-md ring ring-kumo-line"/)
   assert.match(source, /className="truncate font-mono text-sm uppercase text-kumo-subtle"/)
   assert.match(source, /<Popover\.Content className="w-64 p-3" sideOffset=\{8\}>/)

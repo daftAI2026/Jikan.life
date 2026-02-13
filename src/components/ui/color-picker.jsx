@@ -104,7 +104,7 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                         variant="outline"
                         disabled={disabled}
                         className={cn(
-                            "w-full justify-start rounded-lg px-3 text-left font-normal",
+                            "w-full justify-start rounded-lg px-2 text-left font-normal",
                             className
                         )}
                     >

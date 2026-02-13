@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.2] - 2026-02-14
+
+### Changed
+- **ColorPicker Visual Polish**: Optimized the pick button layout by adjusting padding for better horizontal balance.
+
+### Fixed
+- **Test Integrity**: Updated `kumo-migration.behavior.test.js` to align with the new ColorPicker layout tokens, ensuring automated design system verification passes.
 
 ## [1.1.1] - 2026-02-14
 
