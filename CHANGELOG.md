@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Goal Countdown Visualization**: Refined the visual hierarchy within the Registry Sidebar's "Goal" style card. Increased the "Days left" label font size for better readability and significantly optimized vertical spacing for both the countdown number and label text to achieve superior visual balance.
+- **Internationalization**: Updated "Make it Yours" translations in Simplified Chinese, Traditional Chinese, and Japanese for more natural localized expression.
+- **UI Research**: Audited full-site popover background tokens; confirmed consistency of `DatePicker` and `Select` components using the `#FAFAFA` (`--color-kumo-overlay`) background color.
 
 ## [1.1.3] - 2026-02-14
 

@@ -230,7 +230,7 @@ export const i18nData = {
 
     // 自定义部分
     'customize.header': '个性化',
-    'customize.title': '让它成为你的',
+    'customize.title': '定义你的风格',
     'customize.selected': '已选择：',
     'customize.selectedNone': '无',
 
@@ -405,7 +405,7 @@ export const i18nData = {
 
     // 自訂部分
     'customize.header': '個人化',
-    'customize.title': '讓它成為你的',
+    'customize.title': '打造專屬風格',
     'customize.selected': '已選擇：',
     'customize.selectedNone': '無',
 
@@ -580,7 +580,7 @@ export const i18nData = {
 
     // カスタマイズセクション
     'customize.header': 'パーソナライズ',
-    'customize.title': 'あなたのものにする',
+    'customize.title': '自分好みに',
     'customize.selected': '選択済み：',
     'customize.selectedNone': 'なし',
 
