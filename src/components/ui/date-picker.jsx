@@ -10,6 +10,7 @@ import {
   DatePicker as AriaDatePicker,
   DateRangePicker as AriaDateRangePicker,
   Dialog as AriaDialog,
+  Popover as AriaPopover,
   composeRenderProps,
   Text,
 } from "react-aria-components";
@@ -29,27 +30,38 @@ import {
 } from "./calendar"
 import { DateInput } from "./datefield"
 import { FieldError, FieldGroup, Label } from "./field"
-import { Popover } from "./popover"
 
 const DatePicker = AriaDatePicker
 
 const DateRangePicker = AriaDateRangePicker
 
+/* ========================================================================
+   DatePickerContent
+   使用 AriaPopover（非 Kumo Popover）确保与 react-aria DatePicker 状态集成
+   默认 isDismissable=true: 点外部关闭弹窗
+   ======================================================================== */
 const DatePickerContent = ({
   className,
   popoverClassName,
   ...props
 }) => (
-  <Popover
+  <AriaPopover
+    offset={8}
     className={composeRenderProps(popoverClassName, (className) =>
-      cn("w-auto p-3", className))}>
+      cn(
+        "z-50 w-auto rounded-xl border bg-popover p-3 text-popover-foreground shadow-md outline-none",
+        "data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95",
+        "data-exiting:animate-out data-exiting:fade-out-0 data-exiting:zoom-out-95",
+        "data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2",
+        className
+      ))}>
     <AriaDialog
       className={cn(
         "flex w-full flex-col space-y-4 outline-none sm:flex-row sm:space-x-4 sm:space-y-0",
         className
       )}
       {...props} />
-  </Popover>
+  </AriaPopover>
 )
 
 function JollyDatePicker(
@@ -72,7 +84,7 @@ function JollyDatePicker(
         <Button
           variant="ghost"
           size="icon"
-          className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+          className="mr-1 size-6 data-focus-visible:ring-offset-0">
           <CalendarIcon aria-hidden className="size-4" weight="bold" />
         </Button>
       </FieldGroup>
@@ -124,7 +136,7 @@ function JollyDateRangePicker(
         <Button
           variant="ghost"
           size="icon"
-          className="mr-1 size-6 data-[focus-visible]:ring-offset-0">
+          className="mr-1 size-6 data-focus-visible:ring-offset-0">
           <CalendarIcon aria-hidden className="size-4" />
         </Button>
       </FieldGroup>

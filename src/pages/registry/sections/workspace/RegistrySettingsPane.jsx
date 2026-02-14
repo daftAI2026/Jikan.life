@@ -1,11 +1,27 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo(Button/Input/Select), @/components/ui/color-picker, workspace 配置 hook 返回的 view model
+ * [INPUT]: 依赖 @cloudflare/kumo(Button/Input/Select), @/components/ui/(color-picker/date-picker/datefield/calendar/field/button), @internationalized/date, workspace 配置 hook 返回的 view model
  * [OUTPUT]: 对外提供 RegistrySettingsPane 组件（Make it yours 属性配置面板）
  * [POS]: registry/sections/workspace 的右侧设置面板，承载 location/language/colors/device/url 与 life|goal 条件字段
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Button, Input, Select } from "@cloudflare/kumo"
+import { Button as KumoButton, Input, Select } from "@cloudflare/kumo"
+import { Calendar as CalendarIcon } from "@phosphor-icons/react"
 import { ColorPicker } from "@/components/ui/color-picker"
+import { DatePicker, DatePickerContent } from "@/components/ui/date-picker"
+import { DateInput } from "@/components/ui/datefield"
+import {
+    Calendar,
+    CalendarCell,
+    CalendarGrid,
+    CalendarGridBody,
+    CalendarGridHeader,
+    CalendarHeaderCell,
+    CalendarHeading,
+    MonthYearPicker,
+} from "@/components/ui/calendar"
+import { FieldGroup } from "@/components/ui/field"
+import { Button } from "@/components/ui/button"
+import { parseDate } from "@internationalized/date"
 import { GOAL_START_MIN_ISO, GOAL_TARGET_MAX_ISO } from "../../../../../shared/wallpaper-core"
 
 function getLocalTodayISO() {
@@ -30,6 +46,42 @@ function RegistrySettingsPane({
 }) {
     const typeReady = Boolean(config.selectedType)
     const todayISO = getLocalTodayISO()
+    const dateFieldGroupClassName =
+        "flex h-9 w-full items-center gap-2 rounded-lg border-0 bg-kumo-control px-3 text-base ring ring-kumo-line shadow-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focus-within]:ring-1 data-[focus-within]:ring-kumo-ring data-[focus-within]:ring-offset-0"
+    const dateInputClassName = "min-w-0 flex-1 bg-transparent px-0 text-base text-kumo-default whitespace-nowrap"
+    const dateTriggerClassName =
+        "size-5 shrink-0 self-center bg-transparent p-0 text-kumo-default hover:bg-transparent focus-visible:ring-0"
+    const renderDatePickerField = ({ value, onChange, minValue, maxValue }) => (
+        <DatePicker
+            className="w-full"
+            value={value ? parseDate(value) : null}
+            onChange={(date) => onChange(date ? date.toString() : "")}
+            minValue={minValue ? parseDate(minValue) : undefined}
+            maxValue={maxValue ? parseDate(maxValue) : undefined}
+            isDisabled={!typeReady}
+        >
+            <FieldGroup className={dateFieldGroupClassName} variant="ghost">
+                <DateInput className={dateInputClassName} variant="ghost" />
+                <Button slot="trigger" variant="ghost" size="icon" className={dateTriggerClassName}>
+                    <CalendarIcon aria-hidden className="size-4" />
+                </Button>
+            </FieldGroup>
+            <DatePickerContent>
+                <Calendar>
+                    <CalendarHeading />
+                    <MonthYearPicker />
+                    <CalendarGrid>
+                        <CalendarGridHeader>
+                            {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+                        </CalendarGridHeader>
+                        <CalendarGridBody>
+                            {(date) => <CalendarCell date={date} />}
+                        </CalendarGridBody>
+                    </CalendarGrid>
+                </Calendar>
+            </DatePickerContent>
+        </DatePicker>
+    )
 
     return (
         <div className="h-full overflow-y-auto px-8 py-8">
@@ -112,12 +164,11 @@ function RegistrySettingsPane({
                                 <span className="font-medium text-kumo-default">{t("config.dateOfBirth")}</span>
                                 <span className="text-xs text-kumo-subtle">{t("config.dateOfBirthHint")}</span>
                             </label>
-                            <Input
-                                type="date"
-                                value={config.dob}
-                                onChange={(event) => actions.setDob(event.target.value)}
-                                disabled={!typeReady}
-                            />
+                            {renderDatePickerField({
+                                value: config.dob,
+                                onChange: actions.setDob,
+                                maxValue: todayISO,
+                            })}
                         </div>
                         <div className="space-y-4">
                             <label className="flex items-baseline justify-between text-sm">
@@ -155,15 +206,12 @@ function RegistrySettingsPane({
                             <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.startDate")}
                             </label>
-                            <Input
-                                type="date"
-                                className="w-full"
-                                value={config.goalStart}
-                                onChange={(event) => actions.setGoalStart(event.target.value)}
-                                min={GOAL_START_MIN_ISO}
-                                max={todayISO}
-                                disabled={!typeReady}
-                            />
+                            {renderDatePickerField({
+                                value: config.goalStart,
+                                onChange: actions.setGoalStart,
+                                minValue: GOAL_START_MIN_ISO,
+                                maxValue: todayISO,
+                            })}
                             {config.goalStartError && (
                                 <p className="text-xs text-kumo-warning">{t(config.goalStartError)}</p>
                             )}
@@ -172,15 +220,12 @@ function RegistrySettingsPane({
                             <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.targetDate")}
                             </label>
-                            <Input
-                                type="date"
-                                className="w-full"
-                                value={config.goalDate}
-                                onChange={(event) => actions.setGoalDate(event.target.value)}
-                                min={todayISO}
-                                max={GOAL_TARGET_MAX_ISO}
-                                disabled={!typeReady}
-                            />
+                            {renderDatePickerField({
+                                value: config.goalDate,
+                                onChange: actions.setGoalDate,
+                                minValue: todayISO,
+                                maxValue: GOAL_TARGET_MAX_ISO,
+                            })}
                             {config.goalDateError && (
                                 <p className="text-xs text-kumo-warning">{t(config.goalDateError)}</p>
                             )}
@@ -212,7 +257,7 @@ function RegistrySettingsPane({
 
                     <div className="flex flex-wrap gap-2">
                         {palettePresets.map((preset) => (
-                            <Button
+                            <KumoButton
                                 key={preset.id}
                                 variant="secondary"
                                 size="sm"
@@ -228,7 +273,7 @@ function RegistrySettingsPane({
                                     style={{ backgroundColor: preset.accent }}
                                 />
                                 {preset.name}
-                            </Button>
+                            </KumoButton>
                         ))}
                     </div>
                 </div>
@@ -266,14 +311,14 @@ function RegistrySettingsPane({
                             className="min-w-0 flex-1 font-mono text-xs"
                             disabled={!typeReady}
                         />
-                        <Button
+                        <KumoButton
                             variant="secondary"
                             className="shrink-0"
                             onClick={() => void actions.copyUrl()}
                             disabled={!typeReady}
                         >
                             {copied ? t("url.copied") : t("url.copy")}
-                        </Button>
+                        </KumoButton>
                     </div>
                 </div>
             </div>

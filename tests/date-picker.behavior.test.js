@@ -14,25 +14,14 @@ const readSource = (relativePath) => {
   return fs.readFileSync(filePath, "utf8")
 }
 
-test("SelectContent supports non-portalled rendering and auto-focus control", () => {
-  const source = readSource("src/components/ui/select.jsx")
-
-  assert.match(source, /portalled\s*=\s*true/)
-  assert.match(source, /preventAutoFocus\s*=\s*false/)
-  assert.match(source, /onOpenAutoFocus/)
-  assert.match(source, /onCloseAutoFocus/)
-  assert.match(source, /event\.preventDefault\(\)/)
-  assert.match(source, /SelectPrimitive\.Portal/)
+test("DatePickerContent uses AriaPopover with default dismissable behavior", () => {
+  const source = readSource("src/components/ui/date-picker.jsx")
+  // AriaPopover 直接导入（./popover 已换成 Kumo Popover，不兼容 react-aria DatePicker）
+  assert.match(source, /Popover as AriaPopover/)
+  // 不能用 isNonModal（会禁用外部点击关闭）
+  assert.doesNotMatch(source, /isNonModal/)
 })
 
-test("MonthYearPicker keeps selects inside the DatePicker popover", () => {
-  const source = readSource("src/components/ui/calendar.jsx")
-  const portalledMatches = source.match(/portalled=\{false\}/g) ?? []
-  const preventMatches = source.match(/preventAutoFocus/g) ?? []
-
-  assert.ok(portalledMatches.length >= 2)
-  assert.ok(preventMatches.length >= 2)
-})
 
 test("MonthYearPicker allows configuring year bounds", () => {
   const source = readSource("src/components/ui/calendar.jsx")
@@ -46,3 +35,4 @@ test("DateSegment uses tighter rounding for input segments", () => {
   const source = readSource("src/components/ui/datefield.jsx")
   assert.match(source, /rounded-sm/)
 })
+
