@@ -4,6 +4,6 @@ Our community is dedicated to providing a welcoming and respectful experience fo
 
 All participants are expected to adhere to the [Contributor Covenant version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 
-If you experience or witness unacceptable behavior, please report it to the maintainers at `aradhyacp@proton.me`.
+If you experience or witness unacceptable behavior, please report it to the maintainers at `info@sofxcking.cool`.
 
 Consequences for unacceptable behavior may include warnings, temporary bans, or project exclusion.

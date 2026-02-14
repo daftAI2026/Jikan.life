@@ -40,8 +40,8 @@ function RegistryTopbar() {
                                 shape={isXiaohongshu ? "base" : "square"}
                                 className={
                                     isXiaohongshu
-                                        ? "h-9 px-2.5 text-kumo-subtle hover:text-kumo-default"
-                                        : "text-kumo-subtle hover:text-kumo-default"
+                                        ? "h-9 px-2.5"
+                                        : undefined
                                 }
                             >
                                 <Icon className={social.className} />
