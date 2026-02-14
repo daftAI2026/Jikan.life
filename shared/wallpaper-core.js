@@ -219,6 +219,8 @@ const WALLPAPER_TEXT = {
     en: {
         daysLeft: '{n} days left',
         dayLeft: '{n} day left',
+        daysLeftLabel: 'days left',
+        dayLeftLabel: 'day left',
         complete: '{n}% complete',
         weeksLeft: '{n} weeks left',
         weekLeft: '{n} week left',
@@ -227,6 +229,8 @@ const WALLPAPER_TEXT = {
     'zh-CN': {
         daysLeft: '剩余 {n} 天',
         dayLeft: '剩余 {n} 天',
+        daysLeftLabel: '天剩余',
+        dayLeftLabel: '天剩余',
         complete: '进度 {n}%',
         weeksLeft: '剩余 {n} 周',
         weekLeft: '剩余 {n} 周',
@@ -235,6 +239,8 @@ const WALLPAPER_TEXT = {
     'zh-TW': {
         daysLeft: '剩餘 {n} 天',
         dayLeft: '剩餘 {n} 天',
+        daysLeftLabel: '天',
+        dayLeftLabel: '天',
         complete: '進度 {n}%',
         weeksLeft: '剩餘 {n} 週',
         weekLeft: '剩餘 {n} 週',
@@ -243,6 +249,8 @@ const WALLPAPER_TEXT = {
     ja: {
         daysLeft: '残り {n} 日',
         dayLeft: '残り {n} 日',
+        daysLeftLabel: '日残り',
+        dayLeftLabel: '日残り',
         complete: '{n}% 完了',
         weeksLeft: '残り {n} 週',
         weekLeft: '残り {n} 週',
@@ -471,7 +479,7 @@ export function computeGoalLayout(options) {
     }
 
     const safeAccent = getSafeAccent(bgColor, accentColor);
-    const daysLeftText = getWallpaperText(lang, daysRemaining === 1 ? 'dayLeft' : 'daysLeft', daysRemaining);
+    const daysLeftText = getWallpaperText(lang, daysRemaining === 1 ? 'dayLeftLabel' : 'daysLeftLabel');
 
     return {
         ring: { centerX, centerY, radius: ringRadius, progress },

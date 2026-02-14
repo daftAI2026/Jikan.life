@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2026-02-15
+
+### Changed
+- **Goal Countdown Visualization**: Refined the visual hierarchy within the Registry Sidebar's "Goal" style card. Increased the "Days left" label font size for better readability and significantly optimized vertical spacing for both the countdown number and label text to achieve superior visual balance.
+
 ## [1.1.3] - 2026-02-14
 
 ### Changed

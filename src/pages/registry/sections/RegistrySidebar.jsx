@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useMemo/useState), @cloudflare/kumo(Button/cn), @phosphor-icons/react(XIcon), KumoMenuIcon, @/lib/I18nContext
+ * [INPUT]: 依赖 react(useMemo/useState), @cloudflare/kumo(Button/cn), @phosphor-icons/react(XIcon), KumoMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
  * [OUTPUT]: 对外提供 RegistrySidebar 受控侧边栏组件（支持 selectedStyle/onStyleChange）
  * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -9,6 +9,24 @@ import { Button, cn } from "@cloudflare/kumo"
 import { XIcon } from "@phosphor-icons/react"
 import { KumoMenuIcon } from "./KumoMenuIcon"
 import { useI18n } from "@/lib/I18nContext"
+import { computeGoalLayout } from "../../../../shared/wallpaper-core"
+
+// ---- Sidebar Style Feature Flags ----
+// 隐藏但不删除：后续恢复只需从集合中移除对应 id。
+const HIDDEN_STYLE_CARD_IDS = new Set(["life"])
+const YEAR_GRID_COLUMNS = 12
+const YEAR_DOT_STATE_TOKENS = {
+    today: "bg-kumo-contrast",
+    completed: "bg-kumo-contrast/75",
+    pending: "bg-kumo-contrast/12",
+}
+
+function getYearDotState(index, filledCount) {
+    const todayIndex = filledCount > 0 ? filledCount - 1 : -1
+    if (index === todayIndex) return "today"
+    if (index < filledCount) return "completed"
+    return "pending"
+}
 
 function getDayOfYear() {
     const now = new Date()
@@ -27,25 +45,43 @@ function getYearStats() {
     const totalDays = isLeapYear(now.getFullYear()) ? 366 : 365
     const week = Math.ceil(day / 7)
     const percent = Math.round((day / totalDays) * 100)
-    return { day, week, percent }
+    return { day, week, percent, totalDays }
+}
+
+function getLocalDateParts() {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() }
+}
+
+function addDays(dateParts, days) {
+    const date = new Date(dateParts.year, dateParts.month - 1, dateParts.day)
+    date.setDate(date.getDate() + days)
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() }
 }
 
 function YearVisual() {
     const stats = getYearStats()
-    const filledCount = Math.floor(stats.day / 8)
-    const totalDots = 36
+    const totalDots = YEAR_GRID_COLUMNS * YEAR_GRID_COLUMNS
+    const filledCount = Math.min(totalDots, Math.round((stats.day / stats.totalDays) * totalDots))
 
     return (
-        <div className="grid grid-cols-[repeat(12,1fr)] place-items-center gap-[4px] p-4">
-            {Array.from({ length: totalDots }).map((_, index) => (
-                <div
-                    key={`year-dot-${index}`}
-                    className={cn(
-                        "h-[10px] w-[10px] rounded-full transition-colors duration-500",
-                        index < filledCount ? "bg-kumo-contrast" : "bg-kumo-fill"
-                    )}
-                />
-            ))}
+        <div
+            className="grid place-items-center gap-[4px] p-4"
+            style={{ gridTemplateColumns: `repeat(${YEAR_GRID_COLUMNS}, minmax(0, 1fr))` }}
+        >
+            {Array.from({ length: totalDots }).map((_, index) => {
+                const dotState = getYearDotState(index, filledCount)
+                return (
+                    <div
+                        key={`year-dot-${index}`}
+                        data-dot-state={dotState}
+                        className={cn(
+                            "h-[10px] w-[10px] origin-center scale-[0.84] rounded-full transition-colors duration-500",
+                            YEAR_DOT_STATE_TOKENS[dotState]
+                        )}
+                    />
+                )
+            })}
         </div>
     )
 }
@@ -69,88 +105,141 @@ function LifeVisual() {
     )
 }
 
-function GoalVisual({ dayLabel }) {
+function GoalVisual({ layout }) {
+    const { ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY } = layout
+    const strokeWidth = 100 * 0.035
+    const circumference = 2 * Math.PI * ring.radius
+    const strokeDashoffset = circumference * (1 - ring.progress)
+
     return (
         <div className="flex h-full items-center justify-center">
             <div className="relative h-[100px] w-[100px]">
-                <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
+                <svg className="h-full w-full" viewBox="0 0 100 100">
                     <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
+                        cx={ring.centerX}
+                        cy={ring.centerY}
+                        r={ring.radius}
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="4"
+                        strokeWidth={strokeWidth}
                         className="text-kumo-fill"
                     />
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeDasharray="283"
-                        strokeDashoffset="100"
-                        className="text-kumo-contrast transition-all duration-1000 ease-out"
-                    />
+                    {ring.progress > 0 && (
+                        <circle
+                            cx={ring.centerX}
+                            cy={ring.centerY}
+                            r={ring.radius}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={strokeWidth}
+                            strokeLinecap="round"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={strokeDashoffset}
+                            transform={`rotate(-90 ${ring.centerX} ${ring.centerY})`}
+                            className="text-kumo-contrast transition-all duration-1000 ease-out"
+                        />
+                    )}
+                    <text
+                        x={ring.centerX}
+                        y={ring.centerY - 1}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize={numberFontSize}
+                        fontWeight="700"
+                        className="fill-current text-kumo-contrast"
+                    >
+                        {daysRemaining}
+                    </text>
+                    <text
+                        x={ring.centerX}
+                        y={labelY + 8}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize={labelFontSize + 1}
+                        fontWeight="400"
+                        className="fill-current text-kumo-subtle"
+                    >
+                        {daysLeftText}
+                    </text>
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl leading-none font-bold text-kumo-contrast">42</span>
-                    <span className="mt-1 text-[10px] uppercase tracking-wider text-kumo-subtle">
-                        {dayLabel}
-                    </span>
-                </div>
             </div>
         </div>
     )
 }
 
 function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", onStyleChange }) {
-    const { t } = useI18n()
+    const { t, lang } = useI18n()
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const goalPreviewLayout = useMemo(() => {
+        const today = getLocalDateParts()
+        const goalDate = addDays(today, 69)
+        const goalStart = addDays(today, -31)
+        return computeGoalLayout({
+            width: 100,
+            height: 100,
+            bgColor: "000000",
+            accentColor: "FFFFFF",
+            clockHeight: 0.22,
+            lang,
+            goalDate,
+            goalStart,
+            today
+        })
+    }, [lang])
 
+    const yearStats = useMemo(() => getYearStats(), [])
     const styleCards = useMemo(
         () => [
             {
                 id: "year",
                 title: t("type.year.name"),
                 description: t("type.year.description"),
+                preview: (
+                    <div className="origin-center scale-[0.84]">
+                        <YearVisual />
+                    </div>
+                ),
+                stats: [
+                    { label: t("type.year.statDay"), value: String(yearStats.day) },
+                    { label: t("type.year.statWeek"), value: String(yearStats.week) },
+                    { label: t("type.year.statComplete"), value: `${yearStats.percent}%` },
+                ],
             },
             {
                 id: "life",
                 title: t("type.life.name"),
                 description: t("type.life.description"),
+                preview: (
+                    <div className="origin-center scale-[1]">
+                        <LifeVisual />
+                    </div>
+                ),
+                stats: [
+                    { label: t("type.life.statWeeks"), value: t("type.life.valueWeeks") },
+                    { label: t("type.life.statYears"), value: t("type.life.valueYears") },
+                ],
             },
             {
                 id: "goal",
                 title: t("type.goal.name"),
                 description: t("type.goal.description"),
+                preview: (
+                    <div className="origin-center scale-[1.8]">
+                        <GoalVisual layout={goalPreviewLayout} />
+                    </div>
+                ),
+                stats: [
+                    { label: t("type.goal.statGoals"), value: "∞" },
+                    { label: t("type.goal.statUpdates"), value: t("type.goal.valueDaily") },
+                ],
             },
         ],
-        [t]
+        [t, yearStats.day, yearStats.week, yearStats.percent, goalPreviewLayout]
     )
-
-    const yearStats = useMemo(() => getYearStats(), [])
-    const cardStats = useMemo(
-        () => ({
-            year: [
-                { label: t("type.year.statDay"), value: String(yearStats.day) },
-                { label: t("type.year.statWeek"), value: String(yearStats.week) },
-                { label: t("type.year.statComplete"), value: `${yearStats.percent}%` },
-            ],
-            life: [
-                { label: t("type.life.statWeeks"), value: t("type.life.valueWeeks") },
-                { label: t("type.life.statYears"), value: t("type.life.valueYears") },
-            ],
-            goal: [
-                { label: t("type.goal.statGoals"), value: "∞" },
-                { label: t("type.goal.statUpdates"), value: t("type.goal.valueDaily") },
-            ],
-        }),
-        [t, yearStats.day, yearStats.week, yearStats.percent]
+    const visibleStyleCards = useMemo(
+        () => styleCards.filter((style) => !HIDDEN_STYLE_CARD_IDS.has(style.id)),
+        [styleCards]
     )
 
     const handleStyleSelect = (styleId) => {
@@ -166,9 +255,9 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">
-                {styleCards.map((style, index) => {
+                {visibleStyleCards.map((style, index) => {
                     const isSelected = selectedStyle === style.id
-                    const stats = cardStats[style.id]
+                    const stats = style.stats
 
                     return (
                         <article
@@ -185,22 +274,8 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                     isSelected ? "bg-kumo-tint" : "bg-kumo-elevated group-hover:bg-kumo-tint"
                                 )}
                             >
-                                <div className="mb-3 flex h-[84px] items-center justify-center overflow-hidden rounded-lg border border-kumo-line bg-kumo-elevated">
-                                    {style.id === "year" && (
-                                        <div className="origin-center scale-[0.84]">
-                                            <YearVisual />
-                                        </div>
-                                    )}
-                                    {style.id === "life" && (
-                                        <div className="origin-center scale-[1]">
-                                            <LifeVisual />
-                                        </div>
-                                    )}
-                                    {style.id === "goal" && (
-                                        <div className="origin-center scale-[0.8]">
-                                            <GoalVisual dayLabel={t("type.year.statDay")} />
-                                        </div>
-                                    )}
+                                <div className="mb-3 flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg border border-kumo-line bg-kumo-elevated">
+                                    {style.preview}
                                 </div>
 
                                 <div className="mb-0 min-h-[28px]">
@@ -232,8 +307,8 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
                                                 statIndex === 0
                                                     ? "pr-2"
                                                     : statIndex === stats.length - 1
-                                                    ? "pl-2"
-                                                    : "px-2"
+                                                        ? "pl-2"
+                                                        : "px-2"
                                             )}
                                         >
                                             <p className="text-lg leading-none font-medium text-kumo-default">

@@ -88,9 +88,23 @@ function GoalVisual({ t }) {
                     <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" className="text-kumo-fill" />
                     <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeDasharray="283" strokeDashoffset="100" className="text-kumo-contrast transition-all duration-1000 ease-out" />
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold font-mono leading-none">42</span>
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">{t('type.year.statDay')}</span>
+
+                {/* Day Number: Centered at 50% - 0.8px */}
+                <div
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none"
+                    style={{ marginTop: '-0.8px' }}
+                >
+                    <span className="font-bold font-mono leading-none text-[32px]">42</span>
+                </div>
+
+                {/* Label: Top at 50% + 8px */}
+                <div
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 flex justify-center pointer-events-none"
+                    style={{ marginTop: '8px' }}
+                >
+                    <span className="text-[9.6px] uppercase tracking-wider text-muted-foreground leading-none block text-center">
+                        {t('type.year.statDay')}
+                    </span>
                 </div>
             </div>
         </div>

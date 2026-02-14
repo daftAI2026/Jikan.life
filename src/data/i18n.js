@@ -28,8 +28,8 @@ export const i18nData = {
     // Year Card
     'type.year.name': 'Year Progress',
     'type.year.description': 'Every day of the year as a grid. Watch your year fill up, one square at a time.',
-    'type.year.statDay': 'Day',
-    'type.year.statWeek': 'Week',
+    'type.year.statDay': 'Days',
+    'type.year.statWeek': 'Weeks',
     'type.year.statComplete': 'Complete',
 
     // Life Card
