@@ -186,6 +186,7 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
             dob: validated.dob,
             lifespan: validated.lifespan,
             goalDate: validated.goal,
+            goalStart: validated.goalStart,
             goalName: validated.goalName,
             cols: validated.cols,
             padding: validated.padding
@@ -209,7 +210,7 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         // Generate cache key based on parameters and current date in user timezone
         const cacheDate = getDateInTimezone(timezone);
         const cacheDay = `${cacheDate.year}-${String(cacheDate.month).padStart(2, '0')}-${String(cacheDate.day).padStart(2, '0')}`;
-        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${validated.clockHeight}-${validated.cols ?? 'default'}-${validated.padding ?? 'default'}-${validated.lang}-${validated.format}-${cacheDay}`;
+        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${validated.clockHeight}-${validated.cols ?? 'default'}-${validated.padding ?? 'default'}-${validated.lang}-${validated.goal ?? 'none'}-${validated.goalStart ?? 'none'}-${validated.goalName}-${validated.format}-${cacheDay}`;
 
         // Build a cache request URL to use with caches.default (Cloudflare Workers)
         // Only enable server-side caching for the non-user-specific `year` type
@@ -313,5 +314,4 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         return new Response('Internal Server Error', { status: 500, headers: corsHeaders });
     }
 }
-
 

@@ -68,6 +68,7 @@ export const i18nData = {
     'config.lifespan': 'Lifespan',
     'config.lifespanHint': '(Expected years)',
     'config.goalName': 'Goal Name',
+    'config.startDate': 'Start Date',
     'config.targetDate': 'Target Date',
     'config.colors': 'Colors',
     'config.background': 'Background',
@@ -161,10 +162,16 @@ export const i18nData = {
     // Goal-related
     'goal.dayLeft': 'day left',
     'goal.daysLeft': 'days left',
+    'warning.goalStartFuture': 'Start Date is in the future. Progress may look unusual.',
+    'error.goalStart.outOfRange': 'Start Date must be between 1900-01-01 and today.',
+    'error.goalDate.outOfRange': 'Target Date must be between today and 2100-12-31.',
+    'error.goalStart.afterTarget': 'Start Date must be on or before Target Date.',
+    'error.goalDate.beforeStart': 'Target Date must be on or after Start Date.',
 
     // Placeholders
     'placeholder.selectCountry': 'Select country...',
     'placeholder.selectDate': 'Select date...',
+    'placeholder.selectStartDate': 'Select start date...',
     'placeholder.selectTargetDate': 'Select target date...',
     'placeholder.goalName': 'Product Launch',
     'placeholder.selectTypeFirst': 'Select type first',
@@ -236,6 +243,7 @@ export const i18nData = {
     'config.lifespan': '预期寿命',
     'config.lifespanHint': '（预期年数）',
     'config.goalName': '目标名称',
+    'config.startDate': '开始日期',
     'config.targetDate': '目标日期',
     'config.colors': '颜色',
     'config.background': '背景',
@@ -329,10 +337,16 @@ export const i18nData = {
     // 目标相关
     'goal.dayLeft': '天剩余',
     'goal.daysLeft': '天剩余',
+    'warning.goalStartFuture': '开始日期晚于今天，进度展示可能不准确。',
+    'error.goalStart.outOfRange': '开始日期必须在 1900-01-01 到今天之间。',
+    'error.goalDate.outOfRange': '目标日期必须在今天到 2100-12-31 之间。',
+    'error.goalStart.afterTarget': '开始日期必须早于或等于目标日期。',
+    'error.goalDate.beforeStart': '目标日期必须晚于或等于开始日期。',
 
     // 占位符
     'placeholder.selectCountry': '选择国家...',
     'placeholder.selectDate': '选择日期...',
+    'placeholder.selectStartDate': '选择开始日期...',
     'placeholder.selectTargetDate': '选择目标日期...',
     'placeholder.goalName': '产品发布',
     'placeholder.selectTypeFirst': '请先选择类型',
@@ -404,6 +418,7 @@ export const i18nData = {
     'config.lifespan': '預期壽命',
     'config.lifespanHint': '（預期年數）',
     'config.goalName': '目標名稱',
+    'config.startDate': '開始日期',
     'config.targetDate': '目標日期',
     'config.colors': '顏色',
     'config.background': '背景',
@@ -497,10 +512,16 @@ export const i18nData = {
     // 目標相關
     'goal.dayLeft': '天',
     'goal.daysLeft': '天',
+    'warning.goalStartFuture': '開始日期晚於今天，進度顯示可能不準確。',
+    'error.goalStart.outOfRange': '開始日期必須在 1900-01-01 到今天之間。',
+    'error.goalDate.outOfRange': '目標日期必須在今天到 2100-12-31 之間。',
+    'error.goalStart.afterTarget': '開始日期必須早於或等於目標日期。',
+    'error.goalDate.beforeStart': '目標日期必須晚於或等於開始日期。',
 
     // 占位符
     'placeholder.selectCountry': '選擇國家...',
     'placeholder.selectDate': '選擇日期...',
+    'placeholder.selectStartDate': '選擇開始日期...',
     'placeholder.selectTargetDate': '選擇目標日期...',
     'placeholder.goalName': '產品發佈',
     'placeholder.selectTypeFirst': '請先選擇類型',
@@ -572,6 +593,7 @@ export const i18nData = {
     'config.lifespan': '予想寿命',
     'config.lifespanHint': '（予想年数）',
     'config.goalName': 'ゴール名',
+    'config.startDate': '開始日',
     'config.targetDate': 'ターゲット日',
     'config.colors': '色',
     'config.background': '背景',
@@ -665,10 +687,16 @@ export const i18nData = {
     // ゴール関連
     'goal.dayLeft': '日残り',
     'goal.daysLeft': '日残り',
+    'warning.goalStartFuture': '開始日が未来です。進捗表示が不自然になる可能性があります。',
+    'error.goalStart.outOfRange': '開始日は 1900-01-01 から今日までの範囲で入力してください。',
+    'error.goalDate.outOfRange': '目標日は今日から 2100-12-31 までの範囲で入力してください。',
+    'error.goalStart.afterTarget': '開始日は目標日以前である必要があります。',
+    'error.goalDate.beforeStart': '目標日は開始日以降である必要があります。',
 
     // プレースホルダ
     'placeholder.selectCountry': '国を選択...',
     'placeholder.selectDate': '日付を選択...',
+    'placeholder.selectStartDate': '開始日を選択...',
     'placeholder.selectTargetDate': '目標日を選択...',
     'placeholder.goalName': '製品ローンチ',
     'placeholder.selectTypeFirst': 'まずタイプを選択',

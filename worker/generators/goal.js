@@ -21,6 +21,7 @@ export function generateGoalCountdown(options) {
         accentColor,
         timezone,
         goalDate,
+        goalStart,
         goalName = 'Goal',
         clockHeight = 0.18,
         lang = 'en'
@@ -47,6 +48,7 @@ export function generateGoalCountdown(options) {
         clockHeight,
         lang,
         goalDate,
+        goalStart,
         goalName: decodeGoalName(goalName),
         today
     });
@@ -100,17 +102,17 @@ export function generateGoalCountdown(options) {
         }));
     }
 
-    // Target date (New)
-    if (goalDate) {
-        const dateStr = formatGoalDate(goalDate, lang);
-        content.push(text(ring.centerX, layout.targetDateY, dateStr, {
-            fill: svgContrastAlpha(bgColor, 0.4),
-            fontSize: width * 0.028,
-            fontWeight: '400',
-            textAnchor: 'middle',
-            dominantBaseline: 'middle'
-        }));
-    }
+    // Target date text is intentionally hidden for now.
+    // if (goalDate) {
+    //     const dateStr = formatGoalDate(goalDate, lang);
+    //     content.push(text(ring.centerX, layout.targetDateY, dateStr, {
+    //         fill: svgContrastAlpha(bgColor, 0.4),
+    //         fontSize: width * 0.028,
+    //         fontWeight: '400',
+    //         textAnchor: 'middle',
+    //         dominantBaseline: 'middle'
+    //     }));
+    // }
 
     return createSVG(width, height, content.join(''), lang);
 }

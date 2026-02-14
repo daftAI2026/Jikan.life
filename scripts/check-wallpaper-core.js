@@ -8,7 +8,9 @@
 import {
     computeGoalLayout,
     computeLifeLayout,
-    getDayOfYear
+    getDayOfYear,
+    isValidISODateString,
+    validateGoalDateInputs
 } from '../shared/wallpaper-core.js';
 
 const BASE_OPTIONS = {
@@ -69,7 +71,7 @@ const tests = [
         }
     },
     {
-        name: 'Goal date in past clamps progress to 100%',
+        name: 'Goal date in past clamps remaining progress to 0%',
         fn: () => {
             const layout = computeGoalLayout({
                 ...BASE_OPTIONS,
@@ -77,7 +79,65 @@ const tests = [
                 today: { year: 2025, month: 1, day: 10 }
             });
             assert(layout.daysRemaining === 0, `Expected 0 days remaining, got ${layout.daysRemaining}`);
-            assert(layout.ring.progress === 1, `Expected progress 1, got ${layout.ring.progress}`);
+            assert(layout.ring.progress === 0, `Expected progress 0, got ${layout.ring.progress}`);
+        }
+    },
+    {
+        name: 'Goal progress uses explicit goalStart window',
+        fn: () => {
+            const layout = computeGoalLayout({
+                ...BASE_OPTIONS,
+                goalDate: '2025-01-20',
+                goalStart: '2025-01-01',
+                today: { year: 2025, month: 1, day: 10 }
+            });
+            const expected = 10 / 19;
+            assert(layout.daysRemaining === 10, `Expected 10 days remaining, got ${layout.daysRemaining}`);
+            assert(Math.abs(layout.ring.progress - expected) < 0.0001, `Expected ${expected}, got ${layout.ring.progress}`);
+        }
+    },
+    {
+        name: 'Goal progress falls back to 30-day window when goalStart missing',
+        fn: () => {
+            const layout = computeGoalLayout({
+                ...BASE_OPTIONS,
+                goalDate: '2025-02-10',
+                today: { year: 2025, month: 2, day: 1 }
+            });
+            const expected = 9 / 30;
+            assert(layout.daysRemaining === 9, `Expected 9 days remaining, got ${layout.daysRemaining}`);
+            assert(Math.abs(layout.ring.progress - expected) < 0.0001, `Expected ${expected}, got ${layout.ring.progress}`);
+        }
+    },
+    {
+        name: 'Invalid 6-digit year is rejected by strict ISO validator',
+        fn: () => {
+            assert(!isValidISODateString('111111-12-22'), 'Expected 6-digit year to be invalid');
+            assert(!isValidISODateString('234444-04-04'), 'Expected 6-digit year to be invalid');
+        }
+    },
+    {
+        name: 'Goal date range validator blocks out-of-range values',
+        fn: () => {
+            const errors = validateGoalDateInputs({
+                goalStart: '1899-12-31',
+                goalDate: '2101-01-01',
+                todayISO: '2026-02-13'
+            });
+            assert(errors.goalStartError === 'error.goalStart.outOfRange', `Unexpected start error: ${errors.goalStartError}`);
+            assert(errors.goalDateError === 'error.goalDate.outOfRange', `Unexpected target error: ${errors.goalDateError}`);
+        }
+    },
+    {
+        name: 'Goal date validator blocks start after target',
+        fn: () => {
+            const errors = validateGoalDateInputs({
+                goalStart: '2026-02-10',
+                goalDate: '2026-02-09',
+                todayISO: '2026-02-01'
+            });
+            assert(errors.goalStartError === 'error.goalStart.afterTarget', `Unexpected start error: ${errors.goalStartError}`);
+            assert(errors.goalDateError === 'error.goalDate.beforeStart', `Unexpected target error: ${errors.goalDateError}`);
         }
     },
     {

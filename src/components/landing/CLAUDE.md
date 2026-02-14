@@ -8,7 +8,7 @@ ProblemSection.jsx: 痛点唤醒，3 列 Pain Points 卡片
 TypesSection.jsx: 壁纸类型选择器 (Year/Life/Goal)，卡片点击触发 selectedType 回调
 FeaturesSection.jsx: Bento Grid 功能特性展示，6 个 Feature Cards
 HowItWorks.jsx: 三步流程图，带连接线的步骤卡片
-CustomizeSection.jsx: 壁纸配置面板，依赖 @/lib/renderer 和 @/lib/I18nContext，Canvas 实时预览
+CustomizeSection.jsx: 壁纸配置面板，依赖 @/lib/renderer 和 @/lib/I18nContext，Canvas 实时预览；Goal 区支持 Goal Name/Start Date/Target Date 三列配置、手动输入即时阻断校验（1900-2100 + start<=target）与 goalStart/goal 合法值 URL 透传
 Testimonials.jsx: 用户评价，3 列评价卡片 + 星级 + 头像
 Pricing.jsx: 定价对比，3 列定价卡片 + 功能列表
 FAQ.jsx: 常见问题，shadcn Accordion 组件

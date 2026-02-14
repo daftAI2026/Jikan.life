@@ -10,7 +10,11 @@ import { devices, getDevice } from "@/data/devices"
 import { LANGUAGE_META } from "@/data/i18n"
 import { useI18n } from "@/lib/I18nContext"
 import { DEFAULT_PALETTE, PALETTE_PRESETS } from "../../../../../shared/palettes"
-import { getSafeAccent } from "../../../../../shared/wallpaper-core"
+import {
+    getSafeAccent,
+    isValidISODateString,
+    validateGoalDateInputs
+} from "../../../../../shared/wallpaper-core"
 
 const STYLE_TO_TYPE = {
     year: "year",
@@ -49,7 +53,10 @@ function getInitialConfig(selectedType) {
         dob: "",
         lifespan: 80,
         goalName: "",
+        goalStart: "",
         goalDate: "",
+        goalStartError: "",
+        goalDateError: "",
         device: "iPhone 17 Pro Max",
     }
 }
@@ -62,6 +69,14 @@ function clampLifespan(value) {
 
 function resolveSelectedType(selectedStyle) {
     return STYLE_TO_TYPE[selectedStyle] ?? "year"
+}
+
+function getLocalTodayISO() {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, "0")
+    const day = String(now.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
 }
 
 function useRegistryWallpaperConfig({ selectedStyle }) {
@@ -117,6 +132,7 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
             })),
         [t]
     )
+    const todayISO = getLocalTodayISO()
 
     const deviceOptions = useMemo(() => devices.map((device) => device.name), [])
 
@@ -143,13 +159,19 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
         }
 
         if (config.selectedType === "goal") {
+            const goalDateErrors = validateGoalDateInputs({
+                goalStart: config.goalStart,
+                goalDate: config.goalDate,
+                todayISO
+            })
             if (config.goalName.trim()) params.set("goalName", encodeURIComponent(config.goalName.trim()))
-            if (config.goalDate) params.set("goal", config.goalDate)
+            if (config.goalStart && !goalDateErrors.goalStartError) params.set("goalStart", config.goalStart)
+            if (config.goalDate && !goalDateErrors.goalDateError) params.set("goal", config.goalDate)
         }
 
         const origin = typeof window !== "undefined" ? window.location.origin : "https://jikan.life"
         return `${origin}/generate?${params.toString()}`
-    }, [config, selectedDevice])
+    }, [config, selectedDevice, todayISO])
 
     const updateConfig = useCallback((updater) => {
         setConfig((prev) => {
@@ -202,8 +224,87 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
             setGoalName(value) {
                 updateConfig({ goalName: value })
             },
+            setGoalStart(value) {
+                updateConfig((prev) => {
+                    if (!value) {
+                        const next = { ...prev, goalStart: "" }
+                        const nextErrors = validateGoalDateInputs({
+                            goalStart: next.goalStart,
+                            goalDate: next.goalDate,
+                            todayISO
+                        })
+                        return {
+                            ...next,
+                            goalStartError: nextErrors.goalStartError,
+                            goalDateError: nextErrors.goalDateError
+                        }
+                    }
+
+                    if (!isValidISODateString(value)) {
+                        return { ...prev, goalStartError: "error.goalStart.outOfRange" }
+                    }
+
+                    const nextErrors = validateGoalDateInputs({
+                        goalStart: value,
+                        goalDate: prev.goalDate,
+                        todayISO
+                    })
+                    if (nextErrors.goalStartError) {
+                        return {
+                            ...prev,
+                            goalStartError: nextErrors.goalStartError,
+                            goalDateError: nextErrors.goalDateError || prev.goalDateError
+                        }
+                    }
+
+                    return {
+                        ...prev,
+                        goalStart: value,
+                        goalStartError: nextErrors.goalStartError,
+                        goalDateError: nextErrors.goalDateError
+                    }
+                })
+            },
             setGoalDate(value) {
-                updateConfig({ goalDate: value })
+                updateConfig((prev) => {
+                    if (!value) {
+                        const next = { ...prev, goalDate: "" }
+                        const nextErrors = validateGoalDateInputs({
+                            goalStart: next.goalStart,
+                            goalDate: next.goalDate,
+                            todayISO
+                        })
+                        return {
+                            ...next,
+                            goalStartError: nextErrors.goalStartError,
+                            goalDateError: nextErrors.goalDateError
+                        }
+                    }
+
+                    if (!isValidISODateString(value)) {
+                        return { ...prev, goalDateError: "error.goalDate.outOfRange" }
+                    }
+
+                    const nextErrors = validateGoalDateInputs({
+                        goalStart: prev.goalStart,
+                        goalDate: value,
+                        todayISO
+                    })
+                    if (nextErrors.goalDateError) {
+                        return {
+                            ...prev,
+                            goalStartError: nextErrors.goalStartError || prev.goalStartError,
+                            goalDateError: nextErrors.goalDateError
+                        }
+                    }
+
+                    return {
+                        ...prev,
+                        goalDate: value,
+                        goalStartError: nextErrors.goalStartError,
+                        goalDateError: nextErrors.goalDateError
+                    }
+                })
             },
             setDevice(value) {
                 updateConfig({ device: value })
@@ -223,7 +324,7 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
                 }
             },
         }),
-        [generateUrl, updateConfig]
+        [generateUrl, todayISO, updateConfig]
     )
 
     return {

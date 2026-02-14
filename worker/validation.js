@@ -5,6 +5,23 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { z } from 'zod';
+import {
+    GOAL_START_MIN_ISO,
+    GOAL_TARGET_MAX_ISO,
+    isISODateInRange,
+    isValidISODateString
+} from '../shared/wallpaper-core.js';
+
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+function isValidIsoDate(value) {
+    return isValidISODateString(value);
+}
+
+const dateSchema = z
+    .string()
+    .regex(ISO_DATE_REGEX, "Invalid date format")
+    .refine(isValidIsoDate, "Invalid date value");
 
 export const wallpaperSchema = z.object({
     country: z.string().min(2).max(5).default('us').transform(val => val.toLowerCase()),
@@ -22,35 +39,48 @@ export const wallpaperSchema = z.object({
     padding: z.coerce.number().min(0).max(0.5).optional(),
 
     // Life Calendar specific
-    dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format").optional(),
+    dob: dateSchema.optional(),
     lifespan: z.coerce.number().int().min(1).max(120).default(80),
 
     // Goal specific
-    goal: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format").optional(),
+    goal: dateSchema.optional(),
+    goalStart: dateSchema.optional(),
     goalName: z.string().max(100, "Goal name too long").default('Goal'),
 
     format: z.enum(['png', 'svg']).default('png')
+}).superRefine((data, ctx) => {
+    if (data.goalStart && !isISODateInRange(data.goalStart, {
+        min: GOAL_START_MIN_ISO,
+        max: GOAL_TARGET_MAX_ISO
+    })) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['goalStart'],
+            message: 'Goal start date must be between 1900-01-01 and 2100-12-31'
+        });
+    }
+
+    if (data.goal && !isISODateInRange(data.goal, {
+        min: GOAL_START_MIN_ISO,
+        max: GOAL_TARGET_MAX_ISO
+    })) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['goal'],
+            message: 'Goal target date must be between 1900-01-01 and 2100-12-31'
+        });
+    }
+
+    if (data.goalStart && data.goal && data.goalStart > data.goal) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['goalStart'],
+            message: 'Goal start date must be on or before the goal date'
+        });
+    }
 });
 
 export function validateParams(url) {
     const params = Object.fromEntries(url.searchParams);
-    // Default width/height if specific defaults are needed or let Zod handle if they were optional.
-    // But width/height are required for wallpaper generation usually, or I should set defaults.
-    // In index.js validation logic, I'll handle required fields.
-    // Actually, providing defaults for width/height might be good (e.g. iPhone 13 size).
-
-    // Checking if width/height are present. If not, Zod will throw unless optional/default.
-    // I will make them optional with defaults in Zod for safety? 
-    // No, user provided values should be used. The frontend always sends them.
-    // I'll assume they are provided or I'll set a fallback in index.js before validation?
-    // Better: make them default to something valid if missing to avoid crashing.
-
-    // However, I defined them as z.coerce.number() without optional/default in plan.
-    // I'll add defaults: 1170x2532 (iPhone 13/14 size).
-    return wallpaperSchema.parse({
-        ...params,
-        // If width/height missing, fallback?
-        // Actually, Object.fromEntries preserves them as strings.
-        // If missing, they are undefined.
-    });
+    return wallpaperSchema.parse({ ...params });
 } 

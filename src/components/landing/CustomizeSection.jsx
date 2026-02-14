@@ -18,7 +18,13 @@ import { ColorPicker } from "@/components/ui/color-picker"
 import { countries, getTimezone } from "@/data/countries"
 import { devices, getDevice } from "@/data/devices"
 import { drawYearProgress, drawLifeCalendar, drawGoalCountdown } from "@/lib/renderer"
-import { getSafeAccent } from "../../../shared/wallpaper-core"
+import {
+    GOAL_START_MIN_ISO,
+    GOAL_TARGET_MAX_ISO,
+    getSafeAccent,
+    isValidISODateString,
+    validateGoalDateInputs
+} from "../../../shared/wallpaper-core"
 import { DEFAULT_PALETTE, PALETTE_PRESETS } from "../../../shared/palettes"
 import { useI18n } from "@/lib/I18nContext"
 import { cn } from "@/lib/utils"
@@ -127,6 +133,14 @@ function CanvasPreview({ config }) {
     )
 }
 
+function getLocalTodayISO() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 /* ========================================================================
    Color Preset Button - 明显的边框背景区分
    ======================================================================== */
@@ -165,7 +179,10 @@ export function CustomizeSection({ selectedType }) {
         dob: '',
         lifespan: 80,
         goalName: '',
+        goalStart: '',
         goalDate: '',
+        goalStartError: '',
+        goalDateError: '',
         device: 'iPhone 17 Pro Max',
     }))
     const [copied, setCopied] = useState(false)
@@ -240,6 +257,61 @@ export function CustomizeSection({ selectedType }) {
         }))
     }
 
+    const updateGoalDateField = (field, rawValue) => {
+        const nextValue = typeof rawValue === 'string' ? rawValue : '';
+
+        setConfig((prev) => {
+            if (!nextValue) {
+                const next = { ...prev, [field]: '' };
+                const nextErrors = validateGoalDateInputs({
+                    goalStart: next.goalStart,
+                    goalDate: next.goalDate,
+                    todayISO
+                });
+                return {
+                    ...next,
+                    goalStartError: nextErrors.goalStartError,
+                    goalDateError: nextErrors.goalDateError
+                };
+            }
+
+            if (!isValidISODateString(nextValue)) {
+                return {
+                    ...prev,
+                    goalStartError: field === 'goalStart' ? 'error.goalStart.outOfRange' : prev.goalStartError,
+                    goalDateError: field === 'goalDate' ? 'error.goalDate.outOfRange' : prev.goalDateError
+                };
+            }
+
+            const candidateStart = field === 'goalStart' ? nextValue : prev.goalStart;
+            const candidateTarget = field === 'goalDate' ? nextValue : prev.goalDate;
+            const candidateErrors = validateGoalDateInputs({
+                goalStart: candidateStart,
+                goalDate: candidateTarget,
+                todayISO
+            });
+
+            const isBlocked =
+                (field === 'goalStart' && !!candidateErrors.goalStartError) ||
+                (field === 'goalDate' && !!candidateErrors.goalDateError);
+
+            if (isBlocked) {
+                return {
+                    ...prev,
+                    goalStartError: candidateErrors.goalStartError || prev.goalStartError,
+                    goalDateError: candidateErrors.goalDateError || prev.goalDateError
+                };
+            }
+
+            return {
+                ...prev,
+                [field]: nextValue,
+                goalStartError: candidateErrors.goalStartError,
+                goalDateError: candidateErrors.goalDateError
+            };
+        });
+    }
+
     // 选中的设备信息
     const selectedDevice = getDevice(config.device) || devices[4];
 
@@ -262,8 +334,14 @@ export function CustomizeSection({ selectedType }) {
             params.set('lifespan', config.lifespan.toString())
         }
         if (config.selectedType === 'goal') {
+            const goalDateErrors = validateGoalDateInputs({
+                goalStart: config.goalStart,
+                goalDate: config.goalDate,
+                todayISO
+            });
             if (config.goalName) params.set('goalName', encodeURIComponent(config.goalName))
-            if (config.goalDate) params.set('goal', config.goalDate)
+            if (config.goalStart && !goalDateErrors.goalStartError) params.set('goalStart', config.goalStart)
+            if (config.goalDate && !goalDateErrors.goalDateError) params.set('goal', config.goalDate)
         }
         // Use current origin (works for both local dev via proxy and production)
         const origin = typeof window !== 'undefined' ? window.location.origin : 'https://jikan.life';
@@ -296,6 +374,7 @@ export function CustomizeSection({ selectedType }) {
         ...devicesByCategory.Android,
         ...devicesByCategory.iPad,
     ]
+    const todayISO = getLocalTodayISO();
 
     return (
         <section id="customize" className="py-24 border-t border-line">
@@ -474,29 +553,31 @@ export function CustomizeSection({ selectedType }) {
 
                         {/* Goal Config */}
                         {config.selectedType === 'goal' && (
-                            <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium">{t('config.goalName')}</label>
                                     <Input
                                         type="text"
+                                        className="w-full"
                                         value={config.goalName}
                                         onChange={(e) => updateConfig('goalName', e.target.value)}
                                         placeholder={t('placeholder.goalName')}
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-medium">{t('config.targetDate')}</label>
+                                    <label className="text-sm font-medium">{t('config.startDate')}</label>
                                     <DatePicker
                                         className="w-full"
-                                        value={config.goalDate ? parseDate(config.goalDate) : null}
+                                        value={config.goalStart ? parseDate(config.goalStart) : null}
                                         onChange={(date) => {
                                             if (date) {
-                                                updateConfig('goalDate', date.toString())
+                                                updateGoalDateField('goalStart', date.toString())
                                             } else {
-                                                updateConfig('goalDate', '')
+                                                updateGoalDateField('goalStart', '')
                                             }
                                         }}
-                                        minValue={parseDate(new Date().toISOString().split('T')[0])}
+                                        minValue={parseDate(GOAL_START_MIN_ISO)}
+                                        maxValue={parseDate(todayISO)}
                                     >
                                         <FieldGroup>
                                             <DateInput className="flex-1" variant="ghost" />
@@ -522,6 +603,52 @@ export function CustomizeSection({ selectedType }) {
                                             </Calendar>
                                         </DatePickerContent>
                                     </DatePicker>
+                                    {config.goalStartError && (
+                                        <p className="text-xs text-destructive">{t(config.goalStartError)}</p>
+                                    )}
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-sm font-medium">{t('config.targetDate')}</label>
+                                    <DatePicker
+                                        className="w-full"
+                                        value={config.goalDate ? parseDate(config.goalDate) : null}
+                                        onChange={(date) => {
+                                            if (date) {
+                                                updateGoalDateField('goalDate', date.toString())
+                                            } else {
+                                                updateGoalDateField('goalDate', '')
+                                            }
+                                        }}
+                                        minValue={parseDate(todayISO)}
+                                        maxValue={parseDate(GOAL_TARGET_MAX_ISO)}
+                                    >
+                                        <FieldGroup>
+                                            <DateInput className="flex-1" variant="ghost" />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="mr-1 size-6 data-focus-visible:ring-offset-0">
+                                                <CalendarIcon aria-hidden className="size-4" />
+                                            </Button>
+                                        </FieldGroup>
+                                        <DatePickerContent>
+                                            <Calendar>
+                                                <CalendarHeading />
+                                                <MonthYearPicker />
+                                                <CalendarGrid>
+                                                    <CalendarGridHeader>
+                                                        {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+                                                    </CalendarGridHeader>
+                                                    <CalendarGridBody>
+                                                        {(date) => <CalendarCell date={date} />}
+                                                    </CalendarGridBody>
+                                                </CalendarGrid>
+                                            </Calendar>
+                                        </DatePickerContent>
+                                    </DatePicker>
+                                    {config.goalDateError && (
+                                        <p className="text-xs text-destructive">{t(config.goalDateError)}</p>
+                                    )}
                                 </div>
                             </div>
                         )}

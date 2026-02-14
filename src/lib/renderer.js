@@ -157,6 +157,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
         clockHeight,
         lang: config.wallpaperLang,
         goalDate: config.goalDate,
+        goalStart: config.goalStart,
         goalName: config.goalName,
         today
     });
@@ -200,11 +201,11 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
         ctx.fillText(layout.goalName, ring.centerX, layout.goalNameY);
     }
 
-    // Target date (New)
-    if (config.goalDate) {
-        const dateStr = formatGoalDate(config.goalDate, config.wallpaperLang);
-        ctx.fillStyle = contrastAlpha(bgColor, 0.4);
-        ctx.font = `400 ${width * 0.028}px ${fontFamily}`;
-        ctx.fillText(dateStr, ring.centerX, layout.targetDateY);
-    }
+    // Target date text is intentionally hidden for now.
+    // if (config.goalDate) {
+    //     const dateStr = formatGoalDate(config.goalDate, config.wallpaperLang);
+    //     ctx.fillStyle = contrastAlpha(bgColor, 0.4);
+    //     ctx.font = `400 ${width * 0.028}px ${fontFamily}`;
+    //     ctx.fillText(dateStr, ring.centerX, layout.targetDateY);
+    // }
 }

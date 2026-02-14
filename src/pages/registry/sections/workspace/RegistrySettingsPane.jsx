@@ -6,6 +6,15 @@
  */
 import { Button, Input, Select } from "@cloudflare/kumo"
 import { ColorPicker } from "@/components/ui/color-picker"
+import { GOAL_START_MIN_ISO, GOAL_TARGET_MAX_ISO } from "../../../../../shared/wallpaper-core"
+
+function getLocalTodayISO() {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, "0")
+    const day = String(now.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+}
 
 function RegistrySettingsPane({
     t,
@@ -20,6 +29,7 @@ function RegistrySettingsPane({
     actions,
 }) {
     const typeReady = Boolean(config.selectedType)
+    const todayISO = getLocalTodayISO()
 
     return (
         <div className="h-full overflow-y-auto px-8 py-8">
@@ -128,12 +138,13 @@ function RegistrySettingsPane({
                 )}
 
                 {config.selectedType === "goal" && (
-                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="space-y-4">
                             <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.goalName")}
                             </label>
                             <Input
+                                className="w-full"
                                 value={config.goalName}
                                 onChange={(event) => actions.setGoalName(event.target.value)}
                                 placeholder={t("placeholder.goalName")}
@@ -142,14 +153,37 @@ function RegistrySettingsPane({
                         </div>
                         <div className="space-y-4">
                             <label className="block text-sm font-medium text-kumo-default">
+                                {t("config.startDate")}
+                            </label>
+                            <Input
+                                type="date"
+                                className="w-full"
+                                value={config.goalStart}
+                                onChange={(event) => actions.setGoalStart(event.target.value)}
+                                min={GOAL_START_MIN_ISO}
+                                max={todayISO}
+                                disabled={!typeReady}
+                            />
+                            {config.goalStartError && (
+                                <p className="text-xs text-kumo-warning">{t(config.goalStartError)}</p>
+                            )}
+                        </div>
+                        <div className="space-y-4">
+                            <label className="block text-sm font-medium text-kumo-default">
                                 {t("config.targetDate")}
                             </label>
                             <Input
                                 type="date"
+                                className="w-full"
                                 value={config.goalDate}
                                 onChange={(event) => actions.setGoalDate(event.target.value)}
+                                min={todayISO}
+                                max={GOAL_TARGET_MAX_ISO}
                                 disabled={!typeReady}
                             />
+                            {config.goalDateError && (
+                                <p className="text-xs text-kumo-warning">{t(config.goalDateError)}</p>
+                            )}
                         </div>
                     </div>
                 )}

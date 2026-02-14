@@ -492,12 +492,21 @@ test("Registry settings URL block uses responsive row and flexible input", () =>
   assert.match(source, /className="min-w-0 flex-1 font-mono text-xs"/)
 })
 
-test("Registry goal config keeps xl two-column layout with stacked label/input", () => {
+test("Registry goal config uses three columns with start date in the middle", () => {
   const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
 
   assert.match(source, /config\.selectedType === "goal"/)
-  assert.match(source, /grid grid-cols-1 gap-5 rounded-lg border border-kumo-line bg-kumo-control p-5 xl:grid-cols-2/)
+  assert.match(source, /grid grid-cols-1 gap-4 md:grid-cols-3/)
   assert.match(source, /label className="block text-sm font-medium text-kumo-default"/)
+  assert.match(source, /t\("config\.goalName"\)/)
+  assert.match(source, /t\("config\.startDate"\)/)
+  assert.match(source, /t\("config\.targetDate"\)/)
+  assert.match(source, /actions\.setGoalStart/)
+  assert.match(source, /min=\{GOAL_START_MIN_ISO\}/)
+  assert.match(source, /max=\{todayISO\}/)
+  assert.match(source, /max=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(source, /config\.goalStartError/)
+  assert.match(source, /config\.goalDateError/)
 })
 
 test("Registry wallpaper language field keeps consistent label-to-control spacing", () => {
@@ -603,4 +612,75 @@ test("Wallpaper preview and worker share one language font strategy", async () =
   assert.match(indexSource, /Noto\+Sans\+SC/)
   assert.match(indexSource, /Noto\+Sans\+TC/)
   assert.match(indexSource, /Noto\+Sans\+JP/)
+})
+
+test("GoalStart is wired through registry config state and URL generation", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+
+  assert.match(source, /goalStart:\s*""/)
+  assert.match(source, /goalStartError:\s*""/)
+  assert.match(source, /goalDateError:\s*""/)
+  assert.match(source, /validateGoalDateInputs/)
+  assert.match(source, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\("goalStart", config\.goalStart\)/)
+  assert.match(source, /setGoalStart\(value\)/)
+})
+
+test("Landing goal config includes start date field and strict bounds", () => {
+  const source = readSource("src/components/landing/CustomizeSection.jsx")
+
+  assert.match(source, /goalStart:\s*''/)
+  assert.match(source, /goalStartError:\s*''/)
+  assert.match(source, /goalDateError:\s*''/)
+  assert.match(source, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\('goalStart', config\.goalStart\)/)
+  assert.match(source, /grid-cols-1 md:grid-cols-3/)
+  assert.match(source, /t\('config\.startDate'\)/)
+  assert.match(source, /updateGoalDateField\('goalStart'/)
+  assert.match(source, /minValue=\{parseDate\(GOAL_START_MIN_ISO\)\}/)
+  assert.match(source, /maxValue=\{parseDate\(todayISO\)\}/)
+  assert.match(source, /maxValue=\{parseDate\(GOAL_TARGET_MAX_ISO\)\}/)
+  assert.match(source, /t\(config\.goalStartError\)/)
+  assert.match(source, /t\(config\.goalDateError\)/)
+})
+
+test("Renderer and worker pass goalStart into shared goal layout", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  const workerIndexSource = readSource("worker/index.js")
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+
+  assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
+  assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
+  assert.match(goalGeneratorSource, /goalStart,/)
+  assert.match(goalGeneratorSource, /goalStart,\s*goalName: decodeGoalName\(goalName\)/)
+})
+
+test("Worker validation enforces goalStart schema, year range, and relation to goal", () => {
+  const source = readSource("worker/validation.js")
+
+  assert.match(source, /goalStart:\s*dateSchema\.optional\(\)/)
+  assert.match(source, /GOAL_START_MIN_ISO/)
+  assert.match(source, /GOAL_TARGET_MAX_ISO/)
+  assert.match(source, /Goal start date must be between 1900-01-01 and 2100-12-31/)
+  assert.match(source, /Goal target date must be between 1900-01-01 and 2100-12-31/)
+  assert.match(source, /if \(data\.goalStart && data\.goal && data\.goalStart > data\.goal\)/)
+  assert.match(source, /Goal start date must be on or before the goal date/)
+})
+
+test("i18n includes start date label, placeholder, warning, and date error keys in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+
+  const startDateCount = (source.match(/'config\.startDate':/g) || []).length
+  const placeholderCount = (source.match(/'placeholder\.selectStartDate':/g) || []).length
+  const warningCount = (source.match(/'warning\.goalStartFuture':/g) || []).length
+  const startRangeErrorCount = (source.match(/'error\.goalStart\.outOfRange':/g) || []).length
+  const targetRangeErrorCount = (source.match(/'error\.goalDate\.outOfRange':/g) || []).length
+  const startAfterTargetErrorCount = (source.match(/'error\.goalStart\.afterTarget':/g) || []).length
+  const targetBeforeStartErrorCount = (source.match(/'error\.goalDate\.beforeStart':/g) || []).length
+
+  assert.equal(startDateCount, 4)
+  assert.equal(placeholderCount, 4)
+  assert.equal(warningCount, 4)
+  assert.equal(startRangeErrorCount, 4)
+  assert.equal(targetRangeErrorCount, 4)
+  assert.equal(startAfterTargetErrorCount, 4)
+  assert.equal(targetBeforeStartErrorCount, 4)
 })

@@ -71,9 +71,74 @@ export function getSafeAccent(bgHex, accentHex) {
    ======================================================================== */
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+export const GOAL_START_MIN_ISO = '1900-01-01';
+export const GOAL_TARGET_MAX_ISO = '2100-12-31';
+
+function isValidDateParts(year, month, day) {
+    if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return false;
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return (
+        date.getUTCFullYear() === year &&
+        date.getUTCMonth() + 1 === month &&
+        date.getUTCDate() === day
+    );
+}
 
 export function toDayNumber({ year, month, day }) {
     return Math.floor(Date.UTC(year, month - 1, day) / MS_PER_DAY);
+}
+
+export function isValidISODateString(value) {
+    if (typeof value !== 'string' || !ISO_DATE_REGEX.test(value)) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    return isValidDateParts(year, month, day);
+}
+
+export function isISODateInRange(value, { min, max } = {}) {
+    if (!isValidISODateString(value)) return false;
+    if (min && (!isValidISODateString(min) || value < min)) return false;
+    if (max && (!isValidISODateString(max) || value > max)) return false;
+    return true;
+}
+
+export function validateGoalDateInputs({ goalStart, goalDate, todayISO }) {
+    const errors = {
+        goalStartError: '',
+        goalDateError: ''
+    };
+
+    if (!isValidISODateString(todayISO)) {
+        return errors;
+    }
+
+    if (goalStart && goalDate && isValidISODateString(goalStart) && isValidISODateString(goalDate) && goalStart > goalDate) {
+        errors.goalStartError = 'error.goalStart.afterTarget';
+        errors.goalDateError = 'error.goalDate.beforeStart';
+        return errors;
+    }
+
+    if (goalStart) {
+        const isValidStart = isISODateInRange(goalStart, {
+            min: GOAL_START_MIN_ISO,
+            max: todayISO
+        });
+        if (!isValidStart) {
+            errors.goalStartError = 'error.goalStart.outOfRange';
+        }
+    }
+
+    if (goalDate) {
+        const isValidTarget = isISODateInRange(goalDate, {
+            min: todayISO,
+            max: GOAL_TARGET_MAX_ISO
+        });
+        if (!isValidTarget) {
+            errors.goalDateError = 'error.goalDate.outOfRange';
+        }
+    }
+
+    return errors;
 }
 
 function normalizeDateInput(input) {
@@ -84,11 +149,12 @@ function normalizeDateInput(input) {
         const year = Number(parts[0]);
         const month = Number(parts[1]);
         const day = Number(parts[2]);
-        if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
+        if (!isValidDateParts(year, month, day)) return null;
         return { year, month, day };
     }
 
     if (typeof input === 'object' && typeof input.year === 'number' && typeof input.month === 'number' && typeof input.day === 'number') {
+        if (!isValidDateParts(input.year, input.month, input.day)) return null;
         return { year: input.year, month: input.month, day: input.day };
     }
 
@@ -376,6 +442,7 @@ export function computeGoalLayout(options) {
         clockHeight = 0.22,
         lang = 'en',
         goalDate,
+        goalStart,
         goalName,
         today
     } = options;
@@ -390,14 +457,17 @@ export function computeGoalLayout(options) {
     let progress = 0;
     const todayDate = normalizeDateInput(today) || getLocalToday();
     const goal = normalizeDateInput(goalDate);
+    const start = normalizeDateInput(goalStart);
     if (goal && todayDate) {
-        daysRemaining = Math.max(0, toDayNumber(goal) - toDayNumber(todayDate));
-        if (daysRemaining === 0) {
-            progress = 1;
-        } else {
-            const totalDays = Math.max(daysRemaining + 1, 365);
-            progress = clampNumber(1 - (daysRemaining / totalDays), 0, 1);
-        }
+        const goalDay = toDayNumber(goal);
+        const todayDay = toDayNumber(todayDate);
+        const startDay = start
+            ? toDayNumber(start)
+            : Math.min(todayDay, goalDay - 30);
+
+        daysRemaining = Math.max(0, goalDay - todayDay);
+        const totalDays = Math.max(1, goalDay - startDay);
+        progress = clampNumber(daysRemaining / totalDays, 0, 1);
     }
 
     const safeAccent = getSafeAccent(bgColor, accentColor);
