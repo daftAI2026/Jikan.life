@@ -1,9 +1,9 @@
 /**
  * [INPUT]: 依赖 react-aria-components, @internationalized/date, @phosphor-icons/react,
- *          @/components/ui/select, @/components/ui/button, @/lib/utils,
+ *          @/components/ui/select, @/lib/utils,
  *          @base-ui/react FloatingPortal (internal, for portal redirection)
  * [OUTPUT]: JollyCalendar, JollyRangeCalendar, MonthYearPicker (日历组件，基于 react-aria)
- * [POS]: ui/ 日历组件，支持单选、范围选择、月份/年份快速选择
+ * [POS]: ui/ 日历组件，支持单选/范围/月份年份选择，直接使用 Kumo 语义 token（无 CVA 依赖），选中态 bg-foreground/text-background 反色
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import * as React from "react"
@@ -28,7 +28,7 @@ import {
 import { FloatingPortal } from "#base-ui-portal"
 
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+
 import { Select } from "@/components/ui/select"
 
 const Calendar = AriaCalendar
@@ -124,10 +124,8 @@ const CalendarHeading = (props) => {
       <AriaButton
         slot="previous"
         className={cn(
-          buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50",
-          /* Hover */
-          "data-hovered:opacity-100"
+          "inline-flex items-center justify-center rounded-lg text-kumo-default transition",
+          "size-9 bg-transparent p-0 hover:bg-kumo-tint"
         )}>
         {direction === "rtl" ? (
           <CaretRight aria-hidden className="size-4" />
@@ -139,10 +137,8 @@ const CalendarHeading = (props) => {
       <AriaButton
         slot="next"
         className={cn(
-          buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50",
-          /* Hover */
-          "data-hovered:opacity-100"
+          "inline-flex items-center justify-center rounded-lg text-kumo-default transition",
+          "size-9 bg-transparent p-0 hover:bg-kumo-tint"
         )}>
         {direction === "rtl" ? (
           <CaretLeft aria-hidden className="size-4" />
@@ -197,20 +193,14 @@ const CalendarCell = ({
     <AriaCalendarCell
       className={composeRenderProps(className, (className, renderProps) =>
         cn(
-          buttonVariants({ variant: "ghost" }),
+          "rounded-lg transition",
           "relative flex size-9 items-center justify-center p-0 text-sm font-normal",
+          /* Color scheme: selected vs default */
+          renderProps.isSelected
+            ? "bg-foreground text-background data-focused:bg-foreground data-focused:text-background data-hovered:bg-foreground data-hovered:text-background"
+            : "bg-transparent text-foreground hover:bg-kumo-tint",
           /* Disabled */
           renderProps.isDisabled && "text-muted-foreground opacity-50",
-          /* Selected */
-          renderProps.isSelected &&
-          "bg-primary text-primary-foreground data-focused:bg-primary  data-focused:text-primary-foreground",
-          /* Hover */
-          renderProps.isHovered &&
-          renderProps.isSelected &&
-          (renderProps.isSelectionStart ||
-            renderProps.isSelectionEnd ||
-            !isRange) &&
-          "data-hovered:bg-primary data-hovered:text-primary-foreground",
           /* Selection Start/End */
           renderProps.isSelected &&
           isRange &&

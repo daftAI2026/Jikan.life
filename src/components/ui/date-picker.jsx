@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react-aria-components, @internationalized/date, @phosphor-icons/react
  * [OUTPUT]: JollyDatePicker, JollyDateRangePicker (带输入框的日期选择器)
- * [POS]: UI组件层 - 日期选择器，基于 react-aria-components，支持键盘输入和日历选择
+ * [POS]: UI组件层 - 日期选择器，基于 react-aria-components，弹窗背景使用 bg-kumo-control 对齐 Kumo Select
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 "use client";

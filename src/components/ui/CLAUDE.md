@@ -33,8 +33,8 @@ separator.jsx: 分割线
 command.jsx: 命令面板
 collapsible.jsx: 可折叠区域
 slider.jsx: 滑块
-calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/月份年份选择，年份范围可配置
-date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出
+calendar.jsx: 日历组件，基于 react-aria-components，支持单选/范围/月份年份选择，直接使用 Kumo 语义 token（无 CVA 依赖）
+date-picker.jsx: 日期选择器，JollyUI 风格，支持键盘输入 + 日历弹出，弹窗背景使用 bg-kumo-control 对齐 Kumo Select
 datefield.jsx: 日期/时间输入字段，支持键盘输入和格式化
 color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，ColorThumb 采用外圈+中心点分层常量，作为颜色面板视觉样式单一来源
 color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `1:2+弹性输入` 布局，通道输入使用配置映射并维持对外 hex 协议
@@ -55,5 +55,7 @@ field.jsx: 表单字段容器，react-aria-components 基础组件
 2026-02-13: ColorPicker 完成 KUMO 视觉同化，输入/选择器统一 token，色域改为 `aspect-square`，工具栏调整为 `吸管:颜色空间=1:2` + 剩余输入框。
 2026-02-13: ColorPicker 通道输入改为 `COLOR_SPACE_CHANNELS` 配置驱动，减少 `rgb/hsl/hsb` 重复分支。
 2026-02-13: ColorThumb 样式拆为 `BASE/OUTER_RING/CENTER_DOT/FOCUS` 常量，采用分层渲染以降低边缘混色风险。
+2026-02-15: DatePicker 弹窗背景从 `bg-popover` (#FAFAFA) 对齐到 `bg-kumo-control` (#FFFFFF)，匹配 Kumo Select 弹窗一致性。
+2026-02-16: Calendar 完全移除 CVA(`buttonVariants`) 依赖，箭头按钮和日期格子直接使用 Kumo 语义 token。选中态改为 `bg-foreground text-background`（黑白反色），hover 对齐 `hover:bg-kumo-tint`（KumoButton ghost 标准）。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
