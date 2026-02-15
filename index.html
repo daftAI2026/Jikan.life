@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
 [INPUT]: 依赖 /Users/luo/Desktop/ClaudeCode/Jikan.life/src/main.jsx 作为应用入口
-[OUTPUT]: 对外提供 Kumo 风格的 HTML 基础结构与主题初始化
-[POS]: 项目根页面模板，承载全局 meta、字体与 theme 引导
+[OUTPUT]: 对外提供 Kumo 风格的 HTML 基础结构、主题初始化与 SEO 元数据 (OG/Twitter/Robots)
+[POS]: 项目根页面模板，承载全局 meta (i18n: EN+CN+JP)、字体与 theme 引导 (读 localStorage "mode")
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 <html lang="en" class="bg-kumo-elevated" data-mode="light">
@@ -14,18 +14,35 @@
     <meta name="docs-version" content="1.0.0" />
     <meta name="build-commit" content="4ee7723" />
     <meta name="build-date" content="2024-01-01T00:00:00.000Z" />
-    <title>Kumo</title>
-    <meta name="description" content="Kumo – a modern component library" />
+    <title>Jikan - Year Progress Wallpaper Generator | 年度进程壁纸生成器</title>
+    <meta name="description"
+        content="Pixel-style dynamic wallpaper generator based on year progress and goals. 基于年度进程与目标的像素风格动态壁纸生成器。年間進捗と目標に基づくピクセル風壁紙ジェネレーター。" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jikan.life/" />
+    <meta property="og:title" content="Jikan - Year Progress Wallpaper Generator" />
+    <meta property="og:description"
+        content="Pixel-style dynamic wallpaper generator based on year progress and goals." />
+    <meta property="og:image" content="https://jikan.life/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://jikan.life/" />
+    <meta property="twitter:title" content="Jikan - Year Progress Wallpaper Generator" />
+    <meta property="twitter:description"
+        content="Pixel-style dynamic wallpaper generator based on year progress and goals." />
+    <meta property="twitter:image" content="https://jikan.life/og-image.png" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=optional"
-    />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=optional" />
     <script>
         (function () {
-            const stored = localStorage.getItem("theme")
+            const stored = localStorage.getItem("mode")
             if (stored) {
                 document.documentElement.setAttribute("data-mode", stored)
             } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {

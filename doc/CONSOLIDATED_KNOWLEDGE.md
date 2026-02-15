@@ -168,7 +168,7 @@
 - [x] **Apply `ring`**: 活跃组件（date-picker / card / field）已从 `border` 迁移至 `ring ring-kumo-line`。低频 shadcn 预置组件保持原状。
 
 ### Phase 3: 功能对齐 (Feature Parity)
-- [ ] **SEO Boost**: 补齐 `index.html` 的 Meta 标签 (Robots/OG)。
+- [x] **SEO Boost**: `index.html` 补齐 Robots/OG/Twitter 元标签 (i18n: EN+CN+JP)，修正品牌名为 Jikan。
 - [ ] **Goal Start**: 实现 Goal 进度算法升级 (Shared Core)。
 
 ### Phase 4: Registry 配置流体验升级 (UX Evolution)
