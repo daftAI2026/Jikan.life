@@ -28,6 +28,7 @@ scripts/ - 开发校验脚本
 vite.config.js - Vite 构建配置
 wrangler.toml - Cloudflare Workers 部署配置
 package.json - 统一依赖管理
+doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abstraction / Documentation Protocol)
 </config>
 
 ## 技术栈

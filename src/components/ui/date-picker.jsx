@@ -49,7 +49,7 @@ const DatePickerContent = ({
     offset={8}
     className={composeRenderProps(popoverClassName, (className) =>
       cn(
-        "z-50 w-auto rounded-xl border bg-kumo-control p-3 text-kumo-default shadow-md outline-none",
+        "z-50 w-auto rounded-xl ring ring-kumo-line bg-kumo-control p-3 text-kumo-default shadow-md outline-none",
         "data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95",
         "data-exiting:animate-out data-exiting:fade-out-0 data-exiting:zoom-out-95",
         "data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2",

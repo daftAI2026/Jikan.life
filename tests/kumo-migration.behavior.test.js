@@ -60,7 +60,7 @@ test("index.css imports Kumo styles and removes dark variant", () => {
   assert.match(source, /@import\s+"@cloudflare\/kumo\/styles";/)
 
   assert.doesNotMatch(source, /@custom-variant\s+dark/)
-  assert.doesNotMatch(source, /\n\.dark\s*\{/) 
+  assert.doesNotMatch(source, /\n\.dark\s*\{/)
   assert.doesNotMatch(source, /--neumorphic-/)
 })
 
@@ -407,7 +407,7 @@ test("RegistrySidebar is non-scrollable and hides Life style card", () => {
   assert.doesNotMatch(source, /progressDots/)
   assert.doesNotMatch(source, /progressFilledCount/)
   assert.match(source, /gridTemplateColumns:\s*`repeat\(\$\{YEAR_GRID_COLUMNS\}, minmax\(0, 1fr\)\)`/)
-  assert.match(source, /scale-\[1\.6\]/)
+  assert.match(source, /scale-\[1\.8\]/)
   assert.doesNotMatch(source, /scale-\[0\.8\]/)
 })
 
@@ -430,8 +430,8 @@ test("RegistrySidebar goal visual text positions follow preview layout parameter
   const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
 
   assert.match(source, /const \{ ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY \} = layout/)
-  assert.match(source, /y={ring\.centerY - 4}/)
-  assert.match(source, /y={labelY}/)
+  assert.match(source, /y={ring\.centerY - 1}/)
+  assert.match(source, /y={labelY \+ 8}/)
   assert.doesNotMatch(source, /ring\.centerY \+ ring\.radius \* 0\.62/)
 })
 
@@ -734,4 +734,19 @@ test("i18n includes start date label, placeholder, warning, and date error keys 
   assert.equal(targetRangeErrorCount, 4)
   assert.equal(startAfterTargetErrorCount, 4)
   assert.equal(targetBeforeStartErrorCount, 4)
+})
+
+test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
+  const source = readSource("src/pages/registry/sections/ThemeToggle.jsx")
+
+  assert.match(source, /localStorage\.setItem\("mode"/)
+  assert.doesNotMatch(source, /localStorage\.setItem\("theme"/)
+  assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)
+})
+
+test("Calendar does not depend on CVA buttonVariants", () => {
+  const source = readSource("src/components/ui/calendar.jsx")
+
+  assert.doesNotMatch(source, /buttonVariants/)
+  assert.doesNotMatch(source, /import.*from.*button/)
 })

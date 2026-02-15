@@ -10,7 +10,7 @@ import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const cardVariants = cva(
-  "rounded-xl border border-kumo-line text-kumo-default",
+  "rounded-xl ring ring-kumo-line text-kumo-default",
   {
     variants: {
       variant: {

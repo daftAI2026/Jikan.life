@@ -13,7 +13,7 @@ const MODES = new Set(["light", "dark"])
 function getStoredMode() {
     if (typeof window === "undefined") return null
 
-    const mode = localStorage.getItem("mode") || localStorage.getItem("theme")
+    const mode = localStorage.getItem("mode")
     return MODES.has(mode) ? mode : null
 }
 
@@ -37,7 +37,6 @@ function ThemeToggle() {
 
         document.documentElement.setAttribute("data-mode", mode)
         localStorage.setItem("mode", mode)
-        localStorage.setItem("theme", mode)
     }, [mode])
 
     const toggleMode = () => {
