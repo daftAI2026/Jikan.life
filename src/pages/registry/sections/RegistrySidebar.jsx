@@ -107,7 +107,7 @@ function LifeVisual() {
 
 function GoalVisual({ layout }) {
     const { ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY } = layout
-    const strokeWidth = 100 * 0.035
+    const strokeWidth = 100 * 0.025
     const circumference = 2 * Math.PI * ring.radius
     const strokeDashoffset = circumference * (1 - ring.progress)
 
