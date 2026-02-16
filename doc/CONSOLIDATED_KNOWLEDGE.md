@@ -195,7 +195,11 @@
     - **二分法**: `category !== 'Android'` → iOS 教程（iPhone + iPad 共用）；`category === 'Android'` → Android 教程。
     - 点击"去设置"时直接展示对应平台的教程，**不再需要用户手动选择 iOS/Android**。
     - 设备分组展示保持三类（iPhone / Android / iPad），教程推断用二分法。
-
+- [ ] **Annotated Select (Device Resolution)**:
+    - **现状**: 设备分辨率（如 1170x2532）显示在 Select 外部，视觉松散。
+    - **目标**: 对标 Kumo 官方 Annotated Select 模式（左侧名称，右侧详情）。
+    - **方案**: 将尺寸信息移入 `Select.Option` 内部，左侧显示设备名，右侧显示次要颜色的尺寸信息。
+    - **收益**: 提高信息密度，增强交互感。
 ---
 
 ## 📚 原始文档索引 (Archive Reference)
