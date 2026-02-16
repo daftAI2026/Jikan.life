@@ -15,6 +15,8 @@ import {
 } from "react-aria-components";
 
 import { cn } from "@/lib/utils"
+import { Tooltip, TooltipProvider } from "./tooltip"
+import { Info } from "@phosphor-icons/react"
 
 const labelVariants = cva([
   "text-sm font-medium leading-none",
@@ -23,9 +25,6 @@ const labelVariants = cva([
   /* Invalid */
   "group-data-[invalid]:text-destructive",
 ])
-
-import { Tooltip, TooltipProvider } from "./tooltip"
-import { Info } from "@phosphor-icons/react"
 
 function Label({
   className,

@@ -13,7 +13,7 @@ import { Select as SelectBase } from "@base-ui/react/select"
 import { JollyDatePicker, DatePicker, DatePickerContent } from "@/components/ui/date-picker"
 import { DateInput } from "@/components/ui/datefield"
 import { Calendar, CalendarCell, CalendarGrid, CalendarGridBody, CalendarGridHeader, CalendarHeaderCell, CalendarHeading, MonthYearPicker } from "@/components/ui/calendar"
-import { FieldGroup } from "@/components/ui/field"
+import { Label, FieldGroup } from "@/components/ui/field"
 import { parseDate } from "@internationalized/date"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { countries, getTimezone } from "@/data/countries"
@@ -415,10 +415,9 @@ export function CustomizeSection({ selectedType }) {
                         {/* Location + Language */}
                         <div className={cn("grid grid-cols-2 gap-4 mb-6", !config.selectedType && "opacity-50")}>
                             <div className="space-y-3">
-                                <label className="flex items-baseline justify-between text-sm">
-                                    <span className="font-medium">{t('config.location')}</span>
-                                    <span className="text-xs text-muted-foreground">{t('config.locationHint')}</span>
-                                </label>
+                                <Label tooltip={t('config.locationTooltip')}>
+                                    {t('config.location')}
+                                </Label>
                                 <Select
                                     value={config.country}
                                     onValueChange={(value) => {

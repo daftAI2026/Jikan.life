@@ -123,11 +123,8 @@ function RegistrySettingsPane({
                     </div>
 
                     <div className="space-y-4">
-                        <label className="flex items-baseline justify-between text-sm">
-                            <span className="font-medium text-kumo-default">{t("config.wallpaperLang")}</span>
-                            <span className="text-xs text-kumo-subtle invisible">
-                                {t("config.locationHint")}
-                            </span>
+                        <label className="block text-sm font-medium text-kumo-default">
+                            {t("config.wallpaperLang")}
                         </label>
                         <Select
                             className="w-full"
