@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Theme State Unification**: Eliminated localStorage `theme` key dual-write in `ThemeToggle.jsx`. All theme persistence now uses a single `mode` key, consistent with `Header.jsx`.
 - **Border → Ring Migration**: Active components (`date-picker`, `card`, `field`) migrated from `border` to `ring ring-kumo-line` per Kumo design standard.
 - **Grouped Device Select**: Implemented visual grouping in the device selection dropdown. iPhone, Android, and iPad models are now organized under category headers using Base UI primitives.
+- **Timezone Tooltip**: Added a localized tooltip to the "Location" label across the app, explaining the necessity of timezone accuracy for day progress. Enhanced the `Label` UI component to support native tooltips with a help icon, allowing the removal of redundant "For timezone" hint text.
 
 ### Fixed
 - **ColorPicker Accent Sync**: Fixed accent color button not updating when background color changes. Registry page now reads the computed safe accent; Landing page now writes user picks to the correct state key so `getSafeAccent` can recalculate properly.

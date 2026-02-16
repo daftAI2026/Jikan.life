@@ -61,7 +61,7 @@ export const i18nData = {
 
     // Config Groups
     'config.location': 'Location',
-    'config.locationHint': 'For timezone',
+    'config.locationTooltip': 'Ensures the wallpaper day progress matches your local time by using your country\'s timezone.',
     'config.wallpaperLang': 'Wallpaper Language',
     'config.dateOfBirth': 'Date of Birth',
     'config.dateOfBirthHint': '(Optional)',
@@ -236,7 +236,7 @@ export const i18nData = {
 
     // 配置组
     'config.location': '位置',
-    'config.locationHint': '时区',
+    'config.locationTooltip': '通过你所在国家的时区，确保壁纸进度与你本地的日期完全同步。',
     'config.wallpaperLang': '壁纸语言',
     'config.dateOfBirth': '出生日期',
     'config.dateOfBirthHint': '（可选）',
@@ -411,7 +411,7 @@ export const i18nData = {
 
     // 配置組
     'config.location': '位置',
-    'config.locationHint': '時區',
+    'config.locationTooltip': '透過你所在國家的時區，確保桌布進度與你當地的日期完全同步。',
     'config.wallpaperLang': '桌布語言',
     'config.dateOfBirth': '出生日期',
     'config.dateOfBirthHint': '（選擇性）',
@@ -586,7 +586,7 @@ export const i18nData = {
 
     // 設定グループ
     'config.location': '位置',
-    'config.locationHint': 'タイムゾーン',
+    'config.locationTooltip': 'お住まいの地域のタイムゾーンを使用することで、壁紙の進捗が現地の時間と正確に一致するようにします。',
     'config.wallpaperLang': '壁紙言語',
     'config.dateOfBirth': '生年月日',
     'config.dateOfBirthHint': '（オプション）',

@@ -24,11 +24,29 @@ const labelVariants = cva([
   "group-data-[invalid]:text-destructive",
 ])
 
+import { Tooltip, TooltipProvider } from "./tooltip"
+import { Info } from "@phosphor-icons/react"
+
 function Label({
   className,
+  tooltip,
+  children,
   ...props
 }) {
-  return <AriaLabel className={cn(labelVariants(), className)} {...props} />
+  const content = (
+    <AriaLabel className={cn(labelVariants(), "flex items-center gap-1.5", className)} {...props}>
+      {children}
+      {tooltip && (
+        <Tooltip content={tooltip} asChild>
+          <span className="inline-flex cursor-help text-kumo-subtle transition-colors hover:text-kumo-default">
+            <Info size={14} weight="bold" />
+          </span>
+        </Tooltip>
+      )}
+    </AriaLabel>
+  );
+
+  return tooltip ? <TooltipProvider>{content}</TooltipProvider> : content;
 }
 
 function FormDescription({

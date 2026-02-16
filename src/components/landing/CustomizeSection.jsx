@@ -688,6 +688,14 @@ export function CustomizeSection({ selectedType }) {
                             </div>
                         </div>
 
+                        {/* Location */}
+                        <div className={cn("space-y-3 mb-6", !config.selectedType && "opacity-50")}>
+                            <Label tooltip={t('config.locationTooltip')}>
+                                {t('config.location')}
+                            </Label>
+                            {renderLocationSelector()}
+                        </div>
+
                         {/* Device */}
                         <div className={cn("space-y-3 mb-6", !config.selectedType && "opacity-50")}>
                             <label className="flex items-baseline justify-between text-sm">

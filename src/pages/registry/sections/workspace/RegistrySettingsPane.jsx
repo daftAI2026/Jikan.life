@@ -6,6 +6,7 @@
  */
 import { Button as KumoButton, Input, Select } from "@cloudflare/kumo"
 import { Select as SelectBase } from "@base-ui/react/select"
+import { Label } from "@/components/ui/field"
 import { devices } from "@/data/devices"
 import { Calendar as CalendarIcon } from "@phosphor-icons/react"
 import { ColorPicker } from "@/components/ui/color-picker"
@@ -99,10 +100,9 @@ function RegistrySettingsPane({
 
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                     <div className="space-y-4">
-                        <label className="flex items-baseline justify-between text-sm">
-                            <span className="font-medium text-kumo-default">{t("config.location")}</span>
-                            <span className="text-xs text-kumo-subtle">{t("config.locationHint")}</span>
-                        </label>
+                        <Label tooltip={t("config.locationTooltip")}>
+                            {t("config.location")}
+                        </Label>
                         <Select
                             className="w-full"
                             value={config.country}
