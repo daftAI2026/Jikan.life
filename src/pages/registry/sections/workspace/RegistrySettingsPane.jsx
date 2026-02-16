@@ -5,6 +5,8 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button as KumoButton, Input, Select } from "@cloudflare/kumo"
+import { Select as SelectBase } from "@base-ui/react/select"
+import { devices } from "@/data/devices"
 import { Calendar as CalendarIcon } from "@phosphor-icons/react"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { DatePicker, DatePickerContent } from "@/components/ui/date-picker"
@@ -294,10 +296,19 @@ function RegistrySettingsPane({
                         renderValue={(value) => value || config.device}
                         disabled={!typeReady}
                     >
-                        {deviceOptions.map((name) => (
-                            <Select.Option key={name} value={name}>
-                                {name}
-                            </Select.Option>
+                        {['iPhone', 'Android', 'iPad'].map((category) => (
+                            <SelectBase.Group key={category}>
+                                <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-kumo-subtle select-none">
+                                    {category}
+                                </SelectBase.GroupLabel>
+                                {devices
+                                    .filter((d) => d.category === category)
+                                    .map((d) => (
+                                        <Select.Option key={d.name} value={d.name}>
+                                            {d.name}
+                                        </Select.Option>
+                                    ))}
+                            </SelectBase.Group>
                         ))}
                     </Select>
                 </div>

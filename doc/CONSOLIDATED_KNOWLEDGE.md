@@ -171,6 +171,12 @@
 - [x] **SEO Boost**: `index.html` 补齐 Robots/OG/Twitter 元标签 (i18n: EN+CN+JP)，修正品牌名为 Jikan。
 - [ ] **Goal Start**: 实现 Goal 进度算法升级 (Shared Core)。
 
+### Phase 3.5: 组件引用统一化 (Component Import Unification)
+- [ ] **统一入口**: 将 `src/components/ui/` 作为**唯一组件引用源**。页面代码只认 `@/components/ui/*`，不再直接 `import { Select } from "@cloudflare/kumo"`。
+- [ ] **Kumo 包装**: 对直接使用的 Kumo 组件（Select / Button / Input）在 `src/components/ui/` 中创建薄包装层再导出。
+- [ ] **vendor 清理**: 修复 `vendor/kumo` submodule dirty 状态（2 个文档站文件被意外修改），还原干净快照。
+- **现状**: 组件来源三分天下 — `vendor/kumo`（Kumo 原件）、`src/components/ui/`（自封装）、`node_modules`（react-aria 等）。页面侧引用混乱，维护成本高。
+
 ### Phase 4: Registry 配置流体验升级 (UX Evolution)
 - [ ] **Skeleton Base**: 默认初始态（未选卡片）设置区全屏展示 `Skeleton Line` 占位符。
 - [ ] **Progressive 6-Grid Flow**:
@@ -184,6 +190,11 @@
     - **顶部**: 放置"如何设置" (Setup Guide) 链接。
     - **UI 展示**: 引导用户去手机设置的界面建议采用 **Layer Card** 组件进行分层展示。
     - **底部**: 放置"返回重新选择" (Back/Re-select) 按钮，点击回退至 6-Grid 配置流。
+- [ ] **Setup Guide 平台自动推断**:
+    - 用户选了设备后，系统从 `selectedDevice.category` 自动推断平台。
+    - **二分法**: `category !== 'Android'` → iOS 教程（iPhone + iPad 共用）；`category === 'Android'` → Android 教程。
+    - 点击"去设置"时直接展示对应平台的教程，**不再需要用户手动选择 iOS/Android**。
+    - 设备分组展示保持三类（iPhone / Android / iPad），教程推断用二分法。
 
 ---
 

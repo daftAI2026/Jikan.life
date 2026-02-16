@@ -9,6 +9,7 @@ import { Copy, Check, Calendar as CalendarIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
+import { Select as SelectBase } from "@base-ui/react/select"
 import { JollyDatePicker, DatePicker, DatePickerContent } from "@/components/ui/date-picker"
 import { DateInput } from "@/components/ui/datefield"
 import { Calendar, CalendarCell, CalendarGrid, CalendarGridBody, CalendarGridHeader, CalendarHeaderCell, CalendarHeading, MonthYearPicker } from "@/components/ui/calendar"
@@ -706,10 +707,17 @@ export function CustomizeSection({ selectedType }) {
                                 disabled={!config.selectedType}
                                 className="w-full"
                             >
-                                {deviceOptions.map((device) => (
-                                    <Select.Option key={device.name} value={device.name}>
-                                        {device.name}
-                                    </Select.Option>
+                                {['iPhone', 'Android', 'iPad'].map((category) => (
+                                    <SelectBase.Group key={category}>
+                                        <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-muted-foreground select-none">
+                                            {category}
+                                        </SelectBase.GroupLabel>
+                                        {devicesByCategory[category].map((device) => (
+                                            <Select.Option key={device.name} value={device.name}>
+                                                {device.name}
+                                            </Select.Option>
+                                        ))}
+                                    </SelectBase.Group>
                                 ))}
                             </Select>
                         </div>
