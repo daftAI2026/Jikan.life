@@ -248,7 +248,7 @@ function RegistrySettingsPane({
                         <div className="space-y-4">
                             <span className="text-xs text-kumo-subtle">{t("config.accent")}</span>
                             <ColorPicker
-                                value={config.originalAccentColor}
+                                value={config.accentColor}
                                 onChange={(value) => actions.setAccentColor(value)}
                                 disabled={!typeReady}
                             />

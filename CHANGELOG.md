@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Theme State Unification**: Eliminated localStorage `theme` key dual-write in `ThemeToggle.jsx`. All theme persistence now uses a single `mode` key, consistent with `Header.jsx`.
 - **Border → Ring Migration**: Active components (`date-picker`, `card`, `field`) migrated from `border` to `ring ring-kumo-line` per Kumo design standard.
 
+### Fixed
+- **ColorPicker Accent Sync**: Fixed accent color button not updating when background color changes. Registry page now reads the computed safe accent; Landing page now writes user picks to the correct state key so `getSafeAccent` can recalculate properly.
+
 ### Documentation
 - **GEB Protocol Sync**: Performed a project-wide synchronization of L1/L2/L3 documentation. Updated file headers and module maps in `CLAUDE.md` to reflect recent architectural shifts and dependency cleanups.
 - **UX Roadmap**: Updated `CONSOLIDATED_KNOWLEDGE.md` with "Phase 4: Registry UX Evolution", outlining the upcoming 6-grid progressive configuration flow and full-overlay settings panel requirements.

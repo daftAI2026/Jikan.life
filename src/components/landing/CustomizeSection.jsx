@@ -669,7 +669,7 @@ export function CustomizeSection({ selectedType }) {
                                     <span className="text-xs text-muted-foreground">{t('config.accent')}</span>
                                     <ColorPicker
                                         value={config.accentColor}
-                                        onChange={(v) => updateConfig('accentColor', v)}
+                                        onChange={(v) => updateConfig('originalAccentColor', v)}
                                         disabled={!config.selectedType}
                                     />
                                 </div>
