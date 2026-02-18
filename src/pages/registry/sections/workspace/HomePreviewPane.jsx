@@ -7,10 +7,11 @@
 import { useCallback, useEffect, useRef } from "react"
 import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/renderer"
 
+const SCREEN_WIDTH = 240
+const SCREEN_HEIGHT = 510
+
 function HomePreviewPane({ config, selectedDevice, t }) {
     const canvasRef = useRef(null)
-    const SCREEN_WIDTH = 240
-    const SCREEN_HEIGHT = 510
 
     const drawPreview = useCallback(() => {
         const canvas = canvasRef.current
@@ -53,7 +54,7 @@ function HomePreviewPane({ config, selectedDevice, t }) {
         }
 
         drawGoalCountdown(ctx, width, height, renderConfig, selectedDevice.clockHeight)
-    }, [config, selectedDevice, SCREEN_HEIGHT, SCREEN_WIDTH])
+    }, [config, selectedDevice])
 
     useEffect(() => {
         drawPreview()
@@ -78,7 +79,7 @@ function HomePreviewPane({ config, selectedDevice, t }) {
                 </div>
                 <div className="absolute bottom-4 left-1/2 h-1 w-[100px] -translate-x-1/2 rounded-full bg-kumo-subtle/50" />
             </div>
-            <p className="text-[11px] font-semibold tracking-[0.2em] text-kumo-subtle uppercase">
+            <p className="text-base font-medium text-kumo-subtle uppercase">
                 {t("preview.hint")}
             </p>
         </div>

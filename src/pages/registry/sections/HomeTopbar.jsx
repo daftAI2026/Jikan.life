@@ -28,6 +28,7 @@ function HomeTopbar() {
                     {orderedSocialLinks.map((social) => {
                         const Icon = SOCIAL_ICON_MAP[social.id]
                         const isXiaohongshu = social.id === "xiaohongshu"
+                        const isGithub = social.id === "github"
                         if (!Icon) return null
 
                         return (
@@ -41,6 +42,8 @@ function HomeTopbar() {
                                 className={
                                     isXiaohongshu
                                         ? "h-9 px-2.5"
+                                        : isGithub
+                                            ? "md:-mr-2.5"
                                         : undefined
                                 }
                             >
