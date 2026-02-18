@@ -30,6 +30,7 @@ import { GOAL_START_MIN_ISO, GOAL_TARGET_MAX_ISO } from "../../../../../shared/w
 import { SettingsCardShell } from "./SettingsCardShell"
 
 const SETTINGS_CARD_IDS = ["basics", "type-params", "colors", "palettes", "device", "url"]
+const SETTINGS_CARD_MARKS = ["①", "②", "③", "④", "⑤", "⑥"]
 
 const settingsCardsSchema = [
     {
@@ -424,7 +425,12 @@ function HomeSettingsPane(props) {
                 className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2 lg:h-full lg:min-h-0 lg:grid-rows-3 lg:auto-rows-fr"
             >
                 {settingsCardsSchema.map((card) => (
-                    <SettingsCardShell key={card.id} cardId={card.id} title={card.title}>
+                    <SettingsCardShell
+                        key={card.id}
+                        cardId={card.id}
+                        title={card.title}
+                        indexMark={SETTINGS_CARD_MARKS[SETTINGS_CARD_IDS.indexOf(card.id)]}
+                    >
                         {card.render(cardViewModel)}
                     </SettingsCardShell>
                 ))}

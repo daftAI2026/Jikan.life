@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Home Preview Refinement**: Optimized `HomePreviewPane` by removing redundant `SCREEN_WIDTH`/`HEIGHT` constants and simplifying the `drawPreview` dependency array. Enhanced the preview hint typography for better visibility.
 - **Topbar Layout**: Refined `HomeTopbar` layout for improved visual balance during the settings-visual transition.
+- **Settings UX**: Introduced numerical index marks (1-6) to `HomeSettingsPane` cards via `SettingsCardShell` to emphasize the progressive configuration sequence and improve flow legibility.
 
 ### Added
 - **Validation Script**: Introduced `scripts/check-wallpaper-core.js` for automated verification of wallpaper core logic and font handling.
