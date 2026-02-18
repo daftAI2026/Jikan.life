@@ -249,8 +249,8 @@ function HomeSidebar({ currentPath: _currentPath, selectedStyle = "year", onStyl
 
     const navContent = (
         <div className="flex h-full min-h-0 flex-col bg-kumo-elevated text-kumo-strong">
-            <div className="px-1 pb-1">
-                <p className="text-xs leading-4 font-semibold text-kumo-subtle">
+            <div className="flex h-5 items-center px-1">
+                <p className="text-base leading-4 font-medium text-kumo-subtle">
                     {t("types.header")}
                 </p>
             </div>

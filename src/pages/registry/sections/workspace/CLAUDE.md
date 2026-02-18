@@ -4,13 +4,14 @@
 成员清单
 useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式包含 goalStart 字段、手动输入即时阻断校验与仅合法日期透传
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
-HomeSettingsPane.jsx: 右侧属性面板，提供位置/语言/颜色/设备/URL 与类型条件字段；Life DOB 与 Goal 日期字段直连 react-aria DatePicker（同 main 组件栈），Goal 区按 Goal Name/Start Date/Target Date 三列排列（移动端单列）并展示字段级日期错误
+HomeSettingsPane.jsx: 右侧设置面板主容器；当前阶段输出 schema 驱动的六卡 demo 骨架（Button/Input/Switch/Input Validation/Dropdown/Collapsible），导出 `SETTINGS_CARD_IDS`，并在开发态通过 `legacySettings=1` 条件挂载 LegacySettingsForm
+SettingsCardShell.jsx: 右侧六卡统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 中央 demo）并提供 `data-home-settings-card` 稳定选择器
 
 结构
-workspace/ - Home 双栏工作区子模块 (3 files)
+workspace/ - Home 双栏工作区子模块 (4 files)
 
 架构决策
-采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排，避免把业务状态和 UI 布局耦合在一个超大组件里。
+采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“schema + render 函数 + 壳组件”模式，把视觉骨架与字段逻辑解耦，后续逐卡迁移只替换单卡 render 内容。
 
 开发规范
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
@@ -24,5 +25,6 @@ workspace/ - Home 双栏工作区子模块 (3 files)
 2026-02-18: HomeSettingsPane 通过 `@/components/ui/kumo` 引用 Button/Input/Select，移除页面层对 `@cloudflare/kumo` 的直接依赖。
 2026-02-18: Goal 日期硬约束统一为 `start<=target`；允许未来 Start Date 与过去 Target Date；前后端统一使用 1900-2100 范围校验。
 2026-02-18: 第一阶段命名收口：`useHomeWallpaperConfig` / `HomePreviewPane` / `HomeSettingsPane` 取代 Registry* 在用导出名。
+2026-02-18: 第二阶段右侧改造：引入 SettingsCardShell + 六卡 schema demo 骨架（复刻 Kumo HomeGrid 风格）；旧完整表单改为开发态 `legacySettings=1` 才挂载。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
