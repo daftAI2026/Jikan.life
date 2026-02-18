@@ -577,7 +577,7 @@ export function CustomizeSection({ selectedType }) {
                                             }
                                         }}
                                         minValue={parseDate(GOAL_START_MIN_ISO)}
-                                        maxValue={parseDate(todayISO)}
+                                        maxValue={parseDate(GOAL_TARGET_MAX_ISO)}
                                     >
                                         <FieldGroup>
                                             <DateInput className="flex-1" variant="ghost" />
@@ -619,7 +619,7 @@ export function CustomizeSection({ selectedType }) {
                                                 updateGoalDateField('goalDate', '')
                                             }
                                         }}
-                                        minValue={parseDate(todayISO)}
+                                        minValue={parseDate(config.goalStart || todayISO)}
                                         maxValue={parseDate(GOAL_TARGET_MAX_ISO)}
                                     >
                                         <FieldGroup>

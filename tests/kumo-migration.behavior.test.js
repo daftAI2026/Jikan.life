@@ -568,7 +568,7 @@ test("Registry goal config uses three columns with start date in the middle", ()
   assert.match(source, /minValue=\{minValue \? parseDate\(minValue\) : undefined\}/)
   assert.match(source, /maxValue=\{maxValue \? parseDate\(maxValue\) : undefined\}/)
   assert.match(source, /minValue:\s*GOAL_START_MIN_ISO/)
-  assert.match(source, /maxValue:\s*todayISO/)
+  assert.match(source, /minValue:\s*config\.goalStart \|\| todayISO/)
   assert.match(source, /maxValue:\s*GOAL_TARGET_MAX_ISO/)
   assert.match(source, /config\.goalStartError/)
   assert.match(source, /config\.goalDateError/)
@@ -684,7 +684,7 @@ test("GoalStart is wired through registry config state and URL generation", () =
   assert.match(source, /setGoalStart\(value\)/)
 })
 
-test("Landing goal config includes start date field and strict bounds", () => {
+test("Landing goal config uses dynamic target min based on goalStart or today", () => {
   const source = readSource("src/components/landing/CustomizeSection.jsx")
 
   assert.match(source, /goalStart:\s*''/)
@@ -695,7 +695,7 @@ test("Landing goal config includes start date field and strict bounds", () => {
   assert.match(source, /t\('config\.startDate'\)/)
   assert.match(source, /updateGoalDateField\('goalStart'/)
   assert.match(source, /minValue=\{parseDate\(GOAL_START_MIN_ISO\)\}/)
-  assert.match(source, /maxValue=\{parseDate\(todayISO\)\}/)
+  assert.match(source, /minValue=\{parseDate\(config\.goalStart \|\| todayISO\)\}/)
   assert.match(source, /maxValue=\{parseDate\(GOAL_TARGET_MAX_ISO\)\}/)
   assert.match(source, /t\(config\.goalStartError\)/)
   assert.match(source, /t\(config\.goalDateError\)/)
@@ -724,12 +724,11 @@ test("Worker validation enforces goalStart schema, year range, and relation to g
   assert.match(source, /Goal start date must be on or before the goal date/)
 })
 
-test("i18n includes start date label, placeholder, warning, and date error keys in all languages", () => {
+test("i18n includes start date label, placeholder, and date error keys in all languages", () => {
   const source = readSource("src/data/i18n.js")
 
   const startDateCount = (source.match(/'config\.startDate':/g) || []).length
   const placeholderCount = (source.match(/'placeholder\.selectStartDate':/g) || []).length
-  const warningCount = (source.match(/'warning\.goalStartFuture':/g) || []).length
   const startRangeErrorCount = (source.match(/'error\.goalStart\.outOfRange':/g) || []).length
   const targetRangeErrorCount = (source.match(/'error\.goalDate\.outOfRange':/g) || []).length
   const startAfterTargetErrorCount = (source.match(/'error\.goalStart\.afterTarget':/g) || []).length
@@ -737,7 +736,6 @@ test("i18n includes start date label, placeholder, warning, and date error keys 
 
   assert.equal(startDateCount, 4)
   assert.equal(placeholderCount, 4)
-  assert.equal(warningCount, 4)
   assert.equal(startRangeErrorCount, 4)
   assert.equal(targetRangeErrorCount, 4)
   assert.equal(startAfterTargetErrorCount, 4)

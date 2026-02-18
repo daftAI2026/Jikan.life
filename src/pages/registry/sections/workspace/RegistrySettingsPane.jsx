@@ -209,7 +209,7 @@ function RegistrySettingsPane({
                                 value: config.goalStart,
                                 onChange: actions.setGoalStart,
                                 minValue: GOAL_START_MIN_ISO,
-                                maxValue: todayISO,
+                                maxValue: GOAL_TARGET_MAX_ISO,
                             })}
                             {config.goalStartError && (
                                 <p className="text-xs text-kumo-warning">{t(config.goalStartError)}</p>
@@ -222,7 +222,7 @@ function RegistrySettingsPane({
                             {renderDatePickerField({
                                 value: config.goalDate,
                                 onChange: actions.setGoalDate,
-                                minValue: todayISO,
+                                minValue: config.goalStart || todayISO,
                                 maxValue: GOAL_TARGET_MAX_ISO,
                             })}
                             {config.goalDateError && (

@@ -129,6 +129,42 @@ const tests = [
         }
     },
     {
+        name: 'Future goalStart is allowed when start is on or before target',
+        fn: () => {
+            const errors = validateGoalDateInputs({
+                goalStart: '2026-02-20',
+                goalDate: '2026-02-28',
+                todayISO: '2026-02-18'
+            });
+            assert(errors.goalStartError === '', `Unexpected start error: ${errors.goalStartError}`);
+            assert(errors.goalDateError === '', `Unexpected target error: ${errors.goalDateError}`);
+        }
+    },
+    {
+        name: 'Past goalDate is allowed when start is on or before target',
+        fn: () => {
+            const errors = validateGoalDateInputs({
+                goalStart: '2026-02-01',
+                goalDate: '2026-02-10',
+                todayISO: '2026-02-18'
+            });
+            assert(errors.goalStartError === '', `Unexpected start error: ${errors.goalStartError}`);
+            assert(errors.goalDateError === '', `Unexpected target error: ${errors.goalDateError}`);
+        }
+    },
+    {
+        name: 'Past goalDate is blocked when goalStart is missing',
+        fn: () => {
+            const errors = validateGoalDateInputs({
+                goalStart: '',
+                goalDate: '2026-02-10',
+                todayISO: '2026-02-18'
+            });
+            assert(errors.goalStartError === '', `Unexpected start error: ${errors.goalStartError}`);
+            assert(errors.goalDateError === 'error.goalDate.outOfRange', `Unexpected target error: ${errors.goalDateError}`);
+        }
+    },
+    {
         name: 'Goal date validator blocks start after target',
         fn: () => {
             const errors = validateGoalDateInputs({

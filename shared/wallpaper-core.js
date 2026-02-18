@@ -108,10 +108,6 @@ export function validateGoalDateInputs({ goalStart, goalDate, todayISO }) {
         goalDateError: ''
     };
 
-    if (!isValidISODateString(todayISO)) {
-        return errors;
-    }
-
     if (goalStart && goalDate && isValidISODateString(goalStart) && isValidISODateString(goalDate) && goalStart > goalDate) {
         errors.goalStartError = 'error.goalStart.afterTarget';
         errors.goalDateError = 'error.goalDate.beforeStart';
@@ -121,7 +117,7 @@ export function validateGoalDateInputs({ goalStart, goalDate, todayISO }) {
     if (goalStart) {
         const isValidStart = isISODateInRange(goalStart, {
             min: GOAL_START_MIN_ISO,
-            max: todayISO
+            max: GOAL_TARGET_MAX_ISO
         });
         if (!isValidStart) {
             errors.goalStartError = 'error.goalStart.outOfRange';
@@ -129,8 +125,15 @@ export function validateGoalDateInputs({ goalStart, goalDate, todayISO }) {
     }
 
     if (goalDate) {
+        let targetMinISO = GOAL_START_MIN_ISO;
+        if (goalStart && isValidISODateString(goalStart)) {
+            targetMinISO = goalStart;
+        } else if (todayISO && isValidISODateString(todayISO)) {
+            targetMinISO = todayISO;
+        }
+
         const isValidTarget = isISODateInRange(goalDate, {
-            min: todayISO,
+            min: targetMinISO,
             max: GOAL_TARGET_MAX_ISO
         });
         if (!isValidTarget) {

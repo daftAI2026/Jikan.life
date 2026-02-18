@@ -162,9 +162,8 @@ export const i18nData = {
     // Goal-related
     'goal.dayLeft': 'day left',
     'goal.daysLeft': 'days left',
-    'warning.goalStartFuture': 'Start Date is in the future. Progress may look unusual.',
-    'error.goalStart.outOfRange': 'Start Date must be between 1900-01-01 and today.',
-    'error.goalDate.outOfRange': 'Target Date must be between today and 2100-12-31.',
+    'error.goalStart.outOfRange': 'Start Date must be between 1900-01-01 and 2100-12-31.',
+    'error.goalDate.outOfRange': 'Target Date must be between 1900-01-01 and 2100-12-31.',
     'error.goalStart.afterTarget': 'Start Date must be on or before Target Date.',
     'error.goalDate.beforeStart': 'Target Date must be on or after Start Date.',
 
@@ -337,9 +336,8 @@ export const i18nData = {
     // 目标相关
     'goal.dayLeft': '天剩余',
     'goal.daysLeft': '天剩余',
-    'warning.goalStartFuture': '开始日期晚于今天，进度展示可能不准确。',
-    'error.goalStart.outOfRange': '开始日期必须在 1900-01-01 到今天之间。',
-    'error.goalDate.outOfRange': '目标日期必须在今天到 2100-12-31 之间。',
+    'error.goalStart.outOfRange': '开始日期必须在 1900-01-01 到 2100-12-31 之间。',
+    'error.goalDate.outOfRange': '目标日期必须在 1900-01-01 到 2100-12-31 之间。',
     'error.goalStart.afterTarget': '开始日期必须早于或等于目标日期。',
     'error.goalDate.beforeStart': '目标日期必须晚于或等于开始日期。',
 
@@ -512,9 +510,8 @@ export const i18nData = {
     // 目標相關
     'goal.dayLeft': '天',
     'goal.daysLeft': '天',
-    'warning.goalStartFuture': '開始日期晚於今天，進度顯示可能不準確。',
-    'error.goalStart.outOfRange': '開始日期必須在 1900-01-01 到今天之間。',
-    'error.goalDate.outOfRange': '目標日期必須在今天到 2100-12-31 之間。',
+    'error.goalStart.outOfRange': '開始日期必須在 1900-01-01 到 2100-12-31 之間。',
+    'error.goalDate.outOfRange': '目標日期必須在 1900-01-01 到 2100-12-31 之間。',
     'error.goalStart.afterTarget': '開始日期必須早於或等於目標日期。',
     'error.goalDate.beforeStart': '目標日期必須晚於或等於開始日期。',
 
@@ -687,9 +684,8 @@ export const i18nData = {
     // ゴール関連
     'goal.dayLeft': '日残り',
     'goal.daysLeft': '日残り',
-    'warning.goalStartFuture': '開始日が未来です。進捗表示が不自然になる可能性があります。',
-    'error.goalStart.outOfRange': '開始日は 1900-01-01 から今日までの範囲で入力してください。',
-    'error.goalDate.outOfRange': '目標日は今日から 2100-12-31 までの範囲で入力してください。',
+    'error.goalStart.outOfRange': '開始日は 1900-01-01 から 2100-12-31 までの範囲で入力してください。',
+    'error.goalDate.outOfRange': '目標日は 1900-01-01 から 2100-12-31 までの範囲で入力してください。',
     'error.goalStart.afterTarget': '開始日は目標日以前である必要があります。',
     'error.goalDate.beforeStart': '目標日は開始日以降である必要があります。',
 

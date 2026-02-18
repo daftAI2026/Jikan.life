@@ -19,8 +19,9 @@ workspace/ - Registry 双栏工作区子模块 (3 files)
 2026-02-11: 新增 preview|settings 双栏工作区，实现与左侧 style cards 的直接联动。
 2026-02-11: 移除固定英文翻译器，改为使用 useI18n 提供的全局 t()。
 2026-02-11: Wallpaper Language 下拉改为与顶部语言菜单一致的“国旗 + 原名”渲染语义与间距。
-2026-02-13: Goal 配置新增 Start Date(goalStart)；桌面三列 1:1:1，移动端单列；手动输入与 picker 同步约束（Start:1900~today, Target:today~2100, start<=target）。
+2026-02-13: Goal 配置新增 Start Date(goalStart)；桌面三列 1:1:1，移动端单列；手动输入与 picker 同步约束（1900~2100, start<=target）。
 2026-02-14: Registry 日期输入从原生 type="date" 切换为 main 同源 react-aria DatePicker 接口接入（DOB/Goal Start/Goal Target）；本阶段仅完成功能替换，UI 精修后置。
 2026-02-18: RegistrySettingsPane 通过 `@/components/ui/kumo` 引用 Button/Input/Select，移除页面层对 `@cloudflare/kumo` 的直接依赖。
+2026-02-18: Goal 日期硬约束统一为 `start<=target`；允许未来 Start Date 与过去 Target Date；前后端统一使用 1900-2100 范围校验。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
