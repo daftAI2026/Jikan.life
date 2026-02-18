@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 react(useMemo/useState), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), KumoMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
- * [OUTPUT]: 对外提供 RegistrySidebar 受控侧边栏组件（支持 selectedStyle/onStyleChange）
+ * [OUTPUT]: 对外提供 HomeSidebar 受控侧边栏组件（支持 selectedStyle/onStyleChange）
  * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -168,7 +168,7 @@ function GoalVisual({ layout }) {
     )
 }
 
-function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", onStyleChange }) {
+function HomeSidebar({ currentPath: _currentPath, selectedStyle = "year", onStyleChange }) {
     const { t, lang } = useI18n()
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -406,4 +406,4 @@ function RegistrySidebar({ currentPath: _currentPath, selectedStyle = "year", on
     )
 }
 
-export { RegistrySidebar }
+export { HomeSidebar }

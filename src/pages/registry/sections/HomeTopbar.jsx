@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(LinkButton), @/components/icons/BrandLogos, @/data/social-links, LanguageSelect
- * [OUTPUT]: 对外提供 RegistryTopbar 顶部栏（左侧语言切换 + 右侧社交入口）
+ * [OUTPUT]: 对外提供 HomeTopbar 顶部栏（左侧语言切换 + 右侧社交入口）
  * [POS]: pages/registry/sections 的顶栏区域，承载语言切换与右上角社交入口（GitHub + 小红书）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -15,7 +15,7 @@ const SOCIAL_ICON_MAP = {
 }
 const TOPBAR_SOCIAL_ORDER = ["xiaohongshu", "github"]
 
-function RegistryTopbar() {
+function HomeTopbar() {
     const orderedSocialLinks = TOPBAR_SOCIAL_ORDER
         .map((id) => SOCIAL_LINKS.find((item) => item.id === id))
         .filter(Boolean)
@@ -54,4 +54,4 @@ function RegistryTopbar() {
     )
 }
 
-export { RegistryTopbar }
+export { HomeTopbar }

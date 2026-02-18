@@ -10,7 +10,6 @@ screenshots/ - 产品/营销截图资产
 dist-worker/ - Worker 构建产物 (生成)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件
-  │   ├── landing/ - Landing Page Section 组件
   │   ├── icons/ - 品牌图标组件
   │   ├── layout/ - 布局组件 (Header, Footer)
   │   └── ui/ - Kumo UI 适配层 (Base UI)
@@ -53,4 +52,4 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **布局一致**: ColorPicker 色域区使用 `aspect-square` 跟随弹层内容宽度，工具栏保持 `吸管:颜色空间=1:2` 并将剩余宽度留给颜色输入框
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
-- **同源挂载**: Registry 首页优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差
+- **同源挂载**: Home 工作台优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差

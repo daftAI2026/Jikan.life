@@ -1,15 +1,15 @@
 /**
- * [INPUT]: 依赖 workspace/useRegistryWallpaperConfig, RegistryPreviewPane, RegistrySettingsPane
+ * [INPUT]: 依赖 workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane
  * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 双栏工作区）
  * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle 并驱动预览与配置联动
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { RegistryPreviewPane } from "../workspace/RegistryPreviewPane"
-import { RegistrySettingsPane } from "../workspace/RegistrySettingsPane"
-import { useRegistryWallpaperConfig } from "../workspace/useRegistryWallpaperConfig"
+import { HomePreviewPane } from "../workspace/HomePreviewPane"
+import { HomeSettingsPane } from "../workspace/HomeSettingsPane"
+import { useHomeWallpaperConfig } from "../workspace/useHomeWallpaperConfig"
 
 function HomeGrid({ selectedStyle }) {
-    const viewModel = useRegistryWallpaperConfig({ selectedStyle })
+    const viewModel = useHomeWallpaperConfig({ selectedStyle })
 
     return (
         <div
@@ -20,7 +20,7 @@ function HomeGrid({ selectedStyle }) {
                 data-registry-pane="preview"
                 className="border-b border-kumo-line lg:min-h-0 lg:border-b-0"
             >
-                <RegistryPreviewPane
+                <HomePreviewPane
                     config={viewModel.config}
                     selectedDevice={viewModel.selectedDevice}
                     t={viewModel.t}
@@ -28,7 +28,7 @@ function HomeGrid({ selectedStyle }) {
             </section>
 
             <section data-registry-pane="settings" className="lg:min-h-0">
-                <RegistrySettingsPane
+                <HomeSettingsPane
                     t={viewModel.t}
                     config={viewModel.config}
                     copied={viewModel.copied}

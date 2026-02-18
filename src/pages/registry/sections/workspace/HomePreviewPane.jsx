@@ -1,13 +1,13 @@
 /**
  * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown)
- * [OUTPUT]: 对外提供 RegistryPreviewPane 组件（手机壳 + 实时 Canvas 预览）
+ * [OUTPUT]: 对外提供 HomePreviewPane 组件（手机壳 + 实时 Canvas 预览）
  * [POS]: registry/sections/workspace 的左侧预览面板，根据 selectedType 与配置实时渲染壁纸
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef } from "react"
 import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/renderer"
 
-function RegistryPreviewPane({ config, selectedDevice, t }) {
+function HomePreviewPane({ config, selectedDevice, t }) {
     const canvasRef = useRef(null)
     const SCREEN_WIDTH = 240
     const SCREEN_HEIGHT = 510
@@ -85,4 +85,4 @@ function RegistryPreviewPane({ config, selectedDevice, t }) {
     )
 }
 
-export { RegistryPreviewPane }
+export { HomePreviewPane }

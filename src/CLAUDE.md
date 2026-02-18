@@ -5,8 +5,8 @@
 App.jsx: 根组件，控制路由与核心布局
 main.jsx: Vite 入口文件，初始化 React 根节点
 index.css: Tailwind CSS v4 样式入口，集成 Kumo token bridge
-components/: 原子组件 (ui/ Kumo 适配层) + 业务布局 (layout/) + Landing Sections (landing/) + 品牌图标 (icons/)
-pages/: 页面模块 (registry/ + LandingPage + DesignSystem)
+components/: 原子组件 (ui/ Kumo 适配层) + 业务布局 (layout/) + 品牌图标 (icons/)
+pages/: 页面模块 (registry/ + DesignSystem)
 lib/: 工具函数 (utils.js 通用工具, motion.js 为动画预设)
 data/: 业务静态数据 (countries, devices, i18n)
 

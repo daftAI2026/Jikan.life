@@ -90,11 +90,12 @@ test("App uses KumoShell layout", () => {
   assert.match(source, /KumoShell/)
 })
 
-test("App routes include registry home and /app entry", () => {
+test("App routes include home entry, /app redirect, and /design entry", () => {
   const source = readSource("src/App.jsx")
 
-  assert.match(source, /RegistryHome/)
+  assert.match(source, /HomePage/)
   assert.match(source, /path=["']\/app["']/)
+  assert.match(source, /Navigate to=["']\/["'] replace/)
   assert.match(source, /path=["']\/design["']/)
 })
 
@@ -267,11 +268,11 @@ test("Core presentation components use Kumo surfaces", () => {
 })
 
 test("Registry layout mirrors Kumo home layout", () => {
-  const source = readSource("src/pages/registry/RegistryHome.jsx")
+  const source = readSource("src/pages/registry/HomePage.jsx")
 
   assert.match(source, /className="isolate"/)
-  assert.match(source, /RegistryTopbar/)
-  assert.match(source, /RegistrySidebar/)
+  assert.match(source, /HomeTopbar/)
+  assert.match(source, /HomeSidebar/)
   assert.match(source, /HomeGrid/)
   assert.match(source, /ThemeToggle/)
   assert.match(source, /LanguageSelect/)
@@ -279,21 +280,21 @@ test("Registry layout mirrors Kumo home layout", () => {
 })
 
 test("Registry topbar mounts language selector near left side", () => {
-  const source = readSource("src/pages/registry/sections/RegistryTopbar.jsx")
+  const source = readSource("src/pages/registry/sections/HomeTopbar.jsx")
 
   assert.match(source, /<LanguageSelect\s*\/>/)
   assert.match(source, /<div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">/)
 })
 
-test("RegistryHome keeps language selector as mobile fallback", () => {
-  const source = readSource("src/pages/registry/RegistryHome.jsx")
+test("HomePage keeps language selector as mobile fallback", () => {
+  const source = readSource("src/pages/registry/HomePage.jsx")
 
   assert.match(source, /<LanguageSelect\s*\/>/)
   assert.match(source, /fixed right-2 bottom-2 z-50 md:hidden/)
 })
 
 test("Registry topbar shows GitHub and Xiaohongshu links", () => {
-  const source = readSource("src/pages/registry/sections/RegistryTopbar.jsx")
+  const source = readSource("src/pages/registry/sections/HomeTopbar.jsx")
 
   assert.match(source, /SOCIAL_LINKS/)
   assert.match(source, /TOPBAR_SOCIAL_ORDER\s*=\s*\["xiaohongshu",\s*"github"\]/)
@@ -391,8 +392,8 @@ test("Registry page layer imports UI components via local ui entry only", () => 
   )
 })
 
-test("RegistrySidebar is non-scrollable and hides Life style card", () => {
-  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
+test("HomeSidebar is non-scrollable and hides Life style card", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
   assert.doesNotMatch(source, /overflow-y-auto/)
   assert.match(source, /h-full/)
@@ -428,8 +429,8 @@ test("RegistrySidebar is non-scrollable and hides Life style card", () => {
   assert.doesNotMatch(source, /scale-\[0\.8\]/)
 })
 
-test("RegistrySidebar year visual uses three-state dot design tokens", () => {
-  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
+test("HomeSidebar year visual uses three-state dot design tokens", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
   assert.match(source, /const YEAR_DOT_STATE_TOKENS = \{/)
   assert.match(source, /today:\s*"bg-kumo-contrast"/)
@@ -443,8 +444,8 @@ test("RegistrySidebar year visual uses three-state dot design tokens", () => {
   assert.match(source, /data-dot-state={dotState}/)
 })
 
-test("RegistrySidebar goal visual text positions follow preview layout parameters", () => {
-  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
+test("HomeSidebar goal visual text positions follow preview layout parameters", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
   assert.match(source, /const \{ ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY \} = layout/)
   assert.match(source, /y={ring\.centerY - 1}/)
@@ -452,8 +453,8 @@ test("RegistrySidebar goal visual text positions follow preview layout parameter
   assert.doesNotMatch(source, /ring\.centerY \+ ring\.radius \* 0\.62/)
 })
 
-test("RegistryHome keeps selectedStyle as single source of truth", () => {
-  const source = readSource("src/pages/registry/RegistryHome.jsx")
+test("HomePage keeps selectedStyle as single source of truth", () => {
+  const source = readSource("src/pages/registry/HomePage.jsx")
 
   assert.match(source, /useState\(["']year["']\)/)
   assert.match(source, /selectedStyle={selectedStyle}/)
@@ -462,7 +463,7 @@ test("RegistryHome keeps selectedStyle as single source of truth", () => {
 })
 
 test("Registry sidebar is local controlled implementation", () => {
-  const source = readSource("src/pages/registry/sections/RegistrySidebar.jsx")
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
   assert.match(source, /data-sidebar-open={sidebarOpen}/)
   assert.match(source, /t\("types\.header"\)/)
@@ -483,7 +484,7 @@ test("Registry sidebar is local controlled implementation", () => {
 })
 
 test("Registry workspace no longer hardcodes UI language to English", () => {
-  const source = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
 
   assert.match(source, /useI18n/)
   assert.match(source, /LANGUAGE_META/)
@@ -495,7 +496,7 @@ test("Registry workspace no longer hardcodes UI language to English", () => {
 })
 
 test("Registry settings wallpaper language uses flag + name rendering", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /inline-flex items-center gap-1\.5/)
   assert.match(source, /option\.flag/)
@@ -503,9 +504,9 @@ test("Registry settings wallpaper language uses flag + name rendering", () => {
 })
 
 test("Registry settings does not render selected type badge", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
   const homeGridSource = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
-  const hookSource = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+  const hookSource = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
 
   assert.doesNotMatch(source, /customize\.selected/)
   assert.doesNotMatch(homeGridSource, /typeName={viewModel\.typeName}/)
@@ -514,7 +515,7 @@ test("Registry settings does not render selected type badge", () => {
 })
 
 test("Registry settings colors use shared ColorPicker component", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /import\s+\{\s*ColorPicker\s*\}\s+from\s+"@\/components\/ui\/color-picker"/)
   assert.match(source, /<ColorPicker/)
@@ -542,7 +543,7 @@ test("Button adapter normalizes legacy props and preserves react-aria trigger co
 })
 
 test("Registry settings URL block uses responsive row and flexible input", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /className="space-y-4"/)
   assert.match(source, /flex flex-col gap-2 sm:flex-row sm:items-center/)
@@ -550,7 +551,7 @@ test("Registry settings URL block uses responsive row and flexible input", () =>
 })
 
 test("Registry goal config uses three columns with start date in the middle", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /config\.selectedType === "goal"/)
   assert.match(source, /grid grid-cols-1 gap-4 md:grid-cols-3/)
@@ -575,7 +576,7 @@ test("Registry goal config uses three columns with start date in the middle", ()
 })
 
 test("Registry life config uses label hints for date of birth and lifespan", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /config\.selectedType === "life"/)
   assert.match(source, /t\("config\.dateOfBirthHint"\)/)
@@ -674,7 +675,7 @@ test("Wallpaper preview and worker share one language font strategy", async () =
 })
 
 test("GoalStart is wired through registry config state and URL generation", () => {
-  const source = readSource("src/pages/registry/sections/workspace/useRegistryWallpaperConfig.js")
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
 
   assert.match(source, /goalStart:\s*""/)
   assert.match(source, /goalStartError:\s*""/)
@@ -684,19 +685,16 @@ test("GoalStart is wired through registry config state and URL generation", () =
   assert.match(source, /setGoalStart\(value\)/)
 })
 
-test("Landing goal config uses dynamic target min based on goalStart or today", () => {
-  const source = readSource("src/components/landing/CustomizeSection.jsx")
+test("Home settings goal config uses dynamic target min based on goalStart or today", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
-  assert.match(source, /goalStart:\s*''/)
-  assert.match(source, /goalStartError:\s*''/)
-  assert.match(source, /goalDateError:\s*''/)
-  assert.match(source, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\('goalStart', config\.goalStart\)/)
-  assert.match(source, /grid-cols-1 md:grid-cols-3/)
-  assert.match(source, /t\('config\.startDate'\)/)
-  assert.match(source, /updateGoalDateField\('goalStart'/)
-  assert.match(source, /minValue=\{parseDate\(GOAL_START_MIN_ISO\)\}/)
-  assert.match(source, /minValue=\{parseDate\(config\.goalStart \|\| todayISO\)\}/)
-  assert.match(source, /maxValue=\{parseDate\(GOAL_TARGET_MAX_ISO\)\}/)
+  assert.match(source, /grid grid-cols-1 gap-4 md:grid-cols-3/)
+  assert.match(source, /t\("config\.startDate"\)/)
+  assert.match(source, /value:\s*config\.goalStart/)
+  assert.match(source, /onChange:\s*actions\.setGoalStart/)
+  assert.match(source, /minValue:\s*GOAL_START_MIN_ISO/)
+  assert.match(source, /minValue:\s*config\.goalStart \|\| todayISO/)
+  assert.match(source, /maxValue:\s*GOAL_TARGET_MAX_ISO/)
   assert.match(source, /t\(config\.goalStartError\)/)
   assert.match(source, /t\(config\.goalDateError\)/)
 })

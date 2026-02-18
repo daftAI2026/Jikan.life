@@ -4,12 +4,11 @@
  * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom"
 import { AnimatePresence, MotionConfig, motion } from "framer-motion"
 import { KumoShell } from "@/components/layout/KumoShell"
-import LandingPage from "@/pages/LandingPage"
 import DesignSystem from "@/pages/DesignSystem"
-import RegistryHome from "@/pages/registry/RegistryHome"
+import HomePage from "@/pages/registry/HomePage"
 import { Toaster } from "@/components/ui/sonner"
 import { pageTransition } from "@/lib/motion"
 
@@ -30,9 +29,9 @@ function AnimatedRoutes() {
                 className="flex-1"
             >
                 <Routes location={location}>
-                    <Route path="/" element={<RegistryHome />} />
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/app" element={<Navigate to="/" replace />} />
                     <Route element={<AppShell />}>
-                        <Route path="/app" element={<LandingPage />} />
                         <Route path="/design" element={<DesignSystem />} />
                     </Route>
                 </Routes>

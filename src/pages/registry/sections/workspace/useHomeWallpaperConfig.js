@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 react hooks, @/lib/I18nContext, @/data/countries, @/data/devices, shared/palettes, shared/wallpaper-core
- * [OUTPUT]: 对外提供 useRegistryWallpaperConfig hook（统一管理 preview|settings 的配置状态与动作）
+ * [OUTPUT]: 对外提供 useHomeWallpaperConfig hook（统一管理 preview|settings 的配置状态与动作）
  * [POS]: registry/sections/workspace 的状态核心，作为 selectedStyle -> wallpaper config 的单一真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -79,7 +79,7 @@ function getLocalTodayISO() {
     return `${year}-${month}-${day}`
 }
 
-function useRegistryWallpaperConfig({ selectedStyle }) {
+function useHomeWallpaperConfig({ selectedStyle }) {
     const { t } = useI18n()
     const selectedType = resolveSelectedType(selectedStyle)
     const [config, setConfig] = useState(() => getInitialConfig(selectedType))
@@ -341,4 +341,4 @@ function useRegistryWallpaperConfig({ selectedStyle }) {
     }
 }
 
-export { useRegistryWallpaperConfig }
+export { useHomeWallpaperConfig }
