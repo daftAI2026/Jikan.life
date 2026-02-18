@@ -7,18 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.5] - 2026-02-19
 
-### Changed
-- **Home Preview Refinement**: Optimized `HomePreviewPane` by removing redundant `SCREEN_WIDTH`/`HEIGHT` constants and simplifying the `drawPreview` dependency array. Enhanced the preview hint typography for better visibility.
-- **Topbar Layout**: Refined `HomeTopbar` layout for improved visual balance during the settings-visual transition.
-- **Settings UX**: Introduced numerical index marks (1-6) to `HomeSettingsPane` cards via `SettingsCardShell` to emphasize the progressive configuration sequence and improve flow legibility.
-
-### Documentation
-- **GEB Protocol Sync**: Updated `SettingsCardShell` L3 headers and module-level `CLAUDE.md` files to reflect the newly integrated `indexMark` feature and its role in the registry workspace.
-
 ### Added
 - **Validation Script**: Introduced `scripts/check-wallpaper-core.js` for automated verification of wallpaper core logic and font handling.
 
 ### Changed
+- **Home Preview Refinement**: Optimized `HomePreviewPane` by removing redundant `SCREEN_WIDTH`/`HEIGHT` constants and simplifying the `drawPreview` dependency array. Enhanced the preview hint typography for better visibility.
+- **Topbar Layout**: Refined `HomeTopbar` layout for improved visual balance during the settings-visual transition.
+- **Settings UX**: Introduced numerical index marks (1-6) to `HomeSettingsPane` cards via `SettingsCardShell` to emphasize the progressive configuration sequence and improve flow legibility.
 - **Calendar UI Overhaul**: Fully decoupled `calendar.jsx` from CVA `buttonVariants`. Refined navigation arrows (now size-9 and perfectly centered) and implemented a high-contrast selected state (black background with white text) using Kumo design tokens for improved visual consistency.
 - **Goal Visual Refinement**: Further refined the goal countdown ring in the sidebar card by reducing the stroke width from `3.5` (via `0.035`) to `2.5` (via `0.025`) for a more elegant and lightweight appearance.
 - **DatePicker Popup Background**: Aligned DatePicker popup background from `bg-popover` (#FAFAFA) to `bg-kumo-control` (#FFFFFF) to match Kumo Select popup consistency.
@@ -36,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Runtime Safety**: Fixed missing `Label` import in `CustomizeSection` and restored accidentally deleted `labelVariants` in `field.jsx`.
 
 ### Documentation
-- **GEB Protocol Sync**: Performed a project-wide synchronization of L1/L2/L3 documentation. Updated file headers and module maps in `CLAUDE.md` to reflect recent architectural shifts and dependency cleanups.
+- **GEB Protocol Sync**: Performed a project-wide synchronization of L1/L2/L3 documentation. Updated file headers and module maps in `CLAUDE.md` to reflect recent architectural shifts and dependency cleanups, including the newly integrated `indexMark` feature.
 - **UX Roadmap**: Updated `CONSOLIDATED_KNOWLEDGE.md` with "Phase 4: Registry UX Evolution", outlining the upcoming 6-grid progressive configuration flow and full-overlay settings panel requirements.
 
 ## [1.1.4] - 2026-02-15
