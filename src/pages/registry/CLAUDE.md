@@ -14,7 +14,7 @@ sections/CLAUDE.md: sections 子模块文档
 sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层
 sections/workspace/useHomeWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
 sections/workspace/HomePreviewPane.jsx: 左侧手机预览画布
-sections/workspace/HomeSettingsPane.jsx: 右侧属性设置表单
+sections/workspace/HomeSettingsPane.jsx: 右侧六卡设置骨架（Kumo HomeGrid 风格）与 legacySettings 迁移兜底
 sections/workspace/CLAUDE.md: 双栏工作区子模块文档
 sections/components/ComponentGrid.jsx: 旧版组件墙网格（备用）
 sections/components/ComponentCell.jsx: 旧版网格单元壳（备用）

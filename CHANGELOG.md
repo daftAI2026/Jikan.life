@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Topbar Layout**: Refined `HomeTopbar` layout for improved visual balance during the settings-visual transition.
 - **Settings UX**: Introduced numerical index marks (1-6) to `HomeSettingsPane` cards via `SettingsCardShell` to emphasize the progressive configuration sequence and improve flow legibility.
 
+### Documentation
+- **GEB Protocol Sync**: Updated `SettingsCardShell` L3 headers and module-level `CLAUDE.md` files to reflect the newly integrated `indexMark` feature and its role in the registry workspace.
+
 ### Added
 - **Validation Script**: Introduced `scripts/check-wallpaper-core.js` for automated verification of wallpaper core logic and font handling.
 

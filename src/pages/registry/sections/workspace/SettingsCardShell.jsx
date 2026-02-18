@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖父层传入 cardId/title/children 与 Kumo token 样式
- * [OUTPUT]: 对外提供 SettingsCardShell 组件（左上标题 + 居中内容 + 稳定测试选择器）
+ * [INPUT]: 依赖父层传入 cardId/title/indexMark/children 与 Kumo token 样式
+ * [OUTPUT]: 对外提供 SettingsCardShell 组件（左上标题 + 右上序号 + 居中内容 + 稳定测试选择器）
  * [POS]: registry/sections/workspace 的右侧六卡视觉壳层，复刻 Kumo HomeGrid 单卡骨架
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
