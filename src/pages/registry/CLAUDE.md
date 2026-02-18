@@ -30,9 +30,10 @@ registry/ - Kumo UI 单页模块 (sections + registry-data.js)
 
 架构决策
 ThemeToggle/SearchDialog/KumoMenuIcon 全部改为本地实现；Sidebar 与 HomeGrid 维持本地受控实现，彻底切断对 vendor docs 源码的构建期耦合。
+页面层统一通过 `@/components/ui/*` 引用 Kumo 组件；禁止 `src/pages/registry/**` 直接 import `@cloudflare/kumo`。
 
 开发规范
-只使用 @cloudflare/kumo 组件与 Kumo token，禁止引入其他设计系统组件。
+只使用 `@/components/ui/*` 统一入口组件与 Kumo token，禁止引入其他设计系统组件。
 
 变更日志
 2026-02-10: 新增 Kumo 首页复刻组件与布局模块。
@@ -40,5 +41,6 @@ ThemeToggle/SearchDialog/KumoMenuIcon 全部改为本地实现；Sidebar 与 Hom
 2026-02-11: 首页改造为 preview|settings 双栏，新增 workspace 子模块并实现 style cards 联动。
 2026-02-11: 新增 LanguageSelect 入口并将 Registry UI 文案切换为 useI18n 驱动；语言控件迁移到顶栏左侧，触发器改为“线框地球图标+语言名”，菜单保持“国旗+语言名”并保留默认选中勾。
 2026-02-12: 移除 Registry 对 vendor/kumo-docs-astro 组件源码的直接引用，修复 CI 构建被 Astro tsconfig 依赖阻塞的问题。
+2026-02-18: 页面层组件引用统一收敛到 `@/components/ui/*`，移除 `src/pages/registry/**` 的 `@cloudflare/kumo` 直引。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

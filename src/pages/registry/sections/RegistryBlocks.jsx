@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo (Badge, Button, Surface, Text), registry-data
+ * [INPUT]: 依赖 @/components/ui/kumo (Badge, Button, Surface, Text), registry-data
  * [OUTPUT]: 对外提供 RegistryBlocks 区块示例
  * [POS]: pages/registry/sections 的区块示例集合
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Badge, Button, Surface, Text } from "@cloudflare/kumo"
+import { Badge, Button, Surface, Text } from "@/components/ui/kumo"
 import { RESOURCE_ITEMS } from "../registry-data"
 import { RegistrySection } from "./RegistrySection"
 

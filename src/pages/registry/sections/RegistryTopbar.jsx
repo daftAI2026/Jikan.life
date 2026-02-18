@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo(LinkButton), @/components/icons/BrandLogos, @/data/social-links, LanguageSelect
+ * [INPUT]: 依赖 @/components/ui/kumo(LinkButton), @/components/icons/BrandLogos, @/data/social-links, LanguageSelect
  * [OUTPUT]: 对外提供 RegistryTopbar 顶部栏（左侧语言切换 + 右侧社交入口）
  * [POS]: pages/registry/sections 的顶栏区域，承载语言切换与右上角社交入口（GitHub + 小红书）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { LinkButton } from "@cloudflare/kumo"
+import { LinkButton } from "@/components/ui/kumo"
 import { GitHubInvertocatLogo, XiaohongshuLogo } from "@/components/icons/BrandLogos"
 import { SOCIAL_LINKS } from "@/data/social-links"
 import { LanguageSelect } from "./LanguageSelect"

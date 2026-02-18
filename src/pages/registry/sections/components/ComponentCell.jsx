@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo (Text), @/lib/utils
+ * [INPUT]: 依赖 @/components/ui/kumo (Text), @/lib/utils
  * [OUTPUT]: 对外提供 ComponentCell 组件
  * [POS]: registry/sections/components 的网格单元
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Text } from "@cloudflare/kumo"
+import { Text } from "@/components/ui/kumo"
 import { cn } from "@/lib/utils"
 
 function ComponentCell({ title, children, className }) {

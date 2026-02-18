@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react, @cloudflare/kumo 组件, @phosphor-icons/react, ComponentCell/ComponentData
+ * [INPUT]: 依赖 react, @/components/ui/kumo 组件, @phosphor-icons/react, ComponentCell/ComponentData
  * [OUTPUT]: 对外提供 ComponentGrid 组件
  * [POS]: registry/sections/components 的主网格，复刻 Kumo 组件墙
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -18,7 +18,7 @@ import {
     Switch,
     Tooltip,
     TooltipProvider,
-} from "@cloudflare/kumo"
+} from "@/components/ui/kumo"
 import { ArrowRight, Plus, TextB, X } from "@phosphor-icons/react"
 import { ComponentCell } from "./ComponentCell"
 import { COMPONENT_GRID_ITEMS } from "./ComponentData"

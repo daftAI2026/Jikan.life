@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo (Button, Input, Text), @phosphor-icons/react
+ * [INPUT]: 依赖 @/components/ui/kumo (Button, Input, Text), @phosphor-icons/react
  * [OUTPUT]: 对外提供 RegistryHeader 顶部导航
  * [POS]: pages/registry/sections 的顶栏区域
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Button, Input, Text } from "@cloudflare/kumo"
+import { Button, Input, Text } from "@/components/ui/kumo"
 import { Plus } from "@phosphor-icons/react"
 import { TOP_NAV } from "../registry-data"
 

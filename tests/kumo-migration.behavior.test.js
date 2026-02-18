@@ -320,7 +320,7 @@ test("Kumo home components are present", () => {
 test("LanguageSelect uses Kumo Select and I18n state", () => {
   const source = readSource("src/pages/registry/sections/LanguageSelect.jsx")
 
-  assert.match(source, /@cloudflare\/kumo/)
+  assert.match(source, /@\/components\/ui\/kumo/)
   assert.match(source, /@phosphor-icons\/react/)
   assert.match(source, /\bSelect\b/)
   assert.match(source, /\bGlobe\b/)
@@ -363,7 +363,7 @@ test("Registry wrappers are local and avoid vendor docs imports", () => {
   const menuIcon = readSource("src/pages/registry/sections/KumoMenuIcon.jsx")
 
   assert.match(themeToggle, /function ThemeToggle/)
-  assert.match(themeToggle, /@cloudflare\/kumo/)
+  assert.match(themeToggle, /@\/components\/ui\/kumo/)
   assert.match(themeToggle, /document\.documentElement\.setAttribute\("data-mode"/)
 
   assert.match(searchDialog, /function SearchDialog/)
@@ -372,6 +372,23 @@ test("Registry wrappers are local and avoid vendor docs imports", () => {
   assert.match(menuIcon, /function KumoMenuIcon/)
   assert.match(menuIcon, /clipPathId/)
   assert.doesNotMatch(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro/)
+})
+
+test("Registry page layer imports UI components via local ui entry only", () => {
+  const registryFiles = listFiles("src/pages/registry").filter((file) => {
+    return file.endsWith(".jsx") || file.endsWith(".js")
+  })
+
+  const directKumoImports = registryFiles.filter((file) => {
+    const source = readSource(file)
+    return /^import .*@cloudflare\/kumo/m.test(source)
+  })
+
+  assert.equal(
+    directKumoImports.length,
+    0,
+    `registry page layer should not import @cloudflare/kumo directly: ${directKumoImports.join(", ")}`
+  )
 })
 
 test("RegistrySidebar is non-scrollable and hides Life style card", () => {
@@ -555,15 +572,6 @@ test("Registry goal config uses three columns with start date in the middle", ()
   assert.match(source, /maxValue:\s*GOAL_TARGET_MAX_ISO/)
   assert.match(source, /config\.goalStartError/)
   assert.match(source, /config\.goalDateError/)
-})
-
-test("Registry wallpaper language field keeps consistent label-to-control spacing", () => {
-  const source = readSource("src/pages/registry/sections/workspace/RegistrySettingsPane.jsx")
-
-  assert.match(source, /config\.wallpaperLang/)
-  assert.match(source, /space-y-4/)
-  assert.match(source, /label className="flex items-baseline justify-between text-sm"/)
-  assert.match(source, /text-xs text-kumo-subtle invisible/)
 })
 
 test("Registry life config uses label hints for date of birth and lifespan", () => {

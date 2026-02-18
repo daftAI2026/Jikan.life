@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useState), @cloudflare/kumo(Button), @phosphor-icons/react(SunIcon/MoonIcon)
+ * [INPUT]: 依赖 react(useEffect/useState), @/components/ui/kumo(Button), @phosphor-icons/react(SunIcon/MoonIcon)
  * [OUTPUT]: 对外提供 ThemeToggle 主题切换按钮（light/dark）
  * [POS]: registry/sections 的本地主题开关实现，避免跨包引用 vendor docs 源码导致构建耦合
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
-import { Button } from "@cloudflare/kumo"
+import { Button } from "@/components/ui/kumo"
 import { MoonIcon, SunIcon } from "@phosphor-icons/react"
 
 const MODES = new Set(["light", "dark"])

@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 react(useId/useState), @cloudflare/kumo(cn)
+ * [INPUT]: 依赖 react(useId/useState), @/lib/utils(cn)
  * [OUTPUT]: 对外提供 KumoMenuIcon 动画菜单图标组件
  * [POS]: registry/sections 的本地图标实现，保持原有悬停动效并避免编译期依赖 vendor docs 源码
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useId, useState } from "react"
-import { cn } from "@cloudflare/kumo"
+import { cn } from "@/lib/utils"
 
 export function KumoMenuIcon({ className }) {
   const [isHovered, setIsHovered] = useState(false)

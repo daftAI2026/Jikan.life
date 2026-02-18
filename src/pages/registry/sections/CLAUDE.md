@@ -13,4 +13,7 @@ RegistryOverview.jsx: 旧版概览区（保留备用）
 RegistryBlocks.jsx: 旧版 Blocks 区（保留备用）
 RegistrySection.jsx: 旧版区块包装器
 
+架构决策
+sections 页面层统一通过 `@/components/ui/*` 引用 Kumo 组件；`cn` 工具统一来自 `@/lib/utils`。
+
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

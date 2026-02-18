@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo (Button, Text), @phosphor-icons/react
+ * [INPUT]: 依赖 @/components/ui/kumo (Button, Text), @phosphor-icons/react
  * [OUTPUT]: 对外提供 RegistryOverview 首屏区域
  * [POS]: pages/registry/sections 的概览区域
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Button, Text } from "@cloudflare/kumo"
+import { Button, Text } from "@/components/ui/kumo"
 import { Globe } from "@phosphor-icons/react"
 
 function RegistryOverview() {

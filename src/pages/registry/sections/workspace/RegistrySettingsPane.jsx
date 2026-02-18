@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo(Button/Input/Select), @/components/ui/(color-picker/date-picker/datefield/calendar/field/button), @internationalized/date, workspace 配置 hook 返回的 view model
+ * [INPUT]: 依赖 @/components/ui/kumo(Button/Input/Select), @/components/ui/(color-picker/date-picker/datefield/calendar/field/button), @internationalized/date, workspace 配置 hook 返回的 view model
  * [OUTPUT]: 对外提供 RegistrySettingsPane 组件（Make it yours 属性配置面板）
  * [POS]: registry/sections/workspace 的右侧设置面板，承载 location/language/colors/device/url 与 life|goal 条件字段
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Button as KumoButton, Input, Select } from "@cloudflare/kumo"
+import { Button as KumoButton, Input, Select } from "@/components/ui/kumo"
 import { Select as SelectBase } from "@base-ui/react/select"
 import { Label } from "@/components/ui/field"
 import { devices } from "@/data/devices"

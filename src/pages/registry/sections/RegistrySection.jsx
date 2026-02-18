@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo (Surface, Text)
+ * [INPUT]: 依赖 @/components/ui/kumo (Surface, Text)
  * [OUTPUT]: 对外提供 RegistrySection 容器组件
  * [POS]: pages/registry/sections 的通用区块包装器
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Surface, Text } from "@cloudflare/kumo"
+import { Surface, Text } from "@/components/ui/kumo"
 
 function RegistrySection({ id, title, description, children }) {
     return (
