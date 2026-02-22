@@ -2,10 +2,10 @@
 > L2 | 父级: /src/pages/CLAUDE.md
 
 成员清单
-HomePage.jsx: Home 根页面，维护 selectedStyle 单一状态并编排双栏工作区
+HomePage.jsx: Home 根页面，维护 selectedStyle + sidebarOpen 状态，并在侧栏收起时控制顶栏语言按钮隐藏
 registry-data.js: Registry 旧版导航与示例数据（备用）
-sections/HomeTopbar.jsx: 顶栏区域，左侧挂载 UI 语言切换，右侧展示 GitHub 与小红书社交入口
-sections/HomeSidebar.jsx: 本地受控侧栏，保留 Kumo 动效并向工作区分发 style 选择
+sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage 临时隐藏左侧语言切换，右侧展示 GitHub 与小红书社交入口
+sections/HomeSidebar.jsx: 本地侧栏，支持 sidebarOpen/onSidebarOpenChange 受控开合，保留 Kumo 动效并向工作区分发 style 选择
 sections/ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage
 sections/LanguageSelect.jsx: Home UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端保留右下角入口）
 sections/SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）

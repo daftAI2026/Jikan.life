@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] - 2026-02-22
+
+### Changed
+- **SVG Animation Refinement**: Optimized `KumoMenuIcon` animation logic by introducing utility-based motion classes and styles for better state-based scaling and translation.
+- **Registry UX Polish**: Refined layout of `HomeTopbar` and `HomeSidebar` for improved visual balance.
+- **Visual Assets**: Updated `favicon.svg` with improved path definitions.
+
+### Documentation
+- **Fractal Documentation Sync**: Updated `CLAUDE.md` maps in registry modules to reflect latest component structures.
+
 ## [1.1.5] - 2026-02-19
 
 ### Added

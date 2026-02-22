@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 react(useMemo/useState), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), KumoMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
- * [OUTPUT]: 对外提供 HomeSidebar 受控侧边栏组件（支持 selectedStyle/onStyleChange）
+ * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange）
  * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -168,10 +168,26 @@ function GoalVisual({ layout }) {
     )
 }
 
-function HomeSidebar({ currentPath: _currentPath, selectedStyle = "year", onStyleChange }) {
+function HomeSidebar({
+    currentPath: _currentPath,
+    selectedStyle = "year",
+    onStyleChange,
+    sidebarOpen,
+    onSidebarOpenChange,
+}) {
     const { t, lang } = useI18n()
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [internalSidebarOpen, setInternalSidebarOpen] = useState(true)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const isSidebarOpen = typeof sidebarOpen === "boolean" ? sidebarOpen : internalSidebarOpen
+
+    const handleSidebarToggle = () => {
+        const nextOpen = !isSidebarOpen
+        if (typeof onSidebarOpenChange === "function") {
+            onSidebarOpenChange(nextOpen)
+            return
+        }
+        setInternalSidebarOpen(nextOpen)
+    }
     const goalPreviewLayout = useMemo(() => {
         const today = getLocalDateParts()
         const goalDate = addDays(today, 69)
@@ -378,8 +394,8 @@ function HomeSidebar({ currentPath: _currentPath, selectedStyle = "year", onStyl
                             variant="ghost"
                             shape="square"
                             aria-label={t("registry.sidebar.toggle")}
-                            aria-pressed={sidebarOpen}
-                            onClick={() => setSidebarOpen((v) => !v)}
+                            aria-pressed={isSidebarOpen}
+                            onClick={handleSidebarToggle}
                         >
                             <KumoMenuIcon />
                         </Button>
@@ -392,11 +408,11 @@ function HomeSidebar({ currentPath: _currentPath, selectedStyle = "year", onStyl
             </div>
 
             <aside
-                data-sidebar-open={sidebarOpen}
+                data-sidebar-open={isSidebarOpen}
                 className={cn(
                     "fixed inset-y-0 left-12 z-40 hidden w-[290px] flex-col bg-kumo-elevated text-kumo-default md:flex",
                     "transition-transform duration-300 ease-out will-change-transform",
-                    sidebarOpen ? "translate-x-0 border-r border-kumo-line" : "-translate-x-full"
+                    isSidebarOpen ? "translate-x-0 border-r border-kumo-line" : "-translate-x-full"
                 )}
             >
                 <div className="h-[49px] flex-none border-b border-kumo-line" />

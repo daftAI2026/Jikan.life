@@ -7,6 +7,19 @@
 import { useId, useState } from "react"
 import { cn } from "@/lib/utils"
 
+const MOTION_EASING = "cubic-bezier(0.4, 0, 0.2, 1)"
+
+function getMotionClass(isHovered, idleClass, hoverClass, originClass = "origin-center-top") {
+  return cn(originClass, "transition-all duration-800", isHovered ? hoverClass : idleClass)
+}
+
+function getMotionStyle(delaySeconds) {
+  return {
+    transitionTimingFunction: MOTION_EASING,
+    transitionDelay: `${delaySeconds}s`,
+  }
+}
+
 export function KumoMenuIcon({ className }) {
   const [isHovered, setIsHovered] = useState(false)
   const clipPathId = `registry-kumo-menu-icon-${useId().replace(/:/g, "")}`
@@ -28,257 +41,173 @@ export function KumoMenuIcon({ className }) {
       >
         <defs>
           <clipPath id={clipPathId}>
-            <rect x="0" y="25" width="108" height="82" />
+            <rect x="0" y="0" width="108" height="107" />
           </clipPath>
         </defs>
 
-        {/* Vertical connector - NOT clipped */}
+        {/* ---- 主竖线：悬停后收起，保留 Kumo 原始“抽离”语义 ---- */}
         <path
-          className={cn(
-            "origin-center-top transition-all duration-800",
-            isHovered
-              ? "translate-y-[22px] scale-y-0 opacity-0"
-              : "translate-y-0 scale-y-100 opacity-100",
+          className={getMotionClass(
+            isHovered,
+            "translate-y-0 scale-y-100 opacity-100",
+            "translate-y-[20px] scale-y-0 opacity-0",
           )}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-            transitionDelay: "0.03s",
-          }}
-          d="M48.8398 2.75977H57.5998V52.9198H48.8398V2.75977Z"
+          style={getMotionStyle(0.03)}
+          d="M68.2631 0H76.8464V41.4044H68.2631V0Z"
           fill="currentColor"
         />
 
-        {/* Character parts that will animate away (clipped below y=25) */}
+        {/* ---- 主内容层：右侧字符+左侧竖线，悬停时分层退场 ---- */}
         <g clipPath={`url(#${clipPathId})`}>
-          <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[33px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+          <rect
+            x="0"
+            y="7.67627"
+            width="8.13013"
+            height="85.4326"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[22px] scale-y-0 opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.05s",
-            }}
-            d="M13.7998 57.96H93.2398V65.04H13.7998V57.96Z"
+            style={getMotionStyle(0.02)}
+            fill="currentColor"
+          />
+          <rect
+            x="25.0414"
+            y="7.67627"
+            width="8.13013"
+            height="76.5269"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[18px] scale-y-0 opacity-0",
+            )}
+            style={getMotionStyle(0.04)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[49px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M33.1715 7.67627H0V15.585H33.1715V7.67627Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[12px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.1s",
-            }}
-            d="M0 73.5601H107.28V80.7601H0V73.5601Z"
+            style={getMotionStyle(0.05)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[51px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M33.1715 41.5205H0V49.4292H33.1715V41.5205Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[10px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.15s",
-            }}
-            d="M33.0002 75.2402L43.5602 77.1602C41.0802 81.0802 38.3202 85.1202 35.2802 89.2802C32.3202 93.3602 29.5202 96.8802 26.8802 99.8402L19.2002 97.5602C20.8802 95.5602 22.5602 93.2402 24.2402 90.6002C26.0002 87.9602 27.6402 85.3202 29.1602 82.6802C30.6802 79.9602 31.9602 77.4802 33.0002 75.2402Z"
+            style={getMotionStyle(0.07)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[70px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M33.1715 76.2983H0V84.207H33.1715V76.2983Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "-translate-y-[12px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.2s",
-            }}
-            d="M6.6001 94.92C13.3201 94.76 21.2001 94.6 30.2401 94.44C39.3601 94.28 49.0401 94.08 59.2801 93.84C69.6001 93.52 79.8801 93.24 90.1201 93L89.7601 100.2C79.8401 100.52 69.8401 100.88 59.7601 101.28C49.6801 101.68 40.1601 102 31.2001 102.24C22.2401 102.48 14.3201 102.72 7.4401 102.96L6.6001 94.92Z"
+            style={getMotionStyle(0.09)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "translate-y-[25px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M37.1094 36.5195H108V44.4282H37.1094V36.5195Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[11px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0s",
-            }}
-            d="M9.35986 0H97.7999V7.2H9.35986V0Z"
+            style={getMotionStyle(0.06)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[5px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M43.499 13.9565H101.61V17.8527V21.7489H43.499V13.9565Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "translate-y-[18px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.05s",
-            }}
-            d="M17.1602 30.2402H42.6002V36.4802H17.1602V30.2402Z"
+            style={getMotionStyle(0.08)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[19px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M37.1094 57.4546H108V65.3633H37.1094V57.4546Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "-translate-y-[16px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.1s",
-            }}
-            d="M14.6401 44.04H42.4801V50.28H14.6401V44.04Z"
+            style={getMotionStyle(0.1)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[19px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M53.2422 69.4336L46.2827 73.5043C48.2159 75.5977 50.1491 77.885 52.0823 80.3662C54.0154 82.7698 55.7553 85.1735 57.3019 87.5771C58.9257 89.9032 60.163 92.0354 61.0136 93.9738L68.437 89.438C67.5864 87.4995 66.3105 85.3673 64.6093 83.0412C62.9854 80.7151 61.1682 78.3503 59.1577 75.9466C57.1472 73.543 55.1754 71.372 53.2422 69.4336Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "-translate-y-[44px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.1s",
-            }}
-            d="M63.96 44.04H93V50.28H63.96V44.04Z"
+            style={getMotionStyle(0.15)}
             fill="currentColor"
           />
           <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[5px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
+            d="M83.1679 43.1489H91.7512V96.7652C91.7512 99.2464 91.4032 101.146 90.7073 102.464C90.0113 103.86 88.7741 104.868 86.9956 105.488C85.1397 106.186 82.7039 106.612 79.6881 106.767C76.6724 106.922 72.806 107 68.089 107C67.9344 105.837 67.5478 104.441 66.9291 102.813C66.3878 101.262 65.8079 99.9055 65.1893 98.7424C68.7463 98.8199 71.9941 98.8587 74.9325 98.8587C77.8709 98.9363 79.8041 98.9363 80.7321 98.8587C81.66 98.8587 82.2786 98.7036 82.5879 98.3935C82.9745 98.0834 83.1679 97.5018 83.1679 96.6489V43.1489Z"
+            className={getMotionClass(
+              isHovered,
+              "translate-y-0 scale-y-100 opacity-100",
+              "-translate-y-[58px] scale-y-[0.01] opacity-0",
             )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.05s",
-            }}
-            d="M63.96 30.2402H89.76V36.4802H63.96V30.2402Z"
-            fill="currentColor"
-          />
-          <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "translate-y-[9px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
-            )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.02s",
-            }}
-            d="M2.75977 15.8398H104.64V41.7598H96.2398V22.9198H10.9198V41.7598H2.75977V15.8398Z"
-            fill="currentColor"
-          />
-          <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "translate-y-[9px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
-            )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.02s",
-            }}
-            d="M104.64 15.8398H2.75977V22.9198H10.9198H96.2398H104.64V15.8398Z"
-            fill="currentColor"
-          />
-          <path
-            className={cn(
-              "origin-center-top transition-all duration-800",
-              isHovered
-                ? "-translate-y-[60px] scale-y-[0.01]"
-                : "translate-y-0 scale-y-100",
-            )}
-            style={{
-              transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              transitionDelay: "0.25s",
-            }}
-            d="M66.3599 84.6001L73.9199 80.6401C77.1999 82.6401 80.5999 84.9201 84.1199 87.4801C87.7199 90.0401 91.0799 92.6402 94.1999 95.2802C97.3199 97.8402 99.8799 100.2 101.88 102.36L93.8399 106.68C91.9999 104.52 89.5599 102.12 86.5199 99.4801C83.4799 96.9201 80.1999 94.3201 76.6799 91.6801C73.1599 89.0401 69.7199 86.6801 66.3599 84.6001Z"
+            style={getMotionStyle(0.2)}
             fill="currentColor"
           />
         </g>
 
-        {/* Hamburger lines (on top, not clipped) */}
+        {/* ---- 顶层菜单线：采用 Kumo 原版三横，默认隐藏，悬停显现 ---- */}
         <rect
-          className={cn(
-            "origin-left-center transition-all duration-800",
-            isHovered
-              ? "h-[6px] translate-x-[0.36px] translate-y-[24.88px]"
-              : "h-[7px]",
+          className={getMotionClass(
+            isHovered,
+            "translate-x-0 translate-y-0 scale-x-[0.94] opacity-0",
+            "translate-x-[0.36px] translate-y-[24.88px] scale-x-100 opacity-100",
+            "origin-left-center",
           )}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
+          style={getMotionStyle(0.14)}
           x="9.64014"
           y="0.120117"
           width="88"
+          height="6"
           fill="currentColor"
         />
         <rect
-          className={cn(
-            "origin-left-center transition-all duration-800",
-            isHovered
-              ? "h-[6px] translate-x-[7.36px] translate-y-[30.88px] scale-x-[0.863]"
-              : "h-[9px]",
+          className={getMotionClass(
+            isHovered,
+            "translate-x-0 translate-y-0 scale-x-[0.94] opacity-0",
+            "translate-x-[7.36px] translate-y-[30.88px] scale-x-[0.863] opacity-100",
+            "origin-left-center",
           )}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
+          style={getMotionStyle(0.17)}
           x="2.64014"
           y="16.1201"
           width="102"
+          height="6"
           fill="currentColor"
         />
         <rect
-          className={cn(
-            "origin-left-center transition-all duration-800",
-            isHovered
-              ? "h-[6px] -translate-x-[3.64px] -translate-y-[11.12px] scale-x-[1.114] opacity-0"
-              : "h-[6px] opacity-100",
+          className={getMotionClass(
+            isHovered,
+            "translate-x-0 translate-y-0 scale-x-[0.94] opacity-0",
+            "translate-x-[9.36px] -translate-y-[5.12px] scale-x-[0.83] opacity-100",
+            "origin-left-center",
           )}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-          x="13.6401"
-          y="58.1201"
-          width="79"
-          fill="currentColor"
-        />
-        <rect
-          className={cn(
-            "origin-left-center transition-all duration-800",
-            isHovered
-              ? "h-[6px] translate-x-[9.36px] -translate-y-[5.12px] scale-x-[0.83]"
-              : "h-[6px]",
-          )}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
+          style={getMotionStyle(0.2)}
           x="0.640137"
           y="74.1201"
           width="106"
+          height="6"
           fill="currentColor"
         />
       </svg>
