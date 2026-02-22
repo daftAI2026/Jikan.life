@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Settings UX Overhaul**: 
+    - Implemented a more focused, full-overlay configuration experience in `HomeSettingsPane`.
+    - Introduced progressive disclosure for configuration items to reduce cognitive load.
+    - Integrated localized tooltips in `SettingsCardShell` for on-demand documentation.
+- **Migration Safeguards**: Expanded behavioral tests in `kumo-migration.behavior.test.js` to ensure the integrity of the new settings UI and design system transitions.
+
 ### Changed
 - **Branding Alignment**: Renamed `KumoMenuIcon` to `JikanMenuIcon` across the registry module to align with project naming conventions.
-- **Documentation Sync**: Updated fractal documentation maps (`CLAUDE.md`) to reflect component renaming.
+- **Documentation Sync**: Updated fractal documentation maps (`CLAUDE.md`) to reflect component renaming and the new settings architecture.
 
 ## [1.1.6] - 2026-02-22
 

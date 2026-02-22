@@ -172,7 +172,7 @@ export const i18nData = {
     'placeholder.selectDate': 'Select date...',
     'placeholder.selectStartDate': 'Select start date...',
     'placeholder.selectTargetDate': 'Select target date...',
-    'placeholder.goalName': 'Product Launch',
+    'placeholder.goalName': 'Type something…',
     'placeholder.selectTypeFirst': 'Select type first',
 
     // Debug messages
@@ -346,7 +346,7 @@ export const i18nData = {
     'placeholder.selectDate': '选择日期...',
     'placeholder.selectStartDate': '选择开始日期...',
     'placeholder.selectTargetDate': '选择目标日期...',
-    'placeholder.goalName': '产品发布',
+    'placeholder.goalName': '输入内容…',
     'placeholder.selectTypeFirst': '请先选择类型',
 
     // 调试信息
@@ -520,7 +520,7 @@ export const i18nData = {
     'placeholder.selectDate': '選擇日期...',
     'placeholder.selectStartDate': '選擇開始日期...',
     'placeholder.selectTargetDate': '選擇目標日期...',
-    'placeholder.goalName': '產品發佈',
+    'placeholder.goalName': '輸入內容…',
     'placeholder.selectTypeFirst': '請先選擇類型',
 
     // 調試訊息
@@ -694,7 +694,7 @@ export const i18nData = {
     'placeholder.selectDate': '日付を選択...',
     'placeholder.selectStartDate': '開始日を選択...',
     'placeholder.selectTargetDate': '目標日を選択...',
-    'placeholder.goalName': '製品ローンチ',
+    'placeholder.goalName': '入力してください…',
     'placeholder.selectTypeFirst': 'まずタイプを選択',
 
     // デバッグメッセージ

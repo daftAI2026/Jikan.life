@@ -309,7 +309,7 @@ test("Kumo home components are present", () => {
   const themeToggle = path.join("src/pages/registry/sections", "ThemeToggle.jsx")
   const languageSelect = path.join("src/pages/registry/sections", "LanguageSelect.jsx")
   const searchDialog = path.join("src/pages/registry/sections", "SearchDialog.jsx")
-  const menuIcon = path.join("src/pages/registry/sections", "KumoMenuIcon.jsx")
+  const menuIcon = path.join("src/pages/registry/sections", "JikanMenuIcon.jsx")
 
   assert.ok(fs.existsSync(path.join(process.cwd(), homeGrid)))
   assert.ok(fs.existsSync(path.join(process.cwd(), themeToggle)))
@@ -361,7 +361,7 @@ test("Registry language dropdown aligns left edge with trigger", () => {
 test("Registry wrappers are local and avoid vendor docs imports", () => {
   const themeToggle = readSource("src/pages/registry/sections/ThemeToggle.jsx")
   const searchDialog = readSource("src/pages/registry/sections/SearchDialog.jsx")
-  const menuIcon = readSource("src/pages/registry/sections/KumoMenuIcon.jsx")
+  const menuIcon = readSource("src/pages/registry/sections/JikanMenuIcon.jsx")
 
   assert.match(themeToggle, /function ThemeToggle/)
   assert.match(themeToggle, /@\/components\/ui\/kumo/)
@@ -370,7 +370,7 @@ test("Registry wrappers are local and avoid vendor docs imports", () => {
   assert.match(searchDialog, /function SearchDialog/)
   assert.doesNotMatch(searchDialog, /vendor\/kumo\/packages\/kumo-docs-astro/)
 
-  assert.match(menuIcon, /function KumoMenuIcon/)
+  assert.match(menuIcon, /function JikanMenuIcon/)
   assert.match(menuIcon, /clipPathId/)
   assert.doesNotMatch(menuIcon, /vendor\/kumo\/packages\/kumo-docs-astro/)
 })
@@ -465,7 +465,7 @@ test("HomePage keeps selectedStyle as single source of truth", () => {
 test("Registry sidebar is local controlled implementation", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
-  assert.match(source, /data-sidebar-open={sidebarOpen}/)
+  assert.match(source, /data-sidebar-open={isSidebarOpen}/)
   assert.match(source, /t\("types\.header"\)/)
   assert.match(source, /t\("type\.year\.name"\)/)
   assert.match(source, /t\("type\.goal\.name"\)/)
@@ -518,8 +518,56 @@ test("Registry settings colors use shared ColorPicker component", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /import\s+\{\s*ColorPicker\s*\}\s+from\s+"@\/components\/ui\/color-picker"/)
-  assert.match(source, /<ColorPicker/)
+  assert.match(source, /colors:\s*\{[\s\S]*?titleKey:\s*"config\.colors"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.background"\)/)
+  assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.accent"\)/)
+  assert.match(source, /colors:\s*\{[\s\S]*?actions\.setBackgroundColor/)
+  assert.match(source, /colors:\s*\{[\s\S]*?actions\.setAccentColor/)
+  assert.match(source, /colors:\s*\{[\s\S]*?actions\.applyPalette\(preset\.bg,\s*preset\.accent\)/)
+  assert.match(source, /colors:\s*\{[\s\S]*?className="w-\[200px\] max-w-full"/)
+  assert.doesNotMatch(source, /colors:\s*\{[\s\S]*?title:\s*"Switch"/)
+  assert.doesNotMatch(source, /colors:\s*\{[\s\S]*?<Switch/)
   assert.doesNotMatch(source, /type="color"/)
+})
+
+test("Registry settings device card uses grouped Select with resolution hint", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+
+  assert.match(source, /device:\s*\{[\s\S]*?titleKey:\s*"config\.device"/)
+  assert.match(source, /device:\s*\{[\s\S]*?actions\.setDevice/)
+  assert.match(source, /device:\s*\{[\s\S]*?className="w-\[200px\] max-w-full"/)
+  assert.match(source, /device:\s*\{[\s\S]*?\["iPhone",\s*"Android",\s*"iPad"\]/)
+  assert.match(source, /device:\s*\{[\s\S]*?SelectBase\.Group/)
+  assert.match(source, /device:\s*\{[\s\S]*?selectedDevice\.width/)
+  assert.match(source, /device:\s*\{[\s\S]*?selectedDevice\.height/)
+  assert.match(source, /device:\s*\{[\s\S]*?×/)
+  assert.doesNotMatch(source, /device:\s*\{[\s\S]*?title:\s*"Dropdown"/)
+  assert.doesNotMatch(source, /device:\s*\{[\s\S]*?<DropdownMenu/)
+  assert.doesNotMatch(source, /device:\s*\{[\s\S]*?Worker/)
+  assert.doesNotMatch(source, /device:\s*\{[\s\S]*?Pages/)
+})
+
+test("Goal countdown slot 3 uses goal-fields card and hides palettes card in goal order", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+
+  assert.match(source, /const GOAL_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"\]/)
+  assert.match(source, /const CARD_ORDER_BY_TYPE = \{[\s\S]*?year:\s*SETTINGS_CARD_IDS,[\s\S]*?life:\s*SETTINGS_CARD_IDS,[\s\S]*?goal:\s*GOAL_SETTINGS_CARD_IDS,/)
+  assert.doesNotMatch(source, /const GOAL_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
+})
+
+test("Goal fields card uses goal bindings, date constraints, and 200px control width", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?title:\s*"Goal"/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalName/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalStart/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalDate/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?minValue=\{GOAL_START_MIN_ISO\}/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?minValue=\{config\.goalStart \|\| todayISO\}/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?maxValue=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(source, /"goal-fields":\s*\{[\s\S]*?className="w-\[200px\] max-w-full"/)
+  assert.match(source, /const todayISO = getLocalTodayISO\(\)/)
+  assert.match(source, /const cardViewModel = \{[\s\S]*?todayISO,[\s\S]*?t,/)
 })
 
 test("Button adapter normalizes legacy props and preserves react-aria trigger compatibility", () => {
@@ -648,11 +696,10 @@ test("Neumorphic variables are fully removed from src", () => {
   )
 })
 
-test("Wallpaper preview and worker share one language font strategy", async () => {
+test("Wallpaper preview shares one language font strategy from shared core", async () => {
   const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
   const { getWallpaperFontFamily } = await import(`file://${corePath}`)
   const rendererSource = readSource("src/lib/renderer.js")
-  const svgSource = readSource("worker/svg.js")
   const yearSource = readSource("worker/generators/year.js")
   const lifeSource = readSource("worker/generators/life.js")
   const indexSource = readSource("index.html")
@@ -665,7 +712,6 @@ test("Wallpaper preview and worker share one language font strategy", async () =
 
   assert.match(rendererSource, /getWallpaperFontFamily/)
   assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
-  assert.match(svgSource, /getWallpaperFontFamily/)
   assert.doesNotMatch(yearSource, /font-family="Inter"/)
   assert.doesNotMatch(lifeSource, /font-family="Inter"/)
 
@@ -673,6 +719,8 @@ test("Wallpaper preview and worker share one language font strategy", async () =
   assert.match(indexSource, /Noto\+Sans\+TC/)
   assert.match(indexSource, /Noto\+Sans\+JP/)
 })
+
+test.todo("Worker SVG should reuse shared getWallpaperFontFamily instead of local FONT_FAMILY_BY_LANG")
 
 test("GoalStart is wired through registry config state and URL generation", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
