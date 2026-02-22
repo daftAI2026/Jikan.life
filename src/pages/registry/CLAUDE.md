@@ -4,12 +4,12 @@
 成员清单
 HomePage.jsx: Home 根页面，维护 selectedStyle + sidebarOpen 状态，并在侧栏收起时控制顶栏语言按钮隐藏
 registry-data.js: Registry 旧版导航与示例数据（备用）
-sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage 临时隐藏左侧语言切换，右侧展示 GitHub 与小红书社交入口
+sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage（侧栏收起时隐藏左侧语言切换），右侧展示 GitHub 与小红书社交入口
 sections/HomeSidebar.jsx: 本地侧栏，支持 sidebarOpen/onSidebarOpenChange 受控开合，保留 Kumo 动效并向工作区分发 style 选择
 sections/ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage
 sections/LanguageSelect.jsx: Home UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端保留右下角入口）
 sections/SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
-sections/KumoMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用 vendor docs 源码）
+sections/JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用 vendor docs 源码）
 sections/CLAUDE.md: sections 子模块文档
 sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层
 sections/workspace/useHomeWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
@@ -29,7 +29,7 @@ sections/RegistrySection.jsx: 旧版区块包装器
 registry/ - Kumo UI 单页模块 (sections + registry-data.js)
 
 架构决策
-ThemeToggle/SearchDialog/KumoMenuIcon 全部改为本地实现；Sidebar 与 HomeGrid 维持本地受控实现，彻底切断对 vendor docs 源码的构建期耦合。
+ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 HomeGrid 维持本地受控实现，彻底切断对 vendor docs 源码的构建期耦合。
 页面层统一通过 `@/components/ui/*` 引用 Kumo 组件；禁止 `src/pages/registry/**` 直接 import `@cloudflare/kumo`。
 
 开发规范

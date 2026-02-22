@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 react(useId/useState), @/lib/utils(cn)
- * [OUTPUT]: 对外提供 KumoMenuIcon 动画菜单图标组件
+ * [OUTPUT]: 对外提供 JikanMenuIcon 动画菜单图标组件
  * [POS]: registry/sections 的本地图标实现，保持原有悬停动效并避免编译期依赖 vendor docs 源码
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -20,9 +20,9 @@ function getMotionStyle(delaySeconds) {
   }
 }
 
-export function KumoMenuIcon({ className }) {
+export function JikanMenuIcon({ className }) {
   const [isHovered, setIsHovered] = useState(false)
-  const clipPathId = `registry-kumo-menu-icon-${useId().replace(/:/g, "")}`
+  const clipPathId = `registry-jikan-menu-icon-${useId().replace(/:/g, "")}`
 
   return (
     <div
