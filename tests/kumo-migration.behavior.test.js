@@ -151,7 +151,10 @@ test("ColorPicker uses KUMO visual tokens without changing state bridge behavior
 
   assert.doesNotMatch(source, /rounded-xl/)
   assert.match(source, /className=\{cn\(\s*"w-full justify-start rounded-lg px-2 text-left font-normal"/)
-  assert.match(source, /className="size-6 shrink-0 rounded-md ring ring-kumo-line"/)
+  assert.match(
+    source,
+    /showValue\s*\?\s*"size-6 shrink-0 rounded-md ring ring-kumo-line"\s*:\s*"h-5 w-full rounded-md ring ring-kumo-line"/
+  )
   assert.match(source, /className="truncate font-mono text-sm uppercase text-kumo-subtle"/)
   assert.match(source, /<Popover\.Content className="w-64 p-3" sideOffset=\{8\}>/)
   assert.match(source, /className="h-9 w-\[72px\] shrink-0 rounded-lg text-sm font-medium uppercase"/)
@@ -519,11 +522,19 @@ test("Registry settings colors use shared ColorPicker component", () => {
 
   assert.match(source, /import\s+\{\s*ColorPicker\s*\}\s+from\s+"@\/components\/ui\/color-picker"/)
   assert.match(source, /colors:\s*\{[\s\S]*?titleKey:\s*"config\.colors"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?className="grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?className="min-w-0 space-y-1\.5"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?ColorPicker[\s\S]*?className="w-full"/)
+  assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.background"\)[\s\S]*?<ColorPicker[\s\S]*?showValue=\{false\}/)
+  assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.accent"\)[\s\S]*?<ColorPicker[\s\S]*?showValue=\{false\}/)
+  assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.colorPresets"\)/)
   assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.background"\)/)
   assert.match(source, /colors:\s*\{[\s\S]*?t\("config\.accent"\)/)
   assert.match(source, /colors:\s*\{[\s\S]*?actions\.setBackgroundColor/)
   assert.match(source, /colors:\s*\{[\s\S]*?actions\.setAccentColor/)
   assert.match(source, /colors:\s*\{[\s\S]*?actions\.applyPalette\(preset\.bg,\s*preset\.accent\)/)
+  assert.match(source, /colors:\s*\{[\s\S]*?className="flex w-\[200px\] max-w-full flex-wrap gap-2"/)
   assert.match(source, /colors:\s*\{[\s\S]*?className="w-\[200px\] max-w-full"/)
   assert.doesNotMatch(source, /colors:\s*\{[\s\S]*?title:\s*"Switch"/)
   assert.doesNotMatch(source, /colors:\s*\{[\s\S]*?<Switch/)
@@ -550,24 +561,101 @@ test("Registry settings device card uses grouped Select with resolution hint", (
 test("Goal countdown slot 3 uses goal-fields card and hides palettes card in goal order", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
+  assert.match(source, /const YEAR_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "colors", "device", "url"\]/)
+  assert.match(source, /const LIFE_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "colors", "device", "palettes", "url"\]/)
   assert.match(source, /const GOAL_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"\]/)
-  assert.match(source, /const CARD_ORDER_BY_TYPE = \{[\s\S]*?year:\s*SETTINGS_CARD_IDS,[\s\S]*?life:\s*SETTINGS_CARD_IDS,[\s\S]*?goal:\s*GOAL_SETTINGS_CARD_IDS,/)
+  assert.match(source, /const CARD_ORDER_BY_TYPE = \{[\s\S]*?year:\s*YEAR_SETTINGS_CARD_IDS,[\s\S]*?life:\s*LIFE_SETTINGS_CARD_IDS,[\s\S]*?goal:\s*GOAL_SETTINGS_CARD_IDS,/)
+  assert.doesNotMatch(source, /const YEAR_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
   assert.doesNotMatch(source, /const GOAL_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
+})
+
+test("Goal countdown keeps url card at slot 6 for Set flow", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+
+  assert.match(
+    source,
+    /const GOAL_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"\]/
+  )
 })
 
 test("Goal fields card uses goal bindings, date constraints, and 200px control width", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const goalFieldsMatch = source.match(/"goal-fields":\s*\{([\s\S]*?)\n\s*},\n\s*colors:/)
+  assert.ok(goalFieldsMatch, "goal-fields block not found")
+  const goalFieldsSource = goalFieldsMatch[1]
 
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?title:\s*"Goal"/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalName/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalStart/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?actions\.setGoalDate/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?minValue=\{GOAL_START_MIN_ISO\}/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?minValue=\{config\.goalStart \|\| todayISO\}/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?maxValue=\{GOAL_TARGET_MAX_ISO\}/)
-  assert.match(source, /"goal-fields":\s*\{[\s\S]*?className="w-\[200px\] max-w-full"/)
+  assert.match(goalFieldsSource, /title:\s*"Goal"/)
+  assert.match(goalFieldsSource, /className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
+  assert.match(goalFieldsSource, /actions\.setGoalName/)
+  assert.match(goalFieldsSource, /actions\.setGoalStart/)
+  assert.match(goalFieldsSource, /actions\.setGoalDate/)
+  assert.match(goalFieldsSource, /minValue=\{GOAL_START_MIN_ISO\}/)
+  assert.match(goalFieldsSource, /minValue=\{config\.goalStart \|\| todayISO\}/)
+  assert.match(goalFieldsSource, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(goalFieldsSource, /className="w-\[200px\] max-w-full"/)
   assert.match(source, /const todayISO = getLocalTodayISO\(\)/)
   assert.match(source, /const cardViewModel = \{[\s\S]*?todayISO,[\s\S]*?t,/)
+})
+
+test("Goal url card uses setup title and set flow guarded by copy success", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const goalBranchMatch = source.match(/if \(config\.selectedType === "goal"\) \{([\s\S]*?)\n\s*}\n\n\s*return \(/)
+  assert.ok(goalBranchMatch, "Goal url branch not found")
+  const goalBranchSource = goalBranchMatch[1]
+
+  assert.match(source, /const SETUP_FLOW_TYPES = new Set\(\["year", "goal"\]\)/)
+  assert.match(source, /url:\s*\{[\s\S]*?resolveTitle:\s*\(\{\s*config,\s*t\s*\}\)\s*=>[\s\S]*?SETUP_FLOW_TYPES\.has\(config\.selectedType\)\s*\?\s*t\("setup\.title"\)\s*:\s*"Collapsible"/)
+  assert.match(source, /url:\s*\{[\s\S]*?if\s*\(config\.selectedType === "goal"\)/)
+  assert.match(source, /url:\s*\{[\s\S]*?w-\[220px\] max-w-full flex-col gap-2 px-3 py-1/)
+  assert.match(source, /url:\s*\{[\s\S]*?KumoButton[\s\S]*?variant="secondary"/)
+  assert.match(source, /url:\s*\{[\s\S]*?w-full justify-center text-center transition-colors not-disabled:hover:!bg-kumo-tint/)
+  assert.match(goalBranchSource, /variant="secondary"/)
+  assert.match(goalBranchSource, /not-disabled:hover:!bg-kumo-tint/)
+  assert.match(source, /url:\s*\{[\s\S]*?t\("url\.set"\)/)
+  assert.match(source, /const handleSetIt = async \(\) => \{[\s\S]*?const ok = await actions\.copyUrl\(\)/)
+  assert.match(source, /const handleSetIt = async \(\) => \{[\s\S]*?if \(!ok\) return/)
+  assert.match(source, /useEffect\(\(\) => \{[\s\S]*?if \(!SETUP_FLOW_TYPES\.has\(config\.selectedType\)\) \{/)
+  assert.match(source, /selectedDevice\.category === "Android" \? "android" : "ios"/)
+  assert.match(source, /<SetupGuidePanel[\s\S]*?open=\{isSetupPanelOpen\}/)
+  assert.match(source, /<SetupGuidePanel[\s\S]*?platform=\{setupPlatform\}/)
+  assert.match(source, /<SetupGuidePanel[\s\S]*?onClose=\{handleCloseSetupPanel\}/)
+})
+
+test("Year merged slot uses setup url card as slot 5 with compact inline row on md+", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const yearBranchMatch = source.match(/if \(config\.selectedType === "year"\) \{([\s\S]*?)if \(config\.selectedType === "goal"\) \{/)
+  assert.ok(yearBranchMatch, "Year url branch not found")
+  const yearBranchSource = yearBranchMatch[1]
+
+  assert.match(source, /const YEAR_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "colors", "device", "url"\]/)
+  assert.match(source, /const CARD_SHELL_CLASS_BY_TYPE = \{[\s\S]*?year:\s*\{[\s\S]*?url:\s*"md:col-span-2"/)
+  assert.match(source, /className=\{resolveCardShellClassName\(config\.selectedType,\s*cardId\)\}/)
+  assert.match(yearBranchSource, /w-full px-4 py-1/)
+  assert.match(yearBranchSource, /md:px-\[calc\(25%-100px\)\]/)
+  assert.match(yearBranchSource, /flex max-w-full flex-col gap-2 md:flex-row md:items-center md:gap-2/)
+  assert.match(yearBranchSource, /className="min-w-0 w-full font-mono text-xs md:flex-1"/)
+  assert.match(yearBranchSource, /variant="secondary"/)
+  assert.match(
+    yearBranchSource,
+    /className="min-w-\[88px\] justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint md:shrink-0"/
+  )
+  assert.match(yearBranchSource, /not-disabled:hover:!bg-kumo-tint/)
+  assert.doesNotMatch(yearBranchSource, /md:grid-cols-2/)
+})
+
+test("Setup guide panel uses local right-slide overlay with sidebar-aligned timing", () => {
+  const source = readSource("src/pages/registry/sections/workspace/SetupGuidePanel.jsx")
+
+  assert.match(source, /data-home-settings-setup-panel/)
+  assert.match(source, /pointer-events-none absolute inset-0 z-40/)
+  assert.match(source, /pointer-events-auto absolute inset-y-0 right-0/)
+  assert.match(source, /transition-transform duration-300 ease-out/)
+  assert.match(source, /open \? "translate-x-0" : "translate-x-full"/)
+  assert.match(source, /onClick=\{onClose\}/)
+  assert.doesNotMatch(source, /bg-black\/30/)
+  assert.match(source, /setup\.ios\.step1/)
+  assert.match(source, /setup\.android\.step1/)
+  assert.match(source, /dangerouslySetInnerHTML/)
 })
 
 test("Button adapter normalizes legacy props and preserves react-aria trigger compatibility", () => {
@@ -786,6 +874,13 @@ test("i18n includes start date label, placeholder, and date error keys in all la
   assert.equal(targetRangeErrorCount, 4)
   assert.equal(startAfterTargetErrorCount, 4)
   assert.equal(targetBeforeStartErrorCount, 4)
+})
+
+test("i18n includes set button key in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const setKeyCount = (source.match(/'url\.set':/g) || []).length
+
+  assert.equal(setKeyCount, 4)
 })
 
 test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
