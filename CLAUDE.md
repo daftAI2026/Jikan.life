@@ -53,3 +53,4 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
 - **同源挂载**: Home 工作台优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差
+- **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天

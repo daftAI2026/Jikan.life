@@ -16,9 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Settings Architecture**: Standardized "Life" and "Goal" configuration fields into standard `SettingsCardShell` components within `HomeSettingsPane`, completely eliminating the legacy fallback system for a unified, progressive setup experience.
+- **Year Progress Visual**: Optimized `HomeSidebar`'s Year 10x10 dot matrix mapping to correctly handle `0%` progress while preserving the "today" indicator. Implemented a reliable cross-midnight refresh mechanism using dynamic `todayKey` state, ensuring data accuracy without requiring an app reload.
 - **Branding Alignment**: Renamed `KumoMenuIcon` to `JikanMenuIcon` across the registry module to align with project naming conventions.
 - **Documentation Sync**: Updated fractal documentation maps (`CLAUDE.md`) to reflect component renaming and the new settings architecture.
 - **GEB Protocol Audit**: Full L1/L2/L3 synchronized — removed phantom `src/assets/` from L1 directory tree, updated `SetupGuidePanel` L3 `[POS]` to reflect Year/Goal shared Set flow, and verified `doc/CLAUDE.md` member list against current file inventory.
+
+### Fixed
+- **Migration Safeguards**: Expanded `kumo-migration.behavior.test.js` to enforce structural and behavioral constraints on the Year 10x10 visual, specifically locking down grid proportions, state mapping, and midnight data invalidation logic.
 
 ## [1.1.6] - 2026-02-22
 

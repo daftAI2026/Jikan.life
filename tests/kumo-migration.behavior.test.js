@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test, node:assert/strict, node:fs, node:path
- * [OUTPUT]: Kumo 迁移关键约束的回归测试（含 ColorPicker 状态桥接、弹层链路与视觉样式单一来源护栏）
- * [POS]: tests/ UI 迁移护栏，防止主题/组件体系、ColorPicker 拖拽语义与弹层实现回退
+ * [OUTPUT]: Kumo 迁移关键约束的回归测试（含 ColorPicker 状态桥接、弹层链路、Year 10x10 点阵与跨午夜刷新护栏）
+ * [POS]: tests/ UI 迁移护栏，防止主题/组件体系、ColorPicker 拖拽语义、Year 进度映射与日切刷新语义回退
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -398,6 +398,7 @@ test("Registry page layer imports UI components via local ui entry only", () => 
 test("HomeSidebar is non-scrollable and hides Life style card", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
 
+  assert.match(source, /import \{ useEffect, useMemo, useState \} from "react"/)
   assert.doesNotMatch(source, /overflow-y-auto/)
   assert.match(source, /h-full/)
   assert.match(source, /selectedStyle = "year"/)
@@ -419,10 +420,17 @@ test("HomeSidebar is non-scrollable and hides Life style card", () => {
   assert.match(source, /gap-\[4px\]/)
   assert.match(source, /h-\[10px\] w-\[10px\] origin-center scale-\[0\.84\]/)
   assert.match(source, /h-\[100px\] w-\[100px\]/)
-  assert.match(source, /const YEAR_GRID_COLUMNS = 12/)
+  assert.match(source, /const YEAR_GRID_COLUMNS = 10/)
   assert.match(source, /return \{ day, week, percent, totalDays \}/)
+  assert.match(source, /const \[todayKey, setTodayKey\] = useState\(\(\) => getLocalDateKey\(\)\)/)
+  assert.match(source, /useEffect\(\(\) => \{/)
+  assert.match(source, /const yearStats = useMemo\(\(\) => getYearStats\(\), \[todayKey\]\)/)
+  assert.doesNotMatch(source, /const yearStats = useMemo\(\(\) => getYearStats\(\), \[\]\)/)
   assert.match(source, /const totalDots = YEAR_GRID_COLUMNS \* YEAR_GRID_COLUMNS/)
-  assert.match(source, /const filledCount = Math\.min\(totalDots, Math\.round\(\(stats\.day \/ stats\.totalDays\) \* totalDots\)\)/)
+  assert.match(source, /function YearVisual\(\{ percent \}\)/)
+  assert.match(source, /<div className="origin-center scale-\[1\]">\s*<YearVisual percent=\{yearStats\.percent\} \/>/)
+  assert.match(source, /<YearVisual percent=\{yearStats\.percent\} \/>/)
+  assert.match(source, /const filledCount = Math\.min\(totalDots, Math\.max\(0, percent\)\)/)
   assert.doesNotMatch(source, /YEAR_EXTRA_FILLED_ROWS/)
   assert.doesNotMatch(source, /baseFilledCount/)
   assert.doesNotMatch(source, /progressDots/)
@@ -439,7 +447,7 @@ test("HomeSidebar year visual uses three-state dot design tokens", () => {
   assert.match(source, /today:\s*"bg-kumo-contrast"/)
   assert.match(source, /completed:\s*"bg-kumo-contrast\/75"/)
   assert.match(source, /pending:\s*"bg-kumo-contrast\/12"/)
-  assert.match(source, /const todayIndex = filledCount > 0 \? filledCount - 1 : -1/)
+  assert.match(source, /const todayIndex = Math\.min\(totalDots - 1, Math\.max\(0, filledCount - 1\)\)/)
   assert.match(source, /if \(index === todayIndex\) return "today"/)
   assert.match(source, /if \(index < filledCount\) return "completed"/)
   assert.match(source, /return "pending"/)

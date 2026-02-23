@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 react(useMemo/useState), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), JikanMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
- * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange）
- * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义
+ * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), JikanMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
+ * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
+ * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览进度可视化的日切刷新入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/kumo"
 import { XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
@@ -15,15 +15,15 @@ import { computeGoalLayout } from "../../../../shared/wallpaper-core"
 // ---- Sidebar Style Feature Flags ----
 // 隐藏但不删除：后续恢复只需从集合中移除对应 id。
 const HIDDEN_STYLE_CARD_IDS = new Set(["life"])
-const YEAR_GRID_COLUMNS = 12
+const YEAR_GRID_COLUMNS = 10
 const YEAR_DOT_STATE_TOKENS = {
     today: "bg-kumo-contrast",
     completed: "bg-kumo-contrast/75",
     pending: "bg-kumo-contrast/12",
 }
 
-function getYearDotState(index, filledCount) {
-    const todayIndex = filledCount > 0 ? filledCount - 1 : -1
+function getYearDotState(index, filledCount, totalDots) {
+    const todayIndex = Math.min(totalDots - 1, Math.max(0, filledCount - 1))
     if (index === todayIndex) return "today"
     if (index < filledCount) return "completed"
     return "pending"
@@ -54,16 +54,20 @@ function getLocalDateParts() {
     return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() }
 }
 
+function getLocalDateKey() {
+    const now = new Date()
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+}
+
 function addDays(dateParts, days) {
     const date = new Date(dateParts.year, dateParts.month - 1, dateParts.day)
     date.setDate(date.getDate() + days)
     return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() }
 }
 
-function YearVisual() {
-    const stats = getYearStats()
+function YearVisual({ percent }) {
     const totalDots = YEAR_GRID_COLUMNS * YEAR_GRID_COLUMNS
-    const filledCount = Math.min(totalDots, Math.round((stats.day / stats.totalDays) * totalDots))
+    const filledCount = Math.min(totalDots, Math.max(0, percent))
 
     return (
         <div
@@ -71,7 +75,7 @@ function YearVisual() {
             style={{ gridTemplateColumns: `repeat(${YEAR_GRID_COLUMNS}, minmax(0, 1fr))` }}
         >
             {Array.from({ length: totalDots }).map((_, index) => {
-                const dotState = getYearDotState(index, filledCount)
+                const dotState = getYearDotState(index, filledCount, totalDots)
                 return (
                     <div
                         key={`year-dot-${index}`}
@@ -178,6 +182,7 @@ function HomeSidebar({
     const { t, lang } = useI18n()
     const [internalSidebarOpen, setInternalSidebarOpen] = useState(true)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [todayKey, setTodayKey] = useState(() => getLocalDateKey())
     const isSidebarOpen = typeof sidebarOpen === "boolean" ? sidebarOpen : internalSidebarOpen
 
     const handleSidebarToggle = () => {
@@ -205,7 +210,24 @@ function HomeSidebar({
         })
     }, [lang])
 
-    const yearStats = useMemo(() => getYearStats(), [])
+    useEffect(() => {
+        let timeoutId
+
+        const scheduleNextTick = () => {
+            const now = new Date()
+            const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+            const delay = Math.max(1000, nextMidnight.getTime() - now.getTime())
+            timeoutId = setTimeout(() => {
+                setTodayKey(getLocalDateKey())
+                scheduleNextTick()
+            }, delay)
+        }
+
+        scheduleNextTick()
+        return () => clearTimeout(timeoutId)
+    }, [])
+
+    const yearStats = useMemo(() => getYearStats(), [todayKey])
     const styleCards = useMemo(
         () => [
             {
@@ -213,8 +235,8 @@ function HomeSidebar({
                 title: t("type.year.name"),
                 description: t("type.year.description"),
                 preview: (
-                    <div className="origin-center scale-[0.84]">
-                        <YearVisual />
+                    <div className="origin-center scale-[1]">
+                        <YearVisual percent={yearStats.percent} />
                     </div>
                 ),
                 stats: [
