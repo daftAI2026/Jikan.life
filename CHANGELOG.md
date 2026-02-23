@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.7] - 2026-02-23
 
+### Refactored
+- **Settings Architecture (Phase 2)**: Splitted the monolithic `HomeSettingsPane` into 8 independent, decoupled card components (e.g., `colors-card`, `device-card`, `life-fields-card`) within a new `cards/` directory. This drastically reduces file size and complexity, enforcing atomic design principles and paving the way for easier extensibility.
+
 ### Added
 - **Settings UX Overhaul**: 
     - Implemented a more focused, full-overlay configuration experience in `HomeSettingsPane`.
