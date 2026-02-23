@@ -558,14 +558,15 @@ test("Registry settings device card uses grouped Select with resolution hint", (
   assert.doesNotMatch(source, /device:\s*\{[\s\S]*?Pages/)
 })
 
-test("Goal countdown slot 3 uses goal-fields card and hides palettes card in goal order", () => {
+test("Goal/Life slot 3 uses dedicated fields card and hides palettes card in active orders", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /const YEAR_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "colors", "device", "url"\]/)
-  assert.match(source, /const LIFE_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "colors", "device", "palettes", "url"\]/)
+  assert.match(source, /const LIFE_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "life-fields", "colors", "device", "url"\]/)
   assert.match(source, /const GOAL_SETTINGS_CARD_IDS = \["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"\]/)
   assert.match(source, /const CARD_ORDER_BY_TYPE = \{[\s\S]*?year:\s*YEAR_SETTINGS_CARD_IDS,[\s\S]*?life:\s*LIFE_SETTINGS_CARD_IDS,[\s\S]*?goal:\s*GOAL_SETTINGS_CARD_IDS,/)
   assert.doesNotMatch(source, /const YEAR_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
+  assert.doesNotMatch(source, /const LIFE_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
   assert.doesNotMatch(source, /const GOAL_SETTINGS_CARD_IDS = \[[^\]]*"palettes"[^\]]*\]/)
 })
 
@@ -595,6 +596,25 @@ test("Goal fields card uses goal bindings, date constraints, and 200px control w
   assert.match(goalFieldsSource, /className="w-\[200px\] max-w-full"/)
   assert.match(source, /const todayISO = getLocalTodayISO\(\)/)
   assert.match(source, /const cardViewModel = \{[\s\S]*?todayISO,[\s\S]*?t,/)
+})
+
+test("Life fields card uses dob/lifespan bindings and keeps hints in card view", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const lifeFieldsMatch = source.match(/"life-fields":\s*\{([\s\S]*?)\n\s*},\n\s*colors:/)
+  assert.ok(lifeFieldsMatch, "life-fields block not found")
+  const lifeFieldsSource = lifeFieldsMatch[1]
+
+  assert.match(lifeFieldsSource, /title:\s*"Life"/)
+  assert.match(lifeFieldsSource, /actions\.setDob/)
+  assert.match(lifeFieldsSource, /actions\.setLifespan/)
+  assert.match(lifeFieldsSource, /actions\.normalizeLifespan/)
+  assert.match(lifeFieldsSource, /maxValue=\{todayISO\}/)
+  assert.match(lifeFieldsSource, /type="number"/)
+  assert.match(lifeFieldsSource, /min=\{50\}/)
+  assert.match(lifeFieldsSource, /max=\{120\}/)
+  assert.match(lifeFieldsSource, /t\("config\.dateOfBirthHint"\)/)
+  assert.match(lifeFieldsSource, /t\("config\.lifespanHint"\)/)
+  assert.match(lifeFieldsSource, /className="w-\[200px\] max-w-full"/)
 })
 
 test("Goal url card uses setup title and set flow guarded by copy success", () => {
@@ -658,6 +678,18 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /dangerouslySetInnerHTML/)
 })
 
+test("Registry settings cards only expose business ID selector", () => {
+  const paneSource = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const shellSource = readSource("src/pages/registry/sections/workspace/SettingsCardShell.jsx")
+
+  assert.match(shellSource, /data-home-settings-card=\{cardId\}/)
+  assert.doesNotMatch(shellSource, /data-home-settings-card-legacy/)
+  assert.doesNotMatch(shellSource, /legacyCardId/)
+
+  assert.doesNotMatch(paneSource, /legacyId:/)
+  assert.doesNotMatch(paneSource, /legacyCardId=/)
+})
+
 test("Button adapter normalizes legacy props and preserves react-aria trigger compatibility", () => {
   const source = readSource("src/components/ui/button.jsx")
 
@@ -681,46 +713,43 @@ test("Button adapter normalizes legacy props and preserves react-aria trigger co
 test("Registry settings URL block uses responsive row and flexible input", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
-  assert.match(source, /className="space-y-4"/)
-  assert.match(source, /flex flex-col gap-2 sm:flex-row sm:items-center/)
-  assert.match(source, /className="min-w-0 flex-1 font-mono text-xs"/)
+  assert.match(source, /if \(config\.selectedType === "year"\)/)
+  assert.match(source, /if \(config\.selectedType === "goal"\)/)
+  assert.match(source, /className="min-w-0 w-full font-mono text-xs md:flex-1"/)
+  assert.match(source, /className="min-w-0 w-full font-mono text-xs"/)
 })
 
-test("Registry goal config uses three columns with start date in the middle", () => {
+test("Registry goal config stays in goal-fields card with shared date picker wiring", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+  const goalFieldsMatch = source.match(/"goal-fields":\s*\{([\s\S]*?)\n\s*},\n\s*"life-fields":/)
+  assert.ok(goalFieldsMatch, "goal-fields block not found")
+  const goalFieldsSource = goalFieldsMatch[1]
 
-  assert.match(source, /config\.selectedType === "goal"/)
-  assert.match(source, /grid grid-cols-1 gap-4 md:grid-cols-3/)
-  assert.match(source, /label className="block text-sm font-medium text-kumo-default"/)
-  assert.match(source, /t\("config\.goalName"\)/)
-  assert.match(source, /t\("config\.startDate"\)/)
-  assert.match(source, /t\("config\.targetDate"\)/)
+  assert.match(goalFieldsSource, /t\("config\.goalName"\)/)
+  assert.match(goalFieldsSource, /t\("config\.startDate"\)/)
+  assert.match(goalFieldsSource, /t\("config\.targetDate"\)/)
   assert.match(source, /DatePicker/)
   assert.match(source, /DatePickerContent/)
   assert.match(source, /DateInput/)
   assert.match(source, /parseDate/)
-  assert.match(source, /actions\.setGoalStart/)
-  assert.match(source, /actions\.setGoalDate/)
-  assert.match(source, /renderDatePickerField\s*=\s*\(\s*\{\s*value,\s*onChange,\s*minValue,\s*maxValue\s*\}\s*\)\s*=>/)
+  assert.match(goalFieldsSource, /actions\.setGoalStart/)
+  assert.match(goalFieldsSource, /actions\.setGoalDate/)
   assert.match(source, /minValue=\{minValue \? parseDate\(minValue\) : undefined\}/)
   assert.match(source, /maxValue=\{maxValue \? parseDate\(maxValue\) : undefined\}/)
-  assert.match(source, /minValue:\s*GOAL_START_MIN_ISO/)
-  assert.match(source, /minValue:\s*config\.goalStart \|\| todayISO/)
-  assert.match(source, /maxValue:\s*GOAL_TARGET_MAX_ISO/)
-  assert.match(source, /config\.goalStartError/)
-  assert.match(source, /config\.goalDateError/)
+  assert.match(goalFieldsSource, /minValue=\{GOAL_START_MIN_ISO\}/)
+  assert.match(goalFieldsSource, /minValue=\{config\.goalStart \|\| todayISO\}/)
+  assert.match(goalFieldsSource, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(goalFieldsSource, /config\.goalStartError/)
+  assert.match(goalFieldsSource, /config\.goalDateError/)
 })
 
-test("Registry life config uses label hints for date of birth and lifespan", () => {
+test("Legacy settings fallback is fully removed from HomeSettingsPane", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
-  assert.match(source, /config\.selectedType === "life"/)
-  assert.match(source, /t\("config\.dateOfBirthHint"\)/)
-  assert.match(source, /t\("config\.lifespanHint"\)/)
-  assert.match(source, /label className="flex items-baseline justify-between text-sm"/)
-  assert.match(source, /actions\.setDob/)
-  assert.match(source, /value:\s*config\.dob/)
-  assert.match(source, /maxValue:\s*todayISO/)
+  assert.doesNotMatch(source, /function shouldShowLegacySettings\(/)
+  assert.doesNotMatch(source, /function LegacySettingsForm\(/)
+  assert.doesNotMatch(source, /data-home-settings-legacy/)
+  assert.doesNotMatch(source, /legacySettings=1/)
 })
 
 test("Registry menu accessibility labels are present in i18n", () => {
@@ -824,13 +853,12 @@ test("GoalStart is wired through registry config state and URL generation", () =
 test("Home settings goal config uses dynamic target min based on goalStart or today", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
-  assert.match(source, /grid grid-cols-1 gap-4 md:grid-cols-3/)
   assert.match(source, /t\("config\.startDate"\)/)
-  assert.match(source, /value:\s*config\.goalStart/)
-  assert.match(source, /onChange:\s*actions\.setGoalStart/)
-  assert.match(source, /minValue:\s*GOAL_START_MIN_ISO/)
-  assert.match(source, /minValue:\s*config\.goalStart \|\| todayISO/)
-  assert.match(source, /maxValue:\s*GOAL_TARGET_MAX_ISO/)
+  assert.match(source, /value=\{config\.goalStart\}/)
+  assert.match(source, /onChange=\{actions\.setGoalStart\}/)
+  assert.match(source, /minValue=\{GOAL_START_MIN_ISO\}/)
+  assert.match(source, /minValue=\{config\.goalStart \|\| todayISO\}/)
+  assert.match(source, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
   assert.match(source, /t\(config\.goalStartError\)/)
   assert.match(source, /t\(config\.goalDateError\)/)
 })

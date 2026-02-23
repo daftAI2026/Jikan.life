@@ -4,15 +4,15 @@
 成员清单
 useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式包含 goalStart 字段、手动输入即时阻断校验与仅合法日期透传
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
-HomeSettingsPane.jsx: 右侧设置面板主容器；当前阶段输出 `CARD_REGISTRY`（业务语义）+ `CARD_ORDER_BY_TYPE`（位置编排）双层骨架（year 模式已完成 5+6 合并为 5 卡，槽位⑤为 `url` 收口宽卡；goal 模式在槽位③插入 `goal-fields` 并保留槽位⑥ Set 收口；life 本轮冻结为独立 6 卡顺序），导出 `SETTINGS_CARD_IDS`，并在开发态通过 `legacySettings=1` 条件挂载 LegacySettingsForm
-SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ①~⑥ + 中央内容）并提供 `data-home-settings-card`（新ID）+ `data-home-settings-card-legacy`（旧ID）兼容选择器；支持可选 `className` 承接 type 专属跨列布局
+HomeSettingsPane.jsx: 右侧设置面板主容器；当前阶段输出 `CARD_REGISTRY`（业务语义）+ `CARD_ORDER_BY_TYPE`（位置编排）双层骨架（year 模式已完成 5+6 合并为 5 卡，槽位⑤为 `url` 收口宽卡；goal/life 模式均在槽位③承载专属字段卡，并保留槽位⑥ Set 收口），导出 `SETTINGS_CARD_IDS`
+SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ①~⑥ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
 SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互
 
 结构
 workspace/ - Home 双栏工作区子模块 (5 files)
 
 架构决策
-采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。`①~⑥` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 暂时冻结为独立 6 卡顺序，待后续专项决策。
+采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。`①~⑥` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
 
 开发规范
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
@@ -31,7 +31,7 @@ workspace/ - Home 双栏工作区子模块 (5 files)
 2026-02-22: 首卡（`basics`）从 Button demo 迁移为 Country Select，直接绑定 `config.country` / `actions.setCountry`；Select 宽度按原版 HomeGrid 示例对齐为 `w-[200px]`。
 2026-02-22: 首卡左上角标题从组件名改回业务语义（`config.location`）并接回 `config.locationTooltip` 问号提示；卡壳支持 `titleTooltip` 可选渲染。
 2026-02-22: 第二卡（`type-params`）从 Input demo 迁移为 Wallpaper Language Select，直接绑定 `config.wallpaperLang` / `actions.setWallpaperLang` 并复用 `languageOptions`（国旗 + 原名）；宽度与首卡统一为 `w-[200px]`。
-2026-02-22: 前两卡进入业务ID过渡态：`basics -> location`、`type-params -> wallpaper-lang`；`SettingsCardShell` 同时输出新ID与 legacy ID 选择器，供迁移期兼容。
+2026-02-22: 前两卡进入业务ID过渡态：`basics -> location`、`type-params -> wallpaper-lang`；迁移期曾通过 legacy ID 选择器做兼容。
 2026-02-22: 设置面板地基升级为 `CARD_REGISTRY + CARD_ORDER_BY_TYPE` 双层结构；渲染改为“按 type 取卡序 + 按槽位打 `①~⑥`”，业务语义与位置语义解耦，当前 `life/goal` 临时复用 `year` 顺序。
 2026-02-22: 第三卡（`colors`）从 Switch demo 迁移为 Year Progress Colors 配置卡：中间分为 `Background`/`Accent` 两行 `ColorPicker`，底部接入 `palettePresets`，绑定 `setBackgroundColor` / `setAccentColor` / `applyPalette`，并暂定宽度基线 `w-[200px] max-w-full`。
 2026-02-22: 第四卡（`device`）从 Dropdown demo 迁移为 Device Select：接回 `config.device` / `actions.setDevice`、保留 iPhone/Android/iPad 分组，并在 Select 下方显示 `config.deviceResolution`（`selectedDevice.width × selectedDevice.height`）；本轮保持最小迁移，Annotated Select 形态继续留在 `doc/TODO.md`。
@@ -43,5 +43,8 @@ workspace/ - Home 双栏工作区子模块 (5 files)
 2026-02-23: 根据视觉复审回调，Year 第⑤收口卡恢复左右边界锚点（`md:px-[calc(25%-100px)]`）并将 URL/Set 间距收敛为 `gap-2`（对齐上方 colors presets 间距语义）；Goal/Life 继续保持不变。
 2026-02-23: Year 第⑤与 Goal 第⑥的 `Set it` 按钮统一复用官方 token hover（`variant="secondary"` + `not-disabled:hover:!bg-kumo-tint` + `transition-colors`），仅增强悬浮反馈，不改布局与交互链路。
 2026-02-23: SetupGuidePanel 移除黑色遮罩层（`bg-black/30`）并收敛为仅抽屉本体可交互；关闭入口统一为右上角 `X`，不再依赖遮罩点击关闭。
+2026-02-23: Setting Panel 卡片业务ID过渡态收口：删除 `CARD_REGISTRY.legacyId` 与 `data-home-settings-card-legacy`，选择器统一为 `data-home-settings-card`。
+2026-02-23: Life 模式第③卡接入 `life-fields`（DOB + Lifespan），`CARD_ORDER_BY_TYPE.life` 更新为 `["location","wallpaper-lang","life-fields","colors","device","url"]`，并移出占位 `palettes`。
+2026-02-23: 删除 `legacySettings=1` 与 `LegacySettingsForm` 迁移兜底分支，右侧设置区统一以六卡渲染链路为唯一入口。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

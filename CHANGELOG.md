@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Migration Safeguards**: Expanded behavioral tests in `kumo-migration.behavior.test.js` to ensure the integrity of the new settings UI and design system transitions.
 
 ### Changed
+- **Settings Architecture**: Standardized "Life" and "Goal" configuration fields into standard `SettingsCardShell` components within `HomeSettingsPane`, completely eliminating the legacy fallback system for a unified, progressive setup experience.
 - **Branding Alignment**: Renamed `KumoMenuIcon` to `JikanMenuIcon` across the registry module to align with project naming conventions.
 - **Documentation Sync**: Updated fractal documentation maps (`CLAUDE.md`) to reflect component renaming and the new settings architecture.
 - **GEB Protocol Audit**: Full L1/L2/L3 synchronized — removed phantom `src/assets/` from L1 directory tree, updated `SetupGuidePanel` L3 `[POS]` to reflect Year/Goal shared Set flow, and verified `doc/CLAUDE.md` member list against current file inventory.
