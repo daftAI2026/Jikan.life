@@ -1,9 +1,10 @@
 /**
  * [INPUT]: 依赖 SettingsCardShell、@/components/ui/kumo(Button/Input/Select/Collapsible)、旧表单链路(@/components/ui/color-picker/date-picker/datefield/calendar/field/button)、@internationalized/date
- * [OUTPUT]: 对外提供 HomeSettingsPane（右侧六卡视觉骨架，采用 CARD_REGISTRY + CARD_ORDER_BY_TYPE 双层结构并维持业务ID+legacy兼容；Goal 模式第3卡接入 goal-fields）与 SETTINGS_CARD_IDS 常量；开发态可通过 legacySettings=1 挂载旧表单
+ * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，采用 CARD_REGISTRY + CARD_ORDER_BY_TYPE 双层结构并维持业务ID+legacy兼容；Year 模式完成 5+6 合并为第⑤宽卡 Set 收口，Goal 模式保持第⑥卡 Set 收口）与 SETTINGS_CARD_IDS 常量；开发态可通过 legacySettings=1 挂载旧表单
  * [POS]: registry/sections/workspace 的右侧设置面板，使用“业务语义层 + 位置编排层”驱动六卡迁移；当前保留 LegacySettingsForm 作为逐卡接入兜底
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { useEffect, useState } from "react"
 import { Button as KumoButton, Collapsible, Input, Select } from "@/components/ui/kumo"
 import { Select as SelectBase } from "@base-ui/react/select"
 import { Label } from "@/components/ui/field"
@@ -27,10 +28,19 @@ import { Button } from "@/components/ui/button"
 import { parseDate } from "@internationalized/date"
 import { GOAL_START_MIN_ISO, GOAL_TARGET_MAX_ISO } from "../../../../../shared/wallpaper-core"
 import { SettingsCardShell } from "./SettingsCardShell"
+import { SetupGuidePanel } from "./SetupGuidePanel"
 
-const SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device", "palettes", "url"]
+const YEAR_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device", "url"]
+const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device", "palettes", "url"]
 const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
+const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
 const SETTINGS_CARD_MARKS = ["①", "②", "③", "④", "⑤", "⑥"]
+const SETUP_FLOW_TYPES = new Set(["year", "goal"])
+const CARD_SHELL_CLASS_BY_TYPE = {
+    year: {
+        url: "md:col-span-2",
+    },
+}
 const CARD_DATE_FIELD_GROUP_CLASS_NAME =
     "flex h-9 w-[200px] max-w-full items-center gap-2 rounded-lg border-0 bg-kumo-control px-3 text-base ring ring-kumo-line shadow-none data-[focus-within]:ring-1 data-[focus-within]:ring-kumo-ring data-[focus-within]:ring-offset-0"
 const CARD_DATE_INPUT_CLASS_NAME = "min-w-0 flex-1 bg-transparent px-0 text-base text-kumo-default whitespace-nowrap"
@@ -130,7 +140,7 @@ const CARD_REGISTRY = {
         legacyId: "goal-fields",
         title: "Goal",
         render: ({ actions, config, t, todayISO }) => (
-            <div className="flex w-full max-w-full flex-col items-center gap-3 px-4 py-1">
+            <div className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1">
                 <div className="w-[200px] max-w-full space-y-1.5">
                     <p className="text-xs text-kumo-subtle">{t("config.goalName")}</p>
                     <Input
@@ -167,44 +177,51 @@ const CARD_REGISTRY = {
         legacyId: "colors",
         titleKey: "config.colors",
         render: ({ actions, config, palettePresets, t }) => (
-            <div className="flex w-full max-w-full flex-col items-center gap-3 px-4 py-1">
-                <div className="w-[200px] max-w-full space-y-1.5">
-                    <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
-                    <ColorPicker
-                        className="w-[200px] max-w-full"
-                        value={config.bgColor}
-                        onChange={(value) => actions.setBackgroundColor(value)}
-                    />
+            <div className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1">
+                <div className="grid w-[200px] max-w-full grid-cols-2 gap-2">
+                    <div className="min-w-0 space-y-1.5">
+                        <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
+                        <ColorPicker
+                            className="w-full"
+                            value={config.bgColor}
+                            showValue={false}
+                            onChange={(value) => actions.setBackgroundColor(value)}
+                        />
+                    </div>
+                    <div className="min-w-0 space-y-1.5">
+                        <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
+                        <ColorPicker
+                            className="w-full"
+                            value={config.accentColor}
+                            showValue={false}
+                            onChange={(value) => actions.setAccentColor(value)}
+                        />
+                    </div>
                 </div>
                 <div className="w-[200px] max-w-full space-y-1.5">
-                    <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
-                    <ColorPicker
-                        className="w-[200px] max-w-full"
-                        value={config.accentColor}
-                        onChange={(value) => actions.setAccentColor(value)}
-                    />
-                </div>
-                <div className="flex w-[200px] max-w-full flex-wrap gap-2">
-                    {palettePresets.map((preset) => (
-                        <KumoButton
-                            key={preset.id}
-                            variant="secondary"
-                            size="sm"
-                            className="min-w-0 px-2"
-                            onClick={() => actions.applyPalette(preset.bg, preset.accent)}
-                        >
-                            <span className="inline-flex items-center gap-1">
-                                <span
-                                    className="inline-block h-3 w-3 rounded-full border border-kumo-line"
-                                    style={{ backgroundColor: preset.bg }}
-                                />
-                                <span
-                                    className="inline-block h-3 w-3 rounded-full border border-kumo-line"
-                                    style={{ backgroundColor: preset.accent }}
-                                />
-                            </span>
-                        </KumoButton>
-                    ))}
+                    <p className="text-xs text-kumo-subtle">{t("config.colorPresets")}</p>
+                    <div className="flex w-[200px] max-w-full flex-wrap gap-2">
+                        {palettePresets.map((preset) => (
+                            <KumoButton
+                                key={preset.id}
+                                variant="secondary"
+                                size="sm"
+                                className="min-w-0 px-2"
+                                onClick={() => actions.applyPalette(preset.bg, preset.accent)}
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    <span
+                                        className="inline-block h-3 w-3 rounded-full border border-kumo-line"
+                                        style={{ backgroundColor: preset.bg }}
+                                    />
+                                    <span
+                                        className="inline-block h-3 w-3 rounded-full border border-kumo-line"
+                                        style={{ backgroundColor: preset.accent }}
+                                    />
+                                </span>
+                            </KumoButton>
+                        ))}
+                    </div>
                 </div>
             </div>
         ),
@@ -257,24 +274,73 @@ const CARD_REGISTRY = {
     },
     url: {
         legacyId: "url",
+        resolveTitle: ({ config, t }) =>
+            SETUP_FLOW_TYPES.has(config.selectedType) ? t("setup.title") : "Collapsible",
         title: "Collapsible",
-        render: () => (
-            <Collapsible label="What is Kumo?">
-                Kumo is Cloudflare&apos;s component library.
-            </Collapsible>
-        ),
+        render: ({ config, copied, onSetIt, t, url }) => {
+            if (config.selectedType === "year") {
+                return (
+                    <div className="w-full px-4 py-1 md:px-[calc(25%-100px)]">
+                        <div className="flex max-w-full flex-col gap-2 md:flex-row md:items-center md:gap-2">
+                            <Input
+                                value={url || t("url.placeholder")}
+                                readOnly
+                                className="min-w-0 w-full font-mono text-xs md:flex-1"
+                            />
+                            <KumoButton
+                                variant="secondary"
+                                className="min-w-[88px] justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint md:shrink-0"
+                                onClick={() => void onSetIt()}
+                            >
+                                {copied ? t("url.copied") : t("url.set")}
+                            </KumoButton>
+                        </div>
+                    </div>
+                )
+            }
+
+            if (config.selectedType === "goal") {
+                return (
+                    <div className="flex w-[220px] max-w-full flex-col gap-2 px-3 py-1">
+                        <Input
+                            value={url || t("url.placeholder")}
+                            readOnly
+                            className="min-w-0 w-full font-mono text-xs"
+                        />
+                        <KumoButton
+                            variant="secondary"
+                            className="w-full justify-center text-center transition-colors not-disabled:hover:!bg-kumo-tint"
+                            onClick={() => void onSetIt()}
+                        >
+                            {copied ? t("url.copied") : t("url.set")}
+                        </KumoButton>
+                    </div>
+                )
+            }
+
+            return (
+                <Collapsible label="What is Kumo?">
+                    Kumo is Cloudflare&apos;s component library.
+                </Collapsible>
+            )
+        },
     },
 }
 
 const CARD_ORDER_BY_TYPE = {
-    year: SETTINGS_CARD_IDS,
-    life: SETTINGS_CARD_IDS,
+    year: YEAR_SETTINGS_CARD_IDS,
+    life: LIFE_SETTINGS_CARD_IDS,
     goal: GOAL_SETTINGS_CARD_IDS,
 }
 
 function resolveCardOrderByType(selectedType) {
     if (selectedType && CARD_ORDER_BY_TYPE[selectedType]) return CARD_ORDER_BY_TYPE[selectedType]
     return CARD_ORDER_BY_TYPE.year
+}
+
+function resolveCardShellClassName(selectedType, cardId) {
+    if (!selectedType) return ""
+    return CARD_SHELL_CLASS_BY_TYPE[selectedType]?.[cardId] ?? ""
 }
 
 function getLocalTodayISO() {
@@ -582,24 +648,46 @@ function HomeSettingsPane(props) {
         url,
         actions,
     } = props
+    const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
+    const [setupPlatform, setSetupPlatform] = useState("ios")
     const todayISO = getLocalTodayISO()
+
+    useEffect(() => {
+        if (!SETUP_FLOW_TYPES.has(config.selectedType)) {
+            setIsSetupPanelOpen(false)
+        }
+    }, [config.selectedType])
+
+    const handleSetIt = async () => {
+        const ok = await actions.copyUrl()
+        if (!ok) return
+        setSetupPlatform(selectedDevice.category === "Android" ? "android" : "ios")
+        setIsSetupPanelOpen(true)
+    }
+
+    const handleCloseSetupPanel = () => {
+        setIsSetupPanelOpen(false)
+    }
 
     const cardViewModel = {
         actions,
         config,
+        copied,
+        onSetIt: handleSetIt,
         selectedDevice,
         palettePresets,
         countryOptions,
         languageOptions,
         todayISO,
         t,
+        url,
     }
     const cardOrder = resolveCardOrderByType(config.selectedType)
 
     const showLegacySettings = shouldShowLegacySettings()
 
     return (
-        <div className="h-full min-h-0 overflow-y-auto lg:overflow-hidden">
+        <div className="relative h-full min-h-0 overflow-y-auto lg:overflow-hidden">
             <section
                 data-home-settings-grid
                 className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2 lg:h-full lg:min-h-0 lg:grid-rows-3 lg:auto-rows-fr"
@@ -612,15 +700,22 @@ function HomeSettingsPane(props) {
                             key={cardId}
                             cardId={cardId}
                             legacyCardId={card.legacyId}
-                            title={card.titleKey ? t(card.titleKey) : card.title}
+                            title={card.resolveTitle ? card.resolveTitle(cardViewModel) : card.titleKey ? t(card.titleKey) : card.title}
                             titleTooltip={card.titleTooltipKey ? t(card.titleTooltipKey) : card.titleTooltip}
                             indexMark={SETTINGS_CARD_MARKS[slotIndex]}
+                            className={resolveCardShellClassName(config.selectedType, cardId)}
                         >
                             {card.render(cardViewModel)}
                         </SettingsCardShell>
                     )
                 })}
             </section>
+            <SetupGuidePanel
+                open={isSetupPanelOpen}
+                platform={setupPlatform}
+                onClose={handleCloseSetupPanel}
+                t={t}
+            />
 
             {showLegacySettings && (
                 <section data-home-settings-legacy className="space-y-3 border-t border-kumo-line bg-kumo-elevated p-6">

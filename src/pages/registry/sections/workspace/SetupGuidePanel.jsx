@@ -1,0 +1,124 @@
+/**
+ * [INPUT]: 依赖 @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), i18n t() 与平台参数
+ * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区内局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染）
+ * [POS]: registry/sections/workspace 的 Goal 第⑥卡后续动作承载层，负责“Set it”后的人机引导闭环
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+import { Button as KumoButton } from "@/components/ui/kumo"
+import { XIcon } from "@phosphor-icons/react"
+import { cn } from "@/lib/utils"
+
+const IOS_STEPS = [
+    ["setup.ios.step1", "setup.ios.step1Desc"],
+    ["setup.ios.step2", "setup.ios.step2Desc"],
+    ["setup.ios.step3", "setup.ios.step3Desc"],
+    ["setup.ios.step4", "setup.ios.step4Desc"],
+]
+
+const ANDROID_FINAL_STEP = ["setup.android.step5", "setup.android.step5Desc"]
+
+function SetupGuideStep({ index, title, descriptionHtml }) {
+    return (
+        <article className="space-y-2 rounded-lg border border-kumo-line bg-kumo-control px-3 py-3">
+            <header className="inline-flex items-center gap-2 text-sm font-medium text-kumo-default">
+                <span className="inline-flex size-5 items-center justify-center rounded-full bg-kumo-tint text-xs leading-none">
+                    {index}
+                </span>
+                <h4>{title}</h4>
+            </header>
+            <div
+                className="text-xs leading-5 text-kumo-subtle [&_strong]:font-semibold [&_strong]:text-kumo-default"
+                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+        </article>
+    )
+}
+
+function SetupGuidePanel({ open, platform, onClose, t }) {
+    const isAndroid = platform === "android"
+    const platformLabel = isAndroid ? t("setup.android") : t("setup.ios")
+
+    return (
+        <div
+            data-home-settings-setup-panel
+            aria-hidden={!open}
+            className="pointer-events-none absolute inset-0 z-40"
+        >
+            <aside
+                className={cn(
+                    "pointer-events-auto absolute inset-y-0 right-0 flex w-full max-w-full flex-col border-l border-kumo-line bg-kumo-elevated transition-transform duration-300 ease-out md:w-[86%] lg:w-full lg:border-l-0",
+                    open ? "translate-x-0" : "translate-x-full"
+                )}
+            >
+                <header className="flex items-start justify-between border-b border-kumo-line px-4 py-4">
+                    <div className="space-y-1">
+                        <p className="text-xs font-medium tracking-[0.12em] text-kumo-subtle uppercase">{t("setup.header")}</p>
+                        <h3 className="text-lg leading-6 font-semibold text-kumo-default">{t("setup.title")}</h3>
+                        <p className="text-xs text-kumo-subtle">{platformLabel}</p>
+                    </div>
+                    <KumoButton
+                        variant="ghost"
+                        shape="square"
+                        aria-label={t("registry.menu.close")}
+                        onClick={onClose}
+                    >
+                        <XIcon size={16} weight="bold" />
+                    </KumoButton>
+                </header>
+
+                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+                    {!isAndroid &&
+                        IOS_STEPS.map(([titleKey, descKey], index) => (
+                            <SetupGuideStep
+                                key={titleKey}
+                                index={index + 1}
+                                title={t(titleKey)}
+                                descriptionHtml={t(descKey)}
+                            />
+                        ))}
+
+                    {isAndroid && (
+                        <>
+                            <SetupGuideStep index={1} title={t("setup.android.step1")} descriptionHtml={t("setup.android.step1Desc")} />
+                            <SetupGuideStep index={2} title={t("setup.android.step2")} descriptionHtml={t("setup.android.step2Desc")} />
+                            <SetupGuideStep index={3} title={t("setup.android.step3")} descriptionHtml={t("setup.android.step3Desc")} />
+
+                            <article className="space-y-2 rounded-lg border border-kumo-line bg-kumo-control px-3 py-3">
+                                <header className="inline-flex items-center gap-2 text-sm font-medium text-kumo-default">
+                                    <span className="inline-flex size-5 items-center justify-center rounded-full bg-kumo-tint text-xs leading-none">
+                                        4
+                                    </span>
+                                    <h4>{t("setup.android.step4")}</h4>
+                                </header>
+                                <div className="space-y-2">
+                                    <div className="space-y-1.5 rounded-md bg-kumo-elevated px-2.5 py-2">
+                                        <p className="text-xs font-medium text-kumo-default">{t("setup.android.step4_1")}</p>
+                                        <div
+                                            className="text-xs leading-5 text-kumo-subtle [&_strong]:font-semibold [&_strong]:text-kumo-default"
+                                            dangerouslySetInnerHTML={{ __html: t("setup.android.step4_1Desc") }}
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5 rounded-md bg-kumo-elevated px-2.5 py-2">
+                                        <p className="text-xs font-medium text-kumo-default">{t("setup.android.step4_2")}</p>
+                                        <div
+                                            className="text-xs leading-5 text-kumo-subtle [&_strong]:font-semibold [&_strong]:text-kumo-default"
+                                            dangerouslySetInnerHTML={{ __html: t("setup.android.step4_2Desc") }}
+                                        />
+                                    </div>
+                                </div>
+                            </article>
+
+                            <SetupGuideStep
+                                index={5}
+                                title={t(ANDROID_FINAL_STEP[0])}
+                                descriptionHtml={t(ANDROID_FINAL_STEP[1])}
+                            />
+                        </>
+                    )}
+                </div>
+            </aside>
+        </div>
+    )
+}
+
+export { SetupGuidePanel }

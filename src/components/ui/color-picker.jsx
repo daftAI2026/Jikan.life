@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/button, @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染）
+ * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本）
  * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏比例布局
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -70,11 +70,14 @@ function EyeDropperButton() {
 /* ========================================================================
    ColorPicker Component
    ======================================================================== */
-export function ColorPicker({ value, onChange, className, disabled }) {
+export function ColorPicker({ value, onChange, className, disabled, showValue = true }) {
     const { internalColor, setInternalColor } = useColorPickerStateBridge(value)
 
     const [colorSpace, setColorSpace] = useState("hex")
     const channels = COLOR_SPACE_CHANNELS[colorSpace] ?? null
+    const triggerSwatchClassName = showValue
+        ? "size-6 shrink-0 rounded-md ring ring-kumo-line"
+        : "h-5 w-full rounded-md ring ring-kumo-line"
 
     const handleColorChange = (newColor) => {
         setInternalColor(newColor)
@@ -111,11 +114,13 @@ export function ColorPicker({ value, onChange, className, disabled }) {
                         <div className="w-full flex items-center gap-2">
                             <ColorSwatch
                                 color={internalColor}
-                                className="size-6 shrink-0 rounded-md ring ring-kumo-line"
+                                className={triggerSwatchClassName}
                             />
-                            <span className="truncate font-mono text-sm uppercase text-kumo-subtle">
-                                {internalColor.toString('hex')}
-                            </span>
+                            {showValue && (
+                                <span className="truncate font-mono text-sm uppercase text-kumo-subtle">
+                                    {internalColor.toString('hex')}
+                                </span>
+                            )}
                         </div>
                     </Button>
                 </Popover.Trigger>

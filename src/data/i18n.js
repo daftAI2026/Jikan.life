@@ -100,6 +100,7 @@ export const i18nData = {
 
     // URL & Copy
     'url.copy': 'Copy',
+    'url.set': 'Set it',
     'url.copied': 'Copied!',
     'url.placeholder': 'Configure options above...',
 
@@ -274,6 +275,7 @@ export const i18nData = {
 
     // URL 和复制
     'url.copy': '复制',
+    'url.set': '去设置',
     'url.copied': '已复制！',
     'url.placeholder': '在上方配置选项...',
 
@@ -448,6 +450,7 @@ export const i18nData = {
 
     // URL 和複製
     'url.copy': '複製',
+    'url.set': '去設定',
     'url.copied': '已複製！',
     'url.placeholder': '在上方設定選項...',
 
@@ -622,6 +625,7 @@ export const i18nData = {
 
     // URL とコピー
     'url.copy': 'コピー',
+    'url.set': '設定へ',
     'url.copied': 'コピーしました！',
     'url.placeholder': '上でオプションを設定してください...',
 
