@@ -1,17 +1,16 @@
 /**
- * [INPUT]: 依赖 @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), i18n t() 与平台参数
+ * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText), @phosphor-icons/react(XIcon), @/lib/utils(cn), i18n t() 与平台参数
  * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区内局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染）
  * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层（Year 第⑤、Goal 第⑥共用），负责“Set it”后的人机引导闭环
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Button as KumoButton } from "@/components/ui/kumo"
+import { Button as KumoButton, ClipboardText } from "@/components/ui/kumo"
 import { XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
 const IOS_STEPS = [
     ["setup.ios.step1", "setup.ios.step1Desc"],
     ["setup.ios.step2", "setup.ios.step2Desc"],
-    ["setup.ios.step3", "setup.ios.step3Desc"],
     ["setup.ios.step4", "setup.ios.step4Desc"],
 ]
 
@@ -34,7 +33,42 @@ function SetupGuideStep({ index, title, descriptionHtml }) {
     )
 }
 
-function SetupGuidePanel({ open, platform, onClose, t }) {
+function IOSShortcutStep({ index, t, url }) {
+    const resolvedUrl = url || t("url.placeholder")
+
+    return (
+        <article className="space-y-2 rounded-lg border border-kumo-line bg-kumo-control px-3 py-3">
+            <header className="inline-flex items-center gap-2 text-sm font-medium text-kumo-default">
+                <span className="inline-flex size-5 items-center justify-center rounded-full bg-kumo-tint text-xs leading-none">
+                    {index}
+                </span>
+                <h4>{t("setup.ios.step3")}</h4>
+            </header>
+            <div className="space-y-2 text-xs leading-5 text-kumo-subtle [&_strong]:font-semibold [&_strong]:text-kumo-default">
+                <p>
+                    <strong>{t("setup.ios.step3.action1")}</strong>
+                </p>
+                <ClipboardText
+                    text={resolvedUrl}
+                    size="base"
+                    className="w-3/4 max-w-full"
+                    tooltip={{
+                        text: t("setup.ios.step3.copyTooltip"),
+                        copiedText: t("setup.ios.step3.copiedTooltip"),
+                        side: "top",
+                    }}
+                    labels={{ copyAction: t("setup.ios.step3.copyAction") }}
+                />
+                <p>
+                    <strong>{t("setup.ios.step3.action2")}</strong>
+                </p>
+                <div dangerouslySetInnerHTML={{ __html: t("setup.ios.step3.action2Desc") }} />
+            </div>
+        </article>
+    )
+}
+
+function SetupGuidePanel({ open, platform, onClose, t, url }) {
     const isAndroid = platform === "android"
     const platformLabel = isAndroid ? t("setup.android") : t("setup.ios")
 
@@ -66,15 +100,14 @@ function SetupGuidePanel({ open, platform, onClose, t }) {
                 </header>
 
                 <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
-                    {!isAndroid &&
-                        IOS_STEPS.map(([titleKey, descKey], index) => (
-                            <SetupGuideStep
-                                key={titleKey}
-                                index={index + 1}
-                                title={t(titleKey)}
-                                descriptionHtml={t(descKey)}
-                            />
-                        ))}
+                    {!isAndroid && (
+                        <>
+                            <SetupGuideStep index={1} title={t(IOS_STEPS[0][0])} descriptionHtml={t(IOS_STEPS[0][1])} />
+                            <SetupGuideStep index={2} title={t(IOS_STEPS[1][0])} descriptionHtml={t(IOS_STEPS[1][1])} />
+                            <IOSShortcutStep index={3} t={t} url={url} />
+                            <SetupGuideStep index={4} title={t(IOS_STEPS[2][0])} descriptionHtml={t(IOS_STEPS[2][1])} />
+                        </>
+                    )}
 
                     {isAndroid && (
                         <>

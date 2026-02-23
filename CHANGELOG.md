@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.9] - 2026-02-24
+
 ### Features
-- **Database**: Updated device database with iPhone 17 series (Standard, Pro, Pro Max, Air).
+- **Database**: Added iPhone 17 series (Standard, Pro, Pro Max, Air) to the device database.
 - **Logic**: Integrated device name normalization in `useHomeWallpaperConfig` to ensure cross-platform consistency.
+- **UI UX**: Temporarily hidden Android and iPad device categories from the device selection interface to focus on iPhone support for the time being.
+
+### Tests
+- **Migration**: Synchronized `kumo-migration.behavior.test.js` to verify device sorting and normalization logic.
+- Fixed migration test failure in `HomeSettingsPane.jsx` by redirecting `useKumoToastManager` import through unified `components/ui/kumo.jsx` entry.
 
 ### Tests
 - **Migration**: Synchronized `kumo-migration.behavior.test.js` to verify device sorting and normalization logic.

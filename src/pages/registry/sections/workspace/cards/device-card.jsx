@@ -7,9 +7,11 @@
 import { Select } from "@/components/ui/kumo"
 import { Select as SelectBase } from "@base-ui/react/select"
 import { devices } from "@/data/devices"
+import { VISIBLE_DEVICE_CATEGORIES } from "../device-visibility"
 
 const deviceCard = {
     titleKey: "config.device",
+    titleTooltipKey: "config.deviceTooltip",
     render: ({ actions, config, selectedDevice }) => (
         <div className="flex w-full max-w-full flex-col items-center gap-1.5 py-1">
             <Select
@@ -20,7 +22,7 @@ const deviceCard = {
                 }}
                 renderValue={(value) => value || config.device}
             >
-                {["iPhone", "Android", "iPad"].map((category) => (
+                {VISIBLE_DEVICE_CATEGORIES.map((category) => (
                     <SelectBase.Group key={category}>
                         <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-kumo-subtle select-none">
                             {category}

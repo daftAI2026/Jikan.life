@@ -552,9 +552,11 @@ test("Registry settings device card uses grouped Select with resolution hint", (
   const source = readSource("src/pages/registry/sections/workspace/cards/device-card.jsx")
 
   assert.match(source, /titleKey:\s*"config\.device"/)
+  assert.match(source, /titleTooltipKey:\s*"config\.deviceTooltip"/)
   assert.match(source, /actions\.setDevice/)
   assert.match(source, /className="w-\[200px\] max-w-full"/)
-  assert.match(source, /\["iPhone",\s*"Android",\s*"iPad"\]/)
+  assert.match(source, /import\s+\{\s*VISIBLE_DEVICE_CATEGORIES\s*\}\s+from\s+"\.\.\/device-visibility"/)
+  assert.match(source, /VISIBLE_DEVICE_CATEGORIES\.map/)
   assert.match(source, /SelectBase\.Group/)
   assert.match(source, /selectedDevice\.width/)
   assert.match(source, /selectedDevice\.height/)
@@ -644,6 +646,9 @@ test("Home wallpaper config normalizes device value before persisting", () => {
 
   assert.match(source, /normalizeDeviceName/)
   assert.match(source, /setDevice\(value\)\s*\{[\s\S]*?normalizeDeviceName\(value\)/)
+  assert.match(source, /import\s+\{[\s\S]*PRIMARY_VISIBLE_DEVICE_CATEGORY[\s\S]*isVisibleDeviceCategory[\s\S]*\}\s+from\s+"\.\/device-visibility"/)
+  assert.match(source, /isVisibleDeviceCategory\(resolvedDevice\?\.category\)/)
+  assert.match(source, /device\.category === PRIMARY_VISIBLE_DEVICE_CATEGORY/)
 })
 
 test("Goal/Life slot 3 uses dedicated fields card and hides palettes card in active orders", () => {
@@ -717,6 +722,7 @@ test("Goal url card uses setup title and set flow guarded by copy success", () =
   assert.match(source, /<SetupGuidePanel[\s\S]*?open=\{isSetupPanelOpen\}/)
   assert.match(source, /<SetupGuidePanel[\s\S]*?platform=\{setupPlatform\}/)
   assert.match(source, /<SetupGuidePanel[\s\S]*?onClose=\{handleCloseSetupPanel\}/)
+  assert.match(source, /<SetupGuidePanel[\s\S]*?url=\{url\}/)
 })
 
 test("Year merged slot uses setup url card as slot 5 with compact inline row on md+", () => {
@@ -751,6 +757,11 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /onClick=\{onClose\}/)
   assert.doesNotMatch(source, /bg-black\/30/)
   assert.match(source, /setup\.ios\.step1/)
+  assert.match(source, /setup\.ios\.step3\.action1/)
+  assert.match(source, /ClipboardText/)
+  assert.match(source, /<ClipboardText[\s\S]*?size="base"/)
+  assert.match(source, /const resolvedUrl = url \|\| t\("url\.placeholder"\)/)
+  assert.match(source, /className="w-3\/4 max-w-full"/)
   assert.match(source, /setup\.android\.step1/)
   assert.match(source, /dangerouslySetInnerHTML/)
 })
@@ -994,6 +1005,32 @@ test("i18n includes set button key in all languages", () => {
   const setKeyCount = (source.match(/'url\.set':/g) || []).length
 
   assert.equal(setKeyCount, 4)
+})
+
+test("i18n includes device tooltip key in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const deviceTooltipCount = (source.match(/'config\.deviceTooltip':/g) || []).length
+
+  assert.equal(deviceTooltipCount, 4)
+})
+
+test("i18n includes iOS shortcut clipboard keys in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const action1Count = (source.match(/'setup\.ios\.step3\.action1':/g) || []).length
+  const action2Count = (source.match(/'setup\.ios\.step3\.action2':/g) || []).length
+  const action2DescCount = (source.match(/'setup\.ios\.step3\.action2Desc':/g) || []).length
+  const copyTooltipCount = (source.match(/'setup\.ios\.step3\.copyTooltip':/g) || []).length
+  const copiedTooltipCount = (source.match(/'setup\.ios\.step3\.copiedTooltip':/g) || []).length
+  const copyActionCount = (source.match(/'setup\.ios\.step3\.copyAction':/g) || []).length
+  const legacyStep3DescCount = (source.match(/'setup\.ios\.step3Desc':/g) || []).length
+
+  assert.equal(action1Count, 4)
+  assert.equal(action2Count, 4)
+  assert.equal(action2DescCount, 4)
+  assert.equal(copyTooltipCount, 4)
+  assert.equal(copiedTooltipCount, 4)
+  assert.equal(copyActionCount, 4)
+  assert.equal(legacyStep3DescCount, 0)
 })
 
 test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {

@@ -3,15 +3,16 @@
 
 成员清单
 useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路
+device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
 HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排与 Set-it 流程门控，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ①~⑥ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
-SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互
+SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接。
 cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
 cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url/date-field）
 
 结构
-workspace/ - Home 双栏工作区子模块 (5 files + cards/ 子目录)
+workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 
 架构决策
 采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。业务语义实现下沉到 `cards/*`，`HomeSettingsPane` 仅保留顺序编排和流程状态。`①~⑥` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
@@ -50,5 +51,9 @@ workspace/ - Home 双栏工作区子模块 (5 files + cards/ 子目录)
 2026-02-23: 删除 `legacySettings=1` 与 `LegacySettingsForm` 迁移兜底分支，右侧设置区统一以六卡渲染链路为唯一入口。
 2026-02-23: 将 `HomeSettingsPane` 内联卡片实现拆分到 `workspace/cards/*`（含 `settings-card-date-picker-field`），`HomeSettingsPane` 仅保留卡序编排、视图模型组装与 Set-it 成功门控；UI/UX 与交互行为保持不变。
 2026-02-23: Goal 第③卡日期输入从双字段（Start/Target）切换为单一 Date Range：使用官方 Kumo `DatePicker(mode="range")` + presets(`Next 30/90 days`)，并新增 `actions.setGoalRange` 原子状态入口；URL 继续输出 `goalStart/goal`。
+2026-02-24: Device 选择入口临时收口为 iPhone-only：`device-card` 仅渲染 iPhone 分组；`useHomeWallpaperConfig` 对历史 Android/iPad 设备值做启动期回退到首个 iPhone，可见入口与状态保持一致（设备数据与 Worker 参数链路保留）。
+2026-02-24: 新增 `device-visibility.js` 作为设备可见性策略单一真相源，`device-card` 与 `useHomeWallpaperConfig` 改为共享常量/判断函数，消除跨文件重复定义导致的策略漂移风险。
+2026-02-24: SetupGuidePanel 的 iOS 第3步改为结构化渲染：`Get Contents of URL` 使用 Kumo `ClipboardText`（Long Text）并绑定 `HomeSettingsPane` 透传的同源 `url`，宽度控制为当前容器约 3/4；不再依赖写死 URL 文案。
+2026-02-24: SetupGuidePanel 的 iOS 第3步 `ClipboardText` 尺寸从 `lg` 调整为 `base`，与 Setup 收口卡 URL 输入框高度对齐（36px），消除步骤间控件高度不一致。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

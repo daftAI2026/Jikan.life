@@ -122,6 +122,7 @@ function HomeSettingsPane(props) {
                 platform={setupPlatform}
                 onClose={handleCloseSetupPanel}
                 t={t}
+                url={url}
             />
         </div>
     )

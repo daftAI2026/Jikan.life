@@ -15,6 +15,10 @@ import {
     isValidISODateString,
     validateGoalDateInputs
 } from "../../../../../shared/wallpaper-core"
+import {
+    PRIMARY_VISIBLE_DEVICE_CATEGORY,
+    isVisibleDeviceCategory,
+} from "./device-visibility"
 
 const STYLE_TO_TYPE = {
     year: "year",
@@ -105,12 +109,29 @@ function useHomeWallpaperConfig({ selectedStyle }) {
     useEffect(() => {
         setConfig((prev) => {
             const normalizedDevice = normalizeDeviceName(prev.device)
-            if (normalizedDevice === prev.device) return prev
-            return { ...prev, device: normalizedDevice }
+            const resolvedDevice = getDevice(normalizedDevice)
+            const fallbackVisibleDevice =
+                devices.find((device) => device.category === PRIMARY_VISIBLE_DEVICE_CATEGORY)
+                ?? devices.find((device) => isVisibleDeviceCategory(device.category))
+                ?? devices[0]
+            const nextDevice =
+                isVisibleDeviceCategory(resolvedDevice?.category)
+                    ? normalizedDevice
+                    : fallbackVisibleDevice?.name ?? normalizedDevice
+            if (nextDevice === prev.device) return prev
+            return { ...prev, device: nextDevice }
         })
     }, [])
 
-    const selectedDevice = useMemo(() => getDevice(config.device) ?? devices[0], [config.device])
+    const selectedDevice = useMemo(() => {
+        const resolvedDevice = getDevice(config.device)
+        if (isVisibleDeviceCategory(resolvedDevice?.category)) return resolvedDevice
+        return (
+            devices.find((device) => device.category === PRIMARY_VISIBLE_DEVICE_CATEGORY)
+            ?? devices.find((device) => isVisibleDeviceCategory(device.category))
+            ?? devices[0]
+        )
+    }, [config.device])
     const palettePresets = useMemo(
         () =>
             PALETTE_PRESETS.map((preset) => ({
@@ -141,7 +162,13 @@ function useHomeWallpaperConfig({ selectedStyle }) {
     )
     const todayISO = getLocalTodayISO()
 
-    const deviceOptions = useMemo(() => devices.map((device) => device.name), [])
+    const deviceOptions = useMemo(
+        () =>
+            devices
+                .filter((device) => isVisibleDeviceCategory(device.category))
+                .map((device) => device.name),
+        []
+    )
 
     const generateUrl = useCallback(() => {
         if (!config.selectedType) return ""
