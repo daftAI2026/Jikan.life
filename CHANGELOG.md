@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+- **Database**: Updated device database with iPhone 17 series (Standard, Pro, Pro Max, Air).
+- **Logic**: Integrated device name normalization in `useHomeWallpaperConfig` to ensure cross-platform consistency.
+
+### Tests
+- **Migration**: Synchronized `kumo-migration.behavior.test.js` to verify device sorting and normalization logic.
+
 ## [1.1.8] - 2026-02-23
 
 ### Infrastructure

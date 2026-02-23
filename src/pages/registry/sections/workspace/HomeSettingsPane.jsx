@@ -5,7 +5,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
-import { useKumoToastManager } from "@cloudflare/kumo"
+import { useKumoToastManager } from "@/components/ui/kumo"
 import { CARD_REGISTRY } from "./cards"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"

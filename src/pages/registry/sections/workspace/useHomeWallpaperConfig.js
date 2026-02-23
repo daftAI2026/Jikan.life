@@ -6,7 +6,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { countries, getTimezone } from "@/data/countries"
-import { devices, getDevice } from "@/data/devices"
+import { devices, getDevice, normalizeDeviceName } from "@/data/devices"
 import { LANGUAGE_META } from "@/data/i18n"
 import { useI18n } from "@/lib/I18nContext"
 import { DEFAULT_PALETTE, PALETTE_PRESETS } from "../../../../../shared/palettes"
@@ -100,6 +100,14 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         } catch {
             // ignore auto-detect failures
         }
+    }, [])
+
+    useEffect(() => {
+        setConfig((prev) => {
+            const normalizedDevice = normalizeDeviceName(prev.device)
+            if (normalizedDevice === prev.device) return prev
+            return { ...prev, device: normalizedDevice }
+        })
     }, [])
 
     const selectedDevice = useMemo(() => getDevice(config.device) ?? devices[0], [config.device])
@@ -326,7 +334,7 @@ function useHomeWallpaperConfig({ selectedStyle }) {
                 })
             },
             setDevice(value) {
-                updateConfig({ device: value })
+                updateConfig({ device: normalizeDeviceName(value) })
             },
             async copyUrl() {
                 const url = generateUrl()

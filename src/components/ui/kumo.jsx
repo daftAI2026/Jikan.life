@@ -22,4 +22,5 @@ export {
     Text,
     Tooltip,
     TooltipProvider,
+    useKumoToastManager,
 } from "@cloudflare/kumo"

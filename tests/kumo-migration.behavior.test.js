@@ -8,6 +8,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import fs from "node:fs"
 import path from "node:path"
+import { pathToFileURL } from "node:url"
 
 const readSource = (relativePath) => {
   const filePath = path.join(process.cwd(), relativePath)
@@ -562,6 +563,87 @@ test("Registry settings device card uses grouped Select with resolution hint", (
   assert.doesNotMatch(source, /<DropdownMenu/)
   assert.doesNotMatch(source, /Worker/)
   assert.doesNotMatch(source, /Pages/)
+})
+
+test("Device data splits grouped iPhone labels into single-model entries and keeps legacy aliases", async () => {
+  const source = readSource("src/data/devices.js")
+
+  assert.match(source, /name:\s*"iPhone 16 Plus"/)
+  assert.match(source, /name:\s*"iPhone 15 Pro Max"/)
+  assert.match(source, /name:\s*"iPhone 15 Plus"/)
+  assert.match(source, /name:\s*"iPhone 14 Pro Max"/)
+  assert.match(source, /name:\s*"iPhone 16"/)
+  assert.match(source, /name:\s*"iPhone 15 Pro"/)
+  assert.match(source, /name:\s*"iPhone 15"/)
+  assert.match(source, /name:\s*"iPhone 14 Pro"/)
+  assert.match(source, /name:\s*"iPhone 14 Plus"/)
+  assert.match(source, /name:\s*"iPhone 13 Pro Max"/)
+  assert.match(source, /name:\s*"iPhone 14"/)
+  assert.match(source, /name:\s*"iPhone 13 Pro"/)
+  assert.match(source, /name:\s*"iPhone 13"/)
+
+  assert.doesNotMatch(source, /name:\s*"iPhone 14 Pro Max \/ 15 Plus \/ 15 Pro Max \/ 16 Plus"/)
+  assert.doesNotMatch(source, /name:\s*"iPhone 14 Pro \/ 15 \/ 15 Pro \/ 16"/)
+  assert.doesNotMatch(source, /name:\s*"iPhone 13 Pro Max \/ 14 Plus"/)
+  assert.doesNotMatch(source, /name:\s*"iPhone 13 \/ 13 Pro \/ 14"/)
+
+  assert.match(source, /const LEGACY_DEVICE_NAME_MAP = \{/)
+  assert.match(source, /export function normalizeDeviceName\(deviceName\)/)
+  assert.match(source, /return LEGACY_DEVICE_NAME_MAP\[deviceName\] \?\? deviceName/)
+
+  const moduleUrl = pathToFileURL(path.join(process.cwd(), "src/data/devices.js")).href
+  const { devices } = await import(`${moduleUrl}?v=${Date.now()}`)
+  const iphones = devices.filter((device) => device.category === "iPhone")
+  const iphoneResolutionByName = new Map(
+    iphones.map((device) => [device.name, `${device.width} x ${device.height}`])
+  )
+
+  assert.equal(iphoneResolutionByName.get("iPhone 17"), "1206 x 2622")
+  assert.equal(iphoneResolutionByName.get("iPhone 17 Pro"), "1206 x 2622")
+  assert.equal(iphoneResolutionByName.get("iPhone 17 Air"), "1260 x 2736")
+  assert.equal(iphoneResolutionByName.get("iPhone 16 Pro"), "1206 x 2622")
+  assert.equal(iphoneResolutionByName.get("iPhone 16 Pro Max"), "1320 x 2868")
+  assert.equal(iphoneResolutionByName.get("iPhone 13 mini"), "1080 x 2340")
+  assert.equal(iphoneResolutionByName.get("iPhone 12 mini"), "1080 x 2340")
+
+  const seriesOrder = [
+    "iPhone 17 Pro Max",
+    "iPhone 17 Pro",
+    "iPhone 17 Air",
+    "iPhone 17",
+    "iPhone 16 Pro Max",
+    "iPhone 16 Pro",
+    "iPhone 16 Plus",
+    "iPhone 16",
+    "iPhone 15 Pro Max",
+    "iPhone 15 Pro",
+    "iPhone 15 Plus",
+    "iPhone 15",
+    "iPhone 14 Pro Max",
+    "iPhone 14 Pro",
+    "iPhone 14 Plus",
+    "iPhone 14",
+    "iPhone 13 Pro Max",
+    "iPhone 13 Pro",
+    "iPhone 13",
+    "iPhone 13 mini",
+    "iPhone 12 mini",
+  ]
+  const seriesPositions = seriesOrder.map((deviceName) =>
+    iphones.findIndex((device) => device.name === deviceName)
+  )
+
+  assert.ok(seriesPositions.every((index) => index >= 0))
+  for (let i = 1; i < seriesPositions.length; i += 1) {
+    assert.ok(seriesPositions[i] > seriesPositions[i - 1], `${seriesOrder[i - 1]} should come before ${seriesOrder[i]}`)
+  }
+})
+
+test("Home wallpaper config normalizes device value before persisting", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+
+  assert.match(source, /normalizeDeviceName/)
+  assert.match(source, /setDevice\(value\)\s*\{[\s\S]*?normalizeDeviceName\(value\)/)
 })
 
 test("Goal/Life slot 3 uses dedicated fields card and hides palettes card in active orders", () => {
