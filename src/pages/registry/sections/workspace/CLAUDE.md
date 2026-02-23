@@ -4,15 +4,17 @@
 成员清单
 useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式包含 goalStart 字段、手动输入即时阻断校验与仅合法日期透传
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
-HomeSettingsPane.jsx: 右侧设置面板主容器；当前阶段输出 `CARD_REGISTRY`（业务语义）+ `CARD_ORDER_BY_TYPE`（位置编排）双层骨架（year 模式已完成 5+6 合并为 5 卡，槽位⑤为 `url` 收口宽卡；goal/life 模式均在槽位③承载专属字段卡，并保留槽位⑥ Set 收口），导出 `SETTINGS_CARD_IDS`
+HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排与 Set-it 流程门控，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ①~⑥ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
 SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互
+cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
+cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url/date-field）
 
 结构
-workspace/ - Home 双栏工作区子模块 (5 files)
+workspace/ - Home 双栏工作区子模块 (5 files + cards/ 子目录)
 
 架构决策
-采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。`①~⑥` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
+采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。业务语义实现下沉到 `cards/*`，`HomeSettingsPane` 仅保留顺序编排和流程状态。`①~⑥` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
 
 开发规范
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
@@ -46,5 +48,6 @@ workspace/ - Home 双栏工作区子模块 (5 files)
 2026-02-23: Setting Panel 卡片业务ID过渡态收口：删除 `CARD_REGISTRY.legacyId` 与 `data-home-settings-card-legacy`，选择器统一为 `data-home-settings-card`。
 2026-02-23: Life 模式第③卡接入 `life-fields`（DOB + Lifespan），`CARD_ORDER_BY_TYPE.life` 更新为 `["location","wallpaper-lang","life-fields","colors","device","url"]`，并移出占位 `palettes`。
 2026-02-23: 删除 `legacySettings=1` 与 `LegacySettingsForm` 迁移兜底分支，右侧设置区统一以六卡渲染链路为唯一入口。
+2026-02-23: 将 `HomeSettingsPane` 内联卡片实现拆分到 `workspace/cards/*`（含 `settings-card-date-picker-field`），`HomeSettingsPane` 仅保留卡序编排、视图模型组装与 Set-it 成功门控；UI/UX 与交互行为保持不变。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

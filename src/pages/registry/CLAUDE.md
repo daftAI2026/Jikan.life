@@ -14,8 +14,10 @@ sections/CLAUDE.md: sections 子模块文档
 sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层
 sections/workspace/useHomeWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
 sections/workspace/HomePreviewPane.jsx: 左侧手机预览画布
-sections/workspace/HomeSettingsPane.jsx: 右侧六卡设置骨架（Kumo HomeGrid 风格）与 legacySettings 迁移兜底
+sections/workspace/HomeSettingsPane.jsx: 右侧六卡设置面板编排层（负责卡序与 Set-it 门控），业务卡实现下沉到 cards 子模块
 sections/workspace/CLAUDE.md: 双栏工作区子模块文档
+sections/workspace/cards/index.js: Setting Panel 业务卡聚合入口（导出 CARD_REGISTRY）
+sections/workspace/cards/CLAUDE.md: Setting Panel 业务卡子模块文档
 sections/components/ComponentGrid.jsx: 旧版组件墙网格（备用）
 sections/components/ComponentCell.jsx: 旧版网格单元壳（备用）
 sections/components/ComponentData.js: 旧版网格条目数据（备用）
@@ -43,5 +45,6 @@ ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 Ho
 2026-02-12: 移除 Registry 对 vendor/kumo-docs-astro 组件源码的直接引用，修复 CI 构建被 Astro tsconfig 依赖阻塞的问题。
 2026-02-18: 页面层组件引用统一收敛到 `@/components/ui/*`，移除 `src/pages/registry/**` 的 `@cloudflare/kumo` 直引。
 2026-02-18: 第一阶段入口收口：下线 Landing，`/app` 改为重定向 `/`，核心在用文件改名为 Home*（目录保持 registry）。
+2026-02-23: workspace 设置面板完成“编排层/业务卡层”拆分，新增 `sections/workspace/cards/*` 子模块并保持现有 UI/UX 与行为不变。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
