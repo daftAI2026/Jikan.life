@@ -15,7 +15,7 @@ src/ - React 前端源代码 (Vite 驱动)
   │   └── ui/ - Kumo UI 适配层 (Base UI)
   ├── data/ - 静态数据 (i18n, countries, devices)
   ├── lib/ - 工具库 (renderer, motion, utils)
-  └── assets/ - 静态资源
+  └── pages/ - 页面模块 (registry/ Home 工作台 + DesignSystem)
 tests/ - Node 原生行为回归测试 (UI 迁移护栏 + 日期组件护栏)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
   └── generators/ - SVG 生成逻辑 adapters

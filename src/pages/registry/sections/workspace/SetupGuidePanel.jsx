@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), i18n t() 与平台参数
  * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区内局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染）
- * [POS]: registry/sections/workspace 的 Goal 第⑥卡后续动作承载层，负责“Set it”后的人机引导闭环
+ * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层（Year 第⑤、Goal 第⑥共用），负责“Set it”后的人机引导闭环
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button as KumoButton } from "@/components/ui/kumo"
