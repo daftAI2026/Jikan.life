@@ -31,7 +31,6 @@ function HomeGrid({ selectedStyle }) {
                 <HomeSettingsPane
                     t={viewModel.t}
                     config={viewModel.config}
-                    copied={viewModel.copied}
                     selectedDevice={viewModel.selectedDevice}
                     palettePresets={viewModel.palettePresets}
                     countryOptions={viewModel.countryOptions}

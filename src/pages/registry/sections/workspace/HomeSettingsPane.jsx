@@ -5,6 +5,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
+import { useKumoToastManager } from "@cloudflare/kumo"
 import { CARD_REGISTRY } from "./cards"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
@@ -49,7 +50,6 @@ function HomeSettingsPane(props) {
     const {
         t,
         config,
-        copied,
         selectedDevice,
         palettePresets,
         countryOptions,
@@ -57,6 +57,7 @@ function HomeSettingsPane(props) {
         url,
         actions,
     } = props
+    const toastManager = useKumoToastManager()
     const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
     const [setupPlatform, setSetupPlatform] = useState("ios")
     const todayISO = getLocalTodayISO()
@@ -70,6 +71,7 @@ function HomeSettingsPane(props) {
     const handleSetIt = async () => {
         const ok = await actions.copyUrl()
         if (!ok) return
+        toastManager.add({ description: t("url.copySuccess"), timeout: 3000 })
         setSetupPlatform(selectedDevice.category === "Android" ? "android" : "ios")
         setIsSetupPanelOpen(true)
     }
@@ -81,7 +83,6 @@ function HomeSettingsPane(props) {
     const cardViewModel = {
         actions,
         config,
-        copied,
         onSetIt: handleSetIt,
         selectedDevice,
         palettePresets,

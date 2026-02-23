@@ -83,7 +83,6 @@ function useHomeWallpaperConfig({ selectedStyle }) {
     const { t } = useI18n()
     const selectedType = resolveSelectedType(selectedStyle)
     const [config, setConfig] = useState(() => getInitialConfig(selectedType))
-    const [copied, setCopied] = useState(false)
 
     useEffect(() => {
         setConfig((prev) => ({ ...prev, selectedType }))
@@ -224,6 +223,26 @@ function useHomeWallpaperConfig({ selectedStyle }) {
             setGoalName(value) {
                 updateConfig({ goalName: value })
             },
+            setGoalRange({ startISO, endISO }) {
+                updateConfig((prev) => {
+                    const next = {
+                        ...prev,
+                        goalStart: startISO || "",
+                        goalDate: endISO || "",
+                    }
+                    const nextErrors = validateGoalDateInputs({
+                        goalStart: next.goalStart,
+                        goalDate: next.goalDate,
+                        todayISO,
+                    })
+
+                    return {
+                        ...next,
+                        goalStartError: nextErrors.goalStartError,
+                        goalDateError: nextErrors.goalDateError,
+                    }
+                })
+            },
             setGoalStart(value) {
                 updateConfig((prev) => {
                     if (!value) {
@@ -315,11 +334,8 @@ function useHomeWallpaperConfig({ selectedStyle }) {
 
                 try {
                     await navigator.clipboard.writeText(url)
-                    setCopied(true)
-                    window.setTimeout(() => setCopied(false), 1500)
                     return true
                 } catch {
-                    setCopied(false)
                     return false
                 }
             },
@@ -330,7 +346,6 @@ function useHomeWallpaperConfig({ selectedStyle }) {
     return {
         t,
         config,
-        copied,
         selectedDevice,
         palettePresets,
         countryOptions,

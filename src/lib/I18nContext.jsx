@@ -1,11 +1,20 @@
 /**
- * [INPUT]: 依赖 @/data/i18n 的 i18nData 和 countryToLang
- * [OUTPUT]: 对外提供 I18nProvider, useI18n hook 和 t(key) 函数
+ * [INPUT]: 依赖 @/data/i18n 的 i18nData 和 countryToLang，依赖 date-fns/locale 的语言包
+ * [OUTPUT]: 对外提供 I18nProvider, useI18n hook, useDateFnsLocale hook 和 t(key) 函数
  * [POS]: lib/ 的国际化适配器，将老项目的 i18n 逻辑注入 React 生命周期
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { i18nData, countryToLang, DEFAULT_LANG, SUPPORTED_LANGS } from '@/data/i18n';
+import { enUS, zhCN, zhTW, ja } from 'date-fns/locale';
+
+/* ── date-fns locale 映射 ────────────────────────────── */
+const DATE_FNS_LOCALES = {
+    'en': enUS,
+    'zh-CN': zhCN,
+    'zh-TW': zhTW,
+    'ja': ja,
+};
 
 const I18nContext = createContext(null);
 
@@ -85,4 +94,13 @@ export const useI18n = () => {
         throw new Error('useI18n must be used within an I18nProvider');
     }
     return context;
+};
+
+/**
+ * 返回当前语言对应的 date-fns locale 对象
+ * 供 react-day-picker / Kumo DatePicker 的 locale prop 使用
+ */
+export const useDateFnsLocale = () => {
+    const { lang } = useI18n();
+    return useMemo(() => DATE_FNS_LOCALES[lang] || enUS, [lang]);
 };

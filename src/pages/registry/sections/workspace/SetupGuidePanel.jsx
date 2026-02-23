@@ -52,7 +52,6 @@ function SetupGuidePanel({ open, platform, onClose, t }) {
             >
                 <header className="flex items-start justify-between border-b border-kumo-line px-4 py-4">
                     <div className="space-y-1">
-                        <p className="text-xs font-medium tracking-[0.12em] text-kumo-subtle uppercase">{t("setup.header")}</p>
                         <h3 className="text-lg leading-6 font-semibold text-kumo-default">{t("setup.title")}</h3>
                         <p className="text-xs text-kumo-subtle">{platformLabel}</p>
                     </div>

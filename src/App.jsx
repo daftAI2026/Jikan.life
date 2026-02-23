@@ -6,10 +6,10 @@
  */
 import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom"
 import { AnimatePresence, MotionConfig, motion } from "framer-motion"
+import { Toasty } from "@cloudflare/kumo"
 import { KumoShell } from "@/components/layout/KumoShell"
 import DesignSystem from "@/pages/DesignSystem"
 import HomePage from "@/pages/registry/HomePage"
-import { Toaster } from "@/components/ui/sonner"
 import { pageTransition } from "@/lib/motion"
 
 /* ========================================
@@ -70,12 +70,13 @@ function App() {
         <I18nProvider>
             <AriaI18nWrapper>
                 <MotionConfig reducedMotion="user">
-                    <BrowserRouter>
-                        <div className="relative flex min-h-screen flex-col bg-background">
-                            <AnimatedRoutes />
-                            <Toaster />
-                        </div>
-                    </BrowserRouter>
+                    <Toasty>
+                        <BrowserRouter>
+                            <div className="relative flex min-h-screen flex-col bg-background">
+                                <AnimatedRoutes />
+                            </div>
+                        </BrowserRouter>
+                    </Toasty>
                 </MotionConfig>
             </AriaI18nWrapper>
         </I18nProvider>

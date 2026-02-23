@@ -585,21 +585,17 @@ test("Goal countdown keeps url card at slot 6 for Set flow", () => {
   )
 })
 
-test("Goal fields card uses goal bindings, date constraints, and 200px control width", () => {
+test("Goal fields card uses goal name + date range field wiring", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
-  const paneSource = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(source, /title:\s*"Goal"/)
   assert.match(source, /className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
   assert.match(source, /actions\.setGoalName/)
-  assert.match(source, /actions\.setGoalStart/)
-  assert.match(source, /actions\.setGoalDate/)
-  assert.match(source, /minValue=\{GOAL_START_MIN_ISO\}/)
-  assert.match(source, /minValue=\{config\.goalStart \|\| todayISO\}/)
-  assert.match(source, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(source, /actions\.setGoalRange/)
+  assert.match(source, /t\("config\.dateRange"\)/)
+  assert.match(source, /GoalDateRangeField/)
   assert.match(source, /className="w-\[200px\] max-w-full"/)
-  assert.match(paneSource, /const todayISO = getLocalTodayISO\(\)/)
-  assert.match(paneSource, /const cardViewModel = \{[\s\S]*?todayISO,[\s\S]*?t,/)
+  assert.doesNotMatch(source, /SettingsCardDatePickerField/)
 })
 
 test("Life fields card uses dob/lifespan bindings and keeps hints in card view", () => {
@@ -718,26 +714,23 @@ test("Registry settings URL block uses responsive row and flexible input", () =>
   assert.match(source, /className="min-w-0 w-full font-mono text-xs"/)
 })
 
-test("Registry goal config stays in goal-fields card with shared date picker wiring", () => {
+test("Registry goal config stays in goal-fields card with official range date picker and presets", () => {
   const goalSource = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
-  const datePickerSource = readSource("src/pages/registry/sections/workspace/cards/settings-card-date-picker-field.jsx")
+  const rangeSource = readSource("src/pages/registry/sections/workspace/cards/goal-date-range-field.jsx")
 
   assert.match(goalSource, /t\("config\.goalName"\)/)
-  assert.match(goalSource, /t\("config\.startDate"\)/)
-  assert.match(goalSource, /t\("config\.targetDate"\)/)
-  assert.match(datePickerSource, /DatePicker/)
-  assert.match(datePickerSource, /DatePickerContent/)
-  assert.match(datePickerSource, /DateInput/)
-  assert.match(datePickerSource, /parseDate/)
-  assert.match(goalSource, /actions\.setGoalStart/)
-  assert.match(goalSource, /actions\.setGoalDate/)
-  assert.match(datePickerSource, /minValue=\{minValue \? parseDate\(minValue\) : undefined\}/)
-  assert.match(datePickerSource, /maxValue=\{maxValue \? parseDate\(maxValue\) : undefined\}/)
-  assert.match(goalSource, /minValue=\{GOAL_START_MIN_ISO\}/)
-  assert.match(goalSource, /minValue=\{config\.goalStart \|\| todayISO\}/)
-  assert.match(goalSource, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
+  assert.match(goalSource, /t\("config\.dateRange"\)/)
+  assert.match(goalSource, /actions\.setGoalRange/)
   assert.match(goalSource, /config\.goalStartError/)
   assert.match(goalSource, /config\.goalDateError/)
+  assert.match(rangeSource, /DatePicker/)
+  assert.match(rangeSource, /mode="range"/)
+  assert.match(rangeSource, /t\("preset\.range\.next30"\)/)
+  assert.match(rangeSource, /t\("preset\.range\.next90"\)/)
+  assert.match(rangeSource, /onChange/)
+  assert.match(rangeSource, /today/)
+  assert.match(rangeSource, /GOAL_START_MIN_ISO/)
+  assert.match(rangeSource, /GOAL_TARGET_MAX_ISO/)
 })
 
 test("Legacy settings fallback is fully removed from HomeSettingsPane", () => {
@@ -845,19 +838,18 @@ test("GoalStart is wired through registry config state and URL generation", () =
   assert.match(source, /validateGoalDateInputs/)
   assert.match(source, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\("goalStart", config\.goalStart\)/)
   assert.match(source, /setGoalStart\(value\)/)
+  assert.match(source, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)/)
 })
 
-test("Home settings goal config uses dynamic target min based on goalStart or today", () => {
+test("Home settings goal config uses date range label and unified goal-range action", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
 
-  assert.match(source, /t\("config\.startDate"\)/)
-  assert.match(source, /value=\{config\.goalStart\}/)
-  assert.match(source, /onChange=\{actions\.setGoalStart\}/)
-  assert.match(source, /minValue=\{GOAL_START_MIN_ISO\}/)
-  assert.match(source, /minValue=\{config\.goalStart \|\| todayISO\}/)
-  assert.match(source, /maxValue=\{GOAL_TARGET_MAX_ISO\}/)
-  assert.match(source, /t\(config\.goalStartError\)/)
-  assert.match(source, /t\(config\.goalDateError\)/)
+  assert.match(source, /t\("config\.dateRange"\)/)
+  assert.match(source, /startISO=\{config\.goalStart\}/)
+  assert.match(source, /endISO=\{config\.goalDate\}/)
+  assert.match(source, /onChange=\{actions\.setGoalRange\}/)
+  assert.match(source, /config\.goalStartError \|\| config\.goalDateError/)
+  assert.match(source, /t\(config\.goalStartError \|\| config\.goalDateError\)/)
 })
 
 test("Renderer and worker pass goalStart into shared goal layout", () => {
@@ -899,6 +891,20 @@ test("i18n includes start date label, placeholder, and date error keys in all la
   assert.equal(targetRangeErrorCount, 4)
   assert.equal(startAfterTargetErrorCount, 4)
   assert.equal(targetBeforeStartErrorCount, 4)
+})
+
+test("i18n includes date range and preset labels in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+
+  const dateRangeCount = (source.match(/'config\.dateRange':/g) || []).length
+  const dateRangePlaceholderCount = (source.match(/'placeholder\.selectDateRange':/g) || []).length
+  const next30Count = (source.match(/'preset\.range\.next30':/g) || []).length
+  const next90Count = (source.match(/'preset\.range\.next90':/g) || []).length
+
+  assert.equal(dateRangeCount, 4)
+  assert.equal(dateRangePlaceholderCount, 4)
+  assert.equal(next30Count, 4)
+  assert.equal(next90Count, 4)
 })
 
 test("i18n includes set button key in all languages", () => {

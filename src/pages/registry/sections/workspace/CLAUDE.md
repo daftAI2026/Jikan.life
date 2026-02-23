@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式包含 goalStart 字段、手动输入即时阻断校验与仅合法日期透传
+useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
 HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排与 Set-it 流程门控，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ①~⑥ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
@@ -49,5 +49,6 @@ workspace/ - Home 双栏工作区子模块 (5 files + cards/ 子目录)
 2026-02-23: Life 模式第③卡接入 `life-fields`（DOB + Lifespan），`CARD_ORDER_BY_TYPE.life` 更新为 `["location","wallpaper-lang","life-fields","colors","device","url"]`，并移出占位 `palettes`。
 2026-02-23: 删除 `legacySettings=1` 与 `LegacySettingsForm` 迁移兜底分支，右侧设置区统一以六卡渲染链路为唯一入口。
 2026-02-23: 将 `HomeSettingsPane` 内联卡片实现拆分到 `workspace/cards/*`（含 `settings-card-date-picker-field`），`HomeSettingsPane` 仅保留卡序编排、视图模型组装与 Set-it 成功门控；UI/UX 与交互行为保持不变。
+2026-02-23: Goal 第③卡日期输入从双字段（Start/Target）切换为单一 Date Range：使用官方 Kumo `DatePicker(mode="range")` + presets(`Next 30/90 days`)，并新增 `actions.setGoalRange` 原子状态入口；URL 继续输出 `goalStart/goal`。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

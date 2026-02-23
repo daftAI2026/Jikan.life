@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.8] - 2026-02-23
+
+### Infrastructure
+- **Vendor Migration**: Upgraded `@cloudflare/kumo` vendor track from `1.5.1` to `1.7.0` to acquire the official `DatePicker` component.
+
+### Features
+- **Goal Range Presets**: Added "Today" and "Next 7 days" quick-action buttons to the Goal date range picker.
+
+### Fixes
+- **Import Resolution**: Fixed `Uncaught SyntaxError` caused by missing `DatePicker` export in older Kumo versions.
+- **Vite Cache**: Cleaned `.vite` pre-bundle cache to ensure new official Kumo exports are correctly indexed.
+
+### UI & UX
+- **Pangu Spacing**: Implemented automatic spacing (pangu spacing) between Latin characters/digits and CJK characters in calendar headers (e.g., `2026 年 2 月`).
+- **Toast Migration**: Replaced `sonner` with Kumo `@cloudflare/kumo` `Toasty` and `useKumoToastManager` for system-wide toast notifications.
+- **Palette Presets**: Refined `PALETTE_PRESETS` with high-contrast, premium color combinations (Ocean Deep, Royal Indigo, Warm Sand, Teal Night).
+- **Setup Panel**: Simplified the setup guide panel UI and i18n keys by removing redundant header text.
+- **Cleanup**: Removed the redundant calendar icon from the Goal date range trigger for a cleaner look.
+- **I18n**: Integrated `date-fns` locales (`enUS`, `zhCN`, `zhTW`, `ja`) into official `DatePicker` for localized month/weekday display.
+
 ## [1.1.7] - 2026-02-23
 
 ### Refactored

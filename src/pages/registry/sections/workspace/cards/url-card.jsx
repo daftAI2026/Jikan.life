@@ -12,7 +12,7 @@ const urlCard = {
     resolveTitle: ({ config, t }) =>
         SETUP_FLOW_TYPES.has(config.selectedType) ? t("setup.title") : "Collapsible",
     title: "Collapsible",
-    render: ({ config, copied, onSetIt, t, url }) => {
+    render: ({ config, onSetIt, t, url }) => {
         if (config.selectedType === "year") {
             return (
                 <div className="w-full px-4 py-1 md:px-[calc(25%-100px)]">
@@ -27,7 +27,7 @@ const urlCard = {
                             className="min-w-[88px] justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint md:shrink-0"
                             onClick={() => void onSetIt()}
                         >
-                            {copied ? t("url.copied") : t("url.set")}
+                            {t("url.set")}
                         </KumoButton>
                     </div>
                 </div>
@@ -47,7 +47,7 @@ const urlCard = {
                         className="w-full justify-center text-center transition-colors not-disabled:hover:!bg-kumo-tint"
                         onClick={() => void onSetIt()}
                     >
-                        {copied ? t("url.copied") : t("url.set")}
+                        {t("url.set")}
                     </KumoButton>
                 </div>
             )

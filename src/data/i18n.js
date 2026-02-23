@@ -70,6 +70,7 @@ export const i18nData = {
     'config.goalName': 'Goal Name',
     'config.startDate': 'Start Date',
     'config.targetDate': 'Target Date',
+    'config.dateRange': 'Date Range',
     'config.colors': 'Colors',
     'config.background': 'Background',
     'config.accent': 'Accent',
@@ -100,13 +101,12 @@ export const i18nData = {
 
     // URL & Copy
     'url.copy': 'Copy',
-    'url.set': 'Set it',
-    'url.copied': 'Copied!',
+    'url.set': 'Copy & Set Up',
+    'url.copySuccess': 'Link copied.',
     'url.placeholder': 'Configure options above...',
 
     // Setup Section
-    'setup.header': 'Almost There',
-    'setup.title': 'Set it and forget it',
+    'setup.title': 'Setup',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
 
@@ -173,6 +173,11 @@ export const i18nData = {
     'placeholder.selectDate': 'Select date...',
     'placeholder.selectStartDate': 'Select start date...',
     'placeholder.selectTargetDate': 'Select target date...',
+    'placeholder.selectDateRange': 'Select date range...',
+    'preset.range.next30': 'Next 30 days',
+    'preset.range.next90': 'Next 90 days',
+    'preset.range.today': 'Today',
+    'preset.range.next7': 'Next 7 days',
     'placeholder.goalName': 'Type something…',
     'placeholder.selectTypeFirst': 'Select type first',
 
@@ -245,6 +250,7 @@ export const i18nData = {
     'config.goalName': '目标名称',
     'config.startDate': '开始日期',
     'config.targetDate': '目标日期',
+    'config.dateRange': '日期区间',
     'config.colors': '颜色',
     'config.background': '背景',
     'config.accent': '强调色',
@@ -275,13 +281,12 @@ export const i18nData = {
 
     // URL 和复制
     'url.copy': '复制',
-    'url.set': '去设置',
-    'url.copied': '已复制！',
+    'url.set': '复制并设置',
+    'url.copySuccess': '链接已复制。',
     'url.placeholder': '在上方配置选项...',
 
     // 设置部分
-    'setup.header': '即将完成',
-    'setup.title': '设置一次，永久使用',
+    'setup.title': '设置',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
 
@@ -348,6 +353,11 @@ export const i18nData = {
     'placeholder.selectDate': '选择日期...',
     'placeholder.selectStartDate': '选择开始日期...',
     'placeholder.selectTargetDate': '选择目标日期...',
+    'placeholder.selectDateRange': '选择日期区间...',
+    'preset.range.next30': '未来 30 天',
+    'preset.range.next90': '未来 90 天',
+    'preset.range.today': '今天',
+    'preset.range.next7': '未来 7 天',
     'placeholder.goalName': '输入内容…',
     'placeholder.selectTypeFirst': '请先选择类型',
 
@@ -420,6 +430,7 @@ export const i18nData = {
     'config.goalName': '目標名稱',
     'config.startDate': '開始日期',
     'config.targetDate': '目標日期',
+    'config.dateRange': '日期區間',
     'config.colors': '顏色',
     'config.background': '背景',
     'config.accent': '強調色',
@@ -450,13 +461,12 @@ export const i18nData = {
 
     // URL 和複製
     'url.copy': '複製',
-    'url.set': '去設定',
-    'url.copied': '已複製！',
+    'url.set': '複製並設定',
+    'url.copySuccess': '連結已複製。',
     'url.placeholder': '在上方設定選項...',
 
     // 設定部分
-    'setup.header': '即將完成',
-    'setup.title': '設定一次，永久使用',
+    'setup.title': '設定',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
 
@@ -523,6 +533,11 @@ export const i18nData = {
     'placeholder.selectDate': '選擇日期...',
     'placeholder.selectStartDate': '選擇開始日期...',
     'placeholder.selectTargetDate': '選擇目標日期...',
+    'placeholder.selectDateRange': '選擇日期區間...',
+    'preset.range.next30': '未來 30 天',
+    'preset.range.next90': '未來 90 天',
+    'preset.range.today': '今天',
+    'preset.range.next7': '未來 7 天',
     'placeholder.goalName': '輸入內容…',
     'placeholder.selectTypeFirst': '請先選擇類型',
 
@@ -595,6 +610,7 @@ export const i18nData = {
     'config.goalName': 'ゴール名',
     'config.startDate': '開始日',
     'config.targetDate': 'ターゲット日',
+    'config.dateRange': '期間',
     'config.colors': '色',
     'config.background': '背景',
     'config.accent': 'アクセント',
@@ -625,13 +641,12 @@ export const i18nData = {
 
     // URL とコピー
     'url.copy': 'コピー',
-    'url.set': '設定へ',
-    'url.copied': 'コピーしました！',
+    'url.set': 'コピーして設定',
+    'url.copySuccess': 'リンクをコピーしました。',
     'url.placeholder': '上でオプションを設定してください...',
 
     // セットアップセクション
-    'setup.header': 'もうすぐです',
-    'setup.title': '設定して忘れる',
+    'setup.title': 'セットアップ',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
 
@@ -698,6 +713,11 @@ export const i18nData = {
     'placeholder.selectDate': '日付を選択...',
     'placeholder.selectStartDate': '開始日を選択...',
     'placeholder.selectTargetDate': '目標日を選択...',
+    'placeholder.selectDateRange': '期間を選択...',
+    'preset.range.next30': '次の 30 日',
+    'preset.range.next90': '次の 90 日',
+    'preset.range.today': '今日',
+    'preset.range.next7': '次の 7 日',
     'placeholder.goalName': '入力してください…',
     'placeholder.selectTypeFirst': 'まずタイプを選択',
 
