@@ -14,7 +14,7 @@ const YEAR_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device"
 const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "life-fields", "colors", "device", "url"]
 const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
 const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
-const SETTINGS_CARD_MARKS = ["①", "②", "③", "④", "⑤", "⑥"]
+const SETTINGS_CARD_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
 const SETUP_FLOW_TYPES = new Set(["year", "goal"])
 const CARD_SHELL_CLASS_BY_TYPE = {
     year: {

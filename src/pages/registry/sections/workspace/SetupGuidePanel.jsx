@@ -71,6 +71,7 @@ function IOSShortcutStep({ index, t, url }) {
 function SetupGuidePanel({ open, platform, onClose, t, url }) {
     const isAndroid = platform === "android"
     const platformLabel = isAndroid ? t("setup.android") : t("setup.ios")
+    const setupTitle = `${platformLabel} ${t("setup.title")}`
 
     return (
         <div
@@ -85,9 +86,8 @@ function SetupGuidePanel({ open, platform, onClose, t, url }) {
                 )}
             >
                 <header className="flex items-start justify-between border-b border-kumo-line px-4 py-4">
-                    <div className="space-y-1">
-                        <h3 className="text-lg leading-6 font-semibold text-kumo-default">{t("setup.title")}</h3>
-                        <p className="text-xs text-kumo-subtle">{platformLabel}</p>
+                    <div>
+                        <h3 className="text-lg leading-6 font-semibold text-kumo-default">{setupTitle}</h3>
                     </div>
                     <KumoButton
                         variant="ghost"
