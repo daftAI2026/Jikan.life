@@ -17,7 +17,7 @@ const ANDROID_FINAL_STEP = ["setup.android.step5", "setup.android.step5Desc"]
 
 function SetupGuideAlertBanner({ html }) {
     return (
-        <Banner variant="alert" icon={<span className="flex items-center h-5"><Warning size={16} weight="fill" /></span>} className="w-fit">
+        <Banner variant="alert" icon={<Warning size={16} weight="fill" className="shrink-0 mt-0.5" />} className="w-fit items-start">
             <Text as="p" variant="body" size="sm" DANGEROUS_className="m-0 leading-5 !text-inherit [&_strong]:font-semibold [&_strong]:text-current">
                 <span dangerouslySetInnerHTML={{ __html: html }} />
             </Text>

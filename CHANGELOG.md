@@ -10,12 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 - **Foreground Color**: Adopted perceptual mid-gray threshold (`0.179`) instead of linear midpoint (`0.5`) in `getContrastBase` for more accurate automatic light/dark text switching.
 - **Color Override**: Implemented a backend `foregroundOverride` mechanism across Canvas and Worker SVG generators, allowing manual locking of foreground color via the `fg=light|dark` URL parameter while keeping the automatic default.
+- **Goal Localization**: Refactored the Goal wallpaper to use a localized fallback string (`goalDefault`) when the goal name is empty, automatically adapting to the user's `wallpaperLang` setting.
 
 ### UI & UX
 - **Setup Guide**: Refined step instructions and warning banners by adopting standard typography (`Text`, `Banner`) components from the Kumo UI library, replacing hardcoded badge styles for improved visual consistency.
 - **Settings Panel**: Upgraded step indicators from hollow circles (`①~⑥`) to solid circles (`➊~➏`) in `HomeSettingsPane` to improve visual recognition.
 - **Setup Guide**: Simplified the top header in `SetupGuidePanel` from a two-line layout to a single-line title (e.g., `iOS Setup` instead of `Setup` + `iOS`) to reduce visual jumping and enhance title readability. Repositioned the close button to `absolute top-2 right-2` for a more distinct interaction area.
 - **Device Selection**: Optimized the device dropdown in `device-card` to conditionally display group labels only when multiple device categories are visible.
+
+### Architecture
+- **Vendor Immutability**: Restored `vendor/kumo` subtree to a clean state. Enshrined the rule in `CLAUDE.md` that vendor source files must never be directly modified; all design system customizations must occur via usage-side `className` overrides or adapter components.
+
+### Fixes
+- **Banner Layout**: Corrected vertical icon alignment in the `SetupGuidePanel` alert banner by injecting `items-start` and `mt-0.5` through usage-side `className` overrides, rather than breaking vendor encapsulation.
 
 ### Documentation
 - **Fractal Protocol**: Updated `cards/CLAUDE.md` to document the latest UI adjustments (step indicators and setup guide header changes).

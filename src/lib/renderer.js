@@ -158,7 +158,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
         lang: config.wallpaperLang,
         goalDate: config.goalDate,
         goalStart: config.goalStart,
-        goalName: config.goalName?.trim() || 'Goal',
+        goalName: config.goalName?.trim() || getWallpaperText(config.wallpaperLang, 'goalDefault', ''),
         today
     });
 

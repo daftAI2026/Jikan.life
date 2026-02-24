@@ -980,12 +980,23 @@ test("Renderer and worker pass goalStart into shared goal layout", () => {
   assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
   assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
   assert.match(goalGeneratorSource, /goalStart,/)
-  assert.match(goalGeneratorSource, /goalStart,\s*goalName: decodeGoalName\(goalName\)/)
+  assert.match(goalGeneratorSource, /const decodedGoalName = decodeGoalName\(goalName\)/)
+  assert.match(goalGeneratorSource, /goalStart,\s*goalName: resolvedGoalName/)
 })
 
-test("Goal preview uses default Goal label when goalName is empty", () => {
+test("Goal default label follows wallpaper language when goalName is empty", () => {
   const rendererSource = readSource("src/lib/renderer.js")
-  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*'Goal'/)
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+  const coreSource = readSource("shared/wallpaper-core.js")
+  const validationSource = readSource("worker/validation.js")
+
+  assert.match(coreSource, /en:\s*\{[\s\S]*goalDefault:\s*'Goal',/)
+  assert.match(coreSource, /'zh-CN':\s*\{[\s\S]*goalDefault:\s*'目标',/)
+  assert.match(coreSource, /'zh-TW':\s*\{[\s\S]*goalDefault:\s*'目標',/)
+  assert.match(coreSource, /ja:\s*\{[\s\S]*goalDefault:\s*'目標',/)
+  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*getWallpaperText\(config\.wallpaperLang,\s*'goalDefault',\s*''\)/)
+  assert.match(goalGeneratorSource, /const resolvedGoalName = decodedGoalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
+  assert.match(validationSource, /goalName:\s*z\.string\(\)\.max\(100,\s*"Goal name too long"\)\.default\(''\)/)
 })
 
 test("Goal preview and worker render goalName with foreground accent, not background contrast", () => {

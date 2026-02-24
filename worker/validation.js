@@ -46,7 +46,7 @@ export const wallpaperSchema = z.object({
     // Goal specific
     goal: dateSchema.optional(),
     goalStart: dateSchema.optional(),
-    goalName: z.string().max(100, "Goal name too long").default('Goal'),
+    goalName: z.string().max(100, "Goal name too long").default(''),
 
     format: z.enum(['png', 'svg']).default('png')
 }).superRefine((data, ctx) => {

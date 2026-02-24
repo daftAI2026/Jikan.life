@@ -7,7 +7,7 @@
 
 import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
 import { getDateInTimezone } from '../timezone.js';
-import { computeGoalLayout, formatGoalDate } from '../../shared/wallpaper-core.js';
+import { computeGoalLayout, formatGoalDate, getWallpaperText } from '../../shared/wallpaper-core.js';
 
 /**
  * Generate Goal Countdown Wallpaper
@@ -22,7 +22,7 @@ export function generateGoalCountdown(options) {
         timezone,
         goalDate,
         goalStart,
-        goalName = 'Goal',
+        goalName = '',
         clockHeight = 0.18,
         lang = 'en',
         foregroundOverride = null
@@ -38,6 +38,9 @@ export function generateGoalCountdown(options) {
         }
     };
 
+    const decodedGoalName = decodeGoalName(goalName);
+    const resolvedGoalName = decodedGoalName?.trim() || getWallpaperText(lang, 'goalDefault', '');
+
     // Use shared core for layout computation
     const today = getDateInTimezone(timezone);
 
@@ -50,7 +53,7 @@ export function generateGoalCountdown(options) {
         lang,
         goalDate,
         goalStart,
-        goalName: decodeGoalName(goalName),
+        goalName: resolvedGoalName,
         today
     });
 
