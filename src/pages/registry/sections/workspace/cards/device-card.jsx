@@ -9,6 +9,12 @@ import { Select as SelectBase } from "@base-ui/react/select"
 import { devices } from "@/data/devices"
 import { VISIBLE_DEVICE_CATEGORIES } from "../device-visibility"
 
+const shouldShowGroupLabel = VISIBLE_DEVICE_CATEGORIES.length > 1
+const visibleDeviceGroups = VISIBLE_DEVICE_CATEGORIES.map((category) => ({
+    category,
+    items: devices.filter((device) => device.category === category),
+}))
+
 const deviceCard = {
     titleKey: "config.device",
     titleTooltipKey: "config.deviceTooltip",
@@ -22,18 +28,18 @@ const deviceCard = {
                 }}
                 renderValue={(value) => value || config.device}
             >
-                {VISIBLE_DEVICE_CATEGORIES.map((category) => (
-                    <SelectBase.Group key={category}>
-                        <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-kumo-subtle select-none">
-                            {category}
-                        </SelectBase.GroupLabel>
-                        {devices
-                            .filter((device) => device.category === category)
-                            .map((device) => (
-                                <Select.Option key={device.name} value={device.name}>
-                                    {device.name}
-                                </Select.Option>
-                            ))}
+                {visibleDeviceGroups.map((group) => (
+                    <SelectBase.Group key={group.category}>
+                        {shouldShowGroupLabel && (
+                            <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-kumo-subtle select-none">
+                                {group.category}
+                            </SelectBase.GroupLabel>
+                        )}
+                        {group.items.map((device) => (
+                            <Select.Option key={device.name} value={device.name}>
+                                {device.name}
+                            </Select.Option>
+                        ))}
                     </SelectBase.Group>
                 ))}
             </Select>

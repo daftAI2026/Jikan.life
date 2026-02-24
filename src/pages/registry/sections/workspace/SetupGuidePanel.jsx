@@ -85,11 +85,12 @@ function SetupGuidePanel({ open, platform, onClose, t, url }) {
                     open ? "translate-x-0" : "translate-x-full"
                 )}
             >
-                <header className="flex items-start justify-between border-b border-kumo-line px-4 py-4">
+                <header className="relative flex items-start border-b border-kumo-line px-4 py-4">
                     <div>
                         <h3 className="text-lg leading-6 font-semibold text-kumo-default">{setupTitle}</h3>
                     </div>
                     <KumoButton
+                        className="absolute top-2 right-2"
                         variant="ghost"
                         shape="square"
                         aria-label={t("registry.menu.close")}

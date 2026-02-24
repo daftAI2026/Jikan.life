@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### UI & UX
 - **Settings Panel**: Upgraded step indicators from hollow circles (`①~⑥`) to solid circles (`➊~➏`) in `HomeSettingsPane` to improve visual recognition.
-- **Setup Guide**: Simplified the top header in `SetupGuidePanel` from a two-line layout to a single-line title (e.g., `iOS Setup` instead of `Setup` + `iOS`) to reduce visual jumping and enhance title readability.
+- **Setup Guide**: Simplified the top header in `SetupGuidePanel` from a two-line layout to a single-line title (e.g., `iOS Setup` instead of `Setup` + `iOS`) to reduce visual jumping and enhance title readability. Repositioned the close button to `absolute top-2 right-2` for a more distinct interaction area.
+- **Device Selection**: Optimized the device dropdown in `device-card` to conditionally display group labels only when multiple device categories are visible.
 
 ### Documentation
 - **Fractal Protocol**: Updated `cards/CLAUDE.md` to document the latest UI adjustments (step indicators and setup guide header changes).
+
+### Tests
+- **Migration**: Expanded `kumo-migration.behavior.test.js` to enforce structural constraints on the new `SetupGuidePanel` header layout and the `device-card` conditional group label rendering.
 
 ## [1.1.9] - 2026-02-24
 
