@@ -758,7 +758,7 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /pointer-events-auto absolute inset-y-0 right-0/)
   assert.match(source, /transition-transform duration-300 ease-out/)
   assert.match(source, /open \? "translate-x-0" : "translate-x-full"/)
-  assert.match(source, /import\s+\{\s*Banner,\s*Button as KumoButton,\s*ClipboardText,\s*Text\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
+  assert.match(source, /import\s+\{\s*Banner,\s*Button as KumoButton,\s*ClipboardText,\s*Surface,\s*Text\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
   assert.match(source, /<header className="relative flex items-start border-b border-kumo-line px-4 py-4">/)
   assert.match(source, /<Text as="h3" variant="heading3" DANGEROUS_className="leading-6">/)
   assert.match(source, /<Text as="h4" variant="body" size="sm" bold>/)

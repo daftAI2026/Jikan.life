@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### UI & UX
 - **Setup Guide**: Refined step instructions and warning banners by adopting standard typography (`Text`, `Banner`) components from the Kumo UI library, replacing hardcoded badge styles for improved visual consistency.
+- **Setup Guide Container**: Upgraded the individual step and action blocks within the `SetupGuidePanel` from native HTML `<article>` tags to the official Kumo `<Surface>` component to ensure robust design token compliance (shadows, borders, backgrounds).
 - **Settings Panel**: Upgraded step indicators from hollow circles (`①~⑥`) to solid circles (`➊~➏`) in `HomeSettingsPane` to improve visual recognition.
 - **Setup Guide**: Simplified the top header in `SetupGuidePanel` from a two-line layout to a single-line title (e.g., `iOS Setup` instead of `Setup` + `iOS`) to reduce visual jumping and enhance title readability. Repositioned the close button to `absolute top-2 right-2` for a more distinct interaction area.
 - **Device Selection**: Optimized the device dropdown in `device-card` to conditionally display group labels only when multiple device categories are visible.
