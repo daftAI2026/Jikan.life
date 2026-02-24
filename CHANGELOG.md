@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Banner Layout**: Corrected vertical icon alignment in the `SetupGuidePanel` alert banner by injecting `items-start` and `mt-0.5` through usage-side `className` overrides, rather than breaking vendor encapsulation.
 
 ### Documentation
+- **Fractal Protocol**: Executed full GEB protocol sync across 15 files. Updated L3 headers in `wallpaper-core`, `renderer`, `svg`, `generators/*`, `validation`, and `SetupGuidePanel` to reflect `resolveContrastBase` exports, `foregroundOverride` passthrough, `fg` validation, and `<Surface>` component migration. Synchronized L2 `CLAUDE.md` maps across `shared`, `worker`, `generators`, `tests`, `workspace`, and `lib` to document these architectural state changes.
 - **Fractal Protocol**: Updated `cards/CLAUDE.md` to document the latest UI adjustments (step indicators and setup guide header changes).
 
 ### Tests

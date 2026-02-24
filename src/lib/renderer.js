@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js
  * [OUTPUT]: 对外提供 drawYearProgress, drawLifeCalendar, drawGoalCountdown (Canvas 2D)
- * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局，**传递设备级 cols/padding 参数**
+ * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局，**透传 foregroundOverride 与设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 

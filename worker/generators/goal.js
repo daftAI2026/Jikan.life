@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 shared/wallpaper-core.js, ../svg.js, ../timezone.js
+ * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText), ../svg.js, ../timezone.js
  * [OUTPUT]: generateGoalCountdown 函数 (SVG string)
- * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局
+ * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局，支持 foregroundOverride 与本地化 goalDefault
  * [PROTOCOL]: 变更时更新此头部，然后同步检查 shared/wallpaper-core.js
  */
 

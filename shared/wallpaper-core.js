@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无依赖（纯函数模块）
- * [OUTPUT]: 布局计算（**Year 支持 cols/padding 覆盖**）、日期/颜色工具、i18n 文本生成
+ * [OUTPUT]: 布局计算（**Year 支持 cols/padding 覆盖**）、日期/颜色工具(含 resolveContrastBase 前景色覆盖)、i18n 文本生成(含 goalDefault)
  * [POS]: shared/ 下的同构核心，供 Frontend Canvas 和 Worker SVG 共享
  * [PROTOCOL]: 变更时同步更新 renderer.js 和 worker/generators/*.js
  */

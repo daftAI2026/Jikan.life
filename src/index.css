@@ -424,6 +424,10 @@ html {
   content: "•";
   position: absolute;
   left: 0;
-  color: var(--primary);
+  color: var(--step-list-bullet-color, var(--primary));
   font-weight: bold;
+}
+
+[data-home-settings-setup-panel] {
+  --step-list-bullet-color: var(--foreground);
 }

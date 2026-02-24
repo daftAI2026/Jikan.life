@@ -2,9 +2,9 @@
 > L2 | 父级: /worker/CLAUDE.md
 
 成员清单
-year.js: 年度进度 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeYearLayout，输出点阵日历（默认 15 列，支持自定义）
-life.js: 生命周历 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeLifeLayout，输出 52 列周历网格
-goal.js: 目标倒计时 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeGoalLayout，输出环形进度条
+year.js: 年度进度 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeYearLayout，输出点阵日历（默认 15 列，支持自定义），支持 foregroundOverride
+life.js: 生命周历 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeLifeLayout，输出 52 列周历网格，支持 foregroundOverride
+goal.js: 目标倒计时 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeGoalLayout/getWallpaperText，输出环形进度条，支持 foregroundOverride 与本地化 goalDefault
 
 ## 架构原则
 

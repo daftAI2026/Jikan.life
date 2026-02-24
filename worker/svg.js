@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无
- * [OUTPUT]: 对外提供 SVG 构建原语 (rect, circle, text, path, createSVG) 与颜色工具 (复用 shared)
+ * [OUTPUT]: 对外提供 SVG 构建原语 (rect, circle, text, path, createSVG) 与颜色工具 (复用 shared，含 resolveContrastBase)
  * [POS]: worker/ 图形引擎，负责生成 XML 字符串，独立于 Canvas API
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

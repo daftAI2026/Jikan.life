@@ -2,7 +2,7 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
-wallpaper-core.js: 壁纸渲染同构核心，导出 computeYearLayout/computeLifeLayout/computeGoalLayout + 日期/颜色工具(含formatGoalDate) + i18n。**Year布局支持设备级 cols/padding 参数覆盖；Goal 支持 goalStart 与缺省 30 天窗口进度计算；统一导出 Goal 日期严格校验（1900-2100 + start<=target）**
+wallpaper-core.js: 壁纸渲染同构核心，导出 computeYearLayout/computeLifeLayout/computeGoalLayout + 日期/颜色工具(含formatGoalDate, resolveContrastBase 前景色覆盖) + i18n。**Year布局支持设备级 cols/padding 参数覆盖；Goal 支持 goalStart 与缺省 30 天窗口进度计算；明度阈值采用感知中点 0.179；i18n 含 goalDefault 本地化缺省名**
 countries.js: 国家/地区数据与时区映射，前后端共享
 palettes.js: 共享配色预设，导出 PALETTE_PRESETS/DEFAULT_PALETTE，前后端统一读取入口
 

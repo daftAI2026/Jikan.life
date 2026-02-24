@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 zod
  * [OUTPUT]: 对外提供 validateParams, wallpaperSchema
- * [POS]: worker/ 参数校验层，确保 URL 参数符合业务规则
+ * [POS]: worker/ 参数校验层，确保 URL 参数符合业务规则（含 fg=light|dark 前景色覆盖）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { z } from 'zod';
