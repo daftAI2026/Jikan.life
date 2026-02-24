@@ -385,7 +385,7 @@ html {
 }
 
 /* ============================================
-   Setup Section - 代码片段和高亮样式
+   Setup Section - 代码片段和注入样式
    (适配 i18n HTML 注入内容)
    ============================================ */
 .code-snippet {
@@ -398,20 +398,6 @@ html {
   font-size: 0.8125rem;
   color: var(--foreground);
   word-break: break-all;
-}
-
-.highlight-badge {
-  display: block;
-  width: fit-content;
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: color-mix(in oklch, var(--destructive) 15%, transparent);
-  border: 1px solid color-mix(in oklch, var(--destructive) 30%, transparent);
-  border-radius: var(--radius-sm);
-  color: var(--destructive);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.5;
 }
 
 /**
@@ -429,9 +415,9 @@ html {
 .step-list-ul li {
   position: relative;
   padding-left: 1.25rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.25rem;
   line-height: 1.5;
-  font-size: 0.875rem;
+  font-size: inherit;
 }
 
 .step-list-ul li::before {

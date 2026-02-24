@@ -750,13 +750,30 @@ test("Year merged slot uses setup url card as slot 5 with compact inline row on 
 
 test("Setup guide panel uses local right-slide overlay with sidebar-aligned timing", () => {
   const source = readSource("src/pages/registry/sections/workspace/SetupGuidePanel.jsx")
+  const cssSource = readSource("src/index.css")
+  const i18nSource = readSource("src/data/i18n.js")
 
   assert.match(source, /data-home-settings-setup-panel/)
   assert.match(source, /pointer-events-none absolute inset-0 z-40/)
   assert.match(source, /pointer-events-auto absolute inset-y-0 right-0/)
   assert.match(source, /transition-transform duration-300 ease-out/)
   assert.match(source, /open \? "translate-x-0" : "translate-x-full"/)
+  assert.match(source, /import\s+\{\s*Banner,\s*Button as KumoButton,\s*ClipboardText,\s*Text\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
   assert.match(source, /<header className="relative flex items-start border-b border-kumo-line px-4 py-4">/)
+  assert.match(source, /<Text as="h3" variant="heading3" DANGEROUS_className="leading-6">/)
+  assert.match(source, /<Text as="h4" variant="body" size="sm" bold>/)
+  assert.match(source, /className="space-y-2\.5 text-sm leading-5 text-kumo-subtle \[\&_strong\]:font-semibold \[\&_strong\]:text-kumo-default"/)
+  assert.match(source, /<div className="space-y-2\.5">/)
+  assert.match(source, /<div className="space-y-2 rounded-md bg-kumo-elevated px-2\.5 py-2">/)
+  assert.match(source, /<div className="space-y-1">/)
+  assert.match(source, /<Banner[\s\S]*?variant="alert"/)
+  assert.match(source, /icon=\{[\s\S]*<Warning size=\{16\} weight="fill" \/>[\s\S]*\}/)
+  assert.doesNotMatch(source, /className="!w-fit !max-w-full !p-4"/)
+  assert.match(source, /<Text as="p" variant="body" size="sm" DANGEROUS_className="m-0 leading-5 !text-inherit \[\&_strong\]:font-semibold \[\&_strong\]:text-current">/)
+  assert.match(source, /<SetupGuideAlertBanner html=\{t\("setup\.ios\.step4Warning"\)\} \/>/)
+  assert.match(source, /<SetupGuideAlertBanner html=\{t\("setup\.android\.step4_1Tip"\)\} \/>/)
+  assert.doesNotMatch(source, /className="space-y-2 text-xs leading-5 text-kumo-subtle \[\&_strong\]:font-semibold \[\&_strong\]:text-kumo-default"/)
+  assert.doesNotMatch(source, /className="text-xs font-medium text-kumo-default"/)
   assert.match(source, /className="absolute top-2 right-2"/)
   assert.match(source, /onClick=\{onClose\}/)
   assert.doesNotMatch(source, /bg-black\/30/)
@@ -768,6 +785,12 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /className="w-3\/4 max-w-full"/)
   assert.match(source, /setup\.android\.step1/)
   assert.match(source, /dangerouslySetInnerHTML/)
+  assert.doesNotMatch(source, /setup\.ios\.step4Desc/)
+  assert.match(cssSource, /\.step-list-ul li \{[\s\S]*font-size: inherit;/)
+  assert.match(cssSource, /\.step-list-ul li \{[\s\S]*margin-bottom: 0\.25rem;/)
+  assert.doesNotMatch(cssSource, /\.highlight-badge \{/)
+  assert.match(i18nSource, /'setup\.android\.step4_1Tip':/)
+  assert.doesNotMatch(i18nSource, /highlight-badge/)
 })
 
 test("Registry settings cards only expose business ID selector", () => {
@@ -958,6 +981,22 @@ test("Renderer and worker pass goalStart into shared goal layout", () => {
   assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
   assert.match(goalGeneratorSource, /goalStart,/)
   assert.match(goalGeneratorSource, /goalStart,\s*goalName: decodeGoalName\(goalName\)/)
+})
+
+test("Goal preview uses default Goal label when goalName is empty", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*'Goal'/)
+})
+
+test("Goal preview and worker render goalName with foreground accent, not background contrast", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+
+  assert.match(rendererSource, /if \(layout\.goalName\) \{[\s\S]*ctx\.fillStyle = safeAccent;/)
+  assert.doesNotMatch(rendererSource, /ctx\.fillStyle = contrastAlpha\(bgColor, 0\.9\);/)
+
+  assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,/)
+  assert.doesNotMatch(goalGeneratorSource, /fill: svgContrastAlpha\(bgColor, 0\.9\),/)
 })
 
 test("Worker validation enforces goalStart schema, year range, and relation to goal", () => {

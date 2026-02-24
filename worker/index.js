@@ -175,11 +175,13 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         const timezone = normalizeTimezone(validated.tz) || getTimezone(validated.country);
 
         // Build options object
+        const foregroundOverride = validated.fg === 'light' ? '#FFFFFF' : validated.fg === 'dark' ? '#000000' : null;
         const options = {
             width: validated.width,
             height: validated.height,
             bgColor: validated.bg,
             accentColor: validated.accent,
+            foregroundOverride,
             timezone,
             clockHeight: validated.clockHeight,
             lang: validated.lang,  // 壁纸语言

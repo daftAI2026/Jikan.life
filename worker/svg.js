@@ -153,6 +153,7 @@ export function colorWithAlpha(hex, alpha) {
 export {
     getLuminance,
     getContrastBase,
+    resolveContrastBase,
     contrastAlpha,
     isTooClose,
     isBlackOrWhite,

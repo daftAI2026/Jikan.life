@@ -25,7 +25,8 @@ export function generateYearCalendar(options) {
         clockHeight = 0.22,
         lang = 'en',
         cols,
-        padding
+        padding,
+        foregroundOverride = null
     } = options;
 
     // Get current date in user's timezone
@@ -50,7 +51,7 @@ export function generateYearCalendar(options) {
     const bgFill = parseColor(bgColor);
     const accentFill = parseColor(layout.safeAccent);
     const accentMuted = colorWithAlpha(accentFill, 0.75);
-    const pendingFill = svgContrastAlpha(bgColor, 0.12);
+    const pendingFill = svgContrastAlpha(bgColor, 0.12, foregroundOverride);
 
     // Background
     content.push(rect(0, 0, width, height, bgFill));
@@ -72,7 +73,7 @@ export function generateYearCalendar(options) {
 
     // Stats text
     const statsContent = `<tspan fill="${accentFill}" font-weight="500">${layout.stats.daysText}</tspan>` +
-        `<tspan fill="${svgContrastAlpha(bgColor, 0.5)}" font-weight="500"> · ${layout.stats.completeText}</tspan>`;
+        `<tspan fill="${svgContrastAlpha(bgColor, 0.5, foregroundOverride)}" font-weight="500"> · ${layout.stats.completeText}</tspan>`;
 
     content.push(text(layout.stats.centerX, layout.stats.y, statsContent, {
         fontSize: layout.fontSize,

@@ -29,11 +29,23 @@ export function getLuminance(hex) {
 }
 
 export function getContrastBase(bgHex) {
-    return getLuminance(bgHex) > 0.5 ? '0,0,0' : '255,255,255';
+    return getLuminance(bgHex) > 0.179 ? '0,0,0' : '255,255,255';
 }
 
-export function contrastAlpha(bgHex, alpha) {
-    return `rgba(${getContrastBase(bgHex)}, ${alpha})`;
+/**
+ * Resolve contrast base with optional user override
+ * @param {string} bgHex - Background color
+ * @param {string|null} foregroundOverride - null=auto, '#FFFFFF'=light, '#000000'=dark
+ * @returns {string} RGB base string
+ */
+export function resolveContrastBase(bgHex, foregroundOverride = null) {
+    if (foregroundOverride === '#FFFFFF') return '255,255,255';
+    if (foregroundOverride === '#000000') return '0,0,0';
+    return getContrastBase(bgHex);
+}
+
+export function contrastAlpha(bgHex, alpha, foregroundOverride = null) {
+    return `rgba(${resolveContrastBase(bgHex, foregroundOverride)}, ${alpha})`;
 }
 
 export function isTooClose(hex1, hex2) {

@@ -23,7 +23,8 @@ export function generateLifeCalendar(options) {
         dob,
         lifespan = 80,
         clockHeight = 0.22,
-        lang = 'en'
+        lang = 'en',
+        foregroundOverride = null
     } = options;
 
     // Use shared core for layout computation
@@ -45,7 +46,7 @@ export function generateLifeCalendar(options) {
     const bgFill = parseColor(bgColor);
     const accentFill = parseColor(layout.safeAccent);
     const accentMuted = colorWithAlpha(accentFill, 0.75);
-    const pendingFill = svgContrastAlpha(bgColor, 0.06);
+    const pendingFill = svgContrastAlpha(bgColor, 0.06, foregroundOverride);
 
     // Background
     content.push(rect(0, 0, width, height, bgFill));
@@ -69,7 +70,7 @@ export function generateLifeCalendar(options) {
 
     // Stats text
     const statsContent = `<tspan fill="${accentFill}" font-weight="500">${layout.stats.weeksText}</tspan>` +
-        `<tspan fill="${svgContrastAlpha(bgColor, 0.5)}" font-weight="500"> · ${layout.stats.livedText}</tspan>`;
+        `<tspan fill="${svgContrastAlpha(bgColor, 0.5, foregroundOverride)}" font-weight="500"> · ${layout.stats.livedText}</tspan>`;
 
     content.push(text(layout.stats.centerX, layout.stats.y, statsContent, {
         fontSize: layout.fontSize,

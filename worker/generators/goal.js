@@ -24,7 +24,8 @@ export function generateGoalCountdown(options) {
         goalStart,
         goalName = 'Goal',
         clockHeight = 0.18,
-        lang = 'en'
+        lang = 'en',
+        foregroundOverride = null
     } = options;
 
     const decodeGoalName = (value) => {
@@ -58,7 +59,7 @@ export function generateGoalCountdown(options) {
     const content = [];
     const bgFill = parseColor(bgColor);
     const accentFill = parseColor(safeAccent);
-    const ringMuted = svgContrastAlpha(bgColor, 0.1);
+    const ringMuted = svgContrastAlpha(bgColor, 0.1, foregroundOverride);
 
     // Background
     content.push(rect(0, 0, width, height, bgFill));
@@ -84,7 +85,7 @@ export function generateGoalCountdown(options) {
 
     // "days left" label
     content.push(text(ring.centerX, layout.labelY, layout.daysLeftText, {
-        fill: svgContrastAlpha(bgColor, 0.5),
+        fill: svgContrastAlpha(bgColor, 0.5, foregroundOverride),
         fontSize: layout.labelFontSize,
         fontWeight: '400',
         textAnchor: 'middle',
@@ -94,7 +95,7 @@ export function generateGoalCountdown(options) {
     // Goal name
     if (layout.goalName) {
         content.push(text(ring.centerX, layout.goalNameY, layout.goalName, {
-            fill: svgContrastAlpha(bgColor, 0.9),
+            fill: accentFill,
             fontSize: layout.nameFontSize,
             fontWeight: '600',
             textAnchor: 'middle',
@@ -106,7 +107,7 @@ export function generateGoalCountdown(options) {
     // if (goalDate) {
     //     const dateStr = formatGoalDate(goalDate, lang);
     //     content.push(text(ring.centerX, layout.targetDateY, dateStr, {
-    //         fill: svgContrastAlpha(bgColor, 0.4),
+    //         fill: svgContrastAlpha(bgColor, 0.4, foregroundOverride),
     //         fontSize: width * 0.028,
     //         fontWeight: '400',
     //         textAnchor: 'middle',

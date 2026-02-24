@@ -54,6 +54,7 @@ function getInitialConfig(selectedType) {
         bgColor,
         accentColor,
         originalAccentColor,
+        foregroundOverride: null,
         dob: "",
         lifespan: 80,
         goalName: "",
@@ -177,6 +178,9 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         params.set("type", config.selectedType)
         params.set("bg", config.bgColor.replace("#", ""))
         params.set("accent", config.accentColor.replace("#", ""))
+        if (config.foregroundOverride) {
+            params.set("fg", config.foregroundOverride === "#FFFFFF" ? "light" : "dark")
+        }
         params.set("width", String(selectedDevice.width))
         params.set("height", String(selectedDevice.height))
         params.set("clockHeight", String(selectedDevice.clockHeight))
@@ -244,7 +248,14 @@ function useHomeWallpaperConfig({ selectedStyle }) {
                 updateConfig({
                     bgColor: bg,
                     originalAccentColor: accent,
+                    foregroundOverride: null,
                 })
+            },
+            setForegroundOverride(value) {
+                updateConfig({ foregroundOverride: value })
+            },
+            resetForeground() {
+                updateConfig({ foregroundOverride: null })
             },
             setDob(value) {
                 updateConfig({ dob: value })

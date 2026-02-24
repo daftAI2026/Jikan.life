@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+- **Foreground Color**: Adopted perceptual mid-gray threshold (`0.179`) instead of linear midpoint (`0.5`) in `getContrastBase` for more accurate automatic light/dark text switching.
+- **Color Override**: Implemented a backend `foregroundOverride` mechanism across Canvas and Worker SVG generators, allowing manual locking of foreground color via the `fg=light|dark` URL parameter while keeping the automatic default.
+
 ### UI & UX
 - **Setup Guide**: Refined step instructions and warning banners by adopting standard typography (`Text`, `Banner`) components from the Kumo UI library, replacing hardcoded badge styles for improved visual consistency.
 - **Settings Panel**: Upgraded step indicators from hollow circles (`①~⑥`) to solid circles (`➊~➏`) in `HomeSettingsPane` to improve visual recognition.

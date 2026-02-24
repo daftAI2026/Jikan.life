@@ -124,7 +124,7 @@ export const i18nData = {
     'setup.ios.step3.copiedTooltip': 'Copied',
     'setup.ios.step3.copyAction': 'Copy URL to clipboard',
     'setup.ios.step4': 'Finalize',
-    'setup.ios.step4Desc': '<span class="highlight-badge">In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong></span>',
+    'setup.ios.step4Desc': 'In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong>',
     'setup.ios.step4Warning': 'In "Set Wallpaper Photo", tap arrow (→):<br>Disable <strong>Crop to Subject</strong><br>Disable <strong>Show Preview</strong>',
 
     // Setup Steps - Android
@@ -136,7 +136,8 @@ export const i18nData = {
     'setup.android.step3Desc': 'Tap <strong>Trigger</strong> → <strong>Date/Time</strong>:<br><ul class="step-list-ul"><li>Time: <span class="code-snippet">00:01:00</span></li><li>Select all days (Mon–Sun)</li><li>Turn <strong>Use Alarm</strong> OFF</li></ul>',
     'setup.android.step4': 'Configure Actions',
     'setup.android.step4_1': 'Download Wallpaper',
-    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>Tap <strong>Actions</strong> → <strong>+</strong></li><li>Select <strong>Web Interaction</strong> → <strong>HTTP Request</strong></li><li>Choose <strong>GET</strong> method</li><li>Paste your copied URL</li><li>Enable <em>Block next action until complete</em></li><li>Enable <em>Save HTTP response to file</em></li><li>Choose a folder & enter filename: <span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 Remember this folder for the next step</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>Tap <strong>Actions</strong> → <strong>+</strong></li><li>Select <strong>Web Interaction</strong> → <strong>HTTP Request</strong></li><li>Choose <strong>GET</strong> method</li><li>Paste your copied URL</li><li>Enable <em>Block next action until complete</em></li><li>Enable <em>Save HTTP response to file</em></li><li>Choose a folder & enter filename: <span class="code-snippet">wallpaper.png</span></li></ul>',
+    'setup.android.step4_1Tip': '💡 Remember this folder for the next step',
     'setup.android.step4_2': 'Set Wallpaper',
     'setup.android.step4_2Desc': '<ul class="step-list-ul"><li>Tap <strong>Actions</strong> → <strong>Device Settings</strong> → <strong>Set Wallpaper</strong></li><li>Choose <strong>Image</strong> → Tap OK</li><li>Select <strong>Home Screen & Lock Screen</strong></li><li>Choose <strong>Dynamic File Name</strong></li><li>Select the <em>same folder</em> as before</li><li>Enter the same filename: <span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': 'Finalize & Test',
@@ -310,7 +311,7 @@ export const i18nData = {
     'setup.ios.step3.copiedTooltip': '已复制',
     'setup.ios.step3.copyAction': '复制 URL 到剪贴板',
     'setup.ios.step4': '完成',
-    'setup.ios.step4Desc': '<span class="highlight-badge">在“设定墙纸照片”中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong></span>',
+    'setup.ios.step4Desc': '在“设定墙纸照片”中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
     'setup.ios.step4Warning': '在“设定墙纸照片”中，点击箭头 (→)：<br>关闭 <strong>裁剪到主体</strong><br>关闭 <strong>显示预览</strong>',
 
     // 设置步骤 - Android
@@ -322,7 +323,8 @@ export const i18nData = {
     'setup.android.step3Desc': '点击 <strong>触发器</strong> → <strong>日期/时间</strong>：<br><ul class="step-list-ul"><li>时间：<span class="code-snippet">00:01:00</span></li><li>全选日期 (周一至周日)</li><li>关闭 <strong>使用闹钟</strong></li></ul>',
     'setup.android.step4': '配置动作',
     'setup.android.step4_1': '下载壁纸',
-    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>点击 <strong>动作</strong> → <strong>+</strong></li><li>选择 <strong>网络交互</strong> → <strong>HTTP 请求</strong></li><li>选择 <strong>GET</strong> 方法</li><li>粘贴你复制的 URL</li><li>启用 <em>完成前阻止下一个动作</em></li><li>启用 <em>保存 HTTP 响应到文件</em></li><li>选择文件夹并输入文件名：<span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 下一步需要用到这个文件夹</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>点击 <strong>动作</strong> → <strong>+</strong></li><li>选择 <strong>网络交互</strong> → <strong>HTTP 请求</strong></li><li>选择 <strong>GET</strong> 方法</li><li>粘贴你复制的 URL</li><li>启用 <em>完成前阻止下一个动作</em></li><li>启用 <em>保存 HTTP 响应到文件</em></li><li>选择文件夹并输入文件名：<span class="code-snippet">wallpaper.png</span></li></ul>',
+    'setup.android.step4_1Tip': '💡 下一步需要用到这个文件夹',
     'setup.android.step4_2': '设置壁纸',
     'setup.android.step4_2Desc': '<ul class="step-list-ul"><li>点击 <strong>动作</strong> → <strong>设备设置</strong> → <strong>设置墙纸</strong></li><li>选择 <strong>图像</strong> → 点击确定</li><li>选择 <strong>主屏幕与锁定屏幕</strong></li><li>选择 <strong>动态文件名</strong></li><li>选择<em>同一文件夹</em></li><li>输入相同文件名：<span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': '完成与测试',
@@ -496,7 +498,7 @@ export const i18nData = {
     'setup.ios.step3.copiedTooltip': '已複製',
     'setup.ios.step3.copyAction': '複製 URL 到剪貼簿',
     'setup.ios.step4': '完成',
-    'setup.ios.step4Desc': '<span class="highlight-badge">在「設定背景圖片」中，點擊箭頭 (→)：<br>關閉 <strong>裁切主體</strong><br>關閉 <strong>顯示預覽</strong></span>',
+    'setup.ios.step4Desc': '在「設定背景圖片」中，點擊箭頭 (→)：<br>關閉 <strong>裁切主體</strong><br>關閉 <strong>顯示預覽</strong>',
     'setup.ios.step4Warning': '在「設定背景圖片」中，點擊箭頭 (→)：<br>關閉 <strong>裁切主體</strong><br>關閉 <strong>顯示預覽</strong>',
 
     // 設定步驟 - Android
@@ -508,7 +510,8 @@ export const i18nData = {
     'setup.android.step3Desc': '點擊 <strong>觸發條件</strong> → <strong>日期/時間</strong>：<br>時間：<span class="code-snippet">00:01:00</span><br>日期：<strong>全選</strong> (週一至週日)<br>鬧鐘：<strong>關閉 (OFF)</strong>',
     'setup.android.step4': '配置動作',
     'setup.android.step4_1': '下載桌布',
-    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>點擊 <strong>動作</strong> → <strong>+</strong></li><li>選擇 <strong>網路互動</strong> → <strong>HTTP 請求</strong></li><li>選擇 <strong>GET</strong> 方法</li><li>貼上您複製的 URL</li><li>啟用 <em>完成前阻止下一個動作</em></li><li>啟用 <em>保存 HTTP 回應到檔案</em></li><li>選擇資料夾並輸入檔案名稱：<span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 請記住這個資料夾，下一步會用到</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li>點擊 <strong>動作</strong> → <strong>+</strong></li><li>選擇 <strong>網路互動</strong> → <strong>HTTP 請求</strong></li><li>選擇 <strong>GET</strong> 方法</li><li>貼上您複製的 URL</li><li>啟用 <em>完成前阻止下一個動作</em></li><li>啟用 <em>保存 HTTP 回應到檔案</em></li><li>選擇資料夾並輸入檔案名稱：<span class="code-snippet">wallpaper.png</span></li></ul>',
+    'setup.android.step4_1Tip': '💡 請記住這個資料夾，下一步會用到',
     'setup.android.step4_2': '設定桌布',
     'setup.android.step4_2Desc': '<ul class="step-list-ul"><li>點擊 <strong>動作</strong> → <strong>裝置設定</strong> → <strong>設定桌布</strong></li><li>選擇 <strong>圖像</strong> → 點擊確定</li><li>選擇 <strong>主螢幕與鎖定螢幕</strong></li><li>選擇 <strong>動態檔案名稱</strong></li><li>選擇<em>同一資料夾</em></li><li>輸入相同檔案名稱：<span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': '完成與測試',
@@ -682,7 +685,7 @@ export const i18nData = {
     'setup.ios.step3.copiedTooltip': 'コピーしました',
     'setup.ios.step3.copyAction': 'URL をクリップボードにコピー',
     'setup.ios.step4': '完了',
-    'setup.ios.step4Desc': '<span class="highlight-badge">「壁紙を設定」で矢印 (→) をタップ：<br>「被写体を切り取る」をオフ<br>「プレビューを表示」をオフ</span>',
+    'setup.ios.step4Desc': '「壁紙を設定」で矢印 (→) をタップ：<br>「被写体を切り取る」をオフ<br>「プレビューを表示」をオフ',
     'setup.ios.step4Warning': '「壁紙を設定」で矢印 (→) をタップ：<br>「被写体を切り取る」をオフ<br>「プレビューを表示」をオフ',
 
     // セットアップステップ - Android
@@ -694,7 +697,8 @@ export const i18nData = {
     'setup.android.step3Desc': '<strong>トリガー</strong> → <strong>日付/時刻</strong> をタップ：<br>時刻：<span class="code-snippet">00:01:00</span><br>曜日：<strong>すべて選択</strong> (月〜日)<br>アラーム：<strong>オフ (OFF)</strong>',
     'setup.android.step4': 'アクションを設定',
     'setup.android.step4_1': '壁紙をダウンロード',
-    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li><strong>アクション</strong> → <strong>+</strong> をタップ</li><li><strong>ウェブ操作</strong> → <strong>HTTP リクエスト</strong> を選択</li><li><strong>GET</strong> を選択</li><li>コピーした URL を貼り付け</li><li><em>次のアクションまでブロック</em> を有効化</li><li><em>HTTP レスポンスをファイルに保存</em> を有効化</li><li>フォルダを選択してファイル名を入力：<span class="code-snippet">wallpaper.png</span></li></ul><span class="highlight-badge text-[10px] items-center gap-1 mt-2 flex">💡 このフォルダを覚えておいてください（次の手順で使用します）</span>',
+    'setup.android.step4_1Desc': '<ul class="step-list-ul"><li><strong>アクション</strong> → <strong>+</strong> をタップ</li><li><strong>ウェブ操作</strong> → <strong>HTTP リクエスト</strong> を選択</li><li><strong>GET</strong> を選択</li><li>コピーした URL を貼り付け</li><li><em>次のアクションまでブロック</em> を有効化</li><li><em>HTTP レスポンスをファイルに保存</em> を有効化</li><li>フォルダを選択してファイル名を入力：<span class="code-snippet">wallpaper.png</span></li></ul>',
+    'setup.android.step4_1Tip': '💡 このフォルダを覚えておいてください（次の手順で使用します）',
     'setup.android.step4_2': '壁紙を設定',
     'setup.android.step4_2Desc': '<ul class="step-list-ul"><li><strong>アクション</strong> → <strong>デバイス設定</strong> → <strong>壁紙を設定</strong> をタップ</li><li><strong>画像</strong> → OK をタップ</li><li><strong>ホーム画面とロック画面</strong> を選択</li><li><strong>動的なファイル名</strong> を選択</li><li><em>同じフォルダ</em> を選択</li><li>同じファイル名を入力：<span class="code-snippet">wallpaper.png</span></li></ul>',
     'setup.android.step5': '完了とテスト',

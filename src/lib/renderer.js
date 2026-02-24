@@ -64,7 +64,7 @@ export function drawStats(ctx, width, y, text1, text2, config, fontScale = 1) {
     ctx.textAlign = 'left';
     ctx.fillText(text1, x, y);
 
-    ctx.fillStyle = contrastAlpha(config.bgColor, 0.5);
+    ctx.fillStyle = contrastAlpha(config.bgColor, 0.5, config.foregroundOverride);
     ctx.font = font2;
     ctx.fillText(text2, x + w1, y);
 }
@@ -96,7 +96,7 @@ export function drawYearProgress(ctx, width, height, config, clockHeight) {
         } else if (dot.isCompleted) {
             ctx.fillStyle = hexToRgba(layout.safeAccent, 0.75);
         } else {
-            ctx.fillStyle = contrastAlpha(layout.bgColor, 0.12);
+            ctx.fillStyle = contrastAlpha(layout.bgColor, 0.12, config.foregroundOverride);
         }
         ctx.beginPath();
         ctx.arc(dot.cx, dot.cy, dot.radius, 0, Math.PI * 2);
@@ -132,7 +132,7 @@ export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
         } else if (dot.isLived) {
             ctx.fillStyle = hexToRgba(layout.safeAccent, 0.75);
         } else {
-            ctx.fillStyle = contrastAlpha(layout.bgColor, 0.06);
+            ctx.fillStyle = contrastAlpha(layout.bgColor, 0.06, config.foregroundOverride);
         }
         ctx.beginPath();
         ctx.arc(dot.cx, dot.cy, dot.radius, 0, Math.PI * 2);
@@ -158,7 +158,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
         lang: config.wallpaperLang,
         goalDate: config.goalDate,
         goalStart: config.goalStart,
-        goalName: config.goalName,
+        goalName: config.goalName?.trim() || 'Goal',
         today
     });
 
@@ -166,7 +166,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     const fontFamily = getWallpaperFontFamily(config.wallpaperLang);
 
     // Background ring
-    ctx.strokeStyle = contrastAlpha(bgColor, 0.1);
+    ctx.strokeStyle = contrastAlpha(bgColor, 0.1, config.foregroundOverride);
     ctx.lineWidth = 6;
     ctx.beginPath();
     ctx.arc(ring.centerX, ring.centerY, ring.radius, 0, Math.PI * 2);
@@ -190,13 +190,13 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     ctx.fillText(layout.daysRemaining.toString(), ring.centerX, ring.centerY - 4);
 
     // "X days left" label
-    ctx.fillStyle = contrastAlpha(bgColor, 0.5);
+    ctx.fillStyle = contrastAlpha(bgColor, 0.5, config.foregroundOverride);
     ctx.font = `400 ${layout.labelFontSize}px ${fontFamily}`;
     ctx.fillText(layout.daysLeftText, ring.centerX, layout.labelY);
 
     // Goal name
     if (layout.goalName) {
-        ctx.fillStyle = contrastAlpha(bgColor, 0.9);
+        ctx.fillStyle = safeAccent;
         ctx.font = `600 ${layout.nameFontSize}px ${fontFamily}`;
         ctx.fillText(layout.goalName, ring.centerX, layout.goalNameY);
     }
@@ -204,7 +204,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     // Target date text is intentionally hidden for now.
     // if (config.goalDate) {
     //     const dateStr = formatGoalDate(config.goalDate, config.wallpaperLang);
-    //     ctx.fillStyle = contrastAlpha(bgColor, 0.4);
+    //     ctx.fillStyle = contrastAlpha(bgColor, 0.4, config.foregroundOverride);
     //     ctx.font = `400 ${width * 0.028}px ${fontFamily}`;
     //     ctx.fillText(dateStr, ring.centerX, layout.targetDateY);
     // }

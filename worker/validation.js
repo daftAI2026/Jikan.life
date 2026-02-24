@@ -28,6 +28,7 @@ export const wallpaperSchema = z.object({
     type: z.enum(['year', 'life', 'goal']).default('year'),
     bg: z.string().regex(/^[0-9A-Fa-f]{6}$/, "Invalid hex color").default('000000'),
     accent: z.string().regex(/^[0-9A-Fa-f]{6}$/, "Invalid hex color").default('FFFFFF'),
+    fg: z.enum(['light', 'dark']).optional(),
     width: z.coerce.number().int().min(300, "Width too small").max(8000, "Width too large").default(1170),
     height: z.coerce.number().int().min(300, "Height too small").max(8000, "Height too large").default(2532),
     clockHeight: z.coerce.number().min(0).max(0.5).default(0.18),
