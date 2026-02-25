@@ -1,22 +1,17 @@
 /**
- * [INPUT]: 无
+ * [INPUT]: 依赖 ../shared/wallpaper-core.js 的字体与颜色能力
  * [OUTPUT]: 对外提供 SVG 构建原语 (rect, circle, text, path, createSVG) 与颜色工具 (复用 shared，含 resolveContrastBase)
  * [POS]: worker/ 图形引擎，负责生成 XML 字符串，独立于 Canvas API
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 // SVG utility functions for building wallpaper graphics
-const FONT_FAMILY_BY_LANG = {
-    en: 'Inter, -apple-system, sans-serif',
-    'zh-CN': 'Noto Sans SC, Inter, sans-serif',
-    'zh-TW': 'Noto Sans TC, Inter, sans-serif',
-    ja: 'Noto Sans JP, Inter, sans-serif'
-};
+import { getWallpaperFontFamily } from '../shared/wallpaper-core.js';
 
 /**
  * Create SVG document wrapper
  */
 export function createSVG(width, height, content, lang = 'en') {
-    const fontFamily = FONT_FAMILY_BY_LANG[lang] || FONT_FAMILY_BY_LANG.en;
+    const fontFamily = escapeXmlAttribute(getWallpaperFontFamily(lang));
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${fontFamily}">
@@ -27,6 +22,15 @@ export function createSVG(width, height, content, lang = 'en') {
   </defs>
     ${content}
 </svg>`;
+}
+
+function escapeXmlAttribute(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
 /**

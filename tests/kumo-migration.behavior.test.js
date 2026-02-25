@@ -951,7 +951,13 @@ test("Wallpaper preview shares one language font strategy from shared core", asy
   assert.match(indexSource, /Noto\+Sans\+JP/)
 })
 
-test.todo("Worker SVG should reuse shared getWallpaperFontFamily instead of local FONT_FAMILY_BY_LANG")
+test("Worker SVG reuses shared getWallpaperFontFamily without local font map", () => {
+  const svgSource = readSource("worker/svg.js")
+
+  assert.match(svgSource, /import\s+\{\s*getWallpaperFontFamily\s*\}\s+from\s+['"]\.\.\/shared\/wallpaper-core\.js['"]/)
+  assert.match(svgSource, /getWallpaperFontFamily\(lang\)/)
+  assert.doesNotMatch(svgSource, /FONT_FAMILY_BY_LANG/)
+})
 
 test("GoalStart is wired through registry config state and URL generation", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")

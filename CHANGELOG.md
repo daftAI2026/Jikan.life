@@ -8,14 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Architecture
+- **Font Strategy Unification**: Deprecated the local `FONT_FAMILY_BY_LANG` map in `worker/svg.js` in favor of importing `getWallpaperFontFamily` from `shared/wallpaper-core.js`, ensuring a single source of truth for font allocation across browser and worker environments.
 - **CSS Architecture**: Established a local variable override strategy (e.g., `--step-list-bullet-color`) over global token modification for localized semantic color adjustments.
 - **Dependency Map**: Upgraded frontend toolchain mapping from Vite 6 to Vite 7 in `CLAUDE.md`.
+
+### Fixes
+- **Worker XML Security**: Introduced `escapeXmlAttribute` in `worker/svg.js` to ensure the dynamically injected `font-family` string is properly escaped (e.g., converting quotes to `&quot;`), preventing XML parsing errors when shared font strings contain quotes.
 
 ### Documentation
 - **Fractal Protocol**: Synchronized project guidelines in `CLAUDE.md`, explicitly codifying the Vendor Immutability rule (`vendor/kumo` is strictly read-only) and the `Surface` component isomorphism rule for Setup guide cards.
 - **Fractal Protocol**: Updated `src/CLAUDE.md` and `src/index.css` L3 contracts to reflect the new scoped CSS variable strategies for Setup components.
 
 ### Tests
+- **Worker Guards**: Upgraded the worker font technical debt tracker from a `test.todo` to active structural and behavioral assertions in `kumo-migration.behavior.test.js` and `worker-svg.behavior.test.js`. Validated the removal of local font maps and strict adherence to XML-safe formatting for SVG outputs.
 - **Migration Guards**: Strengthened `kumo-migration.behavior.test.js` with new architectural assertions: enforcing `Surface` adoption for `SetupGuidePanel`, locking down `STEP_DESC_TEXT_CLASSNAME` references, and validating CSS variable injections for list bullets.
 
 ## [1.1.10] - 2026-02-25

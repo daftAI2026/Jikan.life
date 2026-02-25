@@ -15,4 +15,14 @@ test("createSVG should not emit invalid double-quote font-family attribute", () 
 
   assert.ok(secondLine.includes('font-family="'))
   assert.doesNotMatch(secondLine, /font-family=""/)
+  assert.match(secondLine, /font-family="&quot;Inter&quot;, sans-serif"/)
+})
+
+test("createSVG should keep CJK font-family XML-safe while preserving quoted family names", () => {
+  const svg = createSVG(100, 200, "", "zh-CN")
+  const secondLine = svg.split("\n")[1]
+
+  assert.ok(secondLine.includes('font-family="'))
+  assert.doesNotMatch(secondLine, /font-family=""/)
+  assert.match(secondLine, /font-family="&quot;Noto Sans SC&quot;, &quot;Inter&quot;, sans-serif"/)
 })
