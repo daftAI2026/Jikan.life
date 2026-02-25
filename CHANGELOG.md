@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Architecture
+- **CSS Architecture**: Established a local variable override strategy (e.g., `--step-list-bullet-color`) over global token modification for localized semantic color adjustments.
+- **Dependency Map**: Upgraded frontend toolchain mapping from Vite 6 to Vite 7 in `CLAUDE.md`.
+
+### Documentation
+- **Fractal Protocol**: Synchronized project guidelines in `CLAUDE.md`, explicitly codifying the Vendor Immutability rule (`vendor/kumo` is strictly read-only) and the `Surface` component isomorphism rule for Setup guide cards.
+- **Fractal Protocol**: Updated `src/CLAUDE.md` and `src/index.css` L3 contracts to reflect the new scoped CSS variable strategies for Setup components.
+
+### Tests
+- **Migration Guards**: Strengthened `kumo-migration.behavior.test.js` with new architectural assertions: enforcing `Surface` adoption for `SetupGuidePanel`, locking down `STEP_DESC_TEXT_CLASSNAME` references, and validating CSS variable injections for list bullets.
+
 ## [1.1.10] - 2026-02-25
 
 ### Features

@@ -1,7 +1,7 @@
 /**
  * [INPUT]: Tailwind CSS v4 + @cloudflare/kumo 样式包
- * [OUTPUT]: 全局原子类与 Kumo token 适配层
- * [POS]: 全局样式入口，由 main.jsx 引入
+ * [OUTPUT]: 全局原子类与 Kumo token 适配层（含 Setup 注入列表 bullet 的作用域变量覆盖策略）
+ * [POS]: 全局样式入口，由 main.jsx 引入；承接 Setup i18n HTML 注入样式
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 @source "../node_modules/@cloudflare/kumo/dist/**/**.{js,jsx,ts,tsx}";

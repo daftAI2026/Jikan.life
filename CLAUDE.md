@@ -31,7 +31,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 </config>
 
 ## 技术栈
-- **Frontend**: React 19 + Vite 6 + Tailwind CSS v4 + Kumo UI (Base UI)
+- **Frontend**: React 19 + Vite 7 + Tailwind CSS v4 + Kumo UI (Base UI)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Canvas/SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
@@ -54,7 +54,8 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
 - **同源挂载**: Home 工作台优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差
 - **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天
+- **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `Surface`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）
+- **局部变量覆盖优先**: 需要调整单区域颜色语义时，优先通过作用域变量覆盖（如 `--step-list-bullet-color`），禁止直接改全局品牌色 token
 - **Vendor 不可变**: `vendor/kumo` 是第三方子模块，**禁止直接修改源码**。需要定制样式时，在使用端通过 `className` 覆盖，或在 `src/components/ui/` 编写适配器包裹原生组件。直接改 vendor = 改 node_modules，架构罪
 - **样式覆盖优先级**: Kumo 组件自定义样式通过 `className` 在**使用侧**注入（如 `items-start` 覆盖 `items-center`），绝不回溯到组件声明层。图标对齐等微调用 `mt-*` / `shrink-0` 等 utility 在 icon 元素上完成
 - **后端预留不等于前端暴露**: 后端可以预留扩展机制（如 `foregroundOverride`、URL 参数 `fg`），但不需要前端 UI 暴露。只有用户明确要求时才加 UI 控件，避免过度设计
-
