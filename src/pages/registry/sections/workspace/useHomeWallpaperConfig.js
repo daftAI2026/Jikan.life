@@ -226,6 +226,93 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         })
     }, [])
 
+    function applyGoalDateUpdate(prev, payload) {
+        const applyValidatedGoalDates = (next) => {
+            const nextErrors = validateGoalDateInputs({
+                goalStart: next.goalStart,
+                goalDate: next.goalDate,
+                todayISO: payload.todayISO,
+            })
+            return {
+                ...next,
+                goalStartError: nextErrors.goalStartError,
+                goalDateError: nextErrors.goalDateError,
+            }
+        }
+
+        if (payload.type === "range") {
+            return applyValidatedGoalDates({
+                ...prev,
+                goalStart: payload.startISO || "",
+                goalDate: payload.endISO || "",
+            })
+        }
+
+        if (payload.type === "start") {
+            const value = payload.value
+            if (!value) {
+                return applyValidatedGoalDates({ ...prev, goalStart: "" })
+            }
+
+            if (!isValidISODateString(value)) {
+                return { ...prev, goalStartError: "error.goalStart.outOfRange" }
+            }
+
+            const nextErrors = validateGoalDateInputs({
+                goalStart: value,
+                goalDate: prev.goalDate,
+                todayISO: payload.todayISO,
+            })
+            if (nextErrors.goalStartError) {
+                return {
+                    ...prev,
+                    goalStartError: nextErrors.goalStartError,
+                    goalDateError: nextErrors.goalDateError || prev.goalDateError,
+                }
+            }
+
+            return {
+                ...prev,
+                goalStart: value,
+                goalStartError: nextErrors.goalStartError,
+                goalDateError: nextErrors.goalDateError,
+            }
+        }
+
+        if (payload.type === "date") {
+            const value = payload.value
+            if (!value) {
+                return applyValidatedGoalDates({ ...prev, goalDate: "" })
+            }
+
+            if (!isValidISODateString(value)) {
+                return { ...prev, goalDateError: "error.goalDate.outOfRange" }
+            }
+
+            const nextErrors = validateGoalDateInputs({
+                goalStart: prev.goalStart,
+                goalDate: value,
+                todayISO: payload.todayISO,
+            })
+            if (nextErrors.goalDateError) {
+                return {
+                    ...prev,
+                    goalStartError: nextErrors.goalStartError || prev.goalStartError,
+                    goalDateError: nextErrors.goalDateError,
+                }
+            }
+
+            return {
+                ...prev,
+                goalDate: value,
+                goalStartError: nextErrors.goalStartError,
+                goalDateError: nextErrors.goalDateError,
+            }
+        }
+
+        return prev
+    }
+
     const actions = useMemo(
         () => ({
             setCountry(value) {
@@ -270,106 +357,26 @@ function useHomeWallpaperConfig({ selectedStyle }) {
                 updateConfig({ goalName: value })
             },
             setGoalRange({ startISO, endISO }) {
-                updateConfig((prev) => {
-                    const next = {
-                        ...prev,
-                        goalStart: startISO || "",
-                        goalDate: endISO || "",
-                    }
-                    const nextErrors = validateGoalDateInputs({
-                        goalStart: next.goalStart,
-                        goalDate: next.goalDate,
-                        todayISO,
-                    })
-
-                    return {
-                        ...next,
-                        goalStartError: nextErrors.goalStartError,
-                        goalDateError: nextErrors.goalDateError,
-                    }
-                })
+                updateConfig((prev) => applyGoalDateUpdate(prev, {
+                    type: "range",
+                    startISO,
+                    endISO,
+                    todayISO,
+                }))
             },
             setGoalStart(value) {
-                updateConfig((prev) => {
-                    if (!value) {
-                        const next = { ...prev, goalStart: "" }
-                        const nextErrors = validateGoalDateInputs({
-                            goalStart: next.goalStart,
-                            goalDate: next.goalDate,
-                            todayISO
-                        })
-                        return {
-                            ...next,
-                            goalStartError: nextErrors.goalStartError,
-                            goalDateError: nextErrors.goalDateError
-                        }
-                    }
-
-                    if (!isValidISODateString(value)) {
-                        return { ...prev, goalStartError: "error.goalStart.outOfRange" }
-                    }
-
-                    const nextErrors = validateGoalDateInputs({
-                        goalStart: value,
-                        goalDate: prev.goalDate,
-                        todayISO
-                    })
-                    if (nextErrors.goalStartError) {
-                        return {
-                            ...prev,
-                            goalStartError: nextErrors.goalStartError,
-                            goalDateError: nextErrors.goalDateError || prev.goalDateError
-                        }
-                    }
-
-                    return {
-                        ...prev,
-                        goalStart: value,
-                        goalStartError: nextErrors.goalStartError,
-                        goalDateError: nextErrors.goalDateError
-                    }
-                })
+                updateConfig((prev) => applyGoalDateUpdate(prev, {
+                    type: "start",
+                    value,
+                    todayISO,
+                }))
             },
             setGoalDate(value) {
-                updateConfig((prev) => {
-                    if (!value) {
-                        const next = { ...prev, goalDate: "" }
-                        const nextErrors = validateGoalDateInputs({
-                            goalStart: next.goalStart,
-                            goalDate: next.goalDate,
-                            todayISO
-                        })
-                        return {
-                            ...next,
-                            goalStartError: nextErrors.goalStartError,
-                            goalDateError: nextErrors.goalDateError
-                        }
-                    }
-
-                    if (!isValidISODateString(value)) {
-                        return { ...prev, goalDateError: "error.goalDate.outOfRange" }
-                    }
-
-                    const nextErrors = validateGoalDateInputs({
-                        goalStart: prev.goalStart,
-                        goalDate: value,
-                        todayISO
-                    })
-                    if (nextErrors.goalDateError) {
-                        return {
-                            ...prev,
-                            goalStartError: nextErrors.goalStartError || prev.goalStartError,
-                            goalDateError: nextErrors.goalDateError
-                        }
-                    }
-
-                    return {
-                        ...prev,
-                        goalDate: value,
-                        goalStartError: nextErrors.goalStartError,
-                        goalDateError: nextErrors.goalDateError
-                    }
-                })
+                updateConfig((prev) => applyGoalDateUpdate(prev, {
+                    type: "date",
+                    value,
+                    todayISO,
+                }))
             },
             setDevice(value) {
                 updateConfig({ device: normalizeDeviceName(value) })

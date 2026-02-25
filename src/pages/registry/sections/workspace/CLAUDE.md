@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路；新增 `foregroundOverride` 状态 + `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化
+useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路，内部统一收敛到 `applyGoalDateUpdate`；新增 `foregroundOverride` 状态 + `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
 HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排与 Set-it 流程门控，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
@@ -59,5 +59,6 @@ workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 2026-02-24: SetupGuidePanel 顶部标题从双行（`Setup` + 平台副标题）改为单行平台标题（`iOS Setup` / `Android Setup`），减少视觉跳行并提升标题识别速度。
 2026-02-25: `useHomeWallpaperConfig` 新增 `foregroundOverride` 状态（null=自动, #FFF=亮, #000=暗）+ `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化。
 2026-02-25: SetupGuidePanel 步骤卡从原生 `<article>` 迁移到 Kumo `<Surface>` 组件，提取重复样式为 `STEP_CARD_SURFACE_CLASSNAME`/`STEP_INDEX_BADGE_CLASSNAME`/`STEP_DESC_TEXT_CLASSNAME` 常量。
+2026-02-25: Goal 日期状态更新逻辑收敛：`setGoalRange/setGoalStart/setGoalDate` 改为统一委托 `applyGoalDateUpdate`，仅做内部去重重构，保持外部 actions 签名、URL 序列化与 UI/UX 行为不变。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

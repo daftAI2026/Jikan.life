@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Architecture
 - **Font Strategy Unification**: Deprecated the local `FONT_FAMILY_BY_LANG` map in `worker/svg.js` in favor of importing `getWallpaperFontFamily` from `shared/wallpaper-core.js`, ensuring a single source of truth for font allocation across browser and worker environments.
+- **State Management**: Refactored `useHomeWallpaperConfig` by extracting three disjointed goal date update routines (`setGoalRange`, `setGoalStart`, `setGoalDate`) into a single, cohesive `applyGoalDateUpdate` state transition function. This guarantees uniform validation behavior across all date-related interactions without altering the external API.
 - **CSS Architecture**: Established a local variable override strategy (e.g., `--step-list-bullet-color`) over global token modification for localized semantic color adjustments.
 - **Dependency Map**: Upgraded frontend toolchain mapping from Vite 6 to Vite 7 in `CLAUDE.md`.
 

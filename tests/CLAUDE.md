@@ -32,6 +32,7 @@ contrast-threshold.behavior.test.js: 颜色对比度护栏，约束 getContrastB
 2026-02-25: `kumo-migration.behavior.test.js` 新增步骤描述文本常量化护栏：锁定 `STEP_DESC_TEXT_CLASSNAME` 及其引用，防止 class 字符串重复回流。
 2026-02-25: `kumo-migration.behavior.test.js` 将 Worker 字体技术债从 `test.todo(...)` 升级为正式断言：强制 `worker/svg.js` 复用 `getWallpaperFontFamily`，并禁止回流本地 `FONT_FAMILY_BY_LANG`。
 2026-02-25: `worker-svg.behavior.test.js` 增加英/中文字体族 XML 属性护栏：要求 `font-family` 输出保持引号安全转义（`&quot;...&quot;`），防止共享字体串接入后出现属性构造错误。
+2026-02-25: `kumo-migration.behavior.test.js` 新增 Goal 日期收敛护栏：要求 `useHomeWallpaperConfig` 存在统一入口 `applyGoalDateUpdate`，并强制 `setGoalRange/setGoalStart/setGoalDate` 仅做参数适配委托；同时锁定 start/date 非法输入与跨字段阻断时的历史错误写回语义。
 2026-02-18: 新增 `worker-svg.behavior.test.js`，锁定 `createSVG` 的 `font-family` 属性合法性，防止 `format=svg` 回归为 attributes construct error。
 2026-02-12: `kumo-migration.behavior.test.js` 增加 ColorPicker 状态桥接与禁用实验性 pointer-bridge 的护栏断言，防止底边跳左问题回归。
 2026-02-12: `kumo-migration.behavior.test.js` 追加“状态桥 hook 外提后路径与同步保护语义”断言，防止 hook 回流到组件内并导致职责回退。

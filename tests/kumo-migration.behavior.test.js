@@ -971,6 +971,27 @@ test("GoalStart is wired through registry config state and URL generation", () =
   assert.match(source, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)/)
 })
 
+test("Goal date actions delegate to a single internal updater without changing compatibility entrypoints", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+
+  assert.match(source, /function applyGoalDateUpdate\(prev,\s*payload\)/)
+  assert.match(source, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"range",[\s\S]*startISO,[\s\S]*endISO,[\s\S]*todayISO,[\s\S]*\}\)/)
+  assert.match(source, /setGoalStart\(value\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"start",[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
+  assert.match(source, /setGoalDate\(value\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"date",[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
+})
+
+test("Unified goal date updater preserves legacy start/date guard semantics", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+
+  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(!value\)[\s\S]*goalStart:\s*""/)
+  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(!isValidISODateString\(value\)\)[\s\S]*goalStartError:\s*"error\.goalStart\.outOfRange"/)
+  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(nextErrors\.goalStartError\)[\s\S]*goalDateError:\s*nextErrors\.goalDateError\s*\|\|\s*prev\.goalDateError/)
+
+  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(!value\)[\s\S]*goalDate:\s*""/)
+  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(!isValidISODateString\(value\)\)[\s\S]*goalDateError:\s*"error\.goalDate\.outOfRange"/)
+  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(nextErrors\.goalDateError\)[\s\S]*goalStartError:\s*nextErrors\.goalStartError\s*\|\|\s*prev\.goalStartError/)
+})
+
 test("Home settings goal config uses date range label and unified goal-range action", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
 
