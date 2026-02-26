@@ -47,7 +47,7 @@ function HomePage() {
 
             <div
                 id="main-content"
-                className="main-content mt-[var(--registry-topbar-height)] h-[calc(100vh-var(--registry-topbar-height))] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-[var(--registry-rail-width)] md:overflow-y-auto md:overscroll-y-none lg:overflow-hidden"
+                className="main-content registry-main-content-mobile-height mt-[var(--registry-topbar-height)] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-[var(--registry-rail-width)] md:overflow-y-auto md:overscroll-y-none lg:overflow-hidden"
             >
                 <div className="flex h-full flex-col md:h-auto lg:h-full">
                     <HomeTopbar hideLanguage={!sidebarOpen} />

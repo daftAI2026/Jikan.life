@@ -289,6 +289,8 @@ test("md breakpoint routes main scrolling to outer main-content container", () =
   const settingsSource = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
   assert.match(homePageSource, /id="main-content"/)
+  assert.match(homePageSource, /registry-main-content-mobile-height/)
+  assert.doesNotMatch(homePageSource, /h-\[calc\(100vh-var\(--registry-topbar-height\)\)\]/)
   assert.match(homePageSource, /md:overflow-y-auto/)
   assert.match(homePageSource, /md:overscroll-y-none/)
   assert.match(homePageSource, /lg:overflow-hidden/)
@@ -298,6 +300,7 @@ test("md breakpoint routes main scrolling to outer main-content container", () =
   assert.match(homeGridSource, /relative grid/)
   assert.match(homeGridSource, /overflow-x-hidden/)
   assert.match(homeGridSource, /overflow-y-auto/)
+  assert.match(homeGridSource, /overscroll-y-contain/)
   assert.match(homeGridSource, /md:h-auto/)
   assert.match(homeGridSource, /md:overflow-y-visible/)
   assert.doesNotMatch(homeGridSource, /md:overflow-visible/)
@@ -313,7 +316,7 @@ test("md breakpoint routes main scrolling to outer main-content container", () =
   assert.match(settingsSource, /lg:overflow-y-hidden/)
 })
 
-test("Registry page applies global x-axis overscroll guard and blocking state attributes", () => {
+test("Registry page applies global x/y-axis overscroll guard and blocking state attributes", () => {
   const homePageSource = readSource("src/pages/registry/HomePage.jsx")
   const cssSource = readSource("src/index.css")
 
@@ -328,18 +331,24 @@ test("Registry page applies global x-axis overscroll guard and blocking state at
   assert.match(cssSource, /--registry-rail-width:\s*48px;/)
   assert.match(cssSource, /--registry-tools-rail-width:\s*49px;/)
   assert.match(cssSource, /--registry-sidebar-panel-width:\s*290px;/)
-  assert.match(cssSource, /overflow-x:\s*hidden;/)
-  assert.match(cssSource, /overscroll-behavior-x:\s*none;/)
+  assert.match(
+    cssSource,
+    /html\[data-registry-page="true"\],\s*html\[data-registry-page="true"\] body \{[\s\S]*overflow-x:\s*hidden;[\s\S]*overscroll-behavior-x:\s*none;[\s\S]*overflow-y:\s*hidden;[\s\S]*overscroll-behavior-y:\s*none;/
+  )
   assert.match(cssSource, /html\[data-registry-page="true"\]\[data-registry-blocking="true"\],/)
   assert.match(cssSource, /overscroll-behavior-y:\s*none;/)
   assert.match(cssSource, /html\[data-registry-page="true"\]\[data-registry-blocking="true"\] #main-content/)
   assert.match(cssSource, /overflow-y:\s*hidden !important;/)
+  assert.match(cssSource, /\.registry-main-content-mobile-height\s*\{/)
+  assert.match(cssSource, /@supports \(height:\s*100dvh\)\s*\{/)
+  assert.match(cssSource, /height:\s*calc\(100dvh\s*-\s*var\(--registry-topbar-height\)\);/)
 })
 
 test("Registry topbar mounts language selector near left side", () => {
   const source = readSource("src/pages/registry/sections/HomeTopbar.jsx")
 
   assert.match(source, /<LanguageSelect\s*\/>/)
+  assert.match(source, /<header className="hidden sticky top-0 z-10 border-b border-kumo-line bg-kumo-elevated md:block md:pr-12">/)
   assert.match(source, /<div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">/)
 })
 

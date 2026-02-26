@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.12] - 2026-02-27
+
 ### Features
 - **i18n Automation**: Codified fixed translation principles (Accuracy, Fluency, Conciseness, Consistency) and prompt templates in `CONTRIBUTING.md` and `MULTILINGUAL.md` to standardize future AI-driven localization workflows.
 
 ### UI & UX
+- **Mobile Layout**: Hid the duplicated `HomeTopbar` on mobile devices (`hidden md:block`) to prevent double top borders, relying solely on the sticky header from `HomeSidebar`.
+- **Scroll Containment**: Appended `overscroll-y-contain` to `HomeGrid`'s mobile scrolling container. Working alongside the global `overflow-y: hidden` guard, this strictly prevents trackpad/touch vertical overscroll chaining from leaking to the browser viewport.
 - **Setup Guide**: Added step-level "Completed" (已完成/完了) badges to Step 1 of both iOS and Android guides in `SetupGuidePanel` to improve user orientation and setup progress clarity.
 - **Goal Stats**: Refined `HomeSidebar` Goal stats display by replacing the placeholder infinity ("∞") symbol with reliable static text "Target Date" and "Tracking".
 - **Localization Refinement**: Shortened "Days left" suffix from "天剩余"/"日残り" to "天"/"日" in `shared/wallpaper-core.js` and removed unused translation keys in `src/data/i18n.js` for a cleaner UI footprint.
+
+### Tests
+- **Scroll Integrity**: Updated `kumo-migration.behavior.test.js` to assert the new `overscroll-contain` rules, viewport height dynamic calculations, and the mobile topbar responsive state.
 
 ## [1.1.11] - 2026-02-27
 

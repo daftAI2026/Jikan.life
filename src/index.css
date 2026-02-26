@@ -119,6 +119,8 @@ html[data-registry-page="true"],
 html[data-registry-page="true"] body {
   overflow-x: hidden;
   overscroll-behavior-x: none;
+  overflow-y: hidden;
+  overscroll-behavior-y: none;
 }
 
 html[data-registry-page="true"][data-registry-blocking="true"],
@@ -129,6 +131,18 @@ html[data-registry-page="true"][data-registry-blocking="true"] body {
 
 html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   overflow-y: hidden !important;
+}
+
+@media (max-width: 767px) {
+  .registry-main-content-mobile-height {
+    height: calc(100vh - var(--registry-topbar-height));
+  }
+
+  @supports (height: 100dvh) {
+    .registry-main-content-mobile-height {
+      height: calc(100dvh - var(--registry-topbar-height));
+    }
+  }
 }
 
 @media (min-width: 768px) {
