@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Setup Guide Overlay**: Refactored the layout structure of the `SetupGuidePanel` to solve an overflow clipping issue on tablet/iPad sizes (`md` breakpoints). The panel now conditionally shifts its mounting point up to the `HomeGrid` level on medium screens to ensure the sliding animation smoothly covers the entire right-side workspace.
+
 ### Architecture
 - **Font Strategy Unification**: Deprecated the local `FONT_FAMILY_BY_LANG` map in `worker/svg.js` in favor of importing `getWallpaperFontFamily` from `shared/wallpaper-core.js`, ensuring a single source of truth for font allocation across browser and worker environments.
 - **State Management**: Refactored `useHomeWallpaperConfig` by extracting three disjointed goal date update routines (`setGoalRange`, `setGoalStart`, `setGoalDate`) into a single, cohesive `applyGoalDateUpdate` state transition function. This guarantees uniform validation behavior across all date-related interactions without altering the external API.
@@ -21,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fractal Protocol**: Updated `src/CLAUDE.md` and `src/index.css` L3 contracts to reflect the new scoped CSS variable strategies for Setup components.
 
 ### Tests
+- **Setup Guide Layout**: Expanded `kumo-migration.behavior.test.js` to enforce structural constraints on the new `SetupGuidePanel` responsive overlay rendering, validating visibility classes for both `md` and `lg` layouts.
 - **Worker Guards**: Upgraded the worker font technical debt tracker from a `test.todo` to active structural and behavioral assertions in `kumo-migration.behavior.test.js` and `worker-svg.behavior.test.js`. Validated the removal of local font maps and strict adherence to XML-safe formatting for SVG outputs.
 - **Migration Guards**: Strengthened `kumo-migration.behavior.test.js` with new architectural assertions: enforcing `Surface` adoption for `SetupGuidePanel`, locking down `STEP_DESC_TEXT_CLASSNAME` references, and validating CSS variable injections for list bullets.
 

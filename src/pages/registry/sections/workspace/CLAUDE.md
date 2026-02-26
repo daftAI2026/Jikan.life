@@ -5,9 +5,9 @@
 useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路，内部统一收敛到 `applyGoalDateUpdate`；新增 `foregroundOverride` 状态 + `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
 HomePreviewPane.jsx: 左侧手机预览面板，使用 Canvas 实时渲染 year/life/goal 壁纸
-HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排与 Set-it 流程门控，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
+HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排并接收父级传入的 Set-it 流程控制参数，业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（左上标题 + 可选问号提示 + 右上序号 ➊~➏ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
-SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo Surface 组件与提取常量化 className。
+SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；支持 `containerClassName/asideClassName/visibilityClassName` 宿主样式注入以复用到 HomeGrid 的 md 整区覆盖场景；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo Surface 组件与提取常量化 className。
 cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
 cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url/date-field）
 
@@ -15,7 +15,7 @@ cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goa
 workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 
 架构决策
-采用“状态 hook + 左右面板”分层，HomeGrid 只负责编排；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。业务语义实现下沉到 `cards/*`，`HomeSettingsPane` 仅保留顺序编排和流程状态。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
+采用“状态 hook + 左右面板”分层，HomeGrid 负责工作区编排并统一持有 Set-it 流程状态；右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。业务语义实现下沉到 `cards/*`，`HomeSettingsPane` 仅保留顺序编排与 sm/lg Guide 宿主。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
 
 开发规范
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
@@ -60,5 +60,6 @@ workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 2026-02-25: `useHomeWallpaperConfig` 新增 `foregroundOverride` 状态（null=自动, #FFF=亮, #000=暗）+ `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化。
 2026-02-25: SetupGuidePanel 步骤卡从原生 `<article>` 迁移到 Kumo `<Surface>` 组件，提取重复样式为 `STEP_CARD_SURFACE_CLASSNAME`/`STEP_INDEX_BADGE_CLASSNAME`/`STEP_DESC_TEXT_CLASSNAME` 常量。
 2026-02-25: Goal 日期状态更新逻辑收敛：`setGoalRange/setGoalStart/setGoalDate` 改为统一委托 `applyGoalDateUpdate`，仅做内部去重重构，保持外部 actions 签名、URL 序列化与 UI/UX 行为不变。
+2026-02-25: Setup flow 状态从 `HomeSettingsPane` 上提到 `HomeGrid`，并在 `md` 新增整区 Guide 宿主（覆盖 HomeGrid 边界，`h-[calc(100dvh-48px)]`）；`HomeSettingsPane` 保留 `sm/lg` 宿主（`md:hidden lg:block`），`SetupGuidePanel` 新增宿主样式注入 props 以复用同一动画与步骤渲染。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

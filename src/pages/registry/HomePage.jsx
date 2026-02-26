@@ -37,12 +37,12 @@ function HomePage() {
 
             <div
                 id="main-content"
-                className="main-content mt-[49px] h-[calc(100vh-49px)] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-12"
+                className="main-content mt-[49px] h-[calc(100vh-49px)] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-12 md:overflow-y-auto md:overscroll-y-none lg:overflow-hidden"
             >
-                <div className="flex h-full flex-col">
+                <div className="flex h-full flex-col md:h-auto lg:h-full">
                     <HomeTopbar hideLanguage={!sidebarOpen} />
                     <main className="flex min-h-0 grow flex-col md:pr-12">
-                        <div className="mx-auto h-full w-full grow overflow-hidden border-r border-kumo-line">
+                        <div className="mx-auto h-full w-full grow overflow-hidden border-r border-kumo-line md:h-auto lg:h-full">
                             <HomeGrid selectedStyle={selectedStyle} />
                         </div>
                     </main>

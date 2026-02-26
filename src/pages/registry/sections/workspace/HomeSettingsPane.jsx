@@ -1,11 +1,9 @@
 /**
- * [INPUT]: 依赖 SettingsCardShell、SetupGuidePanel 与 cards/CARD_REGISTRY
+ * [INPUT]: 依赖 SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it 流程控制参数（onSetIt/isSetupPanelOpen/setupPlatform/onCloseSetupPanel）
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，采用 CARD_REGISTRY + CARD_ORDER_BY_TYPE 双层结构并输出业务ID选择器；Year 模式完成 5+6 合并为第⑤宽卡 Set 收口，Goal/Life 模式在第③卡承载专属字段并保持第⑥卡 Set 收口）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，使用“业务语义层 + 位置编排层”驱动六卡迁移
+ * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排与 sm/lg Guide 宿主，Set-it 流程状态由 HomeGrid 上提统一管理
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useEffect, useState } from "react"
-import { useKumoToastManager } from "@/components/ui/kumo"
 import { CARD_REGISTRY } from "./cards"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
@@ -15,7 +13,6 @@ const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "life-fields", "co
 const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
 const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
 const SETTINGS_CARD_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
-const SETUP_FLOW_TYPES = new Set(["year", "goal"])
 const CARD_SHELL_CLASS_BY_TYPE = {
     year: {
         url: "md:col-span-2",
@@ -56,34 +53,17 @@ function HomeSettingsPane(props) {
         languageOptions,
         url,
         actions,
+        onSetIt,
+        isSetupPanelOpen,
+        setupPlatform,
+        onCloseSetupPanel,
     } = props
-    const toastManager = useKumoToastManager()
-    const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
-    const [setupPlatform, setSetupPlatform] = useState("ios")
     const todayISO = getLocalTodayISO()
-
-    useEffect(() => {
-        if (!SETUP_FLOW_TYPES.has(config.selectedType)) {
-            setIsSetupPanelOpen(false)
-        }
-    }, [config.selectedType])
-
-    const handleSetIt = async () => {
-        const ok = await actions.copyUrl()
-        if (!ok) return
-        toastManager.add({ description: t("url.copySuccess"), timeout: 3000 })
-        setSetupPlatform(selectedDevice.category === "Android" ? "android" : "ios")
-        setIsSetupPanelOpen(true)
-    }
-
-    const handleCloseSetupPanel = () => {
-        setIsSetupPanelOpen(false)
-    }
 
     const cardViewModel = {
         actions,
         config,
-        onSetIt: handleSetIt,
+        onSetIt,
         selectedDevice,
         palettePresets,
         countryOptions,
@@ -95,7 +75,7 @@ function HomeSettingsPane(props) {
     const cardOrder = resolveCardOrderByType(config.selectedType)
 
     return (
-        <div className="relative h-full min-h-0 overflow-y-auto lg:overflow-hidden">
+        <div className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto md:h-auto md:overflow-y-visible lg:h-full lg:overflow-y-hidden">
             <section
                 data-home-settings-grid
                 className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2 lg:h-full lg:min-h-0 lg:grid-rows-3 lg:auto-rows-fr"
@@ -120,9 +100,10 @@ function HomeSettingsPane(props) {
             <SetupGuidePanel
                 open={isSetupPanelOpen}
                 platform={setupPlatform}
-                onClose={handleCloseSetupPanel}
+                onClose={onCloseSetupPanel}
                 t={t}
                 url={url}
+                visibilityClassName="md:hidden lg:block"
             />
         </div>
     )
