@@ -291,8 +291,8 @@ function HomeSidebar({
                     </div>
                 ),
                 stats: [
-                    { label: t("type.goal.statGoals"), value: "∞" },
-                    { label: t("type.goal.statUpdates"), value: t("type.goal.valueDaily") },
+                    { label: t("type.goal.statTargetDate"), value: t("type.goal.valueTarget") },
+                    { label: t("type.goal.statTracking"), value: t("type.goal.valueDaily") },
                 ],
             },
         ],
@@ -373,13 +373,7 @@ function HomeSidebar({
                                             )}
                                         >
                                             <p className="text-lg leading-none font-medium text-kumo-default">
-                                                <span
-                                                    className={cn(
-                                                        stat.value === "∞" && "inline-block origin-center scale-[1.16]"
-                                                    )}
-                                                >
-                                                    {stat.value}
-                                                </span>
+                                                <span>{stat.value}</span>
                                             </p>
                                             <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
                                                 {stat.label}

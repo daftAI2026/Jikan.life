@@ -245,8 +245,8 @@ const WALLPAPER_TEXT = {
     'zh-CN': {
         daysLeft: '剩余 {n} 天',
         dayLeft: '剩余 {n} 天',
-        daysLeftLabel: '天剩余',
-        dayLeftLabel: '天剩余',
+        daysLeftLabel: '天',
+        dayLeftLabel: '天',
         goalDefault: '目标',
         complete: '进度 {n}%',
         weeksLeft: '剩余 {n} 周',
@@ -267,8 +267,8 @@ const WALLPAPER_TEXT = {
     ja: {
         daysLeft: '残り {n} 日',
         dayLeft: '残り {n} 日',
-        daysLeftLabel: '日残り',
-        dayLeftLabel: '日残り',
+        daysLeftLabel: '日',
+        dayLeftLabel: '日',
         goalDefault: '目標',
         complete: '{n}% 完了',
         weeksLeft: '残り {n} 週',

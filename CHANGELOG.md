@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+- **i18n Automation**: Codified fixed translation principles (Accuracy, Fluency, Conciseness, Consistency) and prompt templates in `CONTRIBUTING.md` and `MULTILINGUAL.md` to standardize future AI-driven localization workflows.
+
+### UI & UX
+- **Setup Guide**: Added step-level "Completed" (已完成/完了) badges to Step 1 of both iOS and Android guides in `SetupGuidePanel` to improve user orientation and setup progress clarity.
+- **Goal Stats**: Refined `HomeSidebar` Goal stats display by replacing the placeholder infinity ("∞") symbol with reliable static text "Target Date" and "Tracking".
+- **Localization Refinement**: Shortened "Days left" suffix from "天剩余"/"日残り" to "天"/"日" in `shared/wallpaper-core.js` and removed unused translation keys in `src/data/i18n.js` for a cleaner UI footprint.
+
 ## [1.1.11] - 2026-02-27
 
 ### UI & UX

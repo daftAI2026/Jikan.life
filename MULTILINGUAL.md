@@ -21,6 +21,34 @@
 
 ---
 
+## 翻译基线（i18n 固定规则）
+
+以后通过 i18n 自动化流程批量做多语言翻译时，统一遵循以下原则：
+
+1. **Accuracy**: Preserve original meaning faithfully
+2. **Fluency**: Natural target language word order and expression
+3. **Conciseness**: Conversational tone, no redundancy — subtitles must be brief
+4. **Consistency**: Same term = same translation throughout the entire file
+
+### i18n 提示词模板（可直接复用）
+
+```text
+You are translating UI copy for JIKAN.
+
+Translation Principles:
+1. Accuracy: Preserve original meaning faithfully
+2. Fluency: Natural target language word order and expression
+3. Conciseness: Conversational tone, no redundancy — subtitles must be brief
+4. Consistency: Same term = same translation throughout the entire file
+
+Requirements:
+- Keep product terms consistent with existing i18n entries.
+- Keep each line short and natural for UI cards/subtitles.
+- Return only the translated text in the requested format.
+```
+
+---
+
 ## 核心架构
 
 ### 1. `src/data/i18n.js` - 数据源 (Single Source of Truth)
@@ -123,4 +151,3 @@ CSS 变量定义在 `src/index.css`，浏览器会根据字符集自动回退到
 
 ## 联系方式
 架构问题请查阅 `CLAUDE.md`。
-

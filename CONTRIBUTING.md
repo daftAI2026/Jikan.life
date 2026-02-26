@@ -42,6 +42,7 @@ Thanks for your interest in contributing to **JIKAN**! This project has evolved 
 
 We use a custom React Context solution (`src/lib/I18nContext.jsx`) backed by `src/data/i18n.js`.
 See [`MULTILINGUAL.md`](./MULTILINGUAL.md) for detailed instructions on adding translations.
+All translation work (including i18n automation flows) must follow the fixed principles in `MULTILINGUAL.md` under `翻译基线（i18n 固定规则）`.
 
 ## 🎨 Design System
 

@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText/Surface/Text/Banner), @phosphor-icons/react(XIcon/Warning), @/lib/utils(cn), i18n t() 与平台参数，以及可选宿主样式注入（containerClassName/asideClassName/visibilityClassName）
+ * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText/Surface/Text/Banner/Badge), @phosphor-icons/react(XIcon/Warning), @/lib/utils(cn), i18n t() 与平台参数，以及可选宿主样式注入（containerClassName/asideClassName/visibilityClassName）
  * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚）
  * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo Surface 组件并收敛滚动职责
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { Banner, Button as KumoButton, ClipboardText, Surface, Text } from "@/components/ui/kumo"
+import { Badge, Banner, Button as KumoButton, ClipboardText, Surface, Text } from "@/components/ui/kumo"
 import { Warning, XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
@@ -31,7 +31,7 @@ function SetupGuideAlertBanner({ html }) {
     )
 }
 
-function SetupGuideStep({ index, title, descriptionHtml }) {
+function SetupGuideStep({ index, title, descriptionHtml, badgeLabel }) {
     return (
         <Surface className={STEP_CARD_SURFACE_CLASSNAME}>
             <header className="inline-flex items-center gap-2">
@@ -39,6 +39,7 @@ function SetupGuideStep({ index, title, descriptionHtml }) {
                     {index}
                 </span>
                 <Text as="h4" variant="body" size="sm" bold>{title}</Text>
+                {badgeLabel ? <Badge variant="secondary">{badgeLabel}</Badge> : null}
             </header>
             <div
                 className={STEP_DESC_TEXT_CLASSNAME}
@@ -131,7 +132,12 @@ function SetupGuidePanel({
                 <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-y-contain p-4">
                     {!isAndroid && (
                         <>
-                            <SetupGuideStep index={1} title={t(IOS_BASE_STEPS[0][0])} descriptionHtml={t(IOS_BASE_STEPS[0][1])} />
+                            <SetupGuideStep
+                                index={1}
+                                title={t(IOS_BASE_STEPS[0][0])}
+                                descriptionHtml={t(IOS_BASE_STEPS[0][1])}
+                                badgeLabel={t("setup.step.completed")}
+                            />
                             <SetupGuideStep index={2} title={t(IOS_BASE_STEPS[1][0])} descriptionHtml={t(IOS_BASE_STEPS[1][1])} />
                             <IOSShortcutStep index={3} t={t} url={url} />
                             <Surface className={STEP_CARD_SURFACE_CLASSNAME}>
@@ -148,7 +154,12 @@ function SetupGuidePanel({
 
                     {isAndroid && (
                         <>
-                            <SetupGuideStep index={1} title={t("setup.android.step1")} descriptionHtml={t("setup.android.step1Desc")} />
+                            <SetupGuideStep
+                                index={1}
+                                title={t("setup.android.step1")}
+                                descriptionHtml={t("setup.android.step1Desc")}
+                                badgeLabel={t("setup.step.completed")}
+                            />
                             <SetupGuideStep index={2} title={t("setup.android.step2")} descriptionHtml={t("setup.android.step2Desc")} />
                             <SetupGuideStep index={3} title={t("setup.android.step3")} descriptionHtml={t("setup.android.step3Desc")} />
 
