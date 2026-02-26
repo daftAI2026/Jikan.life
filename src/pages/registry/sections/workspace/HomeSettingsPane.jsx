@@ -1,9 +1,10 @@
 /**
- * [INPUT]: 依赖 SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it 流程控制参数（onSetIt/isSetupPanelOpen/setupPlatform/onCloseSetupPanel）
- * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，采用 CARD_REGISTRY + CARD_ORDER_BY_TYPE 双层结构并输出业务ID选择器；Year 模式完成 5+6 合并为第⑤宽卡 Set 收口，Goal/Life 模式在第③卡承载专属字段并保持第⑥卡 Set 收口）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排与 sm/lg Guide 宿主，Set-it 流程状态由 HomeGrid 上提统一管理
+ * [INPUT]: 依赖 @/components/ui/kumo(SkeletonLine)、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow 参数
+ * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base 与按 stage 渐进 reveal；Year 保持 5 卡宽收口）与 SETTINGS_CARD_IDS 常量
+ * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 sm/lg Guide 宿主，Set-it/AutoFlow 状态由 HomeGrid 上提统一管理
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { SkeletonLine } from "@/components/ui/kumo"
 import { CARD_REGISTRY } from "./cards"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
@@ -13,6 +14,7 @@ const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "life-fields", "co
 const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
 const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
 const SETTINGS_CARD_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
+const SKELETON_SLOT_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
 const CARD_SHELL_CLASS_BY_TYPE = {
     year: {
         url: "md:col-span-2",
@@ -27,7 +29,7 @@ const CARD_ORDER_BY_TYPE = {
 
 function resolveCardOrderByType(selectedType) {
     if (selectedType && CARD_ORDER_BY_TYPE[selectedType]) return CARD_ORDER_BY_TYPE[selectedType]
-    return CARD_ORDER_BY_TYPE.year
+    return []
 }
 
 function resolveCardShellClassName(selectedType, cardId) {
@@ -41,6 +43,35 @@ function getLocalTodayISO() {
     const month = String(now.getMonth() + 1).padStart(2, "0")
     const day = String(now.getDate()).padStart(2, "0")
     return `${year}-${month}-${day}`
+}
+
+function SettingsCardSkeleton({ onRequestRevealAll }) {
+    const canFastForward = typeof onRequestRevealAll === "function"
+
+    return (
+        <button
+            type="button"
+            aria-label={canFastForward ? "Reveal all settings cards" : undefined}
+            className={canFastForward ? "w-full cursor-pointer px-4 py-2 text-left" : "w-full cursor-default px-4 py-2 text-left"}
+            onClick={canFastForward ? onRequestRevealAll : undefined}
+            disabled={!canFastForward}
+        >
+            <div className="mx-auto flex w-[200px] max-w-full flex-col gap-2">
+                <SkeletonLine minWidth={48} maxWidth={68} />
+                <SkeletonLine minWidth={78} maxWidth={100} />
+                <SkeletonLine minWidth={64} maxWidth={88} />
+                <SkeletonLine minWidth={42} maxWidth={62} />
+            </div>
+        </button>
+    )
+}
+
+function SettingsCardTitleSkeleton() {
+    return (
+        <span className="inline-flex w-[84px] max-w-full">
+            <SkeletonLine minWidth={100} maxWidth={100} />
+        </span>
+    )
 }
 
 function HomeSettingsPane(props) {
@@ -57,6 +88,8 @@ function HomeSettingsPane(props) {
         isSetupPanelOpen,
         setupPlatform,
         onCloseSetupPanel,
+        revealStage = 0,
+        onRequestRevealAll,
     } = props
     const todayISO = getLocalTodayISO()
 
@@ -73,6 +106,7 @@ function HomeSettingsPane(props) {
         url,
     }
     const cardOrder = resolveCardOrderByType(config.selectedType)
+    const unlockedCount = Math.min(cardOrder.length, Math.max(0, revealStage))
 
     return (
         <div className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto md:h-auto md:overflow-y-visible lg:h-full lg:overflow-y-hidden">
@@ -80,22 +114,48 @@ function HomeSettingsPane(props) {
                 data-home-settings-grid
                 className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2 lg:h-full lg:min-h-0 lg:grid-rows-3 lg:auto-rows-fr"
             >
-                {cardOrder.map((cardId, slotIndex) => {
-                    const card = CARD_REGISTRY[cardId]
-                    if (!card) return null
-                    return (
+                {!config.selectedType
+                    ? SKELETON_SLOT_MARKS.map((indexMark, slotIndex) => (
                         <SettingsCardShell
-                            key={cardId}
-                            cardId={cardId}
-                            title={card.resolveTitle ? card.resolveTitle(cardViewModel) : card.titleKey ? t(card.titleKey) : card.title}
-                            titleTooltip={card.titleTooltipKey ? t(card.titleTooltipKey) : card.titleTooltip}
-                            indexMark={SETTINGS_CARD_MARKS[slotIndex]}
-                            className={resolveCardShellClassName(config.selectedType, cardId)}
+                            key={`skeleton-slot-${slotIndex + 1}`}
+                            cardId={`skeleton-slot-${slotIndex + 1}`}
+                            title={<SettingsCardTitleSkeleton />}
+                            indexMark={indexMark}
                         >
-                            {card.render(cardViewModel)}
+                            <SettingsCardSkeleton />
                         </SettingsCardShell>
-                    )
-                })}
+                    ))
+                    : cardOrder.map((cardId, slotIndex) => {
+                        const card = CARD_REGISTRY[cardId]
+                        if (!card) return null
+
+                        const isUnlocked = slotIndex < unlockedCount
+                        const resolvedTitle = card.resolveTitle
+                            ? card.resolveTitle(cardViewModel)
+                            : card.titleKey
+                                ? t(card.titleKey)
+                                : card.title
+                        const resolvedTitleTooltip = card.titleTooltipKey
+                            ? t(card.titleTooltipKey)
+                            : card.titleTooltip
+                        const title = isUnlocked ? resolvedTitle : <SettingsCardTitleSkeleton />
+                        const titleTooltip = isUnlocked ? resolvedTitleTooltip : undefined
+
+                        return (
+                            <SettingsCardShell
+                                key={cardId}
+                                cardId={cardId}
+                                title={title}
+                                titleTooltip={titleTooltip}
+                                indexMark={SETTINGS_CARD_MARKS[slotIndex]}
+                                className={resolveCardShellClassName(config.selectedType, cardId)}
+                            >
+                                {isUnlocked
+                                    ? card.render(cardViewModel)
+                                    : <SettingsCardSkeleton onRequestRevealAll={onRequestRevealAll} />}
+                            </SettingsCardShell>
+                        )
+                    })}
             </section>
             <SetupGuidePanel
                 open={isSetupPanelOpen}

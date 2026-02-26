@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react hooks, @/lib/I18nContext, @/data/countries, @/data/devices, shared/palettes, shared/wallpaper-core
  * [OUTPUT]: 对外提供 useHomeWallpaperConfig hook（统一管理 preview|settings 的配置状态与动作）
- * [POS]: registry/sections/workspace 的状态核心，作为 selectedStyle -> wallpaper config 的单一真相源
+ * [POS]: registry/sections/workspace 的状态核心，作为 selectedStyle -> wallpaper config 的单一真相源（支持未选风格空态）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -73,7 +73,7 @@ function clampLifespan(value) {
 }
 
 function resolveSelectedType(selectedStyle) {
-    return STYLE_TO_TYPE[selectedStyle] ?? "year"
+    return STYLE_TO_TYPE[selectedStyle] ?? null
 }
 
 function getLocalTodayISO() {

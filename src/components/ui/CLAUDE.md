@@ -40,7 +40,7 @@ color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel
 color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `1:2+弹性输入` 布局，通道输入使用配置映射并维持对外 hex 协议
 use-color-picker-state-bridge.js: ColorPicker 状态桥 hook，负责外部受控 hex 与内部 Color 对象同步保护
 field.jsx: 表单字段容器，react-aria-components 基础组件
-kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` 对外导出）
+kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` / `SkeletonLine` 对外导出）
 
 **设计语言**: Kumo UI (Base UI) + Kumo Token Bridge
 - 颜色: 禁止硬编码，仅使用 Kumo token 或语义变量 (var(--color-kumo-*) / var(--primary))
@@ -61,5 +61,6 @@ kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上
 2026-02-18: 新增 `kumo.jsx` 聚合导出层，约束 Registry 页面层仅通过 `@/components/ui/*` 引用 Kumo 组件。
 2026-02-23: `kumo.jsx` 新增 `DatePicker` 导出，供 workspace Goal 第③卡接入官方 Kumo DatePicker(range) 本体。
 2026-02-24: `kumo.jsx` 新增 `ClipboardText` 导出，供 workspace SetupGuidePanel 的 iOS 第3步渲染长 URL 复制控件。
+2026-02-26: `kumo.jsx` 新增 `SkeletonLine` 导出，供 workspace 空态骨架与 AutoFlow 未解锁卡占位统一复用官方组件。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

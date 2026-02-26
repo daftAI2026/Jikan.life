@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 双栏与 selectedStyle 联动，并上提 Set-it 流程状态（copy success 后平台分流）与 md 整区 Guide 宿主；Guide 打开时接入页面级阻断锁
+HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 双栏与 selectedStyle 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 md 整区 Guide 宿主；Guide 打开时接入页面级阻断锁
 ComponentCell.jsx: 网格单元壳，负责标题与内容排布
 ComponentGrid.jsx: 旧版组件墙网格（备用）
 ComponentData.js: 旧版网格条目数据（备用）
@@ -24,5 +24,6 @@ HomeGrid 从 vendor 薄包装切换为本地编排实现；旧网格模块继续
 2026-02-25: HomeGrid 上提 Setup flow 状态（`isSetupPanelOpen/setupPlatform`）并新增 `md` 专用整区 Guide 宿主（`hidden md:block lg:hidden` + `h-[calc(100dvh-48px)]`），保持中档覆盖范围与 viewport 同步。
 2026-02-26: HomeGrid 接入 `useRegistryBlockingScrollLock`，SetupGuide 打开时统一锁背景滚动；md 宿主继续固定覆盖，但容器显式收敛为 `overflow-hidden overscroll-none`，避免外层参与滚动链。
 2026-02-26: HomeGrid 移动主容器补充 `overscroll-y-contain`，与页面级 `overflow-y: hidden` 协同，避免触控板/双指下拉将滚动链泄漏到 viewport。
+2026-02-26: HomeGrid 新增 Skeleton Base AutoFlow（`AUTOFLOW_STORAGE_KEY=registry.settingsAutoflow.v1`、200ms/卡），首次选型后 `revealStage` 自动递进；点击未解锁卡可快进全解锁，后续进入直接全开。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

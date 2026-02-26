@@ -540,10 +540,22 @@ test("HomeSidebar goal visual text positions follow preview layout parameters", 
 test("HomePage keeps selectedStyle as single source of truth", () => {
   const source = readSource("src/pages/registry/HomePage.jsx")
 
-  assert.match(source, /useState\(["']year["']\)/)
+  assert.match(source, /const AUTOFLOW_STORAGE_KEY = "registry\.settingsAutoflow\.v1"/)
+  assert.match(source, /const ONBOARDING_FORCE_QUERY_VALUE = "force"/)
+  assert.match(source, /function isForceOnboardingEnabled\(search\)/)
+  assert.match(source, /params\.get\("onboarding"\) === ONBOARDING_FORCE_QUERY_VALUE/)
+  assert.match(source, /const forceOnboarding = useMemo\(\(\) => isForceOnboardingEnabled\(location\.search\), \[location\.search\]\)/)
+  assert.match(source, /if \(!forceOnboarding\) return/)
+  assert.match(source, /setSelectedStyle\(null\)/)
+  assert.match(source, /if \(forceOnboarding\) return/)
+  assert.match(source, /window\.localStorage\.getItem\(AUTOFLOW_STORAGE_KEY\) === "1"/)
+  assert.match(source, /setSelectedStyle\("year"\)/)
+  assert.match(source, /useState\(null\)/)
+  assert.doesNotMatch(source, /useState\(["']year["']\)/)
   assert.match(source, /selectedStyle={selectedStyle}/)
   assert.match(source, /onStyleChange={setSelectedStyle}/)
   assert.match(source, /<HomeGrid\s+selectedStyle={selectedStyle}/)
+  assert.match(source, /forceOnboarding={forceOnboarding}/)
 })
 
 test("Registry sidebar is local controlled implementation", () => {
@@ -577,6 +589,15 @@ test("Registry workspace no longer hardcodes UI language to English", () => {
   assert.match(source, /name:\s*t\(meta\.labelKey\)/)
   assert.doesNotMatch(source, /REGISTRY_UI_LANG/)
   assert.doesNotMatch(source, /createEnglishTranslator/)
+})
+
+test("Registry config keeps selectedType empty before style selection", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+
+  assert.match(source, /function resolveSelectedType\(selectedStyle\)/)
+  assert.match(source, /return STYLE_TO_TYPE\[selectedStyle\] \?\? null/)
+  assert.match(source, /const selectedType = resolveSelectedType\(selectedStyle\)/)
+  assert.match(source, /if \(!config\.selectedType\) return ""/)
 })
 
 test("Registry settings wallpaper language uses flag + name rendering", () => {
@@ -973,10 +994,50 @@ test("Registry menu accessibility labels are present in i18n", () => {
 test("HomeGrid provides split workspace layout", () => {
   const source = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
 
+  assert.match(source, /const AUTOFLOW_INTERVAL_MS = 500/)
+  assert.match(source, /const AUTOFLOW_STORAGE_KEY = "registry\.settingsAutoflow\.v1"/)
+  assert.match(source, /function HomeGrid\(\{\s*selectedStyle,\s*forceOnboarding = false\s*\}\)/)
+  assert.match(source, /localStorage\.getItem\(AUTOFLOW_STORAGE_KEY\)/)
+  assert.match(source, /localStorage\.setItem\(AUTOFLOW_STORAGE_KEY,\s*"1"\)/)
+  assert.match(source, /if \(forceOnboarding\) return/)
+  assert.match(source, /const shouldSkipAutoflow = hasSeenAutoflow && !forceOnboarding/)
+  assert.match(source, /const \[revealStage, setRevealStage\] = useState\(0\)/)
+  assert.match(source, /const \[hasSeenAutoflow, setHasSeenAutoflow\] = useState\(\(\) => \{/)
+  assert.match(source, /const handleRevealAll = useCallback\(\(\) => \{/)
+  assert.match(source, /onRequestRevealAll=\{handleRevealAll\}/)
   assert.match(source, /data-registry-workspace/)
   assert.match(source, /data-registry-pane=["']preview["']/)
   assert.match(source, /data-registry-pane=["']settings["']/)
+  assert.match(source, /<HomeSettingsPane[\s\S]*?revealStage=\{revealStage\}/)
   assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/demos\/HomeGrid/)
+})
+
+test("HomePreviewPane keeps select-type hint before style selection", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
+
+  assert.match(source, /function HomePreviewPane\(\{\s*config,\s*selectedDevice,\s*t\s*\}\)/)
+  assert.match(source, /preview\.selectType/)
+  assert.doesNotMatch(source, /SkeletonLine/)
+})
+
+test("HomeSettingsPane uses six-slot skeleton base and stage-based reveal", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
+
+  assert.match(source, /import\s+\{\s*SkeletonLine\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
+  assert.match(source, /const SKELETON_SLOT_MARKS = \["➊", "➋", "➌", "➍", "➎", "➏"\]/)
+  assert.match(source, /function SettingsCardTitleSkeleton\(\)/)
+  assert.match(source, /\{!config\.selectedType/)
+  assert.match(source, /title={<SettingsCardTitleSkeleton \/>}/)
+  assert.match(source, /const title = isUnlocked \? resolvedTitle : <SettingsCardTitleSkeleton \/>/)
+  assert.match(source, /const titleTooltip = isUnlocked \? resolvedTitleTooltip : undefined/)
+  assert.match(source, /const unlockedCount = Math\.min\(cardOrder\.length, Math\.max\(0, revealStage\)\)/)
+  assert.match(source, /onRequestRevealAll/)
+  assert.match(source, /<SkeletonLine/)
+})
+
+test("Kumo UI export includes SkeletonLine for page-level placeholders", () => {
+  const source = readSource("src/components/ui/kumo.jsx")
+  assert.match(source, /SkeletonLine/)
 })
 
 test("No unsupported Text variants are used in src", () => {

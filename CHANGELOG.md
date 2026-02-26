@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Skeleton Base**: Implemented a progressive six-slot skeleton layout (`SkeletonLine`) in `HomeSettingsPane` before a style is selected, providing a clearer visual structure for the empty state.
+- **AutoFlow Onboarding**: Added an automatic reveal sequence (AutoFlow) in `HomeGrid` that progressively displays settings cards upon first visit, enhancing the onboarding experience.
+- **Empty State Hints**: Updated `HomePreviewPane` to display a "select-type" hint when no wallpaper style is selected, and refactored `HomePage` to initialize `selectedStyle` to `null` instead of defaulting to `"year"`.
+
+### Architecture
+- **Kumo Components**: Exported `SkeletonLine` from the unified `kumo.jsx` interface to support page-level placeholders.
+
+### Documentation
+- **Fractal Protocol**: Synchronized `CLAUDE.md` maps across `src/components/ui`, `src/pages/registry`, and its subdirectories to document the new `SkeletonLine` export and AutoFlow architecture. Updated L3 headers in `useHomeWallpaperConfig.js`.
+
+### Tests
+- **UI & AutoFlow Constraints**: Expanded `kumo-migration.behavior.test.js` to enforce structural constraints on the `HomePage` empty state initialization, the AutoFlow sequence local storage implementation, and the official `SkeletonLine` integration within `HomeSettingsPane`.
+
 ## [1.1.12] - 2026-02-27
 
 ### Features
