@@ -8,6 +8,7 @@ ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mod
 LanguageSelect.jsx: Home UI 语言切换组件（触发器为“线框地球图标+语言名”，菜单为“国旗+语言名”且保留默认选中勾，二者间距统一；桌面顶栏左侧挂载，移动端保留右下角入口）
 SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
 JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用 vendor docs 源码）
+useRegistryBlockingScrollLock.js: Registry 阻断层滚动锁基础设施（引用计数），统一控制 `data-registry-blocking` 标记
 RegistryHeader.jsx: 旧版顶栏（保留备用）
 RegistryOverview.jsx: 旧版概览区（保留备用）
 RegistryBlocks.jsx: 旧版 Blocks 区（保留备用）
@@ -16,5 +17,6 @@ RegistrySection.jsx: 旧版区块包装器
 架构决策
 sections 页面层统一通过 `@/components/ui/*` 引用 Kumo 组件；`cn` 工具统一来自 `@/lib/utils`。
 第一阶段命名收口仅覆盖在用链路（HomeTopbar/HomeSidebar），备用旧文件保持原名，避免一次性扩大改动面。
+滚动治理采用“阻断层单一滚动源”策略：阻断层打开时通过 `useRegistryBlockingScrollLock` 统一锁背景滚动，避免多滚动源串扰。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

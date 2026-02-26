@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText/Surface/Text/Banner), @phosphor-icons/react(XIcon/Warning), @/lib/utils(cn), i18n t() 与平台参数，以及可选宿主样式注入（containerClassName/asideClassName/visibilityClassName）
- * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染）
- * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo Surface 组件
+ * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚）
+ * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo Surface 组件并收敛滚动职责
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Banner, Button as KumoButton, ClipboardText, Surface, Text } from "@/components/ui/kumo"
@@ -17,7 +17,7 @@ const ANDROID_FINAL_STEP = ["setup.android.step5", "setup.android.step5Desc"]
 const STEP_CARD_SURFACE_CLASSNAME = "space-y-2 rounded-lg border border-kumo-line bg-kumo-control px-3 py-3 ring-0 shadow-none"
 const STEP_INDEX_BADGE_CLASSNAME = "inline-flex size-5 items-center justify-center rounded-full bg-kumo-tint text-xs leading-none"
 const STEP_DESC_TEXT_CLASSNAME = "text-sm leading-5 text-kumo-subtle [&_strong]:font-semibold [&_strong]:text-kumo-default"
-const DEFAULT_CONTAINER_CLASSNAME = "pointer-events-none absolute inset-0 z-40"
+const DEFAULT_CONTAINER_CLASSNAME = "pointer-events-none absolute inset-0 z-40 overflow-hidden overscroll-none"
 const DEFAULT_ASIDE_CLASSNAME =
     "pointer-events-auto absolute inset-y-0 right-0 flex w-full max-w-full flex-col border-l border-kumo-line bg-kumo-elevated transition-transform duration-300 ease-out md:w-[86%] lg:w-full lg:border-l-0"
 
@@ -104,6 +104,9 @@ function SetupGuidePanel({
             className={cn(DEFAULT_CONTAINER_CLASSNAME, visibilityClassName, containerClassName)}
         >
             <aside
+                role="dialog"
+                aria-modal={open}
+                aria-label={setupTitle}
                 className={cn(
                     DEFAULT_ASIDE_CLASSNAME,
                     asideClassName,
@@ -125,7 +128,7 @@ function SetupGuidePanel({
                     </KumoButton>
                 </header>
 
-                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-y-contain p-4">
                     {!isAndroid && (
                         <>
                             <SetupGuideStep index={1} title={t(IOS_BASE_STEPS[0][0])} descriptionHtml={t(IOS_BASE_STEPS[0][1])} />

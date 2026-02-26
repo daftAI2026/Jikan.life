@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), JikanMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout)
+ * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), JikanMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout), useRegistryBlockingScrollLock
  * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
- * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览进度可视化的日切刷新入口
+ * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览进度可视化的日切刷新入口；移动抽屉打开时锁背景滚动
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -10,6 +10,7 @@ import { XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { JikanMenuIcon } from "./JikanMenuIcon"
 import { useI18n } from "@/lib/I18nContext"
+import { useRegistryBlockingScrollLock } from "./useRegistryBlockingScrollLock"
 import { computeGoalLayout } from "../../../../shared/wallpaper-core"
 
 // ---- Sidebar Style Feature Flags ----
@@ -185,6 +186,8 @@ function HomeSidebar({
     const [todayKey, setTodayKey] = useState(() => getLocalDateKey())
     const isSidebarOpen = typeof sidebarOpen === "boolean" ? sidebarOpen : internalSidebarOpen
 
+    useRegistryBlockingScrollLock(mobileMenuOpen)
+
     const handleSidebarToggle = () => {
         const nextOpen = !isSidebarOpen
         if (typeof onSidebarOpenChange === "function") {
@@ -225,6 +228,25 @@ function HomeSidebar({
 
         scheduleNextTick()
         return () => clearTimeout(timeoutId)
+    }, [])
+
+    useEffect(() => {
+        if (typeof window === "undefined") return
+
+        const mediaQuery = window.matchMedia("(min-width: 768px)")
+        const handleBreakpoint = (event) => {
+            if (event.matches) setMobileMenuOpen(false)
+        }
+
+        if (mediaQuery.matches) setMobileMenuOpen(false)
+
+        if (typeof mediaQuery.addEventListener === "function") {
+            mediaQuery.addEventListener("change", handleBreakpoint)
+            return () => mediaQuery.removeEventListener("change", handleBreakpoint)
+        }
+
+        mediaQuery.addListener(handleBreakpoint)
+        return () => mediaQuery.removeListener(handleBreakpoint)
     }, [])
 
     const yearStats = useMemo(() => getYearStats(), [todayKey])
@@ -375,7 +397,7 @@ function HomeSidebar({
 
     return (
         <>
-            <div className="fixed inset-x-0 top-0 z-50 flex h-[49px] items-center justify-between border-b border-kumo-line bg-kumo-elevated px-3 text-kumo-default md:hidden">
+            <div className="fixed inset-x-0 top-0 z-50 flex h-[var(--registry-topbar-height)] items-center justify-between border-b border-kumo-line bg-kumo-elevated px-3 text-kumo-default md:hidden">
                 <Button
                     variant="ghost"
                     shape="square"
@@ -395,7 +417,7 @@ function HomeSidebar({
                     mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
-                <div className="flex h-[49px] flex-none items-center justify-between border-b border-kumo-line px-3 text-kumo-default">
+                <div className="flex h-[var(--registry-topbar-height)] flex-none items-center justify-between border-b border-kumo-line px-3 text-kumo-default">
                     <h1 className="text-base font-medium">Jikan</h1>
                     <Button
                         variant="ghost"
@@ -409,8 +431,8 @@ function HomeSidebar({
                 <div className="min-h-0 grow overflow-hidden px-3 py-3 text-sm">{navContent}</div>
             </aside>
 
-            <div className="fixed inset-y-0 left-0 z-50 hidden w-12 border-r border-kumo-line bg-kumo-elevated md:block">
-                <div className="relative h-[49px] border-b border-kumo-line">
+            <div className="fixed inset-y-0 left-0 z-50 hidden w-[var(--registry-rail-width)] border-r border-kumo-line bg-kumo-elevated md:block">
+                <div className="relative h-[var(--registry-topbar-height)] border-b border-kumo-line">
                     <div className="absolute top-2 right-1">
                         <Button
                             variant="ghost"
@@ -425,19 +447,19 @@ function HomeSidebar({
                 </div>
             </div>
 
-            <div className="pointer-events-none fixed top-0 left-12 z-50 hidden h-[49px] items-center px-3 font-medium text-kumo-default select-none md:flex">
+            <div className="pointer-events-none fixed top-0 left-[var(--registry-rail-width)] z-50 hidden h-[var(--registry-topbar-height)] items-center px-3 font-medium text-kumo-default select-none md:flex">
                 <h1 className="text-base">Jikan</h1>
             </div>
 
             <aside
                 data-sidebar-open={isSidebarOpen}
                 className={cn(
-                    "fixed inset-y-0 left-12 z-40 hidden w-[290px] flex-col bg-kumo-elevated text-kumo-default md:flex",
+                    "fixed inset-y-0 left-[var(--registry-rail-width)] z-40 hidden w-[var(--registry-sidebar-panel-width)] flex-col bg-kumo-elevated text-kumo-default md:flex",
                     "transition-transform duration-300 ease-out will-change-transform",
                     isSidebarOpen ? "translate-x-0 border-r border-kumo-line" : "-translate-x-full"
                 )}
             >
-                <div className="h-[49px] flex-none border-b border-kumo-line" />
+                <div className="h-[var(--registry-topbar-height)] flex-none border-b border-kumo-line" />
                 <div className="min-h-0 grow overflow-hidden px-3 py-3 text-sm">{navContent}</div>
             </aside>
         </>

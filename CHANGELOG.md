@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.11] - 2026-02-27
+
 ### UI & UX
 - **Setup Guide Overlay**: Refactored the layout structure of the `SetupGuidePanel` to solve an overflow clipping issue on tablet/iPad sizes (`md` breakpoints). The panel now conditionally shifts its mounting point up to the `HomeGrid` level on medium screens to ensure the sliding animation smoothly covers the entire right-side workspace.
+- **Scroll Lock**: Implemented `useRegistryBlockingScrollLock` to prevent background scrolling when overlays or setup panels are active in the Registry workspace.
 
 ### Architecture
 - **Font Strategy Unification**: Deprecated the local `FONT_FAMILY_BY_LANG` map in `worker/svg.js` in favor of importing `getWallpaperFontFamily` from `shared/wallpaper-core.js`, ensuring a single source of truth for font allocation across browser and worker environments.
 - **State Management**: Refactored `useHomeWallpaperConfig` by extracting three disjointed goal date update routines (`setGoalRange`, `setGoalStart`, `setGoalDate`) into a single, cohesive `applyGoalDateUpdate` state transition function. This guarantees uniform validation behavior across all date-related interactions without altering the external API.
 - **CSS Architecture**: Established a local variable override strategy (e.g., `--step-list-bullet-color`) over global token modification for localized semantic color adjustments.
+- **Registry Overlays**: Integrated ARIA-compliant dialog attributes (`role="dialog"`, `aria-modal`) for the Setup Guide Panel to improve accessibility.
 - **Dependency Map**: Upgraded frontend toolchain mapping from Vite 6 to Vite 7 in `CLAUDE.md`.
 
 ### Fixes
