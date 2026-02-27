@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### UI & UX
-- **ColorPicker HEX Input**: Switched HEX input from controlled `onChange` to uncontrolled `defaultValue` + commit-on-blur/Enter pattern, eliminating cursor jumps and invalid intermediate parse errors during manual typing.
-- **Settings Panel**: Faded inactive setting card numerical indices (opacity and scale reduction) to improve visual hierarchy during AutoFlow onboarding and draw focus to the active configuration step.
+### Architecture
+- **Dependency Cleanup**: Removed 8 unused packages (`react-colorful`, `lucide-react`, `html-to-image`, `@hookform/resolvers`, `react-hook-form`, `@radix-ui/react-dropdown-menu`, `tailwind-variants`, `shadcn`), eliminating over 300 transitive dependencies from the node_modules tree.
+- **Dependency Upgrades**: Synchronized all outdated packages to their latest versions, including `@base-ui/react`, `@cloudflare/kumo`, `tailwindcss`, and `wrangler`.
+- **Infrastructure**: Conducted a full dependency audit to map architectural usage and ensure zero-vulnerability integrity.
 
 ### Architecture
 - **Legacy UI Purge**: Deleted legacy localized UI wrapper `dropdown-menu.jsx` to complete migration to Kumo primitives.
