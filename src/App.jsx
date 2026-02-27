@@ -1,14 +1,12 @@
 /**
- * [INPUT]: 依赖 react-router-dom, framer-motion, @/components/, react-aria-components (I18nProvider)
+ * [INPUT]: 依赖 react-router-dom, framer-motion, react-aria-components (I18nProvider), @cloudflare/kumo(Toasty)
  * [OUTPUT]: 对外提供 App 根组件 (Apple 级页面过渡 + 国际化)
  * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { AnimatePresence, MotionConfig, motion } from "framer-motion"
 import { Toasty } from "@cloudflare/kumo"
-import { KumoShell } from "@/components/layout/KumoShell"
-import DesignSystem from "@/pages/DesignSystem"
 import HomePage from "@/pages/registry/HomePage"
 import { pageTransition } from "@/lib/motion"
 
@@ -31,9 +29,6 @@ function AnimatedRoutes() {
                 <Routes location={location}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/app" element={<Navigate to="/" replace />} />
-                    <Route element={<AppShell />}>
-                        <Route path="/design" element={<DesignSystem />} />
-                    </Route>
                 </Routes>
             </motion.div>
         </AnimatePresence>
@@ -72,7 +67,7 @@ function App() {
                 <MotionConfig reducedMotion="user">
                     <Toasty>
                         <BrowserRouter>
-                            <div className="relative flex min-h-screen flex-col bg-background">
+                            <div className="relative flex min-h-screen flex-col bg-kumo-base">
                                 <AnimatedRoutes />
                             </div>
                         </BrowserRouter>
@@ -84,13 +79,3 @@ function App() {
 }
 
 export default App
-
-function AppShell() {
-    return (
-        <KumoShell>
-            <div className="flex flex-1 flex-col">
-                <Outlet />
-            </div>
-        </KumoShell>
-    )
-}

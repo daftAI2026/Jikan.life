@@ -7,7 +7,7 @@ HomeSidebar.jsx: 本地侧栏，负责样式卡片选择与侧栏开合交互（
 ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage
 LanguageSelect.jsx: Home UI 语言切换组件（触发器为“线框地球图标+语言名”，菜单为“国旗+语言名”且保留默认选中勾，二者间距统一；桌面顶栏左侧挂载，移动端保留右下角入口）
 SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
-JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用 vendor docs 源码）
+JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用上游 docs 源码）
 useRegistryBlockingScrollLock.js: Registry 阻断层滚动锁基础设施（引用计数），统一控制 `data-registry-blocking` 标记
 RegistryHeader.jsx: 旧版顶栏（保留备用）
 RegistryOverview.jsx: 旧版概览区（保留备用）

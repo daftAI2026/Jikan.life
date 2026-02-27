@@ -9,7 +9,7 @@ HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排、6
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（可选左上标题 + 可选问号提示 + 右上序号 ➊~➏ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持可选 `className` 承接 type 专属跨列布局
 SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；支持 `containerClassName/asideClassName/visibilityClassName` 宿主样式注入以复用到 HomeGrid 的 md 整区覆盖场景；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo Surface 组件与提取常量化 className，并收敛为“仅步骤区滚动”。
 cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
-cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url/date-field）
+cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url）
 
 结构
 workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
@@ -50,7 +50,8 @@ workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 2026-02-23: Setting Panel 卡片业务ID过渡态收口：删除 `CARD_REGISTRY.legacyId` 与 `data-home-settings-card-legacy`，选择器统一为 `data-home-settings-card`。
 2026-02-23: Life 模式第③卡接入 `life-fields`（DOB + Lifespan），`CARD_ORDER_BY_TYPE.life` 更新为 `["location","wallpaper-lang","life-fields","colors","device","url"]`，并移出占位 `palettes`。
 2026-02-23: 删除 `legacySettings=1` 与 `LegacySettingsForm` 迁移兜底分支，右侧设置区统一以六卡渲染链路为唯一入口。
-2026-02-23: 将 `HomeSettingsPane` 内联卡片实现拆分到 `workspace/cards/*`（含 `settings-card-date-picker-field`），`HomeSettingsPane` 仅保留卡序编排、视图模型组装与 Set-it 成功门控；UI/UX 与交互行为保持不变。
+2026-02-23: 将 `HomeSettingsPane` 内联卡片实现拆分到 `workspace/cards/*`，`HomeSettingsPane` 仅保留卡序编排、视图模型组装与 Set-it 成功门控；UI/UX 与交互行为保持不变。
+2026-02-28: Life 第③卡 DOB 从本地 react-aria 日期壳切到官方 Kumo DatePicker(single)+Popover；本地 `settings-card-date-picker-field` 与 `ui/calendar|date-picker|datefield` 链路下线。
 2026-02-23: Goal 第③卡日期输入从双字段（Start/Target）切换为单一 Date Range：使用官方 Kumo `DatePicker(mode="range")` + presets(`Next 30/90 days`)，并新增 `actions.setGoalRange` 原子状态入口；URL 继续输出 `goalStart/goal`。
 2026-02-24: Device 选择入口临时收口为 iPhone-only：`device-card` 仅渲染 iPhone 分组；`useHomeWallpaperConfig` 对历史 Android/iPad 设备值做启动期回退到首个 iPhone，可见入口与状态保持一致（设备数据与 Worker 参数链路保留）。
 2026-02-24: 新增 `device-visibility.js` 作为设备可见性策略单一真相源，`device-card` 与 `useHomeWallpaperConfig` 改为共享常量/判断函数，消除跨文件重复定义导致的策略漂移风险。

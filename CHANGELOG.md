@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-02-28
+
+### Architecture
+- **Official Kumo Migration**: Finalized the transition to the official `@cloudflare/kumo` design system packages. Completely removed the `vendor/kumo` Git submodule, establishing single-source-of-truth imports from npm.
+- **Legacy UI Purge**: Deleted over 30 legacy localized UI wrappers (including `calendar.jsx`, `date-picker.jsx`, `dialog.jsx`, `form.jsx`, `sheet.jsx`, etc.) from `src/components/ui/`, redirecting all application imports directly to Kumo primitives.
+- **Legacy Layout Cleanup**: Removed deprecated architectural components such as the `DesignSystem` page and legacy layout shells (`KumoShell`, `Header`, `Footer`).
+- **Dependency Optimization**: Cleaned up `package.json` to reflect the streamlined React and Vite stack, removing redundant UI dependencies and obsolete `match-sorter-shim` overrides.
+
 ### UI & UX
 - **Skeleton Base**: Implemented a progressive six-slot skeleton layout (`SkeletonLine`) in `HomeSettingsPane` before a style is selected, providing a clearer visual structure for the empty state.
 - **AutoFlow Onboarding**: Added an automatic reveal sequence (AutoFlow) in `HomeGrid` that progressively displays settings cards upon first visit, enhancing the onboarding experience.

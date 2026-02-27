@@ -99,54 +99,24 @@ test("index.css imports Kumo styles and removes dark variant", () => {
   assert.doesNotMatch(source, /--neumorphic-/)
 })
 
-test("Header toggles data-mode instead of .dark class", () => {
-  const source = readSource("src/components/layout/Header.jsx")
-
-  assert.match(source, /data-mode/)
-  assert.doesNotMatch(source, /classList\.add\(['"]dark['"]\)/)
-  assert.doesNotMatch(source, /classList\.remove\(['"]dark['"]\)/)
-})
-
-test("Sonner toaster reads data-mode and does not depend on next-themes", () => {
-  const source = readSource("src/components/ui/sonner.jsx")
-
-  assert.doesNotMatch(source, /next-themes/)
-  assert.doesNotMatch(source, /useTheme/)
-  assert.match(source, /data-mode/)
-})
-
-test("Header uses Phosphor icons", () => {
-  const source = readSource("src/components/layout/Header.jsx")
-  assert.match(source, /@phosphor-icons\/react/)
-})
-
-test("App uses KumoShell layout", () => {
-  const source = readSource("src/App.jsx")
-  assert.match(source, /KumoShell/)
-})
-
-test("App routes include home entry, /app redirect, and /design entry", () => {
+test("App routes include home entry and /app redirect", () => {
   const source = readSource("src/App.jsx")
 
   assert.match(source, /HomePage/)
   assert.match(source, /path=["']\/app["']/)
   assert.match(source, /Navigate to=["']\/["'] replace/)
-  assert.match(source, /path=["']\/design["']/)
+  assert.doesNotMatch(source, /path=["']\/design["']/)
 })
 
-test("KumoShell defines sidebar and content slots", () => {
-  const source = readSource("src/components/layout/KumoShell.jsx")
-  assert.match(source, /data-kumo-shell/)
-  assert.match(source, /<aside/)
-  assert.match(source, /<main/)
+test("App shell uses Kumo base surface token", () => {
+  const source = readSource("src/App.jsx")
+  assert.match(source, /bg-kumo-base/)
 })
 
 test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo primitive)", () => {
   const button = readSource("src/components/ui/button.jsx")
   const input = readSource("src/components/ui/input.jsx")
   const select = readSource("src/components/ui/select.jsx")
-  const dialog = readSource("src/components/ui/dialog.jsx")
-  const tabs = readSource("src/components/ui/tabs.jsx")
   const switchControl = readSource("src/components/ui/switch.jsx")
   const tooltip = readSource("src/components/ui/tooltip.jsx")
   const popover = readSource("src/components/ui/popover.jsx")
@@ -154,19 +124,27 @@ test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo pr
   assert.match(button, /@cloudflare\/kumo\/components\/button/)
   assert.match(input, /@cloudflare\/kumo\/components\/input/)
   assert.match(select, /@cloudflare\/kumo\/components\/select/)
-  assert.match(dialog, /@cloudflare\/kumo\/components\/dialog/)
-  assert.match(tabs, /@cloudflare\/kumo\/components\/tabs/)
   assert.match(switchControl, /@cloudflare\/kumo\/components\/switch/)
   assert.match(tooltip, /@cloudflare\/kumo\/components\/tooltip/)
   assert.match(popover, /@cloudflare\/kumo\/components\/popover/)
 })
 
-test("Calendar avoids shadcn Select subcomponents", () => {
-  const source = readSource("src/components/ui/calendar.jsx")
+test("Legacy local date UI files are removed", () => {
+  const root = process.cwd()
+  const removedFiles = [
+    "src/components/ui/calendar.jsx",
+    "src/components/ui/date-picker.jsx",
+    "src/components/ui/datefield.jsx",
+    "src/pages/registry/sections/workspace/cards/settings-card-date-picker-field.jsx",
+  ]
 
-  assert.doesNotMatch(source, /SelectContent/)
-  assert.doesNotMatch(source, /SelectTrigger/)
-  assert.doesNotMatch(source, /SelectValue/)
+  removedFiles.forEach((relativePath) => {
+    assert.equal(
+      fs.existsSync(path.join(root, relativePath)),
+      false,
+      `${relativePath} should be removed`
+    )
+  })
 })
 
 test("ColorPicker uses Kumo popover trigger/content structure without shadcn select subcomponents", () => {
@@ -490,6 +468,17 @@ test("Registry page layer imports UI components via local ui entry only", () => 
     directKumoImports.length,
     0,
     `registry page layer should not import @cloudflare/kumo directly: ${directKumoImports.join(", ")}`
+  )
+})
+
+test("Source code has no direct vendor/kumo path references", () => {
+  const sourceFiles = listFiles("src").filter((file) => file.endsWith(".jsx") || file.endsWith(".js"))
+  const offenders = sourceFiles.filter((file) => /vendor\/kumo/.test(readSource(file)))
+
+  assert.equal(
+    offenders.length,
+    0,
+    `source files should not reference vendor/kumo paths: ${offenders.join(", ")}`
   )
 })
 
@@ -825,13 +814,19 @@ test("Life fields card uses dob/lifespan bindings and keeps hints in card view",
   assert.match(source, /actions\.setDob/)
   assert.match(source, /actions\.setLifespan/)
   assert.match(source, /actions\.normalizeLifespan/)
-  assert.match(source, /maxValue=\{todayISO\}/)
+  assert.match(source, /DatePicker/)
+  assert.match(source, /mode="single"/)
+  assert.match(source, /disabled=\{todayDate \? \[\{ after: todayDate \}\] : undefined\}/)
+  assert.match(source, /Popover/)
+  assert.match(source, /variant="outline"/)
   assert.match(source, /type="number"/)
   assert.match(source, /min=\{50\}/)
   assert.match(source, /max=\{120\}/)
   assert.match(source, /t\("config\.dateOfBirthHint"\)/)
   assert.match(source, /t\("config\.lifespanHint"\)/)
   assert.match(source, /className="w-\[200px\] max-w-full"/)
+  assert.doesNotMatch(source, /SettingsCardDatePickerField/)
+  assert.doesNotMatch(source, /maxValue=\{todayISO\}/)
 })
 
 test("Goal url card uses setup title and set flow guarded by copy success", () => {
@@ -1254,7 +1249,7 @@ test("Worker validation enforces goalStart schema, year range, and relation to g
   assert.match(source, /Goal start date must be on or before the goal date/)
 })
 
-test("i18n includes start date label, placeholder, and date error keys in all languages", () => {
+test("i18n keeps range errors in all languages and removes legacy start-date keys", () => {
   const source = readSource("src/data/i18n.js")
 
   const startDateCount = (source.match(/'config\.startDate':/g) || []).length
@@ -1264,8 +1259,8 @@ test("i18n includes start date label, placeholder, and date error keys in all la
   const startAfterTargetErrorCount = (source.match(/'error\.goalStart\.afterTarget':/g) || []).length
   const targetBeforeStartErrorCount = (source.match(/'error\.goalDate\.beforeStart':/g) || []).length
 
-  assert.equal(startDateCount, 4)
-  assert.equal(placeholderCount, 4)
+  assert.equal(startDateCount, 0)
+  assert.equal(placeholderCount, 0)
   assert.equal(startRangeErrorCount, 4)
   assert.equal(targetRangeErrorCount, 4)
   assert.equal(startAfterTargetErrorCount, 4)
@@ -1344,9 +1339,10 @@ test("HomeSidebar centers desktop menu toggle in rail header box", () => {
   assert.doesNotMatch(source, /absolute top-2 right-1/)
 })
 
-test("Calendar does not depend on CVA buttonVariants", () => {
-  const source = readSource("src/components/ui/calendar.jsx")
+test("Source code has no local date UI imports", () => {
+  const sourceFiles = listFiles("src").filter((file) => /\.(jsx?|tsx?)$/.test(file))
+  const blockedImportPattern = /@\/components\/ui\/(date-picker|datefield|calendar)|settings-card-date-picker-field/
+  const offenders = sourceFiles.filter((file) => blockedImportPattern.test(readSource(file)))
 
-  assert.doesNotMatch(source, /buttonVariants/)
-  assert.doesNotMatch(source, /import.*from.*button/)
+  assert.deepEqual(offenders, [], `source files should not import removed local date UI: ${offenders.join(", ")}`)
 })

@@ -1,3 +1,0 @@
-[submodule "vendor/kumo"]
-	path = vendor/kumo
-	url = https://github.com/cloudflare/kumo.git

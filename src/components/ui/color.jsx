@@ -124,13 +124,13 @@ function ColorSwatchPickerItem({
     <AriaColorSwatchPickerItem
       className={composeRenderProps(className, (className) =>
         cn(
-          "size-8 overflow-hidden rounded-md border-2 ring-offset-background transition-colors",
+          "size-8 overflow-hidden rounded-md border-2 transition-colors",
           /* Selected */
-          "data-[selected]:border-foreground",
+          "data-[selected]:border-kumo-default",
           /* Disabled */
           "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
           /* Focus Visible */
-          "data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-ring",
+          "data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-ring",
           className
         ))}
       {...props} />

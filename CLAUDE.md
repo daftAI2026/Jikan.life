@@ -11,11 +11,10 @@ dist-worker/ - Worker 构建产物 (生成)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件
   │   ├── icons/ - 品牌图标组件
-  │   ├── layout/ - 布局组件 (Header, Footer)
   │   └── ui/ - Kumo UI 适配层 (Base UI)
   ├── data/ - 静态数据 (i18n, countries, devices)
   ├── lib/ - 工具库 (renderer, motion, utils)
-  └── pages/ - 页面模块 (registry/ Home 工作台 + DesignSystem)
+  └── pages/ - 页面模块 (registry/ Home 工作台)
 tests/ - Node 原生行为回归测试 (UI 迁移护栏 + 日期组件护栏)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
   └── generators/ - SVG 生成逻辑 adapters
@@ -52,10 +51,10 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **布局一致**: ColorPicker 色域区使用 `aspect-square` 跟随弹层内容宽度，工具栏保持 `吸管:颜色空间=1:2` 并将剩余宽度留给颜色输入框
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
-- **同源挂载**: Home 工作台优先挂载 `vendor/kumo` 源组件，避免手写复刻偏差
+- **上游消费策略**: 仅通过 npm 包 `@cloudflare/kumo` + `src/components/ui/` 适配层消费上游能力，禁止页面层直引上游包
 - **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天
 - **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `Surface`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）
 - **局部变量覆盖优先**: 需要调整单区域颜色语义时，优先通过作用域变量覆盖（如 `--step-list-bullet-color`），禁止直接改全局品牌色 token
-- **Vendor 不可变**: `vendor/kumo` 是第三方子模块，**禁止直接修改源码**。需要定制样式时，在使用端通过 `className` 覆盖，或在 `src/components/ui/` 编写适配器包裹原生组件。直接改 vendor = 改 node_modules，架构罪
+- **Vendor 不可变**: 第三方包源码（`@cloudflare/kumo`）不可直接改写。需要定制样式时，在使用端通过 `className` 覆盖，或在 `src/components/ui/` 编写适配器包裹原生组件
 - **样式覆盖优先级**: Kumo 组件自定义样式通过 `className` 在**使用侧**注入（如 `items-start` 覆盖 `items-center`），绝不回溯到组件声明层。图标对齐等微调用 `mt-*` / `shrink-0` 等 utility 在 icon 元素上完成
 - **后端预留不等于前端暴露**: 后端可以预留扩展机制（如 `foregroundOverride`、URL 参数 `fg`），但不需要前端 UI 暴露。只有用户明确要求时才加 UI 控件，避免过度设计

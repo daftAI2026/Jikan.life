@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react-aria-components 的 FieldError/Group/Label/Text/composeRenderProps，依赖 class-variance-authority 的 cva，依赖 @/lib/utils 的 cn
  * [OUTPUT]: 对外提供 Label/labelVariants/FieldGroup/fieldGroupVariants/FieldError/FormDescription
- * [POS]: components/ui 的表单字段基础层，被 datefield 等表单控件复用
+ * [POS]: components/ui 的表单字段基础层，被 ColorPicker 等表单控件复用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -23,7 +23,7 @@ const labelVariants = cva([
   /* Disabled */
   "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-70",
   /* Invalid */
-  "group-data-[invalid]:text-destructive",
+  "group-data-[invalid]:text-kumo-danger",
 ])
 
 function Label({
@@ -54,7 +54,7 @@ function FormDescription({
 }) {
   return (
     <AriaText
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-sm text-kumo-subtle", className)}
       {...props}
       slot="description" />
   );
@@ -66,7 +66,7 @@ function FieldError({
 }) {
   return (
     <AriaFieldError
-      className={cn("text-sm font-medium text-destructive", className)}
+      className={cn("text-sm font-medium text-kumo-danger", className)}
       {...props} />
   );
 }
@@ -75,9 +75,9 @@ const fieldGroupVariants = cva("", {
   variants: {
     variant: {
       default: [
-        "relative flex h-10 w-full items-center overflow-hidden rounded-md ring ring-kumo-line bg-background px-3 py-2 text-sm ring-offset-background shadow-sm",
+        "relative flex h-10 w-full items-center overflow-hidden rounded-md bg-kumo-base px-3 py-2 text-sm ring ring-kumo-line shadow-sm",
         /* Focus Within */
-        "data-[focus-within]:outline-none data-[focus-within]:ring-2 data-[focus-within]:ring-ring data-[focus-within]:ring-offset-2",
+        "data-[focus-within]:outline-none data-[focus-within]:ring-2 data-[focus-within]:ring-kumo-ring",
         "data-[focus-within]:shadow-md",
         /* Disabled */
         "data-[disabled]:opacity-50",
