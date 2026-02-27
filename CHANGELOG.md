@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Kumo Components**: Exported `SkeletonLine` from the unified `kumo.jsx` interface to support page-level placeholders.
 
 ### Documentation
+- **Visual Assets**: Added `screenshots/design-page.png` to document the latest design iteration of the registry page.
 - **Fractal Protocol**: Synchronized `CLAUDE.md` maps across `src/components/ui`, `src/pages/registry`, and its subdirectories to document the new `SkeletonLine` export and AutoFlow architecture. Updated L3 headers in `useHomeWallpaperConfig.js`.
 
 ### Tests
