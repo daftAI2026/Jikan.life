@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### UI & UX
+- **ColorPicker HEX Input**: Switched HEX input from controlled `onChange` to uncontrolled `defaultValue` + commit-on-blur/Enter pattern, eliminating cursor jumps and invalid intermediate parse errors during manual typing.
 - **Settings Panel**: Faded inactive setting card numerical indices (opacity and scale reduction) to improve visual hierarchy during AutoFlow onboarding and draw focus to the active configuration step.
 
 ### Architecture
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 - **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `dropdown-menu.jsx` and enforce the Kumo-prefixed token requirements in the CSS base layer. Validated the `useColorPickerStateBridge` structural integrity and specific setup text overrides.
+- **HEX Input Guards**: Added 8 assertions verifying `commitHexInput` extraction, uncontrolled `key`/`defaultValue` pattern, `onBlur`/`onKeyDown` commit handlers, and absence of inline `onChange` parsing.
 
 ## [1.5.0] - 2026-02-28
 
