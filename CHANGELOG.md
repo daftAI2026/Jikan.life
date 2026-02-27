@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fractal Protocol**: Synchronized `CLAUDE.md` maps across `src/components/ui`, `src/pages/registry`, and its subdirectories to document the new `SkeletonLine` export and AutoFlow architecture. Updated L3 headers in `useHomeWallpaperConfig.js`.
 
 ### Tests
+- **Import Assertions**: Refactored `kumo-migration.behavior.test.js` to replace brittle Regex `assert.match` import checks with a robust `assertNamedImports` helper. This ensures reliable validation of named imports and prevents false positives during dependency audits.
 - **UI & AutoFlow Constraints**: Expanded `kumo-migration.behavior.test.js` to enforce structural constraints on the `HomePage` empty state initialization, the AutoFlow sequence local storage implementation, and the official `SkeletonLine` integration within `HomeSettingsPane`.
 - **Scroll Integrity**: Added assertions in `kumo-migration.behavior.test.js` to verify the new `md:overscroll-y-auto` utility class on `HomeGrid`.
 - **Rail Layout Constraints**: Added assertions in `kumo-migration.behavior.test.js` to verify the CSS Grid centering logic (`place-items-center`) for both `HomePage`'s ThemeToggle container and `HomeSidebar`'s header rail box.

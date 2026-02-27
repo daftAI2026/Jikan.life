@@ -32,6 +32,40 @@ const listFiles = (relativePath) => {
   })
 }
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
+const findImportStatement = (source, moduleSpecifier) => {
+  const pattern = new RegExp(
+    `(?:^|\\n)\\s*import\\s+(?:type\\s+)?(?:[^,{]+,\\s*)?\\{[^}]*\\}\\s+from\\s+["']${escapeRegExp(moduleSpecifier)}["']`,
+    "m"
+  )
+  const match = source.match(pattern)
+  assert.ok(match, `Expected named import from "${moduleSpecifier}"`)
+  return match[0].trim()
+}
+
+const parseNamedSpecifiers = (importStatement) => {
+  const start = importStatement.indexOf("{")
+  const end = importStatement.indexOf("}", start + 1)
+  if (start < 0 || end < 0) return []
+  return importStatement
+    .slice(start + 1, end)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+const assertNamedImports = (source, moduleSpecifier, expectedSpecifiers) => {
+  const importStatement = findImportStatement(source, moduleSpecifier)
+  const actualSpecifiers = new Set(parseNamedSpecifiers(importStatement))
+  expectedSpecifiers.forEach((specifier) => {
+    assert.ok(
+      actualSpecifiers.has(specifier),
+      `Expected "${specifier}" to be imported from "${moduleSpecifier}"`
+    )
+  })
+}
+
 test("Dependencies include Kumo, Base UI, and Phosphor", () => {
   const pkg = readJson("package.json")
   const deps = pkg.dependencies || {}
@@ -138,7 +172,7 @@ test("Calendar avoids shadcn Select subcomponents", () => {
 test("ColorPicker uses Kumo popover trigger/content structure without shadcn select subcomponents", () => {
   const source = readSource("src/components/ui/color-picker.jsx")
 
-  assert.match(source, /import \{ Popover \} from "@\/components\/ui\/popover"/)
+  assertNamedImports(source, "@/components/ui/popover", ["Popover"])
   assert.match(source, /<Popover\.Trigger asChild>/)
   assert.match(source, /<Popover\.Content/)
   assert.doesNotMatch(source, /SelectContent/)
@@ -178,7 +212,7 @@ test("ColorPicker uses KUMO visual tokens without changing state bridge behavior
 
   assert.match(source, /className="w-full aspect-square shrink-0"/)
   assert.match(source, /className="h-3 w-full rounded-full"/)
-  assert.match(source, /import \{ useColorPickerStateBridge \} from "@\/components\/ui\/use-color-picker-state-bridge"/)
+  assertNamedImports(source, "@/components/ui/use-color-picker-state-bridge", ["useColorPickerStateBridge"])
   assert.doesNotMatch(source, /function useColorPickerStateBridge\(value\)/)
   assert.match(source, /const \{ internalColor, setInternalColor \} = useColorPickerStateBridge\(value\)/)
   assert.match(source, /setInternalColor\(newColor\)/)
@@ -321,7 +355,7 @@ test("Registry page applies global x/y-axis overscroll guard and blocking state 
   const homePageSource = readSource("src/pages/registry/HomePage.jsx")
   const cssSource = readSource("src/index.css")
 
-  assert.match(homePageSource, /useEffect,\s*useState/)
+  assertNamedImports(homePageSource, "react", ["useEffect", "useState"])
   assert.match(homePageSource, /root\.setAttribute\("data-registry-page", "true"\)/)
   assert.match(homePageSource, /root\.removeAttribute\("data-registry-page"\)/)
   assert.match(homePageSource, /root\.removeAttribute\("data-registry-blocking"\)/)
@@ -463,8 +497,8 @@ test("HomeSidebar is non-scrollable and hides Life style card", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
   const lockHookSource = readSource("src/pages/registry/sections/useRegistryBlockingScrollLock.js")
 
-  assert.match(source, /import \{ useEffect, useMemo, useState \} from "react"/)
-  assert.match(source, /import \{ useRegistryBlockingScrollLock \} from "\.\/useRegistryBlockingScrollLock"/)
+  assertNamedImports(source, "react", ["useEffect", "useMemo", "useState"])
+  assertNamedImports(source, "./useRegistryBlockingScrollLock", ["useRegistryBlockingScrollLock"])
   assert.match(source, /useRegistryBlockingScrollLock\(mobileMenuOpen\)/)
   assert.match(source, /window\.matchMedia\("\(min-width: 768px\)"\)/)
   assert.match(source, /setMobileMenuOpen\(false\)/)
@@ -623,7 +657,7 @@ test("Registry settings does not render selected type badge", () => {
 test("Registry settings colors use shared ColorPicker component", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
 
-  assert.match(source, /import\s+\{\s*ColorPicker\s*\}\s+from\s+"@\/components\/ui\/color-picker"/)
+  assertNamedImports(source, "@/components/ui/color-picker", ["ColorPicker"])
   assert.match(source, /titleKey:\s*"config\.colors"/)
   assert.match(source, /className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
   assert.match(source, /className="grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
@@ -649,7 +683,7 @@ test("Registry settings device card uses grouped Select with resolution hint", (
   assert.match(source, /titleTooltipKey:\s*"config\.deviceTooltip"/)
   assert.match(source, /actions\.setDevice/)
   assert.match(source, /className="w-\[200px\] max-w-full"/)
-  assert.match(source, /import\s+\{\s*VISIBLE_DEVICE_CATEGORIES\s*\}\s+from\s+"\.\.\/device-visibility"/)
+  assertNamedImports(source, "../device-visibility", ["VISIBLE_DEVICE_CATEGORIES"])
   assert.match(source, /VISIBLE_DEVICE_CATEGORIES\.map/)
   assert.match(source, /SelectBase\.Group/)
   assert.match(source, /const shouldShowGroupLabel = VISIBLE_DEVICE_CATEGORIES\.length > 1/)
@@ -742,7 +776,10 @@ test("Home wallpaper config normalizes device value before persisting", () => {
 
   assert.match(source, /normalizeDeviceName/)
   assert.match(source, /setDevice\(value\)\s*\{[\s\S]*?normalizeDeviceName\(value\)/)
-  assert.match(source, /import\s+\{[\s\S]*PRIMARY_VISIBLE_DEVICE_CATEGORY[\s\S]*isVisibleDeviceCategory[\s\S]*\}\s+from\s+"\.\/device-visibility"/)
+  assertNamedImports(source, "./device-visibility", [
+    "PRIMARY_VISIBLE_DEVICE_CATEGORY",
+    "isVisibleDeviceCategory",
+  ])
   assert.match(source, /isVisibleDeviceCategory\(resolvedDevice\?\.category\)/)
   assert.match(source, /device\.category === PRIMARY_VISIBLE_DEVICE_CATEGORY/)
 })
@@ -875,7 +912,13 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /pointer-events-auto absolute inset-y-0 right-0/)
   assert.match(source, /transition-transform duration-300 ease-out/)
   assert.match(source, /open \? "translate-x-0" : "translate-x-full"/)
-  assert.match(source, /import\s+\{\s*Banner,\s*Button as KumoButton,\s*ClipboardText,\s*Surface,\s*Text\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
+  assertNamedImports(source, "@/components/ui/kumo", [
+    "Banner",
+    "Button as KumoButton",
+    "ClipboardText",
+    "Surface",
+    "Text",
+  ])
   assert.match(source, /<header className="relative flex items-start border-b border-kumo-line px-4 py-4">/)
   assert.match(source, /<Text as="h3" variant="heading3" DANGEROUS_className="leading-6">/)
   assert.match(source, /<Text as="h4" variant="body" size="sm" bold>/)
@@ -1024,7 +1067,7 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
 test("HomeSettingsPane uses six-slot skeleton base and stage-based reveal", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
-  assert.match(source, /import\s+\{\s*SkeletonLine\s*\}\s+from\s+"@\/components\/ui\/kumo"/)
+  assertNamedImports(source, "@/components/ui/kumo", ["SkeletonLine"])
   assert.match(source, /const SKELETON_SLOT_MARKS = \["➊", "➋", "➌", "➍", "➎", "➏"\]/)
   assert.match(source, /function SettingsCardTitleSkeleton\(\)/)
   assert.match(source, /\{!config\.selectedType/)
@@ -1112,7 +1155,7 @@ test("Wallpaper preview shares one language font strategy from shared core", asy
 test("Worker SVG reuses shared getWallpaperFontFamily without local font map", () => {
   const svgSource = readSource("worker/svg.js")
 
-  assert.match(svgSource, /import\s+\{\s*getWallpaperFontFamily\s*\}\s+from\s+['"]\.\.\/shared\/wallpaper-core\.js['"]/)
+  assertNamedImports(svgSource, "../shared/wallpaper-core.js", ["getWallpaperFontFamily"])
   assert.match(svgSource, /getWallpaperFontFamily\(lang\)/)
   assert.doesNotMatch(svgSource, /FONT_FAMILY_BY_LANG/)
 })
