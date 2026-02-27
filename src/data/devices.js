@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无
- * [OUTPUT]: 对外提供 devices 列表与设备查询/归一函数 (normalizeDeviceName, getDevice, getDevicesByCategory)
+ * [OUTPUT]: 对外提供 devices 列表与设备查询/归一函数 (normalizeDeviceName, getDevice, getDevicesByCategory, getIPhonesBySeries)
  * [POS]: data/ 静态数据，定义 iPhone/Android/iPad 屏幕规格、notch 参数、**Year布局 cols/padding 覆盖**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

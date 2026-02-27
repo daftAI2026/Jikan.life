@@ -1,8 +1,8 @@
 /**
  * [INPUT]: 无依赖
- * [OUTPUT]: i18n 全局对象，提供 get(key) 方法获取当前语言翻译
- * [POS]: data/ 的翻译字符串管理模块，被 i18n-loader.js 和 app.js 消费
- * [PROTOCOL]: 新增翻译时更新此文件，然后检查语言完整性
+ * [OUTPUT]: 对外提供 i18nData/countryToLang/LANGUAGE_META/DEFAULT_LANG/SUPPORTED_LANGS
+ * [POS]: data/ 的翻译字符串管理模块，被 I18nContext 与 worker/i18n 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
 export const i18nData = {

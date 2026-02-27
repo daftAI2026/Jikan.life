@@ -12,6 +12,7 @@ useRegistryBlockingScrollLock.js: Registry 阻断层滚动锁基础设施（引�
 RegistryHeader.jsx: 旧版顶栏（保留备用）
 RegistryOverview.jsx: 旧版概览区（保留备用）
 RegistryBlocks.jsx: 旧版 Blocks 区（保留备用）
+RegistryComponents.jsx: 旧版组件展示区（保留备用）
 RegistrySection.jsx: 旧版区块包装器
 
 架构决策

@@ -25,6 +25,7 @@ sections/components/CLAUDE.md: 组件网格子模块文档
 sections/RegistryHeader.jsx: 旧版顶栏（保留备用）
 sections/RegistryOverview.jsx: 旧版概览区（保留备用）
 sections/RegistryBlocks.jsx: 旧版 Blocks 区（保留备用）
+sections/RegistryComponents.jsx: 旧版组件展示区（保留备用）
 sections/RegistrySection.jsx: 旧版区块包装器
 
 结构

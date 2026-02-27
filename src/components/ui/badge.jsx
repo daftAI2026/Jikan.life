@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 @cloudflare/kumo/components/badge
+ * [INPUT]: 依赖 @cloudflare/kumo/components/badge, @/lib/utils(cn)
  * [OUTPUT]: 对外提供 Badge 组件
  * [POS]: UI基础层 - 标签原语
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

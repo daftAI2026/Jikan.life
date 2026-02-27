@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Color State Bridge**: Refactored `useColorPickerStateBridge` optimization by extracting the external hex evaluation into an independent `useMemo`, preventing circular re-renders with `internalColor` and ensuring precise color injection.
 
 ### Documentation
+- **Fractal Protocol**: Conducted a comprehensive L3 header audit across all 76 business source files, fixing minor inaccuracies in `badge.jsx`, `i18n.js`, `devices.js`, and `worker/i18n.js`.
+- **Fractal Protocol**: Synchronized L2 module maps in `sections/CLAUDE.md`, `registry/CLAUDE.md`, `doc/CLAUDE.md`, `dist/CLAUDE.md`, and `dist/api/CLAUDE.md` with actual directory inventories. Removed stale references from L1 map.
 - **Fractal Protocol**: Synchronized `src/CLAUDE.md`, `src/components/ui/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the latest color picker optimization and strict token usage.
 
 ### Tests

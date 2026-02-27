@@ -6,7 +6,6 @@ Vite + React + Tailwind CSS v4 + Cloudflare Workers
 doc/ - 项目文档与知识库
 public/ - 前端静态资源 (Vite public)
   └── api/ - 静态接口资源 (如 component-registry)
-screenshots/ - 产品/营销截图资产
 dist-worker/ - Worker 构建产物 (生成)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件

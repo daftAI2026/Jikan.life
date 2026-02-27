@@ -2,7 +2,7 @@
  * [INPUT]: 无依赖
  * [OUTPUT]: 壁纸文字翻译数据和 t() 辅助函数
  * [POS]: Worker 内部的 i18n 模块，供三个生成器共享
- * [PROTOCOL]: 新增翻译时更新此文件
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
 export const wallpaperI18n = {
