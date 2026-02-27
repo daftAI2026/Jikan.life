@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Settings Panel**: Faded inactive setting card numerical indices (opacity and scale reduction) to improve visual hierarchy during AutoFlow onboarding and draw focus to the active configuration step.
+
 ### Architecture
 - **Legacy UI Purge**: Deleted legacy localized UI wrapper `dropdown-menu.jsx` to complete migration to Kumo primitives.
 - **CSS Architecture**: Migrated global CSS tokens in `src/index.css` from legacy semantic classes (`border-border`, `bg-background`) to official Kumo native tokens (`kumo-line`, `kumo-base`) for base layer. Further migrated custom page styling to standard Kumo text and border tokens (`--text-color-kumo-default`, `--color-kumo-line`, `--color-kumo-recessed`).
@@ -29,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dependency Optimization**: Cleaned up `package.json` to reflect the streamlined React and Vite stack, removing redundant UI dependencies and obsolete `match-sorter-shim` overrides.
 
 ### UI & UX
-- **Settings Panel**: Faded inactive setting card numerical indices (opacity and scale reduction) to improve visual hierarchy during AutoFlow onboarding and draw focus to the active configuration step.
 - **Skeleton Base**: Implemented a progressive six-slot skeleton layout (`SkeletonLine`) in `HomeSettingsPane` before a style is selected, providing a clearer visual structure for the empty state.
 - **AutoFlow Onboarding**: Added an automatic reveal sequence (AutoFlow) in `HomeGrid` that progressively displays settings cards upon first visit, enhancing the onboarding experience.
 - **Empty State Hints**: Updated `HomePreviewPane` to display a "select-type" hint when no wallpaper style is selected, and refactored `HomePage` to initialize `selectedStyle` to `null` instead of defaulting to `"year"`.
