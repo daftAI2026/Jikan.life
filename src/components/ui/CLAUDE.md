@@ -9,7 +9,6 @@ badge.jsx: 徽章组件，Kumo Badge 适配层
 label.jsx: 标签组件，无状态
 select.jsx: 下拉选择器，Kumo Select 适配层
 switch.jsx: 开关切换，Kumo Switch 适配层
-dropdown-menu.jsx: 下拉菜单
 popover.jsx: 气泡弹出，直接 re-export Kumo Popover 原语（避免自写 overlay 链）
 tooltip.jsx: 工具提示，Kumo Tooltip 适配层
 separator.jsx: 分割线
@@ -39,5 +38,6 @@ kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上
 2026-02-26: `kumo.jsx` 新增 `SkeletonLine` 导出，供 workspace 空态骨架与 AutoFlow 未解锁卡占位统一复用官方组件。
 2026-02-28: 下线 `/design` 链路并删除 19 个不可达 shadcn/Radix 预置组件，保留活跃 Kumo 适配层；页面层继续优先走 `kumo.jsx` 聚合入口。
 2026-02-28: Life 第③卡 DOB 切换为官方 `kumo` DatePicker(single) 壳实现，删除本地 `calendar/date-picker/datefield` 日期壳链路。
+2026-02-28: 删除零引用的本地 `dropdown-menu.jsx`，清理非活跃链路旧语义 token 残留。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

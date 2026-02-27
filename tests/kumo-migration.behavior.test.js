@@ -99,6 +99,15 @@ test("index.css imports Kumo styles and removes dark variant", () => {
   assert.doesNotMatch(source, /--neumorphic-/)
 })
 
+test("index.css base layer uses Kumo native tokens instead of legacy semantic classes", () => {
+  const source = readSource("src/index.css")
+
+  assert.match(source, /@apply border-kumo-line outline-kumo-ring\/50;/)
+  assert.match(source, /@apply bg-kumo-base text-kumo-default;/)
+  assert.doesNotMatch(source, /@apply border-border outline-ring\/50;/)
+  assert.doesNotMatch(source, /@apply bg-background text-foreground;/)
+})
+
 test("App routes include home entry and /app redirect", () => {
   const source = readSource("src/App.jsx")
 
@@ -135,6 +144,7 @@ test("Legacy local date UI files are removed", () => {
     "src/components/ui/calendar.jsx",
     "src/components/ui/date-picker.jsx",
     "src/components/ui/datefield.jsx",
+    "src/components/ui/dropdown-menu.jsx",
     "src/pages/registry/sections/workspace/cards/settings-card-date-picker-field.jsx",
   ]
 
@@ -1341,7 +1351,7 @@ test("HomeSidebar centers desktop menu toggle in rail header box", () => {
 
 test("Source code has no local date UI imports", () => {
   const sourceFiles = listFiles("src").filter((file) => /\.(jsx?|tsx?)$/.test(file))
-  const blockedImportPattern = /@\/components\/ui\/(date-picker|datefield|calendar)|settings-card-date-picker-field/
+  const blockedImportPattern = /@\/components\/ui\/(date-picker|datefield|calendar|dropdown-menu)|settings-card-date-picker-field|\/dropdown-menu/
   const offenders = sourceFiles.filter((file) => blockedImportPattern.test(readSource(file)))
 
   assert.deepEqual(offenders, [], `source files should not import removed local date UI: ${offenders.join(", ")}`)

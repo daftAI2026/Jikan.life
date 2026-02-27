@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Architecture
+- **Legacy UI Purge**: Deleted legacy localized UI wrapper `dropdown-menu.jsx` to complete migration to Kumo primitives.
+- **CSS Architecture**: Migrated global CSS tokens in `src/index.css` from legacy semantic classes (`border-border`, `bg-background`) to official Kumo native tokens (`kumo-line`, `kumo-base`) for base layer.
+
+### Tests
+- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `dropdown-menu.jsx` and enforce the Kumo-prefixed token requirements in the CSS base layer.
+
 ## [1.5.0] - 2026-02-28
 
 ### Architecture
