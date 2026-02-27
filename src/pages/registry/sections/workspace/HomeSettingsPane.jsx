@@ -121,6 +121,7 @@ function HomeSettingsPane(props) {
                             cardId={`skeleton-slot-${slotIndex + 1}`}
                             title={<SettingsCardTitleSkeleton />}
                             indexMark={indexMark}
+                            isIndexActive={false}
                         >
                             <SettingsCardSkeleton />
                         </SettingsCardShell>
@@ -148,6 +149,7 @@ function HomeSettingsPane(props) {
                                 title={title}
                                 titleTooltip={titleTooltip}
                                 indexMark={SETTINGS_CARD_MARKS[slotIndex]}
+                                isIndexActive={isUnlocked}
                                 className={resolveCardShellClassName(config.selectedType, cardId)}
                             >
                                 {isUnlocked

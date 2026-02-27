@@ -8,7 +8,7 @@ import { Info } from "@phosphor-icons/react"
 import { Tooltip, TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-function SettingsCardShell({ cardId, title, titleTooltip, indexMark, children, className }) {
+function SettingsCardShell({ cardId, title, titleTooltip, indexMark, isIndexActive = true, children, className }) {
     return (
         <article
             data-home-settings-card={cardId}
@@ -32,7 +32,14 @@ function SettingsCardShell({ cardId, title, titleTooltip, indexMark, children, c
                     )}
                 </div>
             )}
-            <span className="absolute top-4 right-4 text-xl leading-none font-medium text-kumo-subtle">{indexMark}</span>
+            <span
+                className={cn(
+                    "absolute top-4 right-4 text-xl leading-none font-medium text-kumo-subtle transition-all duration-200 ease-out",
+                    isIndexActive ? "scale-100 opacity-100" : "scale-95 opacity-35"
+                )}
+            >
+                {indexMark}
+            </span>
             {children}
         </article>
     )
