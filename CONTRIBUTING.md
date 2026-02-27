@@ -1,16 +1,22 @@
 # Contributing
 
-Thanks for your interest in contributing to **JIKAN**! This project has evolved into a modern React application powered by Cloudflare Workers.
+Thanks for your interest in contributing to **JIKAN**! This project is a modern React application powered by Cloudflare Workers.
 
 ## 🏗 Project Architecture
 
 - **`src/`**: React 19 frontend application (Vite).
-  - `components/`: UI components (shadcn/ui based).
-  - `data/`: Configuration presets and i18n strings.
-  - `lib/`: Shared utilities and renderer logic.
+  - `components/ui/`: Kumo UI adapter layer (Base UI primitives).
+  - `components/icons/`: Brand icon components.
+  - `data/`: Static data (i18n, countries, devices).
+  - `lib/`: Utilities (renderer, motion, i18n context).
+  - `pages/`: Registry workspace (Home).
 - **`worker/`**: Cloudflare Workers backend.
-  - `generators/`: SVG rendering adapters (Node.js/Resvg).
+  - `generators/`: SVG rendering adapters.
+  - `i18n.js`: Wallpaper text translations.
+  - `validation.js`: URL parameter validation.
+  - `timezone.js`: Timezone resolution.
 - **`shared/`**: Core logic shared between Browser (Canvas) and Worker (SVG).
+- **`tests/`**: Node.js behavioral regression tests.
 
 ## 🚀 Quick Start
 
@@ -27,7 +33,7 @@ Thanks for your interest in contributing to **JIKAN**! This project has evolved 
 
 2. **Start Development Server**
    ```bash
-   # Starts both frontend (Vite) and backend emulation (Wrangler)
+   # Frontend (Vite)
    npm run dev
    ```
    Access the app at `http://localhost:5173` (or port assigned by Vite).
@@ -46,18 +52,18 @@ All translation work (including i18n automation flows) must follow the fixed pri
 
 ## 🎨 Design System
 
-- **Tailwind CSS v4**: We use the latest engine. No `tailwind.config.js`, everything is in `src/index.css`.
-- **shadcn/ui**: Components live in `src/components/ui`.
-- **Theme**: We use OKLCH colors. Do not hardcode hex values; use CSS variables (e.g., `var(--color-primary)`).
+- **Kumo UI**: All components are built on `@cloudflare/kumo` (Base UI). Adapters live in `src/components/ui/`.
+- **Tailwind CSS v4**: No `tailwind.config.js` — everything is in `src/index.css`.
+- **Theme**: OKLCH colors via CSS variables. Do not hardcode hex values; use `var(--color-*)` tokens.
+- **Vendor Immutability**: Never modify `@cloudflare/kumo` source. Customize via `className` overrides or adapter wrappers.
 
 ## 🛠 Working on the Worker
 
 The Cloudflare Worker (`worker/`) handles:
-1. **Dynamic Image Generation**: `/generate` endpoint returns PNGs.
-2. **Static Asset Serving**: Serves the built React app (`dist/`) via `assets` binding.
+1. **Dynamic Image Generation**: `/api/generate` endpoint returns PNGs via Resvg WASM.
+2. **Static Asset Serving**: Serves the built React app via Cloudflare Static Assets binding.
 
 **Testing Generation:**
-You can test the generation logic by hitting the local endpoint:
 ```bash
 curl "http://localhost:8787/api/generate?type=year&country=CN" -o test.png
 ```
@@ -65,9 +71,10 @@ curl "http://localhost:8787/api/generate?type=year&country=CN" -o test.png
 ## 📋 Pull Request Checklist
 
 - [ ] **Architecture**: Does your change follow the `CLAUDE.md` structure?
-- [ ] **Consistency**: If you changed rendering logic, did you update **BOTH** `src/lib/renderer.js` (Canvas) and `shared/wallpaper-core.js` (SVG)? This is critical for WYSIWYG.
+- [ ] **Rendering Unity**: If you changed rendering logic, did you update **BOTH** `src/lib/renderer.js` (Canvas) and `shared/wallpaper-core.js` (SVG)?
 - [ ] **i18n**: Did you extract new text strings to `src/data/i18n.js`?
-- [ ] **Linting**: Ensure code is clean and follows the functional React style.
+- [ ] **Design Tokens**: Are you using Kumo tokens and CSS variables (no hardcoded colors)?
+- [ ] **GEB Protocol**: Did you update L3 headers and relevant `CLAUDE.md` maps?
 
 ## 🤝 Code of Conduct
 

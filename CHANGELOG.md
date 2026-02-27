@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Documentation
+- **Contribution Guidelines**: Updated `CONTRIBUTING.md` to clarify the Kumo UI migration, add UI token and GEB protocol checklists, and correct the dev command descriptions.
+- **Project Meta**: Bumped version to 1.5.0 and updated license to Apache-2.0 in `package.json`.
+
+
 ### Documentation
 - **README Refinement**: Redesigned the project README for better visual clarity, including a centralized logo, badges, a unified architecture diagram, and an improved project structure overview.
 - **Fractal Protocol**: Conducted a comprehensive L3 header audit across all 76 business source files, fixing minor inaccuracies in `badge.jsx`, `i18n.js`, `devices.js`, and `worker/i18n.js`.
