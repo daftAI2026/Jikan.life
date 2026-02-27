@@ -62,7 +62,7 @@ function HomePage() {
                 onSidebarOpenChange={setSidebarOpen}
             />
 
-            <div className="pointer-events-auto fixed top-0 right-2 z-50 flex h-[var(--registry-topbar-height)] items-center">
+            <div className="pointer-events-auto fixed top-0 right-0 z-50 grid h-[var(--registry-topbar-height)] w-[var(--registry-tools-rail-width)] place-items-center">
                 <ThemeToggle />
             </div>
 

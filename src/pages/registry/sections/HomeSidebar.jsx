@@ -427,7 +427,7 @@ function HomeSidebar({
 
             <div className="fixed inset-y-0 left-0 z-50 hidden w-[var(--registry-rail-width)] border-r border-kumo-line bg-kumo-elevated md:block">
                 <div className="relative h-[var(--registry-topbar-height)] border-b border-kumo-line">
-                    <div className="absolute top-2 right-1">
+                    <div className="absolute inset-0 grid place-items-center">
                         <Button
                             variant="ghost"
                             shape="square"

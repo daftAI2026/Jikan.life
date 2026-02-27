@@ -1284,6 +1284,23 @@ test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
   assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)
 })
 
+test("HomePage centers ThemeToggle in desktop tools rail box", () => {
+  const source = readSource("src/pages/registry/HomePage.jsx")
+
+  assert.match(source, /fixed top-0 right-0/)
+  assert.match(source, /w-\[var\(--registry-tools-rail-width\)\]/)
+  assert.match(source, /\bgrid\b/)
+  assert.match(source, /place-items-center/)
+  assert.doesNotMatch(source, /fixed top-0 right-2/)
+})
+
+test("HomeSidebar centers desktop menu toggle in rail header box", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+
+  assert.match(source, /absolute inset-0 grid place-items-center/)
+  assert.doesNotMatch(source, /absolute top-2 right-1/)
+})
+
 test("Calendar does not depend on CVA buttonVariants", () => {
   const source = readSource("src/components/ui/calendar.jsx")
 
