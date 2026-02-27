@@ -1,6 +1,6 @@
 /**
  * [INPUT]: Tailwind CSS v4 + @cloudflare/kumo 样式包
- * [OUTPUT]: 全局原子类与 Kumo token 适配层（含 Setup 注入列表 bullet 的作用域变量覆盖策略 + Registry 页面级滚动治理）
+ * [OUTPUT]: 全局原子类与 Kumo 样式层（含 Setup 注入列表 bullet 的作用域变量覆盖策略 + Registry 页面级滚动治理）
  * [POS]: 全局样式入口，由 main.jsx 引入；承接 Setup i18n HTML 注入样式与 Registry 壳层 overscroll 约束
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -39,65 +39,6 @@ html {
 
 [data-mode="dark"] {
   color-scheme: dark;
-}
-
-/* ========================================
-   Kumo Token Bridge (legacy shadcn classes)
-   ======================================== */
-
-:root {
-  --background: var(--color-kumo-elevated);
-  --foreground: var(--text-color-kumo-default);
-
-  --card: var(--color-kumo-elevated);
-  --card-foreground: var(--text-color-kumo-default);
-
-  --popover: var(--color-kumo-overlay);
-  --popover-foreground: var(--text-color-kumo-default);
-
-  --primary: var(--color-kumo-brand);
-  --primary-foreground: var(--text-color-kumo-on-brand, var(--text-color-kumo-default));
-
-  --secondary: var(--color-kumo-recessed);
-  --secondary-foreground: var(--text-color-kumo-default);
-
-  --muted: var(--color-kumo-recessed);
-  --muted-foreground: var(--text-color-kumo-subtle);
-
-  --accent: var(--color-kumo-control);
-  --accent-foreground: var(--text-color-kumo-default);
-
-  --destructive: var(--color-kumo-danger);
-  --destructive-foreground: var(--text-color-kumo-on-danger, var(--text-color-kumo-default));
-
-  --border: var(--color-kumo-line);
-  --input: var(--color-kumo-control);
-  --ring: var(--color-kumo-ring);
-
-  --radius: 0.5rem;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius: var(--radius);
 }
 
 @layer base {
@@ -173,10 +114,10 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   right: 0;
   z-index: 100;
   padding: 1rem 2rem;
-  background: color-mix(in oklch, var(--background) 80%, transparent);
+  background: color-mix(in oklch, var(--color-kumo-elevated) 80%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-kumo-line);
   transition: background 300ms;
 }
 
@@ -194,7 +135,7 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: var(--foreground);
+  color: var(--text-color-kumo-default);
   text-decoration: none;
   font-weight: 600;
   font-size: 1.125rem;
@@ -226,7 +167,7 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 }
 
 .nav-link {
-  color: var(--muted-foreground);
+  color: var(--text-color-kumo-subtle);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -241,12 +182,12 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--foreground);
+  background: var(--text-color-kumo-default);
   transition: width 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-link:hover {
-  color: var(--foreground);
+  color: var(--text-color-kumo-default);
 }
 
 .nav-link:hover::after {
@@ -290,7 +231,7 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 .hero-eyebrow {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--muted-foreground);
+  color: var(--text-color-kumo-subtle);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 1.5rem;
@@ -302,11 +243,11 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   line-height: 1;
   letter-spacing: -0.04em;
   margin-bottom: 1.5rem;
-  color: var(--foreground);
+  color: var(--text-color-kumo-default);
 }
 
 .hero-title-accent {
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--muted-foreground) 100%);
+  background: linear-gradient(135deg, var(--text-color-kumo-default) 0%, var(--text-color-kumo-subtle) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -314,7 +255,7 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: var(--muted-foreground);
+  color: var(--text-color-kumo-subtle);
   max-width: 500px;
   margin: 0 auto 2.5rem;
   line-height: 1.6;
@@ -335,14 +276,14 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 .grid-cell {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--foreground);
+  border: 1px solid var(--text-color-kumo-default);
   border-radius: 4px;
   animation: cellPulse 3s infinite;
   animation-delay: calc(var(--delay) * 0.2s);
 }
 
 .grid-cell.filled {
-  background: var(--foreground);
+  background: var(--text-color-kumo-default);
   animation: cellFill 3s infinite;
   animation-delay: calc(var(--delay) * 0.2s);
 }
@@ -425,12 +366,12 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 .code-snippet {
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  background: var(--muted);
-  border: 1px solid var(--border);
+  background: var(--color-kumo-recessed);
+  border: 1px solid var(--color-kumo-line);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  color: var(--foreground);
+  color: var(--text-color-kumo-default);
   word-break: break-all;
 }
 
@@ -458,10 +399,10 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   content: "•";
   position: absolute;
   left: 0;
-  color: var(--step-list-bullet-color, var(--primary));
+  color: var(--step-list-bullet-color, var(--color-kumo-brand));
   font-weight: bold;
 }
 
 [data-home-settings-setup-panel] {
-  --step-list-bullet-color: var(--foreground);
+  --step-list-bullet-color: var(--text-color-kumo-default);
 }

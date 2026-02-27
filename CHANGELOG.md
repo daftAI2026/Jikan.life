@@ -9,10 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Architecture
 - **Legacy UI Purge**: Deleted legacy localized UI wrapper `dropdown-menu.jsx` to complete migration to Kumo primitives.
-- **CSS Architecture**: Migrated global CSS tokens in `src/index.css` from legacy semantic classes (`border-border`, `bg-background`) to official Kumo native tokens (`kumo-line`, `kumo-base`) for base layer.
+- **CSS Architecture**: Migrated global CSS tokens in `src/index.css` from legacy semantic classes (`border-border`, `bg-background`) to official Kumo native tokens (`kumo-line`, `kumo-base`) for base layer. Further migrated custom page styling to standard Kumo text and border tokens (`--text-color-kumo-default`, `--color-kumo-line`, `--color-kumo-recessed`).
+
+### State Management
+- **Color State Bridge**: Refactored `useColorPickerStateBridge` optimization by extracting the external hex evaluation into an independent `useMemo`, preventing circular re-renders with `internalColor` and ensuring precise color injection.
+
+### Documentation
+- **Fractal Protocol**: Synchronized `src/CLAUDE.md`, `src/components/ui/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the latest color picker optimization and strict token usage.
 
 ### Tests
-- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `dropdown-menu.jsx` and enforce the Kumo-prefixed token requirements in the CSS base layer.
+- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `dropdown-menu.jsx` and enforce the Kumo-prefixed token requirements in the CSS base layer. Validated the `useColorPickerStateBridge` structural integrity and specific setup text overrides.
 
 ## [1.5.0] - 2026-02-28
 

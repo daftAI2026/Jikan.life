@@ -15,14 +15,15 @@ export function useColorPickerStateBridge(value) {
             return parseColor("#000000")
         }
     }, [value])
+    const externalHex = useMemo(() => externalColor.toString('hex'), [externalColor])
 
     const [internalColor, setInternalColor] = useState(externalColor)
 
     useEffect(() => {
-        if (externalColor.toString('hex') !== internalColor.toString('hex')) {
-            setInternalColor(externalColor)
-        }
-    }, [externalColor, internalColor])
+        setInternalColor((prev) => (
+            prev.toString('hex') === externalHex ? prev : externalColor
+        ))
+    }, [externalColor, externalHex])
 
     return {
         internalColor,
