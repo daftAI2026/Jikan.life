@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Architecture
+### Documentation
+- **README Refinement**: Redesigned the project README for better visual clarity, including a centralized logo, badges, a unified architecture diagram, and an improved project structure overview.
+- **Fractal Protocol**: Conducted a comprehensive L3 header audit across all 76 business source files, fixing minor inaccuracies in `badge.jsx`, `i18n.js`, `devices.js`, and `worker/i18n.js`.
 - **Dependency Cleanup**: Removed 8 unused packages (`react-colorful`, `lucide-react`, `html-to-image`, `@hookform/resolvers`, `react-hook-form`, `@radix-ui/react-dropdown-menu`, `tailwind-variants`, `shadcn`), eliminating over 300 transitive dependencies from the node_modules tree.
 - **Dependency Upgrades**: Synchronized all outdated packages to their latest versions, including `@base-ui/react`, `@cloudflare/kumo`, `tailwindcss`, and `wrangler`.
 - **Infrastructure**: Conducted a full dependency audit to map architectural usage and ensure zero-vulnerability integrity.

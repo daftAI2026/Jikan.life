@@ -1,123 +1,119 @@
-![banner](github_banner.png)
+<p align="center">
+  <img src="public/favicon.svg" width="80" alt="JIKAN logo" />
+</p>
 
-# JIKAN
-
-> **Premium Dynamic Wallpapers for iOS and Android Lock Screens.**
->
-> 极简美学，数据驱动。为您的手机锁屏打造的高精度动态壁纸。
+<h1 align="center">JIKAN</h1>
 
 <p align="center">
-  <a href="#english">English</a> | <a href="#chinese">中文</a>
+  <strong>Data-driven dynamic wallpapers for your lock screen.</strong><br/>
+  极简美学，数据驱动。为你的锁屏打造的高精度动态壁纸。
+</p>
+
+<p align="center">
+  <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
+  <img src="https://img.shields.io/badge/version-1.5.0-green" alt="Version" />
+  <img src="https://img.shields.io/badge/i18n-EN%20%7C%20简中%20%7C%20繁中%20%7C%20日本語-orange" alt="i18n" />
 </p>
 
 ---
 
-<div id="english"></div>
+## ✨ Wallpaper Styles
 
-## 🌟 Introduction
+| Style | Description |
+|-------|-------------|
+| **Year Progress** | One dot for every day of the year. Watch your year unfold at a glance. |
+| **Goal Countdown** | Circular progress ring counting down to launches, vacations, and milestones. |
 
-JIKAN generates high-resolution, data-driven wallpapers that help you visualize your time, goals, and life progress directly on your iPhone or Android lock screen. 
+## 🏗 Architecture
 
-## ✨ Features
+```
+Browser (React)                     Cloudflare Worker
+┌──────────────────┐                ┌──────────────────┐
+│  Canvas Preview   │◄── shared ──►│  SVG Generator    │
+│  (Live editing)   │   core logic  │  (Resvg WASM→PNG) │
+└──────────────────┘                └──────────────────┘
+         ▲                                   ▲
+         │                                   │
+    URL parameters ─── stateless config ─────┘
+```
 
-- **Dynamic Visuals**
-  - **Year Progress**: 365 dots representing every day of the year.
-  - **Life Calendar**: Every week of your life in a single grid.
-  - **Goal Countdown**: Circular progress tracker for your biggest targets.
-
-- **Pixel-Perfect**
-  - Native resolution generation for modern iPhones.
-  - Smart layout adjustments for Notch vs Dynamic Island devices.
-  - Consistent rendering between Canvas (Preview) and SVG (Export).
-
-- **Architecture**
-  - **Privacy First**: No database, no tracking. State encoded in URL.
-  - **Modern Stack**: React 19, Vite, Tailwind v4.
-  - **Serverless**: Cloudflare Workers with Rust-based SVG rendering.
+- **Stateless**: All configuration lives in the URL. No database, no tracking, no accounts.
+- **Rendering Unity**: Browser preview (Canvas) and server export (SVG) share the same core calculation logic via `shared/wallpaper-core.js`.
+- **Privacy First**: Zero server-side storage. Your data never leaves the URL.
 
 ## 🛠 Tech Stack
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19 · Vite 7 · Tailwind CSS v4 |
+| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) (`@cloudflare/kumo`) · Base UI |
+| **Backend** | Cloudflare Workers · Resvg WASM (SVG → PNG) |
+| **Shared** | Unified wallpaper-core (Canvas + SVG) |
+| **i18n** | English · 简体中文 · 繁體中文 · 日本語 |
+| **CI/CD** | GitHub Actions · Cloudflare Static Assets |
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js & npm
-- Cloudflare Wrangler CLI (`npm install -g wrangler`)
-
-### Development
-
 ```bash
-# Install dependencies
+# Install
 npm install
 
-# Start Frontend (Vite)
+# Frontend dev server
 npm run dev
 
-# Start Backend (Worker)
+# Worker dev server (API / image generation)
 npx wrangler dev
 ```
 
-### Deployment
+### Deploy
 
 ```bash
-# Build Frontend and Deploy Worker
-npm run build
+# Build frontend + deploy worker (single command)
 npx wrangler deploy
 ```
 
----
+## 📂 Project Structure
 
-<div id="chinese"></div>
-
-## 🌟 简介
-
-JIKAN 生成高分辨率的数据驱动壁纸，帮助你在 iPhone 或 Android 锁屏上直接可视化你的时间、目标和人生进度。
-
-## ✨ 特性
-
-- **动态可视化**: 年度进度、人生日历、目标倒数。
-- **像素级完美**: 针对现代 iPhone 的原生分辨率生成，前后端渲染逻辑严格一致。
-- **隐私至上**: 无数据库，无追踪。
-
-## 🛠 技术栈
-
-React 19, Vite, Tailwind CSS v4, Cloudflare Workers, Rust (Resvg).
-
-## 🚀 快速开始
-
-### 开发
-
-```bash
-# 安装依赖
-npm install
-
-# 启动前端
-npm run dev
-
-# 启动后端
-npx wrangler dev
+```
+src/                  React frontend
+  ├── components/ui/  Kumo UI adapter layer
+  ├── data/           i18n, countries, devices
+  ├── lib/            Renderer, motion, utilities
+  └── pages/          Registry workspace (Home)
+shared/               Shared rendering logic (browser + worker)
+worker/               Cloudflare Worker backend
+  └── generators/     SVG generation adapters
+tests/                Node.js behavioral regression tests
+scripts/              Dev validation scripts
 ```
 
-### 部署
+## 🌍 Internationalization
 
-```bash
-# 构建并部署
-npm run build
-npx wrangler deploy
-```
+JIKAN supports **4 languages** across both the UI and the wallpaper text itself:
 
----
+- 🇺🇸 English
+- 🇨🇳 简体中文
+- 🇹🇼 繁體中文
+- 🇯🇵 日本語
+
+Language is auto-detected via IP geolocation and can be overridden manually. Wallpaper text language is independently configurable.
+
+## 📱 Device Support
+
+Pixel-perfect wallpaper generation with native resolution support for modern iPhones (including iPhone 17 series). Smart layout adjustments for Notch vs Dynamic Island devices.
+
+> Android support is architecturally ready (MacroDroid setup guide included) and will be fully enabled in a future release.
 
 ## ❤️ Credits & Acknowledgements
 
 This project stands on the shoulders of giants.
-Special thanks to the original open-source contributor:
 
-**[aradhyacp](https://github.com/aradhyacp)** - *For the original concept and codebase inspiration.*
+- **[Kumo UI](https://github.com/cloudflare/kumo)** (`@cloudflare/kumo`) — The design system powering JIKAN's interface.
+- **[aradhyacp/LifeGrid](https://github.com/aradhyacp/LifeGrid)** — Original concept and codebase inspiration.
+
+## 📄 License
 
 Made with ❤️ for mindful living.
-Copyright © 2026 daftAI.
+
+[Apache License 2.0](LICENSE) — Copyright © 2026 daftAI.
