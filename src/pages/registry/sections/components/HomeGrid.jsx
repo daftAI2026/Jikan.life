@@ -102,7 +102,7 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
     return (
         <div
             data-registry-workspace
-            className="relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible bg-kumo-elevated lg:h-full lg:grid-cols-2 lg:divide-x lg:divide-kumo-line lg:overflow-hidden"
+            className="relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible md:overscroll-y-auto bg-kumo-elevated lg:h-full lg:grid-cols-2 lg:divide-x lg:divide-kumo-line lg:overflow-hidden"
         >
             <div className="pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 left-[var(--registry-rail-width)] z-40 hidden md:block lg:hidden">
                 <SetupGuidePanel

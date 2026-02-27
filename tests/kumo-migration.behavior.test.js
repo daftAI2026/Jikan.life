@@ -303,6 +303,7 @@ test("md breakpoint routes main scrolling to outer main-content container", () =
   assert.match(homeGridSource, /overscroll-y-contain/)
   assert.match(homeGridSource, /md:h-auto/)
   assert.match(homeGridSource, /md:overflow-y-visible/)
+  assert.match(homeGridSource, /md:overscroll-y-auto/)
   assert.doesNotMatch(homeGridSource, /md:overflow-visible/)
   assert.match(homeGridSource, /lg:h-full/)
   assert.match(homeGridSource, /lg:overflow-hidden/)
