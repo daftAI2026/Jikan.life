@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-03-01
+
+### UI & UX
+- **Color Picker**: Ensured the HEX input field is always visible regardless of the selected color space for more convenient color code entry.
+
 ## [1.5.2] - 2026-03-01
 
 ### Architecture

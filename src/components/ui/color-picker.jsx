@@ -163,21 +163,19 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                                 <Select.Option value="hsb">HSB</Select.Option>
                             </Select>
 
-                            {colorSpace === "hex" && (
-                                <Input
-                                    key={internalColor.toString('hex')}
-                                    defaultValue={internalColor.toString('hex')}
-                                    onBlur={(e) => commitHexInput(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            commitHexInput(e.currentTarget.value)
-                                        }
-                                    }}
-                                    maxLength={7}
-                                    className="h-9 min-w-0 w-0 flex-1 rounded-lg text-center font-mono text-sm uppercase"
-                                    placeholder="HEX"
-                                />
-                            )}
+                            <Input
+                                key={internalColor.toString('hex')}
+                                defaultValue={internalColor.toString('hex')}
+                                onBlur={(e) => commitHexInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        commitHexInput(e.currentTarget.value)
+                                    }
+                                }}
+                                maxLength={7}
+                                className="h-9 min-w-0 w-0 flex-1 rounded-lg text-center font-mono text-sm uppercase"
+                                placeholder="HEX"
+                            />
                         </div>
 
                         {/* 4. Inputs */}

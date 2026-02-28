@@ -193,7 +193,7 @@ test("ColorPicker uses KUMO visual tokens without changing state bridge behavior
   assert.match(source, /if \(e\.key === "Enter"\)/)
   assert.match(source, /commitHexInput\(e\.currentTarget\.value\)/)
   assert.doesNotMatch(source, /handleColorChange\(parseColor\(e\.target\.value\)\)/)
-  assert.match(source, /\{colorSpace === "hex" && \(/)
+  assert.doesNotMatch(source, /\{colorSpace === "hex" && \(/)
   assert.match(source, /className="flex min-w-0 items-center gap-2"/)
   assert.match(source, /bg-kumo-control/)
   assert.match(source, /ring-kumo-line/)
