@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.5] - 2026-03-01
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `@base-ui/react`, `@cloudflare/kumo`, `tailwindcss`, `framer-motion`, `react-router-dom`, and other ecosystem dependencies.
+
 ## [1.5.4] - 2026-03-01
 
 ### Documentation
