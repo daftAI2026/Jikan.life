@@ -20,6 +20,7 @@ const urlCard = {
                         <Input
                             value={url || t("url.placeholder")}
                             readOnly
+                            aria-label={t("url.placeholder")}
                             className="min-w-0 w-full font-mono text-xs md:flex-1"
                         />
                         <KumoButton
@@ -40,6 +41,7 @@ const urlCard = {
                     <Input
                         value={url || t("url.placeholder")}
                         readOnly
+                        aria-label={t("url.placeholder")}
                         className="min-w-0 w-full font-mono text-xs"
                     />
                     <KumoButton

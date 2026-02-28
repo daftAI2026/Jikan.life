@@ -7,10 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-03-01
+
+### Accessibility & UI
+- **Input Accessibility**: Enhanced the form input infrastructure (`Input` component). Introduced a local accessibility wrapper layer that automatically provides an `aria-label` fallback (using the `placeholder` value when no explicit accessible name is provided). Completed missing `aria-label` contracts for multiple input controls (search bar, goal name, date range, read-only URL box, HEX color input) to adhere to stricter accessibility standards.
+- **CI Enhancements**: Restored the `npm run test` step in GitHub Actions (`ci.yml`) to ensure all infrastructure tests and accessibility fallback contracts pass mandatory CI validation.
+
+### Documentation
+- **Fractal Protocol**: Updated L3 header contracts for `src/components/ui/input.jsx` and `src/components/ui/kumo.jsx`, explicitly declaring the new responsibility boundaries for the unified Input accessible name fallback.
+
 ## [1.7.0] - 2026-03-01
 
 ### Architecture
-- **Mainline Integration**: 全面合并了之前所有的语义化重构分支（Semantic Refactoring）至主分支（Mainline）。这次合并巩固了核心壁纸引擎、状态配置 hooks（`useHomeWallpaperConfig` 等）以及 UI 卡片组件的深度解耦成果。
+- **Mainline Integration**: Comprehensively merged all previous Semantic Refactoring branches into the mainline. This merge solidifies the deep decoupling achievements of the core wallpaper engine, state configuration hooks (e.g., `useHomeWallpaperConfig`), and UI card components.
 
 ## [1.6.1] - 2026-03-01
 

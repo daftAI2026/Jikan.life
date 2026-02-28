@@ -175,6 +175,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                                 maxLength={7}
                                 className="h-9 min-w-0 w-0 flex-1 rounded-lg text-center font-mono text-sm uppercase"
                                 placeholder="HEX"
+                                aria-label="Hex color value"
                             />
                         </div>
 

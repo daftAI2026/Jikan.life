@@ -18,6 +18,7 @@ const goalFieldsCard = {
                     value={config.goalName}
                     onChange={(event) => actions.setGoalName(event.target.value)}
                     placeholder={t("placeholder.goalName")}
+                    aria-label={t("config.goalName")}
                 />
             </CardField>
             <CardField label={t("config.dateRange")} labelClassName="block">

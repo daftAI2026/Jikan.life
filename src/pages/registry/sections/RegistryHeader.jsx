@@ -36,7 +36,7 @@ function RegistryHeader() {
 
                 <div className="flex items-center gap-3">
                     <div className="hidden md:block">
-                        <Input placeholder="Search components" />
+                        <Input placeholder="Search components" aria-label="Search components" />
                     </div>
                     <Button variant="secondary" shape="square" icon={Plus} />
                 </div>

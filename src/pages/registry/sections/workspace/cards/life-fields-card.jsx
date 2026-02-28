@@ -47,6 +47,7 @@ const lifeFieldsCard = {
                         value={config.lifespan}
                         onChange={(event) => actions.setLifespan(event.target.value)}
                         onBlur={actions.normalizeLifespan}
+                        aria-label={t("config.lifespan")}
                     />
                 </CardField>
             </CardFieldsStack>

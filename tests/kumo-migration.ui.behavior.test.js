@@ -78,6 +78,16 @@ test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo pr
   assert.match(popover, /@cloudflare\/kumo\/components\/popover/)
 })
 
+test("Input export uses local wrapper and keeps accessible-name fallback contract", () => {
+  const kumo = readSource("src/components/ui/kumo.jsx")
+  const input = readSource("src/components/ui/input.jsx")
+
+  assert.match(kumo, /export \{ Input \} from "@\/components\/ui\/input"/)
+  assert.match(input, /const hasAccessibleName = Boolean\(/)
+  assert.match(input, /const fallbackAriaLabel =/)
+  assert.match(input, /aria-label=\{props\["aria-label"\] \?\? fallbackAriaLabel\}/)
+})
+
 test("Legacy local UI files are removed", () => {
   const root = process.cwd()
   const removedFiles = [
