@@ -7,10 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-03-01
+
+### Architecture
+- **Wallpaper Core Decoupling**: Completely shattered the massive `shared/wallpaper-core.js` into focused semantic modules: `layout-core.js` (rendering boundaries and dimension computation), `wallpaper-color-core.js` (canvas composition and dynamic foreground switching), `wallpaper-text.js` (text metrics and typography placement), and `goal-validation.js` (business logic guards). `wallpaper-core.js` now acts simply as a facade exporting these capabilities.
+
+### Documentation
+- **Fractal Protocol**: Executed comprehensive GEB protocol compliance across the newly extracted shared modules. Updated L2 module maps in `shared/CLAUDE.md` and `tests/CLAUDE.md`. Maintained rigid L3 headers for all new architectural entities.
+
+### Tests
+- **API & Visualization Testing**: Introduced new test boundaries: `wallpaper-core-api.behavior.test.js` (ensuring rigid contract structure and backwards compatibility) and `wallpaper-visual-snapshots.behavior.test.js` (validating output geometry, color assignments, and text configurations).
+- **Migration Guards**: Updated `kumo-migration.core.behavior.test.js` to assert the successful dismantling of `wallpaper-core.js` and upgraded goalDefault validation from brittle shape assertions to robust runtime behavior assertions.
+
 ## [1.6.0] - 2026-03-01
 
 ### Architecture
-- **Semantic Refactoring (V4.2)**: Executed a massive architectural decoupling across 38 files, transitioning the system from "mechanical file splitting" to "semantic responsibility domains".
+- **Semantic Refactoring**: Executed a massive architectural decoupling across 38 files, transitioning the system from "mechanical file splitting" to "semantic responsibility domains".
 - **Sidebar Component Decoupling**: Completely shattered the monolithic `HomeSidebar.jsx` (reduced by over 300 lines). Extracted card data construction into `home-sidebar-cards.jsx`, layout computation into `home-sidebar-date-stats.js`, and specialized graphic rendering into `home-sidebar-visuals.jsx`. The sidebar now operates purely as a layout container and state bridge.
 - **Hook Actions Factory Extraction**: Dismantled the massive `useHomeWallpaperConfig.js` hook. Decoupled its 75-line actions block into an independent factory `workspace/config-actions.js`. Further separated concerns by extracting config initialization (`config-init.js`), URL generation (`url-builder.js`), and option mapping (`view-model-mappers.js`), allowing the main hook to focus solely on React state orchestration and lifecycle management.
 - **Goal Date Updater Semantic Entry**: Replaced the monolithic `type`-based dispatch function in `goal-date-updater.js` with three explicit semantic entry points (`applyGoalRangeUpdate`, `applyGoalStartUpdate`, `applyGoalDateUpdate`). This strictly types the validation pipeline and guarantees consistent error state merging behavior across all edge cases.

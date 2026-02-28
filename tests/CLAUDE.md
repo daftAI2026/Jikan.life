@@ -9,6 +9,8 @@ date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数
 helpers/source-test-helpers.js: 测试辅助工具，统一源码读取、目录扫描与 named import 断言。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束 getContrastBase 感知阈值 0.179、resolveContrastBase 覆盖逻辑和 contrastAlpha 向后兼容。
+wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
+wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固定 Date 后校验 Year/Life/Goal 输出哈希不漂移。
 
 架构决策
 测试采用 `node --test` 原生执行，迁移护栏以“行为断言 + 必要源码契约”并行，避免被实现形状绑架。
@@ -17,6 +19,7 @@ contrast-threshold.behavior.test.js: 颜色对比度护栏，约束 getContrastB
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-01: 新增 `wallpaper-core-api.behavior.test.js`（冻结 facade 导出集合 23 项）与 `wallpaper-visual-snapshots.behavior.test.js`（固定 Date + Year/Life/Goal SVG sha256 护栏）；`kumo-migration.core.behavior.test.js` 将 goalDefault 校验从源码形状断言升级为运行时行为断言。
 2026-03-01: 新增 `goal-date-updater.unit.test.js` 与 `date-math.unit.test.js`；`kumo-migration.core/ui` 将 Goal 更新与 Sidebar 拆分护栏从源码形状断言升级为行为语义断言。
 2026-03-01: 删除 `date-picker.behavior.test.js`，其必要删除护栏并入迁移测试；`kumo-migration.behavior.test.js` 拆分为 `kumo-migration.ui.behavior.test.js` 与 `kumo-migration.core.behavior.test.js`，并抽出 `helpers/source-test-helpers.js` 复用工具函数。
 2026-02-26: `kumo-migration.behavior.test.js` 新增 Skeleton Base + AutoFlow 护栏：锁定 `HomePage` 空态初始化（`selectedStyle=null`）、`useHomeWallpaperConfig` 空态类型、`HomeGrid` 的浏览器级 AutoFlow 存储键与 stage 管理、`HomePreviewPane`/`HomeSettingsPane` 的官方 `SkeletonLine` 分支，以及 `kumo.jsx` 对 `SkeletonLine` 的统一导出。
