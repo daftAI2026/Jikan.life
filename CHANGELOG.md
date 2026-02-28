@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-03-01
+
 ### Documentation
 - **Contribution Guidelines**: Updated `CONTRIBUTING.md` to clarify the Kumo UI migration, add UI token and GEB protocol checklists, and correct the dev command descriptions.
 - **Project Meta**: Bumped version to 1.5.0 and updated license to Apache-2.0 in `package.json`.
