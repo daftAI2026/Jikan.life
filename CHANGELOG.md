@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.4] - 2026-03-01
+
+### Documentation
+- **Brand Alignment**: Updated branding references from `LifeGrid` to `Jikan.life` in `MULTILINGUAL.md` examples and `wrangler.toml` header to ensure consistent project naming.
+
 ## [1.5.3] - 2026-03-01
 
 ### UI & UX

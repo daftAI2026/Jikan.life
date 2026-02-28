@@ -56,8 +56,8 @@ Requirements:
 
 ```js
 export const i18nData = {
-  en: { 'nav.title': 'LifeGrid', ... },
-  'zh-CN': { 'nav.title': 'LifeGrid', ... },
+  en: { 'nav.title': 'Jikan.life', ... },
+  'zh-CN': { 'nav.title': 'Jikan.life', ... },
 };
 
 export const countryToLang = { US: 'en', CN: 'zh-CN', ... };
@@ -112,7 +112,7 @@ export function MyComponent() {
    export const i18nData = {
      // ...
      ko: {
-       'nav.title': 'LifeGrid',
+       'nav.title': 'Jikan.life',
        // ... 复制并翻译所有 Key
      }
    };
