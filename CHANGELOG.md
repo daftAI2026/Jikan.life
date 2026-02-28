@@ -10,18 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.0] - 2026-03-01
 
 ### Architecture
-- **Semantic Refactoring (V4.2)**: 
-  - **Shared Date Math Truth Source**: Consolidated date calculations (leap year, days in year, day of year) into `shared/date-math.js`, eliminating duplicate formulas across `worker` and `src` environments.
-  - **Sidebar Component Decoupling**: Extracted card data construction and mapping logic from `HomeSidebar.jsx` into `home-sidebar-cards.jsx`. `HomeSidebar` now operates purely as a layout container and state bridge, freeing it from internal visual details.
-  - **Goal Date Updater Semantic Entry**: Replaced the monolithic `type`-based dispatch function in `goal-date-updater.js` with three explicit semantic entry points (`applyGoalRangeUpdate`, `applyGoalStartUpdate`, `applyGoalDateUpdate`). This stabilizes the validation pipeline and guarantees consistent error state merging behavior.
-  - **Hook Actions Factory Extraction**: Decoupled the 75-line actions block from `useHomeWallpaperConfig.js` into an independent factory `workspace/config-actions.js`, allowing the main hook to focus solely on state orchestration and lifecycle management.
+- **Semantic Refactoring (V4.2)**: Executed a massive architectural decoupling across 38 files, transitioning the system from "mechanical file splitting" to "semantic responsibility domains".
+- **Sidebar Component Decoupling**: Completely shattered the monolithic `HomeSidebar.jsx` (reduced by over 300 lines). Extracted card data construction into `home-sidebar-cards.jsx`, layout computation into `home-sidebar-date-stats.js`, and specialized graphic rendering into `home-sidebar-visuals.jsx`. The sidebar now operates purely as a layout container and state bridge.
+- **Hook Actions Factory Extraction**: Dismantled the massive `useHomeWallpaperConfig.js` hook. Decoupled its 75-line actions block into an independent factory `workspace/config-actions.js`. Further separated concerns by extracting config initialization (`config-init.js`), URL generation (`url-builder.js`), and option mapping (`view-model-mappers.js`), allowing the main hook to focus solely on React state orchestration and lifecycle management.
+- **Goal Date Updater Semantic Entry**: Replaced the monolithic `type`-based dispatch function in `goal-date-updater.js` with three explicit semantic entry points (`applyGoalRangeUpdate`, `applyGoalStartUpdate`, `applyGoalDateUpdate`). This strictly types the validation pipeline and guarantees consistent error state merging behavior across all edge cases.
+- **Shared Date Math Truth Source**: Consolidated date calculations (leap year, days in year, day of year) into `shared/date-math.js`. Eliminated duplicate ad-hoc formulas across the `worker` environment (`worker/timezone.js`) and the browser environment (`src/lib/date-utils.js`), guaranteeing mathematical alignment.
+
+### UI & UX
+- **Action API Cohesion**: Updated settings UI cards (`colors-card`, `goal-fields-card`, `life-fields-card`) to consume the highly cohesive `actions.*` factory methods.
+- **Goal Range Input**: Standardized the Goal fields card to leverage the unified `setGoalRange` action, ensuring synchronized error validation immediately upon range selection.
 
 ### Tests
-- **Behavioral Evolution**: Upgraded migration guards in `kumo-migration.ui.behavior.test.js` and `kumo-migration.core.behavior.test.js` to assert on module delegation patterns and I/O semantics rather than brittle, shape-based source code regexes.
-- **Unit Testing**: Added isolated suite files `date-math.unit.test.js` and `goal-date-updater.unit.test.js` to securely guard the newly isolated core logic branches.
+- **Behavioral Evolution**: Re-architected migration guards to assert on module delegation patterns and explicit I/O rather than brittle, shape-based source code regexes. Split the monolithic behavior test into `kumo-migration.ui.behavior.test.js` and `kumo-migration.core.behavior.test.js`.
+- **Unit Testing Engine**: Introduced isolated, dependency-free unit test suites (`date-math.unit.test.js` and `goal-date-updater.unit.test.js`) to securely guard the newly extracted core logic branches. Added robust validation matrices for start/target date constraints.
+- **Test Infrastructure**: Created `tests/helpers/source-test-helpers.js` to standardize AST-like import lookups processing across all test suites.
 
 ### Documentation
-- **Fractal Protocol**: Executed GEB protocol sync. Added `home-sidebar-cards.jsx`, `config-actions.js`, and `date-math.js` to respective `CLAUDE.md` registries with structural reasoning. Ensured every new file holds valid `[INPUT]/[OUTPUT]/[POS]` L3 headers.
+- **Fractal Protocol Sync**: Executed comprehensive GEB protocol compliance across all new and modified modules. Added L2 tracking to `CLAUDE.md` in `shared`, `worker`, `sections`, `workspace`, and `lib`.
+- **Contract Enforcement**: Ensured all newly extracted logic hosts (e.g., `config-actions.js`, `url-builder.js`) feature rigid `[INPUT]/[OUTPUT]/[POS]` L3 header contracts.
 
 ## [1.5.5] - 2026-03-01
 
