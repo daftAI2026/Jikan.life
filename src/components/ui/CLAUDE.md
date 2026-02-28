@@ -3,19 +3,15 @@
 
 成员清单
 button.jsx: 按钮组件，Kumo Button 适配层，保留现有 API
-card.jsx: 卡片组件，Kumo Surface 适配层，支持 elevated/inset/flat
 input.jsx: 输入框组件，Kumo Input 适配层
 badge.jsx: 徽章组件，Kumo Badge 适配层
-label.jsx: 标签组件，无状态
 select.jsx: 下拉选择器，Kumo Select 适配层
 switch.jsx: 开关切换，Kumo Switch 适配层
 popover.jsx: 气泡弹出，直接 re-export Kumo Popover 原语（避免自写 overlay 链）
 tooltip.jsx: 工具提示，Kumo Tooltip 适配层
-separator.jsx: 分割线
 color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，ColorThumb 采用外圈+中心点分层常量，作为颜色面板视觉样式单一来源
 color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `1:2+弹性输入` 布局，通道输入使用配置映射并维持对外 hex 协议
 use-color-picker-state-bridge.js: ColorPicker 状态桥 hook，负责外部受控 hex 与内部 Color 对象同步保护
-field.jsx: 表单字段容器，react-aria-components 基础组件
 kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` / `SkeletonLine` 对外导出）
 
 **设计语言**: Kumo UI (Base UI) + Kumo 原生 Token
@@ -39,5 +35,6 @@ kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上
 2026-02-28: 下线 `/design` 链路并删除 19 个不可达 shadcn/Radix 预置组件，保留活跃 Kumo 适配层；页面层继续优先走 `kumo.jsx` 聚合入口。
 2026-02-28: Life 第③卡 DOB 切换为官方 `kumo` DatePicker(single) 壳实现，删除本地 `calendar/date-picker/datefield` 日期壳链路。
 2026-02-28: 删除零引用的本地 `dropdown-menu.jsx`，清理非活跃链路旧语义 token 残留。
+2026-03-01: 删除零调用方的 `card.jsx`/`field.jsx`/`label.jsx`/`separator.jsx`，卸载 `@radix-ui/react-label` 和 `@radix-ui/react-separator`。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

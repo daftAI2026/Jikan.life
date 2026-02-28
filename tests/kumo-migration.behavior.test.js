@@ -138,13 +138,17 @@ test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo pr
   assert.match(popover, /@cloudflare\/kumo\/components\/popover/)
 })
 
-test("Legacy local date UI files are removed", () => {
+test("Legacy local UI files are removed", () => {
   const root = process.cwd()
   const removedFiles = [
     "src/components/ui/calendar.jsx",
     "src/components/ui/date-picker.jsx",
     "src/components/ui/datefield.jsx",
     "src/components/ui/dropdown-menu.jsx",
+    "src/components/ui/card.jsx",
+    "src/components/ui/field.jsx",
+    "src/components/ui/label.jsx",
+    "src/components/ui/separator.jsx",
     "src/pages/registry/sections/workspace/cards/settings-card-date-picker-field.jsx",
   ]
 
@@ -299,10 +303,8 @@ test("No deprecated TextBolder icon import remains in src", () => {
 
 test("Core presentation components use Kumo surfaces", () => {
   const badge = readSource("src/components/ui/badge.jsx")
-  const card = readSource("src/components/ui/card.jsx")
 
   assert.match(badge, /@cloudflare\/kumo\/components\/badge/)
-  assert.match(card, /@cloudflare\/kumo\/components\/surface/)
 })
 
 test("Registry layout mirrors Kumo home layout", () => {

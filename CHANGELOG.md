@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Architecture
+- **Legacy UI Purge**: Deleted unused legacy localized UI components (`card.jsx`, `field.jsx`, `label.jsx`, `separator.jsx`) from `src/components/ui/`.
+- **Dependency Optimization**: Removed redundant UI dependencies (`@radix-ui/react-label`, `@radix-ui/react-separator`) from `package.json`.
+
+### Documentation
+- **Fractal Protocol**: Synchronized `src/components/ui/CLAUDE.md` to reflect the removal of the deleted UI components.
+
+### Tests
+- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `card.jsx`, `field.jsx`, `label.jsx`, and `separator.jsx` components.
+
 ## [1.5.1] - 2026-03-01
 
 ### Documentation
