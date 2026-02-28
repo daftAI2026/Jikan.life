@@ -123,14 +123,12 @@ test("App shell uses Kumo base surface token", () => {
 })
 
 test("P0 UI components are backed by Kumo primitives (popover re-exports Kumo primitive)", () => {
-  const button = readSource("src/components/ui/button.jsx")
   const input = readSource("src/components/ui/input.jsx")
   const select = readSource("src/components/ui/select.jsx")
   const switchControl = readSource("src/components/ui/switch.jsx")
   const tooltip = readSource("src/components/ui/tooltip.jsx")
   const popover = readSource("src/components/ui/popover.jsx")
 
-  assert.match(button, /@cloudflare\/kumo\/components\/button/)
   assert.match(input, /@cloudflare\/kumo\/components\/input/)
   assert.match(select, /@cloudflare\/kumo\/components\/select/)
   assert.match(switchControl, /@cloudflare\/kumo\/components\/switch/)
@@ -149,6 +147,7 @@ test("Legacy local UI files are removed", () => {
     "src/components/ui/field.jsx",
     "src/components/ui/label.jsx",
     "src/components/ui/separator.jsx",
+    "src/components/ui/button.jsx",
     "src/pages/registry/sections/workspace/cards/settings-card-date-picker-field.jsx",
   ]
 
@@ -989,25 +988,6 @@ test("Registry settings cards only expose business ID selector", () => {
   assert.doesNotMatch(paneSource, /legacyCardId=/)
 })
 
-test("Button adapter normalizes legacy props and preserves react-aria trigger compatibility", () => {
-  const source = readSource("src/components/ui/button.jsx")
-
-  assert.match(source, /usePress/)
-  assert.match(source, /ButtonContext/)
-  assert.match(source, /const LEGACY_VARIANT_TO_KUMO_VARIANT\s*=\s*\{/)
-  assert.match(source, /default:\s*"secondary"/)
-  assert.match(source, /link:\s*"ghost"/)
-  assert.match(source, /accent:\s*"primary"/)
-  assert.match(source, /const LEGACY_SIZE_TO_KUMO_SIZE\s*=\s*\{/)
-  assert.match(source, /default:\s*"base"/)
-  assert.match(source, /icon:\s*"lg"/)
-  assert.match(source, /size === "icon" \? "square" : "base"/)
-  assert.match(source, /if \(asChild\)/)
-  assert.match(source, /<Slot/)
-  assert.match(source, /variant={resolvedVariant}/)
-  assert.match(source, /size={resolvedSize}/)
-  assert.match(source, /shape={resolvedShape}/)
-})
 
 test("Registry settings URL block uses responsive row and flexible input", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/url-card.jsx")

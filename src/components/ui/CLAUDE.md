@@ -2,7 +2,6 @@
 > L2 | 父级: /src/CLAUDE.md
 
 成员清单
-button.jsx: 按钮组件，Kumo Button 适配层，保留现有 API
 input.jsx: 输入框组件，Kumo Input 适配层
 badge.jsx: 徽章组件，Kumo Badge 适配层
 select.jsx: 下拉选择器，Kumo Select 适配层
@@ -36,5 +35,6 @@ kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上
 2026-02-28: Life 第③卡 DOB 切换为官方 `kumo` DatePicker(single) 壳实现，删除本地 `calendar/date-picker/datefield` 日期壳链路。
 2026-02-28: 删除零引用的本地 `dropdown-menu.jsx`，清理非活跃链路旧语义 token 残留。
 2026-03-01: 删除零调用方的 `card.jsx`/`field.jsx`/`label.jsx`/`separator.jsx`，卸载 `@radix-ui/react-label` 和 `@radix-ui/react-separator`。
+2026-03-01: ColorPicker 切换为直接使用 Kumo Button，删除本地 `button.jsx` 适配层，卸载 `@radix-ui/react-slot` 和 `class-variance-authority`。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

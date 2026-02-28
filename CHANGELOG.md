@@ -7,15 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-03-01
+
 ### Architecture
-- **Legacy UI Purge**: Deleted unused legacy localized UI components (`card.jsx`, `field.jsx`, `label.jsx`, `separator.jsx`) from `src/components/ui/`.
-- **Dependency Optimization**: Removed redundant UI dependencies (`@radix-ui/react-label`, `@radix-ui/react-separator`) from `package.json`.
+- **Legacy UI Purge**: Deleted unused legacy localized UI components (`card.jsx`, `field.jsx`, `label.jsx`, `separator.jsx`, `button.jsx`) from `src/components/ui/`.
+- **UI Convergence**: Switched `ColorPicker` to directly consume Kumo Button primitives, eliminating the need for the intermediate button adapter.
+- **Dependency Optimization**: Removed redundant UI dependencies (`@radix-ui/react-label`, `@radix-ui/react-separator`, `@radix-ui/react-slot`, `class-variance-authority`) from `package.json` to streamline the tree.
 
 ### Documentation
-- **Fractal Protocol**: Synchronized `src/components/ui/CLAUDE.md` to reflect the removal of the deleted UI components.
+- **Fractal Protocol**: Synchronized `src/components/ui/CLAUDE.md` to reflect the removal of all deleted legacy UI components.
+- **Dependency Audit**: Added `ghost-dependency-investigation-2026-03-01.md` documenting the native Kumo dependency tree origins for `@base-ui/react` and `react-day-picker`.
 
 ### Tests
-- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy `card.jsx`, `field.jsx`, `label.jsx`, and `separator.jsx` components.
+- **Migration Guards**: Expanded `kumo-migration.behavior.test.js` to assert the removal of legacy UI components and cleaned up outdated structural assertions for the legacy button adapter.
 
 ## [1.5.1] - 2026-03-01
 

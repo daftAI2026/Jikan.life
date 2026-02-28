@@ -1,6 +1,6 @@
 {
   "name": "jikan-life",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Jikan.life - Dynamic wallpaper generator",
   "main": "worker/index.js",
   "type": "module",
@@ -15,10 +15,8 @@
     "@base-ui/react": "^1.0.0",
     "@cloudflare/kumo": "^1.8.0",
     "@phosphor-icons/react": "^2.1.10",
-    "@radix-ui/react-slot": "^1.2.4",
     "@resvg/resvg-wasm": "^2.6.0",
     "@tailwindcss/vite": "^4.1.18",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.29.2",
