@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-03-01
+
+### Architecture
+- **Mainline Integration**: 全面合并了之前所有的语义化重构分支（Semantic Refactoring）至主分支（Mainline）。这次合并巩固了核心壁纸引擎、状态配置 hooks（`useHomeWallpaperConfig` 等）以及 UI 卡片组件的深度解耦成果。
+
 ## [1.6.1] - 2026-03-01
 
 ### Architecture

@@ -1,11 +1,12 @@
 {
   "name": "jikan-life",
-  "version": "1.5.5",
+  "version": "1.7.0",
   "description": "Jikan.life - Dynamic wallpaper generator",
   "main": "worker/index.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node --test tests/*.test.js",
     "build": "vite build",
     "preview": "vite preview",
     "worker:dev": "wrangler dev",
