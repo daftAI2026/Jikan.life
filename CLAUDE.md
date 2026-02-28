@@ -14,7 +14,7 @@ src/ - React 前端源代码 (Vite 驱动)
   ├── data/ - 静态数据 (i18n, countries, devices)
   ├── lib/ - 工具库 (renderer, motion, utils)
   └── pages/ - 页面模块 (registry/ Home 工作台)
-tests/ - Node 原生行为回归测试 (UI 迁移护栏 + 日期组件护栏)
+tests/ - Node 原生行为回归测试 (UI 迁移护栏分层 + 核心渲染/对比度/Worker 护栏)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
   └── generators/ - SVG 生成逻辑 adapters
 shared/ - 前后端共享核心逻辑

@@ -6,20 +6,8 @@
  */
 import { Button, DatePicker, Input } from "@/components/ui/kumo"
 import { Popover } from "@/components/ui/popover"
-
-function toLocalDate(isoDate) {
-    if (!isoDate) return undefined
-    const [year, month, day] = isoDate.split("-").map(Number)
-    if (!year || !month || !day) return undefined
-    return new Date(year, month - 1, day)
-}
-
-function toISODate(date) {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const day = String(date.getDate()).padStart(2, "0")
-    return `${year}-${month}-${day}`
-}
+import { toISODate, toLocalDate } from "@/lib/date-utils"
+import { CardField, CardFieldsStack } from "./CardField"
 
 const lifeFieldsCard = {
     title: "Life",
@@ -29,17 +17,14 @@ const lifeFieldsCard = {
         const dobLabel = config.dob || t("placeholder.selectStartDate")
 
         return (
-            <div className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1">
-                <div className="w-[200px] max-w-full space-y-1.5">
-                    <div className="inline-flex items-center gap-1 text-xs text-kumo-subtle">
-                        <span>{t("config.dateOfBirth")}</span>
-                        <span>{t("config.dateOfBirthHint")}</span>
-                    </div>
+            <CardFieldsStack>
+                <CardField label={t("config.dateOfBirth")} hint={t("config.dateOfBirthHint")}>
                     <Popover>
                         <Popover.Trigger asChild>
                             <Button
                                 variant="outline"
-                                className="h-9 w-[200px] max-w-full justify-start gap-2 rounded-lg px-3 text-left font-normal">
+                                className="h-9 w-[200px] max-w-full justify-start gap-2 rounded-lg px-3 text-left font-normal"
+                            >
                                 <span className="truncate text-sm">{dobLabel}</span>
                             </Button>
                         </Popover.Trigger>
@@ -52,12 +37,8 @@ const lifeFieldsCard = {
                             />
                         </Popover.Content>
                     </Popover>
-                </div>
-                <div className="w-[200px] max-w-full space-y-1.5">
-                    <div className="inline-flex items-center gap-1 text-xs text-kumo-subtle">
-                        <span>{t("config.lifespan")}</span>
-                        <span>{t("config.lifespanHint")}</span>
-                    </div>
+                </CardField>
+                <CardField label={t("config.lifespan")} hint={t("config.lifespanHint")}>
                     <Input
                         className="w-[200px] max-w-full"
                         type="number"
@@ -67,8 +48,8 @@ const lifeFieldsCard = {
                         onChange={(event) => actions.setLifespan(event.target.value)}
                         onBlur={actions.normalizeLifespan}
                     />
-                </div>
-            </div>
+                </CardField>
+            </CardFieldsStack>
         )
     },
 }

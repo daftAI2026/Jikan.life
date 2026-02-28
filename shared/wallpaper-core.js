@@ -1,9 +1,11 @@
 /**
- * [INPUT]: 无依赖（纯函数模块）
+ * [INPUT]: 依赖 shared/date-math 的日期数学函数（纯函数模块）
  * [OUTPUT]: 布局计算（**Year 支持 cols/padding 覆盖**）、日期/颜色工具(含 resolveContrastBase 前景色覆盖)、i18n 文本生成(含 goalDefault)
  * [POS]: shared/ 下的同构核心，供 Frontend Canvas 和 Worker SVG 共享
  * [PROTOCOL]: 变更时同步更新 renderer.js 和 worker/generators/*.js
  */
+
+import { getDayOfYear, getDaysInYear, isLeapYear, toDayNumber } from "./date-math.js";
 
 /* ========================================================================
    Color Utilities
@@ -82,7 +84,6 @@ export function getSafeAccent(bgHex, accentHex) {
    Date Utilities
    ======================================================================== */
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 export const GOAL_START_MIN_ISO = '1900-01-01';
 export const GOAL_TARGET_MAX_ISO = '2100-12-31';
@@ -95,10 +96,6 @@ function isValidDateParts(year, month, day) {
         date.getUTCMonth() + 1 === month &&
         date.getUTCDate() === day
     );
-}
-
-export function toDayNumber({ year, month, day }) {
-    return Math.floor(Date.UTC(year, month - 1, day) / MS_PER_DAY);
 }
 
 export function isValidISODateString(value) {
@@ -187,19 +184,7 @@ function clampNumber(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
 
-export function getDayOfYear(year, month, day) {
-    const dayNumber = toDayNumber({ year, month, day });
-    const startOfYear = toDayNumber({ year, month: 1, day: 1 });
-    return dayNumber - startOfYear + 1;
-}
-
-export function isLeapYear(year) {
-    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-}
-
-export function getDaysInYear(year) {
-    return isLeapYear(year) ? 366 : 365;
-}
+export { toDayNumber, isLeapYear, getDaysInYear, getDayOfYear };
 
 /**
  * Format goal date for display

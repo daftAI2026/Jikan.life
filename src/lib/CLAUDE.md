@@ -6,6 +6,7 @@ utils.js: shadcn/ui 核心工具，提供 cn() 类名合并函数
 motion.js: Apple 级 Framer Motion 动画预设库
 I18nContext.jsx: React Context 国际化适配器，提供 I18nProvider 和 useI18n hook
 renderer.js: 核心壁纸 Canvas 渲染引擎，导出 drawYearProgress/drawLifeCalendar/drawGoalCountdown，**透传 foregroundOverride 与设备级 cols/padding 参数**
+date-utils.js: 本地日期工具，统一 ISO<->Date 转换、当日键生成与日偏移计算，并复用 `shared/date-math.js` 导出日历数学函数
 match-sorter-shim.js: match-sorter 兼容实现（历史兼容层，供 registry 搜索能力按需复用）
 
 ## motion.js 动画系统

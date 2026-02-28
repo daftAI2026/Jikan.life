@@ -5,23 +5,22 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Input } from "@/components/ui/kumo"
+import { CardField, CardFieldsStack } from "./CardField"
 import { GoalDateRangeField } from "./goal-date-range-field"
 
 const goalFieldsCard = {
     title: "Goal",
     render: ({ actions, config, t }) => (
-        <div className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1">
-            <div className="w-[200px] max-w-full space-y-1.5">
-                <p className="text-xs text-kumo-subtle">{t("config.goalName")}</p>
+        <CardFieldsStack>
+            <CardField label={t("config.goalName")} labelClassName="block">
                 <Input
                     className="w-[200px] max-w-full"
                     value={config.goalName}
                     onChange={(event) => actions.setGoalName(event.target.value)}
                     placeholder={t("placeholder.goalName")}
                 />
-            </div>
-            <div className="w-[200px] max-w-full space-y-1.5">
-                <p className="text-xs text-kumo-subtle">{t("config.dateRange")}</p>
+            </CardField>
+            <CardField label={t("config.dateRange")} labelClassName="block">
                 <GoalDateRangeField
                     startISO={config.goalStart}
                     endISO={config.goalDate}
@@ -31,8 +30,8 @@ const goalFieldsCard = {
                 {(config.goalStartError || config.goalDateError) && (
                     <p className="text-xs text-kumo-warning">{t(config.goalStartError || config.goalDateError)}</p>
                 )}
-            </div>
-        </div>
+            </CardField>
+        </CardFieldsStack>
     ),
 }
 

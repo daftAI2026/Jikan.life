@@ -5,6 +5,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { SkeletonLine } from "@/components/ui/kumo"
+import { getLocalTodayISO } from "@/lib/date-utils"
 import { CARD_REGISTRY } from "./cards"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
@@ -35,14 +36,6 @@ function resolveCardOrderByType(selectedType) {
 function resolveCardShellClassName(selectedType, cardId) {
     if (!selectedType) return ""
     return CARD_SHELL_CLASS_BY_TYPE[selectedType]?.[cardId] ?? ""
-}
-
-function getLocalTodayISO() {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, "0")
-    const day = String(now.getDate()).padStart(2, "0")
-    return `${year}-${month}-${day}`
 }
 
 function SettingsCardSkeleton({ onRequestRevealAll }) {

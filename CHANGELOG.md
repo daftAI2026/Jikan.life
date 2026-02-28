@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-03-01
+
+### Architecture
+- **Semantic Refactoring (V4.2)**: 
+  - **Shared Date Math Truth Source**: Consolidated date calculations (leap year, days in year, day of year) into `shared/date-math.js`, eliminating duplicate formulas across `worker` and `src` environments.
+  - **Sidebar Component Decoupling**: Extracted card data construction and mapping logic from `HomeSidebar.jsx` into `home-sidebar-cards.jsx`. `HomeSidebar` now operates purely as a layout container and state bridge, freeing it from internal visual details.
+  - **Goal Date Updater Semantic Entry**: Replaced the monolithic `type`-based dispatch function in `goal-date-updater.js` with three explicit semantic entry points (`applyGoalRangeUpdate`, `applyGoalStartUpdate`, `applyGoalDateUpdate`). This stabilizes the validation pipeline and guarantees consistent error state merging behavior.
+  - **Hook Actions Factory Extraction**: Decoupled the 75-line actions block from `useHomeWallpaperConfig.js` into an independent factory `workspace/config-actions.js`, allowing the main hook to focus solely on state orchestration and lifecycle management.
+
+### Tests
+- **Behavioral Evolution**: Upgraded migration guards in `kumo-migration.ui.behavior.test.js` and `kumo-migration.core.behavior.test.js` to assert on module delegation patterns and I/O semantics rather than brittle, shape-based source code regexes.
+- **Unit Testing**: Added isolated suite files `date-math.unit.test.js` and `goal-date-updater.unit.test.js` to securely guard the newly isolated core logic branches.
+
+### Documentation
+- **Fractal Protocol**: Executed GEB protocol sync. Added `home-sidebar-cards.jsx`, `config-actions.js`, and `date-math.js` to respective `CLAUDE.md` registries with structural reasoning. Ensured every new file holds valid `[INPUT]/[OUTPUT]/[POS]` L3 headers.
+
 ## [1.5.5] - 2026-03-01
 
 ### Infrastructure

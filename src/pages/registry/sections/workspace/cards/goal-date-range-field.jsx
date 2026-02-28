@@ -7,11 +7,11 @@
 import { Button, DatePicker } from "@/components/ui/kumo"
 import { Popover } from "@/components/ui/popover"
 import { useDateFnsLocale } from "@/lib/I18nContext"
+import { addDays, getLocalTodayISO, toISODate, toLocalDate } from "@/lib/date-utils"
 import { formatCaption as defaultFormatCaption } from "react-day-picker"
 import {
     GOAL_START_MIN_ISO,
     GOAL_TARGET_MAX_ISO,
-    isValidISODateString,
 } from "../../../../../../shared/wallpaper-core"
 
 /* ── Pangu: CJK 与 ASCII 之间插入空格 ────────────────────── */
@@ -19,30 +19,6 @@ const CJK = "\u4e00-\u9fff\u3400-\u4dbf\u3040-\u309f\u30a0-\u30ff"
 const PANGU_RE_AFTER = new RegExp(`([${CJK}])([A-Za-z0-9])`, "g")
 const PANGU_RE_BEFORE = new RegExp(`([A-Za-z0-9])([${CJK}])`, "g")
 const pangu = (s) => s.replace(PANGU_RE_AFTER, "$1 $2").replace(PANGU_RE_BEFORE, "$1 $2")
-
-function toLocalDate(isoDate) {
-    if (!isValidISODateString(isoDate)) return undefined
-    const [year, month, day] = isoDate.split("-").map(Number)
-    return new Date(year, month - 1, day)
-}
-
-function toISODate(date) {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const day = String(date.getDate()).padStart(2, "0")
-    return `${year}-${month}-${day}`
-}
-
-function addDays(date, days) {
-    const next = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    next.setDate(next.getDate() + days)
-    return next
-}
-
-function getTodayDate() {
-    const now = new Date()
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate())
-}
 
 function getRangeLabel({ startISO, endISO, t }) {
     if (startISO && endISO) return `${startISO} -> ${endISO}`
@@ -57,7 +33,7 @@ function GoalDateRangeField({ startISO, endISO, onChange, t }) {
     const minDate = toLocalDate(GOAL_START_MIN_ISO)
     const maxDate = toLocalDate(GOAL_TARGET_MAX_ISO)
     const selectedRange = startDate ? { from: startDate, to: endDate } : undefined
-    const today = getTodayDate()
+    const today = toLocalDate(getLocalTodayISO()) || new Date()
 
     const handleDateRangeChange = (range) => {
         if (!range?.from) {

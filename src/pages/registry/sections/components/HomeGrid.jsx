@@ -135,7 +135,6 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
                     palettePresets={viewModel.palettePresets}
                     countryOptions={viewModel.countryOptions}
                     languageOptions={viewModel.languageOptions}
-                    deviceOptions={viewModel.deviceOptions}
                     url={viewModel.url}
                     actions={viewModel.actions}
                     onSetIt={handleSetIt}

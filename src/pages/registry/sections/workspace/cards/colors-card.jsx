@@ -6,33 +6,35 @@
  */
 import { Button as KumoButton } from "@/components/ui/kumo"
 import { ColorPicker } from "@/components/ui/color-picker"
+import { CardField, CardFieldsStack } from "./CardField"
 
 const colorsCard = {
     titleKey: "config.colors",
     render: ({ actions, config, palettePresets, t }) => (
-        <div className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1">
-            <div className="grid w-[200px] max-w-full grid-cols-2 gap-2">
-                <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
-                    <ColorPicker
-                        className="w-full"
-                        value={config.bgColor}
-                        showValue={false}
-                        onChange={(value) => actions.setBackgroundColor(value)}
-                    />
+        <CardFieldsStack>
+            <CardField className="space-y-2">
+                <div className="grid w-[200px] max-w-full grid-cols-2 gap-2">
+                    <div className="min-w-0 space-y-1.5">
+                        <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
+                        <ColorPicker
+                            className="w-full"
+                            value={config.bgColor}
+                            showValue={false}
+                            onChange={(value) => actions.setBackgroundColor(value)}
+                        />
+                    </div>
+                    <div className="min-w-0 space-y-1.5">
+                        <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
+                        <ColorPicker
+                            className="w-full"
+                            value={config.accentColor}
+                            showValue={false}
+                            onChange={(value) => actions.setAccentColor(value)}
+                        />
+                    </div>
                 </div>
-                <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
-                    <ColorPicker
-                        className="w-full"
-                        value={config.accentColor}
-                        showValue={false}
-                        onChange={(value) => actions.setAccentColor(value)}
-                    />
-                </div>
-            </div>
-            <div className="w-[200px] max-w-full space-y-1.5">
-                <p className="text-xs text-kumo-subtle">{t("config.colorPresets")}</p>
+            </CardField>
+            <CardField label={t("config.colorPresets")} labelClassName="block">
                 <div className="flex w-[200px] max-w-full flex-wrap gap-2">
                     {palettePresets.map((preset) => (
                         <KumoButton
@@ -55,8 +57,8 @@ const colorsCard = {
                         </KumoButton>
                     ))}
                 </div>
-            </div>
-        </div>
+            </CardField>
+        </CardFieldsStack>
     ),
 }
 

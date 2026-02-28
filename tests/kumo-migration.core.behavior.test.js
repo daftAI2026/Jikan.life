@@ -1,0 +1,313 @@
+/**
+ * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
+ * [OUTPUT]: Kumo 迁移核心域护栏测试
+ * [POS]: tests/ 迁移护栏（主题二：渲染核心、Worker、i18n 与主题）
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+import { test } from "node:test"
+import assert from "node:assert/strict"
+import { assertNamedImports, listFiles, path, readSource } from "./helpers/source-test-helpers.js"
+
+test("Wallpaper preview shares one language font strategy from shared core", async () => {
+  const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
+  const { getWallpaperFontFamily } = await import(`file://${corePath}`)
+  const rendererSource = readSource("src/lib/renderer.js")
+  const yearSource = readSource("worker/generators/year.js")
+  const lifeSource = readSource("worker/generators/life.js")
+  const indexSource = readSource("index.html")
+
+  assert.equal(typeof getWallpaperFontFamily, "function")
+  assert.equal(getWallpaperFontFamily("en"), '"Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("zh-CN"), '"Noto Sans SC", "Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("zh-TW"), '"Noto Sans TC", "Inter", sans-serif')
+  assert.equal(getWallpaperFontFamily("ja"), '"Noto Sans JP", "Inter", sans-serif')
+
+  assert.match(rendererSource, /getWallpaperFontFamily/)
+  assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
+  assert.doesNotMatch(yearSource, /font-family="Inter"/)
+  assert.doesNotMatch(lifeSource, /font-family="Inter"/)
+
+  assert.match(indexSource, /Noto\+Sans\+SC/)
+  assert.match(indexSource, /Noto\+Sans\+TC/)
+  assert.match(indexSource, /Noto\+Sans\+JP/)
+})
+
+test("Worker SVG reuses shared getWallpaperFontFamily without local font map", () => {
+  const svgSource = readSource("worker/svg.js")
+
+  assertNamedImports(svgSource, "../shared/wallpaper-core.js", ["getWallpaperFontFamily"])
+  assert.match(svgSource, /getWallpaperFontFamily\(lang\)/)
+  assert.doesNotMatch(svgSource, /FONT_FAMILY_BY_LANG/)
+})
+
+test("GoalStart is wired through registry config state and URL generation", () => {
+  const hookSource = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+  const actionsSource = readSource("src/pages/registry/sections/workspace/config-actions.js")
+  const initSource = readSource("src/pages/registry/sections/workspace/config-init.js")
+  const urlBuilderSource = readSource("src/pages/registry/sections/workspace/url-builder.js")
+
+  assert.match(initSource, /goalStart:\s*""/)
+  assert.match(initSource, /goalStartError:\s*""/)
+  assert.match(initSource, /goalDateError:\s*""/)
+  assert.match(urlBuilderSource, /validateGoalDateInputs/)
+  assert.match(urlBuilderSource, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\("goalStart", config\.goalStart\)/)
+  assert.match(hookSource, /createConfigActions/)
+  assert.match(actionsSource, /setGoalStart\(value\)/)
+  assert.match(actionsSource, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)/)
+})
+
+test("Goal date actions are composed through config-actions and explicit updater functions", () => {
+  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+  const actionsSource = readSource("src/pages/registry/sections/workspace/config-actions.js")
+  const updaterSource = readSource("src/pages/registry/sections/workspace/goal-date-updater.js")
+
+  assert.match(source, /import \{ createConfigActions \} from "\.\/config-actions"/)
+  assert.match(source, /import \{ applyGoalDateUpdate, applyGoalRangeUpdate, applyGoalStartUpdate \} from "\.\/goal-date-updater"/)
+  assert.match(source, /createConfigActions\(\{[\s\S]*goalUpdateFns:\s*\{[\s\S]*applyGoalRangeUpdate,[\s\S]*applyGoalStartUpdate,[\s\S]*applyGoalDateUpdate,[\s\S]*\}/)
+
+  assert.match(actionsSource, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)/)
+  assert.match(actionsSource, /goalUpdateFns\.applyGoalRangeUpdate\(prev,\s*\{[\s\S]*startISO,[\s\S]*endISO,[\s\S]*todayISO,[\s\S]*\}\)/)
+  assert.match(actionsSource, /setGoalStart\(value\)/)
+  assert.match(actionsSource, /goalUpdateFns\.applyGoalStartUpdate\(prev,\s*\{[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
+  assert.match(actionsSource, /setGoalDate\(value\)/)
+  assert.match(actionsSource, /goalUpdateFns\.applyGoalDateUpdate\(prev,\s*\{[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
+
+  assert.match(updaterSource, /function applyGoalRangeUpdate\(prev,\s*\{\s*startISO,\s*endISO,\s*todayISO\s*\}\)/)
+  assert.match(updaterSource, /function applyGoalStartUpdate\(prev,\s*\{\s*value,\s*todayISO\s*\}\)/)
+  assert.match(updaterSource, /function applyGoalDateUpdate\(prev,\s*\{\s*value,\s*todayISO\s*\}\)/)
+})
+
+test("Unified goal date updater preserves legacy range/start/date behavior", async () => {
+  const updaterPath = path.join(process.cwd(), "src/pages/registry/sections/workspace/goal-date-updater.js")
+  const {
+    applyGoalRangeUpdate,
+    applyGoalStartUpdate,
+    applyGoalDateUpdate,
+  } = await import(`file://${updaterPath}`)
+
+  const baseState = {
+    goalStart: "2026-03-01",
+    goalDate: "2026-04-01",
+    goalStartError: "",
+    goalDateError: "",
+  }
+
+  const rangeState = applyGoalRangeUpdate(baseState, {
+    startISO: "2026-03-10",
+    endISO: "2026-03-25",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(rangeState.goalStart, "2026-03-10")
+  assert.equal(rangeState.goalDate, "2026-03-25")
+  assert.equal(rangeState.goalStartError, "")
+  assert.equal(rangeState.goalDateError, "")
+
+  const clearedRangeState = applyGoalRangeUpdate(baseState, {
+    startISO: "",
+    endISO: "",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(clearedRangeState.goalStart, "")
+  assert.equal(clearedRangeState.goalDate, "")
+  assert.equal(clearedRangeState.goalStartError, "")
+  assert.equal(clearedRangeState.goalDateError, "")
+
+  const invalidStartState = applyGoalStartUpdate(baseState, {
+    value: "2026-02-30",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(invalidStartState.goalStart, "2026-03-01")
+  assert.equal(invalidStartState.goalStartError, "error.goalStart.outOfRange")
+  assert.equal(invalidStartState.goalDateError, "")
+
+  const rejectedStartState = applyGoalStartUpdate(baseState, {
+    value: "2026-05-01",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(rejectedStartState.goalStart, "2026-03-01")
+  assert.equal(rejectedStartState.goalStartError, "error.goalStart.afterTarget")
+  assert.equal(rejectedStartState.goalDateError, "error.goalDate.beforeStart")
+
+  const clearedDateState = applyGoalDateUpdate(baseState, {
+    value: "",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(clearedDateState.goalDate, "")
+  assert.equal(clearedDateState.goalStartError, "")
+  assert.equal(clearedDateState.goalDateError, "")
+
+  const invalidDateState = applyGoalDateUpdate(baseState, {
+    value: "bad-date",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(invalidDateState.goalDate, "2026-04-01")
+  assert.equal(invalidDateState.goalStartError, "")
+  assert.equal(invalidDateState.goalDateError, "error.goalDate.outOfRange")
+
+  const rejectedDateState = applyGoalDateUpdate(baseState, {
+    value: "2026-02-01",
+    todayISO: "2026-03-01",
+  })
+  assert.equal(rejectedDateState.goalDate, "2026-04-01")
+  assert.equal(rejectedDateState.goalStartError, "error.goalStart.afterTarget")
+  assert.equal(rejectedDateState.goalDateError, "error.goalDate.beforeStart")
+})
+
+test("Home settings goal config uses date range label and unified goal-range action", () => {
+  const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
+
+  assert.match(source, /t\("config\.dateRange"\)/)
+  assert.match(source, /startISO=\{config\.goalStart\}/)
+  assert.match(source, /endISO=\{config\.goalDate\}/)
+  assert.match(source, /onChange=\{actions\.setGoalRange\}/)
+  assert.match(source, /config\.goalStartError \|\| config\.goalDateError/)
+  assert.match(source, /t\(config\.goalStartError \|\| config\.goalDateError\)/)
+})
+
+test("Renderer and worker pass goalStart into shared goal layout", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  const workerIndexSource = readSource("worker/index.js")
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+
+  assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
+  assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
+  assert.match(goalGeneratorSource, /goalStart,/)
+  assert.match(goalGeneratorSource, /const decodedGoalName = decodeGoalName\(goalName\)/)
+  assert.match(goalGeneratorSource, /goalStart,\s*goalName: resolvedGoalName/)
+})
+
+test("Goal default label follows wallpaper language when goalName is empty", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+  const coreSource = readSource("shared/wallpaper-core.js")
+  const validationSource = readSource("worker/validation.js")
+
+  assert.match(coreSource, /en:\s*\{[\s\S]*goalDefault:\s*'Goal',/)
+  assert.match(coreSource, /'zh-CN':\s*\{[\s\S]*goalDefault:\s*'目标',/)
+  assert.match(coreSource, /'zh-TW':\s*\{[\s\S]*goalDefault:\s*'目標',/)
+  assert.match(coreSource, /ja:\s*\{[\s\S]*goalDefault:\s*'目標',/)
+  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*getWallpaperText\(config\.wallpaperLang,\s*'goalDefault',\s*''\)/)
+  assert.match(goalGeneratorSource, /const resolvedGoalName = decodedGoalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
+  assert.match(validationSource, /goalName:\s*z\.string\(\)\.max\(100,\s*"Goal name too long"\)\.default\(''\)/)
+})
+
+test("Goal preview and worker render goalName with foreground accent, not background contrast", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalGeneratorSource = readSource("worker/generators/goal.js")
+
+  assert.match(rendererSource, /if \(layout\.goalName\) \{[\s\S]*ctx\.fillStyle = safeAccent;/)
+  assert.doesNotMatch(rendererSource, /ctx\.fillStyle = contrastAlpha\(bgColor, 0\.9\);/)
+
+  assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,/)
+  assert.doesNotMatch(goalGeneratorSource, /fill: svgContrastAlpha\(bgColor, 0\.9\),/)
+})
+
+test("Worker validation enforces goalStart schema, year range, and relation to goal", () => {
+  const source = readSource("worker/validation.js")
+
+  assert.match(source, /goalStart:\s*dateSchema\.optional\(\)/)
+  assert.match(source, /GOAL_START_MIN_ISO/)
+  assert.match(source, /GOAL_TARGET_MAX_ISO/)
+  assert.match(source, /Goal start date must be between 1900-01-01 and 2100-12-31/)
+  assert.match(source, /Goal target date must be between 1900-01-01 and 2100-12-31/)
+  assert.match(source, /if \(data\.goalStart && data\.goal && data\.goalStart > data\.goal\)/)
+  assert.match(source, /Goal start date must be on or before the goal date/)
+})
+
+test("i18n keeps range errors in all languages and removes legacy start-date keys", () => {
+  const source = readSource("src/data/i18n.js")
+
+  const startDateCount = (source.match(/'config\.startDate':/g) || []).length
+  const placeholderCount = (source.match(/'placeholder\.selectStartDate':/g) || []).length
+  const startRangeErrorCount = (source.match(/'error\.goalStart\.outOfRange':/g) || []).length
+  const targetRangeErrorCount = (source.match(/'error\.goalDate\.outOfRange':/g) || []).length
+  const startAfterTargetErrorCount = (source.match(/'error\.goalStart\.afterTarget':/g) || []).length
+  const targetBeforeStartErrorCount = (source.match(/'error\.goalDate\.beforeStart':/g) || []).length
+
+  assert.equal(startDateCount, 0)
+  assert.equal(placeholderCount, 0)
+  assert.equal(startRangeErrorCount, 4)
+  assert.equal(targetRangeErrorCount, 4)
+  assert.equal(startAfterTargetErrorCount, 4)
+  assert.equal(targetBeforeStartErrorCount, 4)
+})
+
+test("i18n includes date range and preset labels in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+
+  const dateRangeCount = (source.match(/'config\.dateRange':/g) || []).length
+  const dateRangePlaceholderCount = (source.match(/'placeholder\.selectDateRange':/g) || []).length
+  const next30Count = (source.match(/'preset\.range\.next30':/g) || []).length
+  const next90Count = (source.match(/'preset\.range\.next90':/g) || []).length
+
+  assert.equal(dateRangeCount, 4)
+  assert.equal(dateRangePlaceholderCount, 4)
+  assert.equal(next30Count, 4)
+  assert.equal(next90Count, 4)
+})
+
+test("i18n includes set button key in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const setKeyCount = (source.match(/'url\.set':/g) || []).length
+
+  assert.equal(setKeyCount, 4)
+})
+
+test("i18n includes device tooltip key in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const deviceTooltipCount = (source.match(/'config\.deviceTooltip':/g) || []).length
+
+  assert.equal(deviceTooltipCount, 4)
+})
+
+test("i18n includes iOS shortcut clipboard keys in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const action1Count = (source.match(/'setup\.ios\.step3\.action1':/g) || []).length
+  const action2Count = (source.match(/'setup\.ios\.step3\.action2':/g) || []).length
+  const action2DescCount = (source.match(/'setup\.ios\.step3\.action2Desc':/g) || []).length
+  const copyTooltipCount = (source.match(/'setup\.ios\.step3\.copyTooltip':/g) || []).length
+  const copiedTooltipCount = (source.match(/'setup\.ios\.step3\.copiedTooltip':/g) || []).length
+  const copyActionCount = (source.match(/'setup\.ios\.step3\.copyAction':/g) || []).length
+  const legacyStep3DescCount = (source.match(/'setup\.ios\.step3Desc':/g) || []).length
+
+  assert.equal(action1Count, 4)
+  assert.equal(action2Count, 4)
+  assert.equal(action2DescCount, 4)
+  assert.equal(copyTooltipCount, 4)
+  assert.equal(copiedTooltipCount, 4)
+  assert.equal(copyActionCount, 4)
+  assert.equal(legacyStep3DescCount, 0)
+})
+
+test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
+  const source = readSource("src/pages/registry/sections/ThemeToggle.jsx")
+
+  assert.match(source, /localStorage\.setItem\("mode"/)
+  assert.doesNotMatch(source, /localStorage\.setItem\("theme"/)
+  assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)
+})
+
+test("HomePage centers ThemeToggle in desktop tools rail box", () => {
+  const source = readSource("src/pages/registry/HomePage.jsx")
+
+  assert.match(source, /fixed top-0 right-0/)
+  assert.match(source, /w-\[var\(--registry-tools-rail-width\)\]/)
+  assert.match(source, /\bgrid\b/)
+  assert.match(source, /place-items-center/)
+  assert.doesNotMatch(source, /fixed top-0 right-2/)
+})
+
+test("HomeSidebar centers desktop menu toggle in rail header box", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+
+  assert.match(source, /absolute inset-0 grid place-items-center/)
+  assert.doesNotMatch(source, /absolute top-2 right-1/)
+})
+
+test("Source code has no local date UI imports", () => {
+  const sourceFiles = listFiles("src").filter((file) => /\.(jsx?|tsx?)$/.test(file))
+  const blockedImportPattern = /@\/components\/ui\/(date-picker|datefield|calendar|dropdown-menu)|settings-card-date-picker-field|\/dropdown-menu/
+  const offenders = sourceFiles.filter((file) => blockedImportPattern.test(readSource(file)))
+
+  assert.deepEqual(offenders, [], `source files should not import removed local date UI: ${offenders.join(", ")}`)
+})

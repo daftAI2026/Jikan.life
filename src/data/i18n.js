@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无依赖
  * [OUTPUT]: 对外提供 i18nData/countryToLang/LANGUAGE_META/DEFAULT_LANG/SUPPORTED_LANGS
- * [POS]: data/ 的翻译字符串管理模块，被 I18nContext 与 worker/i18n 消费
+ * [POS]: data/ 的翻译字符串管理模块，被 I18nContext 与 workspace/registry 文案渲染链路消费
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 

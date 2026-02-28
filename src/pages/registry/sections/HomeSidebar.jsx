@@ -1,177 +1,19 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @/lib/utils(cn), @phosphor-icons/react(XIcon), JikanMenuIcon, @/lib/I18nContext, shared/wallpaper-core(computeGoalLayout), useRegistryBlockingScrollLock
+ * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), @/lib/date-utils(getLocalDateKey), JikanMenuIcon, @/lib/I18nContext, useRegistryBlockingScrollLock, home-sidebar-date-stats, home-sidebar-cards
  * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
- * [POS]: pages/registry/sections 的左侧导航与风格选择器，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览进度可视化的日切刷新入口；移动抽屉打开时锁背景滚动
+ * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新与移动抽屉滚动锁；卡片渲染细节委托 home-sidebar-cards
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/kumo"
 import { XIcon } from "@phosphor-icons/react"
+import { getLocalDateKey } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 import { JikanMenuIcon } from "./JikanMenuIcon"
+import { getGoalPreviewLayout, getYearStats } from "./home-sidebar-date-stats"
+import { HomeSidebarCards } from "./home-sidebar-cards"
 import { useI18n } from "@/lib/I18nContext"
 import { useRegistryBlockingScrollLock } from "./useRegistryBlockingScrollLock"
-import { computeGoalLayout } from "../../../../shared/wallpaper-core"
-
-// ---- Sidebar Style Feature Flags ----
-// 隐藏但不删除：后续恢复只需从集合中移除对应 id。
-const HIDDEN_STYLE_CARD_IDS = new Set(["life"])
-const YEAR_GRID_COLUMNS = 10
-const YEAR_DOT_STATE_TOKENS = {
-    today: "bg-kumo-contrast",
-    completed: "bg-kumo-contrast/75",
-    pending: "bg-kumo-contrast/12",
-}
-
-function getYearDotState(index, filledCount, totalDots) {
-    const todayIndex = Math.min(totalDots - 1, Math.max(0, filledCount - 1))
-    if (index === todayIndex) return "today"
-    if (index < filledCount) return "completed"
-    return "pending"
-}
-
-function getDayOfYear() {
-    const now = new Date()
-    const start = new Date(now.getFullYear(), 0, 0)
-    const diff = now.getTime() - start.getTime()
-    return Math.floor(diff / (1000 * 60 * 60 * 24))
-}
-
-function isLeapYear(year) {
-    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
-}
-
-function getYearStats() {
-    const now = new Date()
-    const day = getDayOfYear()
-    const totalDays = isLeapYear(now.getFullYear()) ? 366 : 365
-    const week = Math.ceil(day / 7)
-    const percent = Math.round((day / totalDays) * 100)
-    return { day, week, percent, totalDays }
-}
-
-function getLocalDateParts() {
-    const now = new Date()
-    return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() }
-}
-
-function getLocalDateKey() {
-    const now = new Date()
-    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
-}
-
-function addDays(dateParts, days) {
-    const date = new Date(dateParts.year, dateParts.month - 1, dateParts.day)
-    date.setDate(date.getDate() + days)
-    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() }
-}
-
-function YearVisual({ percent }) {
-    const totalDots = YEAR_GRID_COLUMNS * YEAR_GRID_COLUMNS
-    const filledCount = Math.min(totalDots, Math.max(0, percent))
-
-    return (
-        <div
-            className="grid place-items-center gap-[4px] p-4"
-            style={{ gridTemplateColumns: `repeat(${YEAR_GRID_COLUMNS}, minmax(0, 1fr))` }}
-        >
-            {Array.from({ length: totalDots }).map((_, index) => {
-                const dotState = getYearDotState(index, filledCount, totalDots)
-                return (
-                    <div
-                        key={`year-dot-${index}`}
-                        data-dot-state={dotState}
-                        className={cn(
-                            "h-[10px] w-[10px] origin-center scale-[0.84] rounded-full transition-colors duration-500",
-                            YEAR_DOT_STATE_TOKENS[dotState]
-                        )}
-                    />
-                )
-            })}
-        </div>
-    )
-}
-
-function LifeVisual() {
-    const filledCount = 25
-    const totalDots = 65
-
-    return (
-        <div className="grid grid-cols-[repeat(13,1fr)] place-items-center gap-[2px] p-4">
-            {Array.from({ length: totalDots }).map((_, index) => (
-                <div
-                    key={`life-dot-${index}`}
-                    className={cn(
-                        "h-[6px] w-[6px] rounded-full transition-colors duration-500",
-                        index < filledCount ? "bg-kumo-contrast" : "bg-kumo-fill"
-                    )}
-                />
-            ))}
-        </div>
-    )
-}
-
-function GoalVisual({ layout }) {
-    const { ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY } = layout
-    const strokeWidth = 100 * 0.025
-    const circumference = 2 * Math.PI * ring.radius
-    const strokeDashoffset = circumference * (1 - ring.progress)
-
-    return (
-        <div className="flex h-full items-center justify-center">
-            <div className="relative h-[100px] w-[100px]">
-                <svg className="h-full w-full" viewBox="0 0 100 100">
-                    <circle
-                        cx={ring.centerX}
-                        cy={ring.centerY}
-                        r={ring.radius}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={strokeWidth}
-                        className="text-kumo-fill"
-                    />
-                    {ring.progress > 0 && (
-                        <circle
-                            cx={ring.centerX}
-                            cy={ring.centerY}
-                            r={ring.radius}
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={strokeWidth}
-                            strokeLinecap="round"
-                            strokeDasharray={circumference}
-                            strokeDashoffset={strokeDashoffset}
-                            transform={`rotate(-90 ${ring.centerX} ${ring.centerY})`}
-                            className="text-kumo-contrast transition-all duration-1000 ease-out"
-                        />
-                    )}
-                    <text
-                        x={ring.centerX}
-                        y={ring.centerY - 1}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fontSize={numberFontSize}
-                        fontWeight="700"
-                        className="fill-current text-kumo-contrast"
-                    >
-                        {daysRemaining}
-                    </text>
-                    <text
-                        x={ring.centerX}
-                        y={labelY + 8}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fontSize={labelFontSize + 1}
-                        fontWeight="400"
-                        className="fill-current text-kumo-subtle"
-                    >
-                        {daysLeftText}
-                    </text>
-                </svg>
-            </div>
-        </div>
-    )
-}
 
 function HomeSidebar({
     currentPath: _currentPath,
@@ -196,22 +38,8 @@ function HomeSidebar({
         }
         setInternalSidebarOpen(nextOpen)
     }
-    const goalPreviewLayout = useMemo(() => {
-        const today = getLocalDateParts()
-        const goalDate = addDays(today, 69)
-        const goalStart = addDays(today, -31)
-        return computeGoalLayout({
-            width: 100,
-            height: 100,
-            bgColor: "000000",
-            accentColor: "FFFFFF",
-            clockHeight: 0.22,
-            lang,
-            goalDate,
-            goalStart,
-            today
-        })
-    }, [lang])
+
+    const goalPreviewLayout = useMemo(() => getGoalPreviewLayout(lang), [lang])
 
     useEffect(() => {
         let timeoutId
@@ -250,58 +78,6 @@ function HomeSidebar({
     }, [])
 
     const yearStats = useMemo(() => getYearStats(), [todayKey])
-    const styleCards = useMemo(
-        () => [
-            {
-                id: "year",
-                title: t("type.year.name"),
-                description: t("type.year.description"),
-                preview: (
-                    <div className="origin-center scale-[1]">
-                        <YearVisual percent={yearStats.percent} />
-                    </div>
-                ),
-                stats: [
-                    { label: t("type.year.statDay"), value: String(yearStats.day) },
-                    { label: t("type.year.statWeek"), value: String(yearStats.week) },
-                    { label: t("type.year.statComplete"), value: `${yearStats.percent}%` },
-                ],
-            },
-            {
-                id: "life",
-                title: t("type.life.name"),
-                description: t("type.life.description"),
-                preview: (
-                    <div className="origin-center scale-[1]">
-                        <LifeVisual />
-                    </div>
-                ),
-                stats: [
-                    { label: t("type.life.statWeeks"), value: t("type.life.valueWeeks") },
-                    { label: t("type.life.statYears"), value: t("type.life.valueYears") },
-                ],
-            },
-            {
-                id: "goal",
-                title: t("type.goal.name"),
-                description: t("type.goal.description"),
-                preview: (
-                    <div className="origin-center scale-[1.8]">
-                        <GoalVisual layout={goalPreviewLayout} />
-                    </div>
-                ),
-                stats: [
-                    { label: t("type.goal.statTargetDate"), value: t("type.goal.valueTarget") },
-                    { label: t("type.goal.statTracking"), value: t("type.goal.valueDaily") },
-                ],
-            },
-        ],
-        [t, yearStats.day, yearStats.week, yearStats.percent, goalPreviewLayout]
-    )
-    const visibleStyleCards = useMemo(
-        () => styleCards.filter((style) => !HIDDEN_STYLE_CARD_IDS.has(style.id)),
-        [styleCards]
-    )
 
     const handleStyleSelect = (styleId) => {
         onStyleChange?.(styleId)
@@ -314,78 +90,13 @@ function HomeSidebar({
                     {t("types.header")}
                 </p>
             </div>
-
-            <div className="flex min-h-0 flex-1 flex-col">
-                {visibleStyleCards.map((style, index) => {
-                    const isSelected = selectedStyle === style.id
-                    const stats = style.stats
-
-                    return (
-                        <article
-                            key={style.id}
-                            onClick={() => handleStyleSelect(style.id)}
-                            className={cn(
-                                "group flex min-h-0 flex-1 cursor-pointer flex-col",
-                                index > 0 && "border-t border-kumo-line"
-                            )}
-                        >
-                            <div
-                                className={cn(
-                                    "mx-1.5 my-3 flex min-h-0 flex-1 flex-col rounded-lg px-4 py-4 transition-colors",
-                                    isSelected ? "bg-kumo-tint" : "bg-kumo-elevated group-hover:bg-kumo-tint"
-                                )}
-                            >
-                                <div className="mb-3 flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg border border-kumo-line bg-kumo-elevated">
-                                    {style.preview}
-                                </div>
-
-                                <div className="mb-0 min-h-[28px]">
-                                    <h3
-                                        className={cn(
-                                            "text-lg leading-tight font-semibold transition-colors",
-                                            isSelected
-                                                ? "text-kumo-default"
-                                                : "text-kumo-strong group-hover:text-kumo-default"
-                                        )}
-                                    >
-                                        {style.title}
-                                    </h3>
-                                </div>
-
-                                <p className="mb-2 h-[60px] overflow-hidden text-xs leading-5 whitespace-pre-line text-kumo-subtle line-clamp-3">
-                                    {style.description}
-                                </p>
-
-                                <div
-                                    className="mt-auto grid items-center divide-x divide-kumo-line border-y border-kumo-line py-2"
-                                    style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
-                                >
-                                    {stats.map((stat, statIndex) => (
-                                        <div
-                                            key={`${style.id}-stat-${stat.label}`}
-                                            className={cn(
-                                                "min-w-0",
-                                                statIndex === 0
-                                                    ? "pr-2"
-                                                    : statIndex === stats.length - 1
-                                                        ? "pl-2"
-                                                        : "px-2"
-                                            )}
-                                        >
-                                            <p className="text-lg leading-none font-medium text-kumo-default">
-                                                <span>{stat.value}</span>
-                                            </p>
-                                            <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
-                                                {stat.label}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </article>
-                    )
-                })}
-            </div>
+            <HomeSidebarCards
+                selectedStyle={selectedStyle}
+                onStyleSelect={handleStyleSelect}
+                yearStats={yearStats}
+                goalPreviewLayout={goalPreviewLayout}
+                t={t}
+            />
         </div>
     )
 

@@ -2,7 +2,12 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-useHomeWallpaperConfig.js: 工作区状态核心，管理 selectedStyle 联动、配置更新、URL 生成与复制动作（UI 文案跟随全局 i18n）；支持未选风格空态（`selectedType=null`）；Goal 模式同时支持 `setGoalRange({startISO,endISO})` 原子写入与 `setGoalStart/setGoalDate` 兼容链路，内部统一收敛到 `applyGoalDateUpdate`；新增 `foregroundOverride` 状态 + `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化
+useHomeWallpaperConfig.js: 工作区状态编排核心，管理 selectedStyle 联动、生命周期、设备可见性与 URL 桥接；动作层委托 `config-actions.js` 生成（UI 文案跟随全局 i18n）
+config-actions.js: 配置动作工厂层，统一 `set*/apply*/copyUrl` 状态更新语义与 Goal 日期动作委托
+config-init.js: 配置初始化层，统一默认配置、类型映射与颜色归一（`resolveSelectedType/getInitialConfig/resolvePalette`）
+goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyGoalStartUpdate/applyGoalDateUpdate` 三个语义入口并复用统一验证流水线
+url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
+view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
 HomePreviewPane.jsx: 左侧手机预览面板，支持“未选风格 SkeletonLine 引导态”与 Canvas 实时壁纸渲染切换。
 HomeSettingsPane.jsx: 右侧设置面板主容器；负责卡片顺序编排、6 站位空态 Skeleton Base、按 `revealStage` 渐进解锁与未解锁卡快进；业务卡定义统一下沉到 `cards/`（year 模式 5 卡且槽位⑤为 `url` 收口宽卡；goal/life 模式槽位③为专属字段卡且槽位⑥保留 Set 收口），导出 `SETTINGS_CARD_IDS`
@@ -12,7 +17,7 @@ cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
 cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url）
 
 结构
-workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
+workspace/ - Home 双栏工作区子模块 (11 files + cards/ 子目录)
 
 架构决策
 采用“状态 hook + 左右面板”分层，HomeGrid 负责工作区编排并统一持有 Set-it 流程状态与 AutoFlow stage（浏览器级一次引导）。右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦。业务语义实现下沉到 `cards/*`，`HomeSettingsPane` 仅保留顺序编排、空态骨架与 sm/lg Guide 宿主。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
@@ -21,6 +26,10 @@ workspace/ - Home 双栏工作区子模块 (6 files + cards/ 子目录)
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
+2026-03-01: 新增 `config-actions.js`，`useHomeWallpaperConfig` 动作集合下沉为工厂；主 hook 收敛为编排层。
+2026-03-01: `goal-date-updater.js` 从 `type` 分派重构为显式语义入口（range/start/date），并保留历史错误语义兼容。
+2026-03-01: `useHomeWallpaperConfig` 拆分为 `config-init/goal-date-updater/url-builder/view-model-mappers` 四层，主 hook 聚焦状态编排；同时移除无效 `deviceOptions` 返回与透传链路。
+2026-03-01: 新增 `workspace/config-init.js`、`workspace/goal-date-updater.js`、`workspace/url-builder.js`、`workspace/view-model-mappers.js`，用于配置初始化、Goal 日期更新、URL 生成与选项映射职责分离。
 2026-02-11: 新增 preview|settings 双栏工作区，实现与左侧 style cards 的直接联动。
 2026-02-11: 移除固定英文翻译器，改为使用 useI18n 提供的全局 t()。
 2026-02-11: Wallpaper Language 下拉改为与顶部语言菜单一致的“国旗 + 原名”渲染语义与间距。

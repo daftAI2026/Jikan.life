@@ -1,70 +1,12 @@
 /**
- * [INPUT]: 依赖 node:test, node:assert/strict, node:fs, node:path
- * [OUTPUT]: Kumo 迁移关键约束的回归测试（含 ColorPicker 状态桥接、弹层链路、Year 10x10 点阵与跨午夜刷新护栏）
- * [POS]: tests/ UI 迁移护栏，防止主题/组件体系、ColorPicker 拖拽语义、Year 进度映射与日切刷新语义回退
+ * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
+ * [OUTPUT]: Kumo 迁移 UI/工作区护栏测试
+ * [POS]: tests/ 迁移护栏（主题一：UI 结构、布局、交互）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import fs from "node:fs"
-import path from "node:path"
-import { pathToFileURL } from "node:url"
-
-const readSource = (relativePath) => {
-  const filePath = path.join(process.cwd(), relativePath)
-  return fs.readFileSync(filePath, "utf8")
-}
-
-const readJson = (relativePath) => {
-  const filePath = path.join(process.cwd(), relativePath)
-  return JSON.parse(fs.readFileSync(filePath, "utf8"))
-}
-
-const listFiles = (relativePath) => {
-  const root = path.join(process.cwd(), relativePath)
-  const entries = fs.readdirSync(root, { withFileTypes: true })
-  return entries.flatMap((entry) => {
-    const nextPath = path.join(relativePath, entry.name)
-    if (entry.isDirectory()) {
-      return listFiles(nextPath)
-    }
-    return [nextPath]
-  })
-}
-
-const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-
-const findImportStatement = (source, moduleSpecifier) => {
-  const pattern = new RegExp(
-    `(?:^|\\n)\\s*import\\s+(?:type\\s+)?(?:[^,{]+,\\s*)?\\{[^}]*\\}\\s+from\\s+["']${escapeRegExp(moduleSpecifier)}["']`,
-    "m"
-  )
-  const match = source.match(pattern)
-  assert.ok(match, `Expected named import from "${moduleSpecifier}"`)
-  return match[0].trim()
-}
-
-const parseNamedSpecifiers = (importStatement) => {
-  const start = importStatement.indexOf("{")
-  const end = importStatement.indexOf("}", start + 1)
-  if (start < 0 || end < 0) return []
-  return importStatement
-    .slice(start + 1, end)
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean)
-}
-
-const assertNamedImports = (source, moduleSpecifier, expectedSpecifiers) => {
-  const importStatement = findImportStatement(source, moduleSpecifier)
-  const actualSpecifiers = new Set(parseNamedSpecifiers(importStatement))
-  expectedSpecifiers.forEach((specifier) => {
-    assert.ok(
-      actualSpecifiers.has(specifier),
-      `Expected "${specifier}" to be imported from "${moduleSpecifier}"`
-    )
-  })
-}
+import { assertNamedImports, fs, listFiles, path, pathToFileURL, readJson, readSource } from "./helpers/source-test-helpers.js"
 
 test("Dependencies include Kumo, Base UI, and Phosphor", () => {
   const pkg = readJson("package.json")
@@ -507,6 +449,9 @@ test("Source code has no direct vendor/kumo path references", () => {
 
 test("HomeSidebar is non-scrollable and hides Life style card", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+  const cardsSource = readSource("src/pages/registry/sections/home-sidebar-cards.jsx")
+  const visualsSource = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
+  const statsSource = readSource("src/pages/registry/sections/home-sidebar-date-stats.js")
   const lockHookSource = readSource("src/pages/registry/sections/useRegistryBlockingScrollLock.js")
 
   assertNamedImports(source, "react", ["useEffect", "useMemo", "useState"])
@@ -522,46 +467,49 @@ test("HomeSidebar is non-scrollable and hides Life style card", () => {
   assert.doesNotMatch(source, /overflow-y-auto/)
   assert.match(source, /h-full/)
   assert.match(source, /selectedStyle = "year"/)
-  assert.match(source, /id:\s*"year"/)
-  assert.match(source, /id:\s*"goal"/)
-  assert.match(source, /const HIDDEN_STYLE_CARD_IDS = new Set\(\["life"\]\)/)
-  assert.match(source, /\.filter\(\(style\)\s*=>\s*!HIDDEN_STYLE_CARD_IDS\.has\(style\.id\)\)/)
-  assert.doesNotMatch(source, /style\.id === "life"/)
+  assert.match(cardsSource, /id:\s*"year"/)
+  assert.match(cardsSource, /id:\s*"goal"/)
+  assert.match(cardsSource, /const HIDDEN_STYLE_CARD_IDS = new Set\(\["life"\]\)/)
+  assert.match(cardsSource, /\.filter\(\(style\)\s*=>\s*!HIDDEN_STYLE_CARD_IDS\.has\(style\.id\)\)/)
+  assert.doesNotMatch(cardsSource, /style\.id === "life"/)
   assert.doesNotMatch(source, /const cardStats = useMemo/)
-  assert.match(source, /border-t border-kumo-line/)
+  assert.match(cardsSource, /border-t border-kumo-line/)
   assert.match(source, /t\("types\.header"\)/)
-  assert.match(source, /t\("type\.year\.name"\)/)
-  assert.match(source, /t\("type\.goal\.name"\)/)
+  assert.match(cardsSource, /t\("type\.year\.name"\)/)
+  assert.match(cardsSource, /t\("type\.goal\.name"\)/)
   assert.doesNotMatch(source, /<span>Select<\/span>/)
   assert.doesNotMatch(source, /button\.selected/)
   assert.doesNotMatch(source, /["']Selected["']/)
   assert.doesNotMatch(source, /CheckIcon/)
   assert.doesNotMatch(source, /ArrowRightIcon/)
-  assert.match(source, /gap-\[4px\]/)
-  assert.match(source, /h-\[10px\] w-\[10px\] origin-center scale-\[0\.84\]/)
-  assert.match(source, /h-\[100px\] w-\[100px\]/)
-  assert.match(source, /const YEAR_GRID_COLUMNS = 10/)
-  assert.match(source, /return \{ day, week, percent, totalDays \}/)
+  assert.match(visualsSource, /gap-\[4px\]/)
+  assert.match(visualsSource, /h-\[10px\] w-\[10px\] origin-center scale-\[0\.84\]/)
+  assert.match(visualsSource, /h-\[100px\] w-\[100px\]/)
+  assertNamedImports(source, "./home-sidebar-cards", ["HomeSidebarCards"])
+  assertNamedImports(cardsSource, "./home-sidebar-visuals", ["GoalVisual", "LifeVisual", "YearVisual"])
+  assertNamedImports(source, "./home-sidebar-date-stats", ["getGoalPreviewLayout", "getYearStats"])
+  assert.match(visualsSource, /const YEAR_GRID_COLUMNS = 10/)
+  assert.match(statsSource, /return \{ day, week, percent, totalDays \}/)
   assert.match(source, /const \[todayKey, setTodayKey\] = useState\(\(\) => getLocalDateKey\(\)\)/)
   assert.match(source, /useEffect\(\(\) => \{/)
   assert.match(source, /const yearStats = useMemo\(\(\) => getYearStats\(\), \[todayKey\]\)/)
   assert.doesNotMatch(source, /const yearStats = useMemo\(\(\) => getYearStats\(\), \[\]\)/)
-  assert.match(source, /const totalDots = YEAR_GRID_COLUMNS \* YEAR_GRID_COLUMNS/)
-  assert.match(source, /function YearVisual\(\{ percent \}\)/)
-  assert.match(source, /<div className="origin-center scale-\[1\]">\s*<YearVisual percent=\{yearStats\.percent\} \/>/)
-  assert.match(source, /<YearVisual percent=\{yearStats\.percent\} \/>/)
-  assert.match(source, /const filledCount = Math\.min\(totalDots, Math\.max\(0, percent\)\)/)
+  assert.match(visualsSource, /const totalDots = YEAR_GRID_COLUMNS \* YEAR_GRID_COLUMNS/)
+  assert.match(visualsSource, /function YearVisual\(\{ percent \}\)/)
+  assert.match(cardsSource, /<div className="origin-center scale-\[1\]">\s*<YearVisual percent=\{yearStats\.percent\} \/>/)
+  assert.match(cardsSource, /<YearVisual percent=\{yearStats\.percent\} \/>/)
+  assert.match(visualsSource, /const filledCount = Math\.min\(totalDots, Math\.max\(0, percent\)\)/)
   assert.doesNotMatch(source, /YEAR_EXTRA_FILLED_ROWS/)
   assert.doesNotMatch(source, /baseFilledCount/)
   assert.doesNotMatch(source, /progressDots/)
   assert.doesNotMatch(source, /progressFilledCount/)
-  assert.match(source, /gridTemplateColumns:\s*`repeat\(\$\{YEAR_GRID_COLUMNS\}, minmax\(0, 1fr\)\)`/)
-  assert.match(source, /scale-\[1\.8\]/)
+  assert.match(visualsSource, /gridTemplateColumns:\s*`repeat\(\$\{YEAR_GRID_COLUMNS\}, minmax\(0, 1fr\)\)`/)
+  assert.match(cardsSource, /scale-\[1\.8\]/)
   assert.doesNotMatch(source, /scale-\[0\.8\]/)
 })
 
 test("HomeSidebar year visual uses three-state dot design tokens", () => {
-  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+  const source = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
 
   assert.match(source, /const YEAR_DOT_STATE_TOKENS = \{/)
   assert.match(source, /today:\s*"bg-kumo-contrast"/)
@@ -575,8 +523,18 @@ test("HomeSidebar year visual uses three-state dot design tokens", () => {
   assert.match(source, /data-dot-state={dotState}/)
 })
 
+test("HomeSidebar delegates style-card rendering to HomeSidebarCards with callback bridge", () => {
+  const sidebarSource = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+  const cardsSource = readSource("src/pages/registry/sections/home-sidebar-cards.jsx")
+
+  assert.match(sidebarSource, /import \{ HomeSidebarCards \} from "\.\/home-sidebar-cards"/)
+  assert.match(sidebarSource, /<HomeSidebarCards[\s\S]*onStyleSelect={handleStyleSelect}/)
+  assert.match(cardsSource, /function HomeSidebarCards\(\{ selectedStyle, onStyleSelect, yearStats, goalPreviewLayout, t \}\)/)
+  assert.match(cardsSource, /onClick=\{\(\) => onStyleSelect\?\.\(style\.id\)\}/)
+})
+
 test("HomeSidebar goal visual text positions follow preview layout parameters", () => {
-  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+  const source = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
 
   assert.match(source, /const \{ ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY \} = layout/)
   assert.match(source, /y={ring\.centerY - 1}/)
@@ -607,14 +565,15 @@ test("HomePage keeps selectedStyle as single source of truth", () => {
 
 test("Registry sidebar is local controlled implementation", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+  const cardsSource = readSource("src/pages/registry/sections/home-sidebar-cards.jsx")
 
   assert.match(source, /data-sidebar-open={isSidebarOpen}/)
   assert.match(source, /t\("types\.header"\)/)
-  assert.match(source, /t\("type\.year\.name"\)/)
-  assert.match(source, /t\("type\.goal\.name"\)/)
-  assert.match(source, /const HIDDEN_STYLE_CARD_IDS = new Set\(\["life"\]\)/)
-  assert.match(source, /\.filter\(\(style\)\s*=>\s*!HIDDEN_STYLE_CARD_IDS\.has\(style\.id\)\)/)
-  assert.doesNotMatch(source, /style\.id === "life"/)
+  assert.match(cardsSource, /t\("type\.year\.name"\)/)
+  assert.match(cardsSource, /t\("type\.goal\.name"\)/)
+  assert.match(cardsSource, /const HIDDEN_STYLE_CARD_IDS = new Set\(\["life"\]\)/)
+  assert.match(cardsSource, /\.filter\(\(style\)\s*=>\s*!HIDDEN_STYLE_CARD_IDS\.has\(style\.id\)\)/)
+  assert.doesNotMatch(cardsSource, /style\.id === "life"/)
   assert.doesNotMatch(source, /const cardStats = useMemo/)
   assert.match(source, /t\("registry\.menu\.open"\)/)
   assert.match(source, /t\("registry\.menu\.close"\)/)
@@ -628,23 +587,27 @@ test("Registry sidebar is local controlled implementation", () => {
 
 test("Registry workspace no longer hardcodes UI language to English", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+  const mapperSource = readSource("src/pages/registry/sections/workspace/view-model-mappers.js")
 
   assert.match(source, /useI18n/)
   assert.match(source, /LANGUAGE_META/)
   assert.match(source, /const\s+\{\s*t\s*\}\s*=\s*useI18n\(\)/)
-  assert.match(source, /flag:\s*meta\.flag/)
-  assert.match(source, /name:\s*t\(meta\.labelKey\)/)
+  assert.match(source, /mapLanguageOptions\(LANGUAGE_META,\s*t\)/)
+  assert.match(mapperSource, /flag:\s*meta\.flag/)
+  assert.match(mapperSource, /name:\s*t\(meta\.labelKey\)/)
   assert.doesNotMatch(source, /REGISTRY_UI_LANG/)
   assert.doesNotMatch(source, /createEnglishTranslator/)
 })
 
 test("Registry config keeps selectedType empty before style selection", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+  const initSource = readSource("src/pages/registry/sections/workspace/config-init.js")
+  const urlBuilderSource = readSource("src/pages/registry/sections/workspace/url-builder.js")
 
-  assert.match(source, /function resolveSelectedType\(selectedStyle\)/)
-  assert.match(source, /return STYLE_TO_TYPE\[selectedStyle\] \?\? null/)
+  assert.match(initSource, /function resolveSelectedType\(selectedStyle\)/)
+  assert.match(initSource, /return STYLE_TO_TYPE\[selectedStyle\] \?\? null/)
   assert.match(source, /const selectedType = resolveSelectedType\(selectedStyle\)/)
-  assert.match(source, /if \(!config\.selectedType\) return ""/)
+  assert.match(urlBuilderSource, /if \(!config\.selectedType\) return ""/)
 })
 
 test("Registry settings wallpaper language uses flag + name rendering", () => {
@@ -668,10 +631,14 @@ test("Registry settings does not render selected type badge", () => {
 
 test("Registry settings colors use shared ColorPicker component", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
+  const fieldShellSource = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
 
   assertNamedImports(source, "@/components/ui/color-picker", ["ColorPicker"])
+  assertNamedImports(source, "./CardField", ["CardField", "CardFieldsStack"])
   assert.match(source, /titleKey:\s*"config\.colors"/)
-  assert.match(source, /className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
+  assert.match(source, /<CardFieldsStack>/)
+  assert.match(fieldShellSource, /flex w-full max-w-full flex-col items-center px-4 py-1/)
+  assert.match(fieldShellSource, /gap-4/)
   assert.match(source, /className="grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
   assert.match(source, /className="min-w-0 space-y-1\.5"/)
   assert.match(source, /ColorPicker[\s\S]*?className="w-full"/)
@@ -682,7 +649,7 @@ test("Registry settings colors use shared ColorPicker component", () => {
   assert.match(source, /actions\.setAccentColor/)
   assert.match(source, /actions\.applyPalette\(preset\.bg,\s*preset\.accent\)/)
   assert.match(source, /className="flex w-\[200px\] max-w-full flex-wrap gap-2"/)
-  assert.match(source, /className="w-\[200px\] max-w-full[^\"]*"/)
+  assert.match(fieldShellSource, /w-\[200px\] max-w-full/)
   assert.doesNotMatch(source, /title:\s*"Switch"/)
   assert.doesNotMatch(source, /<Switch/)
   assert.doesNotMatch(source, /type="color"/)
@@ -785,9 +752,10 @@ test("Device data splits grouped iPhone labels into single-model entries and kee
 
 test("Home wallpaper config normalizes device value before persisting", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
+  const actionsSource = readSource("src/pages/registry/sections/workspace/config-actions.js")
 
   assert.match(source, /normalizeDeviceName/)
-  assert.match(source, /setDevice\(value\)\s*\{[\s\S]*?normalizeDeviceName\(value\)/)
+  assert.match(actionsSource, /setDevice\(value\)\s*\{[\s\S]*?normalizeDeviceName\(value\)/)
   assertNamedImports(source, "./device-visibility", [
     "PRIMARY_VISIBLE_DEVICE_CATEGORY",
     "isVisibleDeviceCategory",
@@ -819,9 +787,12 @@ test("Goal countdown keeps url card at slot 6 for Set flow", () => {
 
 test("Goal fields card uses goal name + date range field wiring", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
+  const fieldShellSource = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
 
   assert.match(source, /title:\s*"Goal"/)
-  assert.match(source, /className="flex w-full max-w-full flex-col items-center gap-4 px-4 py-1"/)
+  assertNamedImports(source, "./CardField", ["CardField", "CardFieldsStack"])
+  assert.match(source, /<CardFieldsStack>/)
+  assert.match(fieldShellSource, /function CardFieldsStack/)
   assert.match(source, /actions\.setGoalName/)
   assert.match(source, /actions\.setGoalRange/)
   assert.match(source, /t\("config\.dateRange"\)/)
@@ -1125,228 +1096,4 @@ test("Neumorphic variables are fully removed from src", () => {
     0,
     `--neumorphic-* still used in: ${offenders.join(", ")}`
   )
-})
-
-test("Wallpaper preview shares one language font strategy from shared core", async () => {
-  const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
-  const { getWallpaperFontFamily } = await import(`file://${corePath}`)
-  const rendererSource = readSource("src/lib/renderer.js")
-  const yearSource = readSource("worker/generators/year.js")
-  const lifeSource = readSource("worker/generators/life.js")
-  const indexSource = readSource("index.html")
-
-  assert.equal(typeof getWallpaperFontFamily, "function")
-  assert.equal(getWallpaperFontFamily("en"), '"Inter", sans-serif')
-  assert.equal(getWallpaperFontFamily("zh-CN"), '"Noto Sans SC", "Inter", sans-serif')
-  assert.equal(getWallpaperFontFamily("zh-TW"), '"Noto Sans TC", "Inter", sans-serif')
-  assert.equal(getWallpaperFontFamily("ja"), '"Noto Sans JP", "Inter", sans-serif')
-
-  assert.match(rendererSource, /getWallpaperFontFamily/)
-  assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
-  assert.doesNotMatch(yearSource, /font-family="Inter"/)
-  assert.doesNotMatch(lifeSource, /font-family="Inter"/)
-
-  assert.match(indexSource, /Noto\+Sans\+SC/)
-  assert.match(indexSource, /Noto\+Sans\+TC/)
-  assert.match(indexSource, /Noto\+Sans\+JP/)
-})
-
-test("Worker SVG reuses shared getWallpaperFontFamily without local font map", () => {
-  const svgSource = readSource("worker/svg.js")
-
-  assertNamedImports(svgSource, "../shared/wallpaper-core.js", ["getWallpaperFontFamily"])
-  assert.match(svgSource, /getWallpaperFontFamily\(lang\)/)
-  assert.doesNotMatch(svgSource, /FONT_FAMILY_BY_LANG/)
-})
-
-test("GoalStart is wired through registry config state and URL generation", () => {
-  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
-
-  assert.match(source, /goalStart:\s*""/)
-  assert.match(source, /goalStartError:\s*""/)
-  assert.match(source, /goalDateError:\s*""/)
-  assert.match(source, /validateGoalDateInputs/)
-  assert.match(source, /if \(config\.goalStart && !goalDateErrors\.goalStartError\) params\.set\("goalStart", config\.goalStart\)/)
-  assert.match(source, /setGoalStart\(value\)/)
-  assert.match(source, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)/)
-})
-
-test("Goal date actions delegate to a single internal updater without changing compatibility entrypoints", () => {
-  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
-
-  assert.match(source, /function applyGoalDateUpdate\(prev,\s*payload\)/)
-  assert.match(source, /setGoalRange\(\{\s*startISO,\s*endISO\s*\}\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"range",[\s\S]*startISO,[\s\S]*endISO,[\s\S]*todayISO,[\s\S]*\}\)/)
-  assert.match(source, /setGoalStart\(value\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"start",[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
-  assert.match(source, /setGoalDate\(value\)\s*\{[\s\S]*applyGoalDateUpdate\(prev,\s*\{[\s\S]*type:\s*"date",[\s\S]*value,[\s\S]*todayISO,[\s\S]*\}\)/)
-})
-
-test("Unified goal date updater preserves legacy start/date guard semantics", () => {
-  const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
-
-  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(!value\)[\s\S]*goalStart:\s*""/)
-  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(!isValidISODateString\(value\)\)[\s\S]*goalStartError:\s*"error\.goalStart\.outOfRange"/)
-  assert.match(source, /if \(payload\.type === "start"\)[\s\S]*if \(nextErrors\.goalStartError\)[\s\S]*goalDateError:\s*nextErrors\.goalDateError\s*\|\|\s*prev\.goalDateError/)
-
-  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(!value\)[\s\S]*goalDate:\s*""/)
-  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(!isValidISODateString\(value\)\)[\s\S]*goalDateError:\s*"error\.goalDate\.outOfRange"/)
-  assert.match(source, /if \(payload\.type === "date"\)[\s\S]*if \(nextErrors\.goalDateError\)[\s\S]*goalStartError:\s*nextErrors\.goalStartError\s*\|\|\s*prev\.goalStartError/)
-})
-
-test("Home settings goal config uses date range label and unified goal-range action", () => {
-  const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
-
-  assert.match(source, /t\("config\.dateRange"\)/)
-  assert.match(source, /startISO=\{config\.goalStart\}/)
-  assert.match(source, /endISO=\{config\.goalDate\}/)
-  assert.match(source, /onChange=\{actions\.setGoalRange\}/)
-  assert.match(source, /config\.goalStartError \|\| config\.goalDateError/)
-  assert.match(source, /t\(config\.goalStartError \|\| config\.goalDateError\)/)
-})
-
-test("Renderer and worker pass goalStart into shared goal layout", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
-  const workerIndexSource = readSource("worker/index.js")
-  const goalGeneratorSource = readSource("worker/generators/goal.js")
-
-  assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
-  assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
-  assert.match(goalGeneratorSource, /goalStart,/)
-  assert.match(goalGeneratorSource, /const decodedGoalName = decodeGoalName\(goalName\)/)
-  assert.match(goalGeneratorSource, /goalStart,\s*goalName: resolvedGoalName/)
-})
-
-test("Goal default label follows wallpaper language when goalName is empty", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
-  const goalGeneratorSource = readSource("worker/generators/goal.js")
-  const coreSource = readSource("shared/wallpaper-core.js")
-  const validationSource = readSource("worker/validation.js")
-
-  assert.match(coreSource, /en:\s*\{[\s\S]*goalDefault:\s*'Goal',/)
-  assert.match(coreSource, /'zh-CN':\s*\{[\s\S]*goalDefault:\s*'目标',/)
-  assert.match(coreSource, /'zh-TW':\s*\{[\s\S]*goalDefault:\s*'目標',/)
-  assert.match(coreSource, /ja:\s*\{[\s\S]*goalDefault:\s*'目標',/)
-  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*getWallpaperText\(config\.wallpaperLang,\s*'goalDefault',\s*''\)/)
-  assert.match(goalGeneratorSource, /const resolvedGoalName = decodedGoalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
-  assert.match(validationSource, /goalName:\s*z\.string\(\)\.max\(100,\s*"Goal name too long"\)\.default\(''\)/)
-})
-
-test("Goal preview and worker render goalName with foreground accent, not background contrast", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
-  const goalGeneratorSource = readSource("worker/generators/goal.js")
-
-  assert.match(rendererSource, /if \(layout\.goalName\) \{[\s\S]*ctx\.fillStyle = safeAccent;/)
-  assert.doesNotMatch(rendererSource, /ctx\.fillStyle = contrastAlpha\(bgColor, 0\.9\);/)
-
-  assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,/)
-  assert.doesNotMatch(goalGeneratorSource, /fill: svgContrastAlpha\(bgColor, 0\.9\),/)
-})
-
-test("Worker validation enforces goalStart schema, year range, and relation to goal", () => {
-  const source = readSource("worker/validation.js")
-
-  assert.match(source, /goalStart:\s*dateSchema\.optional\(\)/)
-  assert.match(source, /GOAL_START_MIN_ISO/)
-  assert.match(source, /GOAL_TARGET_MAX_ISO/)
-  assert.match(source, /Goal start date must be between 1900-01-01 and 2100-12-31/)
-  assert.match(source, /Goal target date must be between 1900-01-01 and 2100-12-31/)
-  assert.match(source, /if \(data\.goalStart && data\.goal && data\.goalStart > data\.goal\)/)
-  assert.match(source, /Goal start date must be on or before the goal date/)
-})
-
-test("i18n keeps range errors in all languages and removes legacy start-date keys", () => {
-  const source = readSource("src/data/i18n.js")
-
-  const startDateCount = (source.match(/'config\.startDate':/g) || []).length
-  const placeholderCount = (source.match(/'placeholder\.selectStartDate':/g) || []).length
-  const startRangeErrorCount = (source.match(/'error\.goalStart\.outOfRange':/g) || []).length
-  const targetRangeErrorCount = (source.match(/'error\.goalDate\.outOfRange':/g) || []).length
-  const startAfterTargetErrorCount = (source.match(/'error\.goalStart\.afterTarget':/g) || []).length
-  const targetBeforeStartErrorCount = (source.match(/'error\.goalDate\.beforeStart':/g) || []).length
-
-  assert.equal(startDateCount, 0)
-  assert.equal(placeholderCount, 0)
-  assert.equal(startRangeErrorCount, 4)
-  assert.equal(targetRangeErrorCount, 4)
-  assert.equal(startAfterTargetErrorCount, 4)
-  assert.equal(targetBeforeStartErrorCount, 4)
-})
-
-test("i18n includes date range and preset labels in all languages", () => {
-  const source = readSource("src/data/i18n.js")
-
-  const dateRangeCount = (source.match(/'config\.dateRange':/g) || []).length
-  const dateRangePlaceholderCount = (source.match(/'placeholder\.selectDateRange':/g) || []).length
-  const next30Count = (source.match(/'preset\.range\.next30':/g) || []).length
-  const next90Count = (source.match(/'preset\.range\.next90':/g) || []).length
-
-  assert.equal(dateRangeCount, 4)
-  assert.equal(dateRangePlaceholderCount, 4)
-  assert.equal(next30Count, 4)
-  assert.equal(next90Count, 4)
-})
-
-test("i18n includes set button key in all languages", () => {
-  const source = readSource("src/data/i18n.js")
-  const setKeyCount = (source.match(/'url\.set':/g) || []).length
-
-  assert.equal(setKeyCount, 4)
-})
-
-test("i18n includes device tooltip key in all languages", () => {
-  const source = readSource("src/data/i18n.js")
-  const deviceTooltipCount = (source.match(/'config\.deviceTooltip':/g) || []).length
-
-  assert.equal(deviceTooltipCount, 4)
-})
-
-test("i18n includes iOS shortcut clipboard keys in all languages", () => {
-  const source = readSource("src/data/i18n.js")
-  const action1Count = (source.match(/'setup\.ios\.step3\.action1':/g) || []).length
-  const action2Count = (source.match(/'setup\.ios\.step3\.action2':/g) || []).length
-  const action2DescCount = (source.match(/'setup\.ios\.step3\.action2Desc':/g) || []).length
-  const copyTooltipCount = (source.match(/'setup\.ios\.step3\.copyTooltip':/g) || []).length
-  const copiedTooltipCount = (source.match(/'setup\.ios\.step3\.copiedTooltip':/g) || []).length
-  const copyActionCount = (source.match(/'setup\.ios\.step3\.copyAction':/g) || []).length
-  const legacyStep3DescCount = (source.match(/'setup\.ios\.step3Desc':/g) || []).length
-
-  assert.equal(action1Count, 4)
-  assert.equal(action2Count, 4)
-  assert.equal(action2DescCount, 4)
-  assert.equal(copyTooltipCount, 4)
-  assert.equal(copiedTooltipCount, 4)
-  assert.equal(copyActionCount, 4)
-  assert.equal(legacyStep3DescCount, 0)
-})
-
-test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
-  const source = readSource("src/pages/registry/sections/ThemeToggle.jsx")
-
-  assert.match(source, /localStorage\.setItem\("mode"/)
-  assert.doesNotMatch(source, /localStorage\.setItem\("theme"/)
-  assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)
-})
-
-test("HomePage centers ThemeToggle in desktop tools rail box", () => {
-  const source = readSource("src/pages/registry/HomePage.jsx")
-
-  assert.match(source, /fixed top-0 right-0/)
-  assert.match(source, /w-\[var\(--registry-tools-rail-width\)\]/)
-  assert.match(source, /\bgrid\b/)
-  assert.match(source, /place-items-center/)
-  assert.doesNotMatch(source, /fixed top-0 right-2/)
-})
-
-test("HomeSidebar centers desktop menu toggle in rail header box", () => {
-  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
-
-  assert.match(source, /absolute inset-0 grid place-items-center/)
-  assert.doesNotMatch(source, /absolute top-2 right-1/)
-})
-
-test("Source code has no local date UI imports", () => {
-  const sourceFiles = listFiles("src").filter((file) => /\.(jsx?|tsx?)$/.test(file))
-  const blockedImportPattern = /@\/components\/ui\/(date-picker|datefield|calendar|dropdown-menu)|settings-card-date-picker-field|\/dropdown-menu/
-  const offenders = sourceFiles.filter((file) => blockedImportPattern.test(readSource(file)))
-
-  assert.deepEqual(offenders, [], `source files should not import removed local date UI: ${offenders.join(", ")}`)
 })
