@@ -62,7 +62,7 @@ const IPHONE_NOTCH_67 = {
     height: 2778,
     category: "iPhone",
     notchHeight: 0.11,
-    clockHeight: 0.287,
+    clockHeight: 0.217,
     cols: 16,
     padding: 0.1797,
 }
@@ -72,7 +72,7 @@ const IPHONE_NOTCH_61 = {
     height: 2532,
     category: "iPhone",
     notchHeight: 0.11,
-    clockHeight: 0.287,
+    clockHeight: 0.217,
     cols: 16,
     padding: 0.1797,
 }
@@ -171,7 +171,7 @@ export const devices = [
         height: 2340,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.287,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
@@ -183,7 +183,7 @@ export const devices = [
         height: 2340,
         category: "iPhone",
         notchHeight: 0.11,
-        clockHeight: 0.287,
+        clockHeight: 0.217,
         cols: 16,
         padding: 0.1797
     },
