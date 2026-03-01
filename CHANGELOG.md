@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.7.1] - 2026-03-01
+## [1.7.2] - 2026-03-02
 
 ### UI & UX
 - **Device Layout**: Adjusted clock height placement (`clockHeight` from `0.287` to `0.217`) for iPhone notch models to better align with the iOS lock screen and prevent text overlap.
+
+## [1.7.1] - 2026-03-01
 
 ### Accessibility & UI
 - **Input Accessibility**: Enhanced the form input infrastructure (`Input` component). Introduced a local accessibility wrapper layer that automatically provides an `aria-label` fallback (using the `placeholder` value when no explicit accessible name is provided). Completed missing `aria-label` contracts for multiple input controls (search bar, goal name, date range, read-only URL box, HEX color input) to adhere to stricter accessibility standards.
