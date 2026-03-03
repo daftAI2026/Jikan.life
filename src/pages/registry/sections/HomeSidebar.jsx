@@ -15,6 +15,11 @@ import { HomeSidebarCards } from "./home-sidebar-cards"
 import { useI18n } from "@/lib/I18nContext"
 import { useRegistryBlockingScrollLock } from "./useRegistryBlockingScrollLock"
 
+function isMobileViewport() {
+    if (typeof window === "undefined") return false
+    return window.matchMedia("(max-width: 767px)").matches
+}
+
 function HomeSidebar({
     currentPath: _currentPath,
     selectedStyle = "year",
@@ -24,7 +29,10 @@ function HomeSidebar({
 }) {
     const { t, lang } = useI18n()
     const [internalSidebarOpen, setInternalSidebarOpen] = useState(true)
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(() => {
+        if (selectedStyle !== null) return false
+        return isMobileViewport()
+    })
     const [todayKey, setTodayKey] = useState(() => getLocalDateKey())
     const isSidebarOpen = typeof sidebarOpen === "boolean" ? sidebarOpen : internalSidebarOpen
 
@@ -77,10 +85,17 @@ function HomeSidebar({
         return () => mediaQuery.removeListener(handleBreakpoint)
     }, [])
 
+    useEffect(() => {
+        if (selectedStyle !== null) return
+        if (!isMobileViewport()) return
+        setMobileMenuOpen(true)
+    }, [selectedStyle])
+
     const yearStats = useMemo(() => getYearStats(), [todayKey])
 
     const handleStyleSelect = (styleId) => {
         onStyleChange?.(styleId)
+        if (isMobileViewport()) setMobileMenuOpen(false)
     }
 
     const navContent = (
@@ -117,7 +132,7 @@ function HomeSidebar({
 
             <aside
                 className={cn(
-                    "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-kumo-line bg-kumo-elevated text-kumo-default md:hidden",
+                    "fixed inset-0 z-[60] flex w-full flex-col bg-kumo-elevated text-kumo-default md:hidden",
                     "transition-transform duration-300 will-change-transform",
                     mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                 )}

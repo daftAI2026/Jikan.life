@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Mobile Menu Overlay**: Upgraded the mobile settings auto-flow menu from a partial drawer to a full-screen immersive structure (`inset-0`, `z-[60]`) to provide a more focused configuration experience.
+- **Auto-expansion**: Enhanced the mobile settings auto-flow so that when no style is selected during onboarding, it automatically opens the configuration menu. Conversely, selecting a style immediately dismisses it, smoothing the setup sequence on small screens.
+
+### Tests
+- **Mobile Flow Constraints**: Expanded `kumo-migration.ui.behavior.test.js` to assert the structural layout constraints of the new full-screen mobile menu layer, as well as its automatic toggle behaviors.
+
 ## [1.7.2] - 2026-03-02
 
 ### UI & UX
