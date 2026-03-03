@@ -266,7 +266,7 @@ test("Registry layout mirrors Kumo home layout", () => {
   assert.match(source, /HomeSidebar/)
   assert.match(source, /HomeGrid/)
   assert.match(source, /ThemeToggle/)
-  assert.match(source, /LanguageSelect/)
+  assert.match(source, /MobileFooter/)
   assert.match(source, /md:pr-12/)
 })
 
@@ -329,7 +329,7 @@ test("Registry page applies global x/y-axis overscroll guard and blocking state 
   assert.match(cssSource, /overflow-y:\s*hidden !important;/)
   assert.match(cssSource, /\.registry-main-content-mobile-height\s*\{/)
   assert.match(cssSource, /@supports \(height:\s*100dvh\)\s*\{/)
-  assert.match(cssSource, /height:\s*calc\(100dvh\s*-\s*var\(--registry-topbar-height\)\);/)
+  assert.match(cssSource, /height:\s*calc\(100dvh\s*-\s*var\(--registry-topbar-height\)\s*-\s*var\(--registry-topbar-height\)\);/)
 })
 
 test("Registry topbar mounts language selector near left side", () => {
@@ -343,8 +343,24 @@ test("Registry topbar mounts language selector near left side", () => {
 test("HomePage keeps language selector as mobile fallback", () => {
   const source = readSource("src/pages/registry/HomePage.jsx")
 
+  assert.match(source, /import \{ MobileFooter \} from "\.\/sections\/MobileFooter"/)
+  assert.match(source, /<MobileFooter\s*\/>/)
+})
+
+test("MobileFooter provides mobile three-column footer with social links and centered language select", () => {
+  const source = readSource("src/pages/registry/sections/MobileFooter.jsx")
+
+  assert.match(source, /const MOBILE_FOOTER_SOCIAL_ORDER = \["github", "xiaohongshu"\]/)
+  assert.match(source, /fixed inset-x-0 bottom-0 z-50 flex h-\[var\(--registry-topbar-height\)\] items-center border-t border-kumo-line bg-kumo-elevated md:hidden/)
+  assert.match(source, /absolute inset-y-0 left-0 flex items-center px-3/)
+  assert.match(source, /absolute inset-y-0 right-0 flex items-center px-3/)
   assert.match(source, /<LanguageSelect\s*\/>/)
-  assert.match(source, /fixed right-2 bottom-2 z-50 md:hidden/)
+  assert.match(source, /GitHubInvertocatLogo/)
+  assert.match(source, /XiaohongshuLogo/)
+  assert.match(source, /aria-label=\{mobileGithub\.label\}/)
+  assert.match(source, /aria-label=\{mobileXiaohongshu\.label\}/)
+  assert.match(source, /shape="base"/)
+  assert.match(source, /className="h-9 px-2\.5"/)
 })
 
 test("Registry topbar shows GitHub and Xiaohongshu links", () => {
@@ -362,12 +378,14 @@ test("Kumo home components are present", () => {
   const homeGrid = path.join("src/pages/registry/sections/components", "HomeGrid.jsx")
   const themeToggle = path.join("src/pages/registry/sections", "ThemeToggle.jsx")
   const languageSelect = path.join("src/pages/registry/sections", "LanguageSelect.jsx")
+  const mobileFooter = path.join("src/pages/registry/sections", "MobileFooter.jsx")
   const searchDialog = path.join("src/pages/registry/sections", "SearchDialog.jsx")
   const menuIcon = path.join("src/pages/registry/sections", "JikanMenuIcon.jsx")
 
   assert.ok(fs.existsSync(path.join(process.cwd(), homeGrid)))
   assert.ok(fs.existsSync(path.join(process.cwd(), themeToggle)))
   assert.ok(fs.existsSync(path.join(process.cwd(), languageSelect)))
+  assert.ok(fs.existsSync(path.join(process.cwd(), mobileFooter)))
   assert.ok(fs.existsSync(path.join(process.cwd(), searchDialog)))
   assert.ok(fs.existsSync(path.join(process.cwd(), menuIcon)))
 })
@@ -496,6 +514,9 @@ test("HomeSidebar is non-scrollable and hides Life style card", () => {
   assert.doesNotMatch(source, /const cardStats = useMemo/)
   assert.match(cardsSource, /border-t border-kumo-line/)
   assert.match(source, /t\("types\.header"\)/)
+  assertNamedImports(source, "./ThemeToggle", ["ThemeToggle"])
+  assert.match(source, /<ThemeToggle \/>/)
+  assert.doesNotMatch(source, /<div className="size-9" \/>/)
   assert.match(cardsSource, /t\("type\.year\.name"\)/)
   assert.match(cardsSource, /t\("type\.goal\.name"\)/)
   assert.doesNotMatch(source, /<span>Select<\/span>/)

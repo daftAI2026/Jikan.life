@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), @/lib/date-utils(getLocalDateKey), JikanMenuIcon, @/lib/I18nContext, useRegistryBlockingScrollLock, home-sidebar-date-stats, home-sidebar-cards
+ * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), @/lib/date-utils(getLocalDateKey), JikanMenuIcon, ThemeToggle, @/lib/I18nContext, useRegistryBlockingScrollLock, home-sidebar-date-stats, home-sidebar-cards
  * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
  * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新与移动抽屉滚动锁；卡片渲染细节委托 home-sidebar-cards
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -10,6 +10,7 @@ import { XIcon } from "@phosphor-icons/react"
 import { getLocalDateKey } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 import { JikanMenuIcon } from "./JikanMenuIcon"
+import { ThemeToggle } from "./ThemeToggle"
 import { getGoalPreviewLayout, getYearStats } from "./home-sidebar-date-stats"
 import { HomeSidebarCards } from "./home-sidebar-cards"
 import { useI18n } from "@/lib/I18nContext"
@@ -127,7 +128,7 @@ function HomeSidebar({
                     <JikanMenuIcon />
                 </Button>
                 <h1 className="text-base font-medium">Jikan</h1>
-                <div className="size-9" />
+                <ThemeToggle />
             </div>
 
             <aside

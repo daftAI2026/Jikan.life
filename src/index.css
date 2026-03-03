@@ -76,12 +76,12 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 
 @media (max-width: 767px) {
   .registry-main-content-mobile-height {
-    height: calc(100vh - var(--registry-topbar-height));
+    height: calc(100vh - var(--registry-topbar-height) - var(--registry-topbar-height));
   }
 
   @supports (height: 100dvh) {
     .registry-main-content-mobile-height {
-      height: calc(100dvh - var(--registry-topbar-height));
+      height: calc(100dvh - var(--registry-topbar-height) - var(--registry-topbar-height));
     }
   }
 }

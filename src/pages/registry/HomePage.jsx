@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/Sidebar/ThemeToggle/LanguageSelect/HomeGrid), localStorage(registry.settingsAutoflow.v1)
+ * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/HomeSidebar/ThemeToggle/MobileFooter/HomeGrid), localStorage(registry.settingsAutoflow.v1)
  * [OUTPUT]: 对外提供 HomePage 页面组件
  * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom"
 import { HomeTopbar } from "./sections/HomeTopbar"
 import { HomeSidebar } from "./sections/HomeSidebar"
 import { ThemeToggle } from "./sections/ThemeToggle"
-import { LanguageSelect } from "./sections/LanguageSelect"
+import { MobileFooter } from "./sections/MobileFooter"
 import { HomeGrid } from "./sections/components/HomeGrid"
 
 const AUTOFLOW_STORAGE_KEY = "registry.settingsAutoflow.v1"
@@ -62,13 +62,11 @@ function HomePage() {
                 onSidebarOpenChange={setSidebarOpen}
             />
 
-            <div className="pointer-events-auto fixed top-0 right-0 z-50 grid h-[var(--registry-topbar-height)] w-[var(--registry-tools-rail-width)] place-items-center">
+            <div className="pointer-events-auto fixed top-0 right-0 z-50 hidden h-[var(--registry-topbar-height)] w-[var(--registry-tools-rail-width)] place-items-center md:grid">
                 <ThemeToggle />
             </div>
 
-            <div className="pointer-events-auto fixed right-2 bottom-2 z-50 md:hidden">
-                <LanguageSelect />
-            </div>
+            <MobileFooter />
 
             <div
                 id="main-content"

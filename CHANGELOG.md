@@ -7,11 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-03-04
+
 ### UI & UX
+- **Mobile Navigation**: Introduced a unified `MobileFooter` component, replacing the floating language button. The new mobile footer provides a clean three-column layout, docking action links (GitHub, Xiaohongshu) on the edges with a centered Language Selector, aligning with premium app paradigms.
+- **Theme Toggle**: Relocated `ThemeToggle` from the topbar into the `HomeSidebar` header to integrate it directly within the settings workflow.
+- **Viewport Dimensioning**: Refactored the mobile workspace height calculation (`.registry-main-content-mobile-height`) to dynamically subtract both topbar and the new `MobileFooter` boundary heights, preventing browser native overscroll leaking.
 - **Mobile Menu Overlay**: Upgraded the mobile settings auto-flow menu from a partial drawer to a full-screen immersive structure (`inset-0`, `z-[60]`) to provide a more focused configuration experience.
 - **Auto-expansion**: Enhanced the mobile settings auto-flow so that when no style is selected during onboarding, it automatically opens the configuration menu. Conversely, selecting a style immediately dismisses it, smoothing the setup sequence on small screens.
 
+### Documentation
+- **Fractal Protocol Sync**: Brought `src/pages/registry/CLAUDE.md` and `src/pages/registry/sections/CLAUDE.md` into compliance by documenting the structural addition of `MobileFooter` and its impact on the `LanguageSelect` export map.
+
 ### Tests
+- **Mobile Architecture Guards**: Expanded `kumo-migration.ui.behavior.test.js` to assert structural constraints of the new `MobileFooter` (three-column layout, links, ARIA labels, semantic tags) and its conditional integration within the `HomePage`. Validated the updated global CSS calculation formulas for dual topbar/footer viewport heights.
 - **Mobile Flow Constraints**: Expanded `kumo-migration.ui.behavior.test.js` to assert the structural layout constraints of the new full-screen mobile menu layer, as well as its automatic toggle behaviors.
 
 ## [1.7.2] - 2026-03-02

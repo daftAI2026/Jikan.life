@@ -5,9 +5,10 @@
 HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen 状态，并在侧栏收起时控制顶栏语言按钮隐藏
 registry-data.js: Registry 旧版导航与示例数据（备用）
 sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage（侧栏收起时隐藏左侧语言切换），右侧展示 GitHub 与小红书社交入口
+sections/MobileFooter.jsx: 移动端底部栏（左 GitHub / 中语言切换 / 右小红书），复用顶部轨道宽度保证左右边界对齐
 sections/HomeSidebar.jsx: 本地侧栏，支持 sidebarOpen/onSidebarOpenChange 受控开合，保留 Kumo 动效并向工作区分发 style 选择
 sections/ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage
-sections/LanguageSelect.jsx: Home UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端保留右下角入口）
+sections/LanguageSelect.jsx: Home UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端挂载于底部 footer 中置入口）
 sections/SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
 sections/JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用上游 docs 源码）
 sections/CLAUDE.md: sections 子模块文档
@@ -48,5 +49,7 @@ ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 Ho
 2026-02-18: 第一阶段入口收口：下线 Landing，`/app` 改为重定向 `/`，核心在用文件改名为 Home*（目录保持 registry）。
 2026-02-23: workspace 设置面板完成“编排层/业务卡层”拆分，新增 `sections/workspace/cards/*` 子模块并保持现有 UI/UX 与行为不变。
 2026-02-26: 首页工作区切到“空态先行”流程：`HomePage` 初始 `selectedStyle=null`，HomeGrid/workspace 新增官方 SkeletonLine 引导与首次 AutoFlow 渐进解锁（浏览器级一次）。
+2026-03-04: 移动端新增底部 footer（高度与顶部栏一致）：左 GitHub / 中语言切换 / 右小红书；主内容移动端高度改为扣除 topbar + footer，避免底部遮挡。
+2026-03-04: `HomePage` 移动端 footer 抽离为 `sections/MobileFooter.jsx`，页面层仅保留编排职责，底栏实现独立维护。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

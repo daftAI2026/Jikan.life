@@ -288,12 +288,13 @@ test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
   assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)
 })
 
-test("HomePage centers ThemeToggle in desktop tools rail box", () => {
+test("HomePage keeps desktop-only ThemeToggle in tools rail box", () => {
   const source = readSource("src/pages/registry/HomePage.jsx")
 
   assert.match(source, /fixed top-0 right-0/)
   assert.match(source, /w-\[var\(--registry-tools-rail-width\)\]/)
-  assert.match(source, /\bgrid\b/)
+  assert.match(source, /hidden/)
+  assert.match(source, /md:grid/)
   assert.match(source, /place-items-center/)
   assert.doesNotMatch(source, /fixed top-0 right-2/)
 })

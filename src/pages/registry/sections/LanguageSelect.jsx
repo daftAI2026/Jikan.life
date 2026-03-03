@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(Select), @phosphor-icons/react(Globe), @/lib/I18nContext(useI18n), @/data/i18n(LANGUAGE_META)
- * [OUTPUT]: 对外提供 LanguageSelect 组件（Registry 桌面顶栏左侧 + 移动端右下角 UI 语言切换）
+ * [OUTPUT]: 对外提供 LanguageSelect 组件（Registry 桌面顶栏左侧 + 移动端底部 footer 中置 UI 语言切换）
  * [POS]: pages/registry/sections 的全局语言入口，触发器采用 ThemeToggle 同款 ghost 手感，菜单与触发器统一图标间距并对齐左边缘，独立于壁纸语言配置
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
