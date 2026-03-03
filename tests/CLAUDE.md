@@ -2,6 +2,7 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
+registry-effective-layout.unit.test.js: 抽屉开关驱动的有效布局层级单测，锁定 `768/1024/1314` 阈值与 `sidebarOpen` 提前降级矩阵。
 kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构与 Setup 流程语义。
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
@@ -19,6 +20,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-04: 新增 `registry-effective-layout.unit.test.js`，覆盖 `window.innerWidth + sidebarOpen` 的有效布局层级矩阵（1314 含边界）并验证 `1024~1314` 区间行为。
 2026-03-01: 新增 `wallpaper-core-api.behavior.test.js`（冻结 facade 导出集合 23 项）与 `wallpaper-visual-snapshots.behavior.test.js`（固定 Date + Year/Life/Goal SVG sha256 护栏）；`kumo-migration.core.behavior.test.js` 将 goalDefault 校验从源码形状断言升级为运行时行为断言。
 2026-03-01: 新增 `goal-date-updater.unit.test.js` 与 `date-math.unit.test.js`；`kumo-migration.core/ui` 将 Goal 更新与 Sidebar 拆分护栏从源码形状断言升级为行为语义断言。
 2026-03-01: 删除 `date-picker.behavior.test.js`，其必要删除护栏并入迁移测试；`kumo-migration.behavior.test.js` 拆分为 `kumo-migration.ui.behavior.test.js` 与 `kumo-migration.core.behavior.test.js`，并抽出 `helpers/source-test-helpers.js` 复用工具函数。

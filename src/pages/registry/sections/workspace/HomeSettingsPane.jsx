@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 @/components/ui/kumo(SkeletonLine)、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow 参数
+ * [INPUT]: 依赖 @/components/ui/kumo(SkeletonLine)、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier 参数
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base 与按 stage 渐进 reveal；Year 保持 5 卡宽收口）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 sm/lg Guide 宿主，Set-it/AutoFlow 状态由 HomeGrid 上提统一管理
+ * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 sm/lg Guide 宿主，Set-it/AutoFlow/effectiveLayoutTier 状态由 HomeGrid 上提统一管理
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { SkeletonLine } from "@/components/ui/kumo"
@@ -83,7 +83,10 @@ function HomeSettingsPane(props) {
         onCloseSetupPanel,
         revealStage = 0,
         onRequestRevealAll,
+        effectiveLayoutTier = "lg",
     } = props
+    const isEffectiveLg = effectiveLayoutTier === "lg"
+    const guideVisibilityClassName = effectiveLayoutTier === "md" ? "hidden" : "block"
     const todayISO = getLocalTodayISO()
 
     const cardViewModel = {
@@ -102,10 +105,18 @@ function HomeSettingsPane(props) {
     const unlockedCount = Math.min(cardOrder.length, Math.max(0, revealStage))
 
     return (
-        <div className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto md:h-auto md:overflow-y-visible lg:h-full lg:overflow-y-hidden">
+        <div
+            className={[
+                "relative h-full min-h-0 overflow-x-hidden overflow-y-auto md:h-auto md:overflow-y-visible",
+                isEffectiveLg ? "md:h-full md:overflow-y-hidden" : "",
+            ].join(" ")}
+        >
             <section
                 data-home-settings-grid
-                className="grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2 lg:h-full lg:min-h-0 lg:grid-rows-3 lg:auto-rows-fr"
+                className={[
+                    "grid auto-rows-min grid-cols-1 gap-px bg-kumo-line md:grid-cols-2",
+                    isEffectiveLg ? "md:h-full md:min-h-0 md:grid-rows-3 md:auto-rows-fr" : "",
+                ].join(" ")}
             >
                 {!config.selectedType
                     ? SKELETON_SLOT_MARKS.map((indexMark, slotIndex) => (
@@ -115,6 +126,7 @@ function HomeSettingsPane(props) {
                             title={<SettingsCardTitleSkeleton />}
                             indexMark={indexMark}
                             isIndexActive={false}
+                            compactAtDesktop={isEffectiveLg}
                         >
                             <SettingsCardSkeleton />
                         </SettingsCardShell>
@@ -144,6 +156,7 @@ function HomeSettingsPane(props) {
                                 indexMark={SETTINGS_CARD_MARKS[slotIndex]}
                                 isIndexActive={isUnlocked}
                                 className={resolveCardShellClassName(config.selectedType, cardId)}
+                                compactAtDesktop={isEffectiveLg}
                             >
                                 {isUnlocked
                                     ? card.render(cardViewModel)
@@ -158,7 +171,7 @@ function HomeSettingsPane(props) {
                 onClose={onCloseSetupPanel}
                 t={t}
                 url={url}
-                visibilityClassName="md:hidden lg:block"
+                visibilityClassName={guideVisibilityClassName}
             />
         </div>
     )

@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useCallback/useEffect/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 双栏工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖 + md 全区 Guide 宿主）
- * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动）
+ * [INPUT]: 依赖 react(useCallback/useEffect/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effectiveLayoutTier
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖 + effectiveLayoutTier 驱动的 md/lg 宿主切换）
+ * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useState } from "react"
@@ -22,9 +22,10 @@ function resolveMaxRevealStage(selectedType) {
     return 6
 }
 
-function HomeGrid({ selectedStyle, forceOnboarding = false }) {
+function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier = "lg" }) {
     const viewModel = useHomeWallpaperConfig({ selectedStyle })
     const toastManager = useKumoToastManager()
+    const isEffectiveLg = effectiveLayoutTier === "lg"
     const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
     const [setupPlatform, setSetupPlatform] = useState("ios")
     const [revealStage, setRevealStage] = useState(0)
@@ -102,9 +103,17 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
     return (
         <div
             data-registry-workspace
-            className="relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible md:overscroll-y-auto bg-kumo-elevated lg:h-full lg:grid-cols-2 lg:divide-x lg:divide-kumo-line lg:overflow-hidden"
+            className={[
+                "relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible md:overscroll-y-auto bg-kumo-elevated",
+                isEffectiveLg ? "md:h-full md:grid-cols-2 md:divide-x md:divide-kumo-line md:overflow-hidden" : "",
+            ].join(" ")}
         >
-            <div className="pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 left-[var(--registry-rail-width)] z-40 hidden md:block lg:hidden">
+            <div
+                className={[
+                    "pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 left-[var(--registry-rail-width)] z-40 hidden md:block",
+                    isEffectiveLg ? "md:hidden" : "",
+                ].join(" ")}
+            >
                 <SetupGuidePanel
                     open={isSetupPanelOpen}
                     platform={setupPlatform}
@@ -118,7 +127,10 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
 
             <section
                 data-registry-pane="preview"
-                className="border-b border-kumo-line lg:min-h-0 lg:border-b-0"
+                className={[
+                    "border-b border-kumo-line",
+                    isEffectiveLg ? "md:min-h-0 md:border-b-0" : "",
+                ].join(" ")}
             >
                 <HomePreviewPane
                     config={viewModel.config}
@@ -127,7 +139,10 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
                 />
             </section>
 
-            <section data-registry-pane="settings" className="lg:min-h-0">
+            <section
+                data-registry-pane="settings"
+                className={isEffectiveLg ? "md:min-h-0" : ""}
+            >
                 <HomeSettingsPane
                     t={viewModel.t}
                     config={viewModel.config}
@@ -143,6 +158,7 @@ function HomeGrid({ selectedStyle, forceOnboarding = false }) {
                     onCloseSetupPanel={handleCloseSetupPanel}
                     revealStage={revealStage}
                     onRequestRevealAll={handleRevealAll}
+                    effectiveLayoutTier={effectiveLayoutTier}
                 />
             </section>
         </div>

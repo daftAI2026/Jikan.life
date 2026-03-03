@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.4] - 2026-03-04
+
+### Architecture
+- **Responsive Layout Engine**: Introduced `effectiveLayoutTier` module (`effective-layout-tier.js`) to completely decouple complex breakpoint classification logic from the main components, establishing a centralized truth source for programmatic layout structure shifts.
+- **Settings Flexibility**: Upgraded `HomeGrid`, `HomeSettingsPane`, and `SettingsCardShell` to dynamically consume the new `effectiveLayoutTier`. This allows the complex progressive 6-card setup grid to gracefully break structural boundaries, intelligently shifting between dense desktop layouts (`lg`) and linear tablet/mobile lists (`md`) without bloated inline rules.
+
+### Documentation
+- **Fractal Protocol Sync**: Updated L2 module maps in `registry/CLAUDE.md`, `sections/workspace/CLAUDE.md`, and `tests/CLAUDE.md` to document the new `effectiveLayoutTier` entity and its architectural responsibilities.
+- **Contract Enforcement**: Enforced strict L3 `[INPUT]/[OUTPUT]/[POS]` headers on `HomeSettingsPane` and `SettingsCardShell` to declare dependency on `effectiveLayoutTier`.
+
+### Tests
+- **Responsive Logic Guards**: Added pure unit test suite (`registry-effective-layout.unit.test.js`) to strictly validate physical screen boundaries against virtual logic tiers.
+- **UI Constraints**: Synchronized `kumo-migration.ui.behavior.test.js` to assert the structural `className` adjustments within the settings panel driven by the new `effectiveLayoutTier` engine.
+
 ## [1.7.3] - 2026-03-04
 
 ### UI & UX
