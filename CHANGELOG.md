@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.11] - 2026-03-04
+
+### Chore
+- **Testing Artifacts Cleanup**: Removed stale Playwright visual testing snapshot images (`output/playwright/*.png`) from the repository to reduce repository bloat.
 ## [1.7.10] - 2026-03-04
 
 ### Architecture
