@@ -328,9 +328,9 @@ test("Registry page applies global x/y-axis overscroll guard and blocking state 
 
   assert.match(cssSource, /html\[data-registry-page="true"\],/)
   assert.match(cssSource, /html\[data-registry-page="true"\] body \{/)
-  assert.match(cssSource, /--registry-topbar-height:\s*49px;/)
+  assert.match(cssSource, /--registry-topbar-height:\s*48px;/)
   assert.match(cssSource, /--registry-rail-width:\s*48px;/)
-  assert.match(cssSource, /--registry-tools-rail-width:\s*49px;/)
+  assert.match(cssSource, /--registry-tools-rail-width:\s*48px;/)
   assert.match(cssSource, /--registry-sidebar-panel-width:\s*290px;/)
   assert.match(
     cssSource,
@@ -349,8 +349,8 @@ test("Registry topbar mounts language selector near left side", () => {
   const source = readSource("src/pages/registry/sections/HomeTopbar.jsx")
 
   assert.match(source, /<LanguageSelect\s*\/>/)
-  assert.match(source, /<header className="hidden sticky top-0 z-10 border-b border-kumo-line bg-kumo-elevated md:block md:pr-12">/)
-  assert.match(source, /<div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">/)
+  assert.match(source, /<header className="hidden sticky top-0 z-10 h-\[var\(--registry-topbar-height\)\] border-b border-kumo-line bg-kumo-elevated md:block md:pr-12">/)
+  assert.match(source, /<div className="mx-auto hidden h-full items-center px-4 md:flex md:border-r md:border-kumo-line">/)
 })
 
 test("HomePage keeps language selector as mobile fallback", () => {

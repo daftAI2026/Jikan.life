@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.14] - 2026-03-05
+
+### Tests
+- **UI Constraints**: Synchronized `kumo-migration.ui.behavior.test.js` to assert the updated `48px` global CSS tokens for topbar height and tools rail width, as well as the dynamic `h-[var(--registry-topbar-height)]` utility class in `HomeTopbar`.
+
 ## [1.7.13] - 2026-03-05
 
 ### UI & UX
