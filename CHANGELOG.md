@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.9] - 2026-03-04
+
+### UI & UX
+- **Responsive Goal URL Card**: Extended the `mid` layout tier optimizations to the "goal" wallpaper configuration. Extracted the tight grid layout logic into `renderMidAnchoredUrlRow` and applied it to both Year and Goal URL cards when the sidebar is open on intermediate screens, preventing button truncation.
+
+### Documentation & Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to assert the structural layout constraints of the `url-card` under the `mid` tier for the "goal" type, ensuring layout parity with the "year" type.
+- **Fractal Protocol**: Updated `tests/CLAUDE.md` to reflect the expanded scope of URL card responsive layout tests.
 ## [1.7.8] - 2026-03-04
 
 ### UI & UX

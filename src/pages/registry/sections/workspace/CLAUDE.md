@@ -76,6 +76,6 @@ workspace/ - Home 双栏工作区子模块 (11 files + cards/ 子目录)
 2026-03-04: HomeSettingsPane 接入 `effectiveLayoutTier`，将容器高度/滚动与 Guide 宿主显隐从静态 `lg:*` 断点切换为业务层级驱动，支持 `1024~1314 + 侧栏打开` 强制 md 语义。
 2026-03-04: 修复“强制 md 但卡片高度仍走 lg”回归：`SettingsCardShell` 新增 `compactAtDesktop`，`HomeSettingsPane` 在非 effective lg 场景禁用 `lg:min-h-0`，恢复原生 md 卡高。
 2026-03-04: 新增 `mid` 中间态：`1024~1314 + 侧栏打开` 时保持 LG 壳层，仅将 Setting Panel 从双列改为单列，按 `selectedType` 等分行数（year=5；goal/life/空态=6），并在 mid 下关闭 year 的 `url` 跨列类。
-2026-03-04: Year 第⑤ URL 收口卡新增 `mid` 专用抗挤压布局：锚点对齐标题 `left-4` 与序号 `right-4`，固定 `gap-2`，仅输入框收缩、按钮保持 `shrink-0`，避免窄窗时溢出。
+2026-03-04: Year 第⑤ + Goal 第⑥ URL 收口卡新增 `mid` 专用抗挤压布局：锚点对齐标题 `left-4` 与序号 `right-4`，固定 `gap-2`，仅输入框收缩、按钮保持 `shrink-0`，避免窄窗时溢出。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
