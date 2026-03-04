@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.7.12] - 2026-03-04
 
+### UI & UX
+- **Responsive URL Card**: Enhanced the `mid` layout tier optimizations for the URL card in both "year" and "goal" modes. Adjusted the grid column definitions (`grid-cols-[minmax(0,1fr)_auto]`) and anchored spacing to prevent the “Set it” button from wrapping or being crushed on tablet-sized windows when the sidebar is open.
+- **Setup Guide Accessibility**: Strengthened the closing semantics of `SetupGuidePanel`. The dormant aside panel is now structurally isolated using `inert` and `aria-hidden={!open}` attributes, ensuring screen readers and keyboard focus do not accidentally enter the hidden drawer.
+- **Keyboard Navigation**: Implemented a focus-return mechanism for the `Set it` button. Opening the Setup Guide now captures the triggering element (`event.currentTarget`) and automatically restores keyboard focus to it when the guide is closed, preserving the user's tab flow.
+
+### Architecture
+- **Guide Host Truth Source**: Consolidated the `SetupGuidePanel` mounting logic. Extracted the tier condition into a single source of truth (`shouldRenderGridGuideHost` and `shouldRenderPaneGuideHost`) within `HomeGrid` and passed it down to `HomeSettingsPane`, eliminating duplicated and potentially conflicting layout rules.
+- **L3 Contract Enforcement**: Updated L3 header documentation in `worker/generators/*.js` to standardize the fractal sync protocol target to `CLAUDE.md`.
+
+### Tests
+- **UI Behavioral Guards**: Massively expanded `kumo-migration.ui.behavior.test.js` to assert the new `mid` responsive layout constraints, the `onClick` event delegation for focus recovery, the `inert`/`aria-hidden` attribute toggles, and the centralized `shouldRenderPaneGuideHost` prop drilling logic.
+
 ### Documentation
 - **GEB Protocol Audit**: Full L2 parent link integrity sweep — fixed 4 broken parent references (`icons/` and `ui/` pointed to `/src/CLAUDE.md` instead of `/src/components/CLAUDE.md`; `sections/components/` and `sections/workspace/` pointed to `registry/CLAUDE.md` instead of `sections/CLAUDE.md`).
 - **GEB Member Completeness**: Backfilled 12 missing members in `registry/CLAUDE.md` (HomeSidebar 3-layer split + workspace modularization files) and 3 missing members in `doc/CLAUDE.md` (`ghost-dependency-investigation`, `PLAN_REVIEW_REPORT`, refactoring plan).
