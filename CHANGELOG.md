@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.7.12] - 2026-03-04
+## [1.7.13] - 2026-03-05
 
 ### UI & UX
 - **Responsive URL Card**: Enhanced the `mid` layout tier optimizations for the URL card in both "year" and "goal" modes. Adjusted the grid column definitions (`grid-cols-[minmax(0,1fr)_auto]`) and anchored spacing to prevent the “Set it” button from wrapping or being crushed on tablet-sized windows when the sidebar is open.
@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 - **UI Behavioral Guards**: Massively expanded `kumo-migration.ui.behavior.test.js` to assert the new `mid` responsive layout constraints, the `onClick` event delegation for focus recovery, the `inert`/`aria-hidden` attribute toggles, and the centralized `shouldRenderPaneGuideHost` prop drilling logic.
+
+## [1.7.12] - 2026-03-04
 
 ### Documentation
 - **GEB Protocol Audit**: Full L2 parent link integrity sweep — fixed 4 broken parent references (`icons/` and `ui/` pointed to `/src/CLAUDE.md` instead of `/src/components/CLAUDE.md`; `sections/components/` and `sections/workspace/` pointed to `registry/CLAUDE.md` instead of `sections/CLAUDE.md`).
