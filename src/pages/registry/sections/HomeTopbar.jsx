@@ -23,7 +23,7 @@ function HomeTopbar({ hideLanguage = false }) {
 
     return (
         <header className="hidden sticky top-0 z-10 border-b border-kumo-line bg-kumo-elevated md:block md:pr-12">
-            <div className="mx-auto hidden h-12 items-center px-4 md:flex md:border-r md:border-kumo-line">
+            <div className="mx-auto hidden h-[var(--registry-topbar-height)] items-center px-4 md:flex md:border-r md:border-kumo-line">
                 <div className={cn("transition-opacity duration-150", hideLanguage && "pointer-events-none opacity-0")}>
                     <LanguageSelect />
                 </div>

@@ -98,7 +98,7 @@ function HomePage() {
             >
                 <div className={["flex h-full flex-col md:h-auto", isDesktopShell ? "md:h-full" : ""].join(" ")}>
                     <HomeTopbar hideLanguage={!sidebarOpen} />
-                    <main className="flex min-h-0 grow flex-col md:pr-12">
+                    <main className="flex min-h-0 grow flex-col md:bg-kumo-elevated md:pr-12">
                         <div
                             className={[
                                 "mx-auto h-full w-full grow overflow-hidden border-r border-kumo-line md:h-auto",

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.7] - 2026-03-04
+
+### UI & UX
+- **Layout Alignment**: Standardized the registry topbar height and tools rail width from `49px` to `48px` in global CSS tokens (`index.css`), ensuring strict grid adherence. Unified the `HomeTopbar` height definition to explicitly consume the `--registry-topbar-height` variable instead of the hardcoded `h-12` utility.
+- **Workspace Background**: Applied the `md:bg-kumo-elevated` token to the `HomePage` main content area, visually separating the core registry grid from the base page background on desktop shells.
 ## [1.7.6] - 2026-03-04
 
 ### Architecture
