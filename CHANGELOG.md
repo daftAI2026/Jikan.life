@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.5] - 2026-03-04
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `framer-motion` to `12.34.5` and `wrangler` to `4.70.0`.
 ## [1.7.4] - 2026-03-04
 
 ### Architecture
