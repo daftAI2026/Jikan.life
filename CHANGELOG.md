@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.9] - 2026-03-04
+
+### UI & UX
+- **Responsive Goal URL Card**: Extended the `mid` layout tier optimizations to the "goal" wallpaper configuration. Extracted the tight grid layout logic into `renderMidAnchoredUrlRow` and applied it to both Year and Goal URL cards when the sidebar is open on intermediate screens, preventing button truncation.
+
+### Documentation & Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to assert the structural layout constraints of the `url-card` under the `mid` tier for the "goal" type, ensuring layout parity with the "year" type.
+- **Fractal Protocol**: Updated `tests/CLAUDE.md` to reflect the expanded scope of URL card responsive layout tests.
+## [1.7.8] - 2026-03-04
+
+### UI & UX
+- **Responsive URL Card**: Refactored the `url-card` to specifically handle the `mid` layout tier when configuring the "year" wallpaper. It now transitions to a tight grid layout (`grid-cols-[minmax(0,1fr)_auto]`) that anchors the title on the left and the button on the right, preventing the button from being aggressively squeezed or wrapping awkwardly on intermediate screens.
+
+### Architecture
+- **State Passthrough**: Updated `HomeSettingsPane` to inject `effectiveLayoutTier` into the card view model, allowing individual settings cards to make micro-layout adjustments based on the fluid desktop shell state.
+
+### Documentation & Tests
+- **Fractal Protocol**: Updated `tests/CLAUDE.md` to document the new responsive test constraints.
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to assert the specific `grid` layout boundaries and class compositions of the `url-card` under the `mid` conceptual tier.
+## [1.7.7] - 2026-03-04
+
+### UI & UX
+- **Layout Alignment**: Standardized the registry topbar height and tools rail width from `49px` to `48px` in global CSS tokens (`index.css`), ensuring strict grid adherence. Unified the `HomeTopbar` height definition to explicitly consume the `--registry-topbar-height` variable instead of the hardcoded `h-12` utility.
+- **Workspace Background**: Applied the `md:bg-kumo-elevated` token to the `HomePage` main content area, visually separating the core registry grid from the base page background on desktop shells.
+## [1.7.6] - 2026-03-04
+
+### Architecture
+- **Responsive Engine Upgrade**: Introduced the `mid` conceptual tier to `effective-layout-tier.js` to handle transitional screen sizes (1024px-1314px) when the sidebar is open. This bridges the gap between the strict mobile `md` layout and the full desktop `lg` layout.
+
+### UI & UX
+- **Desktop Shell Fluidity**: Upgraded `HomeGrid`, `HomeSettingsPane`, and `SettingsCardShell` to treat the new `mid` tier as part of the `isDesktopShell` context. This allows settings cards to gracefully render in a single-column grid with equal-height rows on intermediate screens, rather than collapsing into the mobile overscroll list.
+
+### Tests
+- **Responsive Logic Guards**: Updated unit tests (`registry-effective-layout.unit.test.js`) and UI behavior tests (`kumo-migration.ui.behavior.test.js`) to strictly assert the output constraints of the new `mid` tier boundaries.
 ## [1.7.5] - 2026-03-04
 
 ### Infrastructure

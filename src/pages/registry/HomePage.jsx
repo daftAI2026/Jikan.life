@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/HomeSidebar/ThemeToggle/MobileFooter/HomeGrid), localStorage(registry.settingsAutoflow.v1), effective-layout-tier 判定器
- * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier）
- * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口
+ * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier，支持 mid）
+ * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（mid 复用桌面壳层）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -31,7 +31,7 @@ function HomePage() {
         return window.innerWidth
     })
     const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth, sidebarOpen })
-    const isEffectiveLg = effectiveLayoutTier === "lg"
+    const isDesktopShell = effectiveLayoutTier === "lg" || effectiveLayoutTier === "mid"
 
     useEffect(() => {
         if (!forceOnboarding) return
@@ -93,16 +93,16 @@ function HomePage() {
                 id="main-content"
                 className={[
                     "main-content registry-main-content-mobile-height mt-[var(--registry-topbar-height)] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-[var(--registry-rail-width)] md:overflow-y-auto md:overscroll-y-none",
-                    isEffectiveLg ? "md:overflow-y-hidden" : "",
+                    isDesktopShell ? "md:overflow-y-hidden" : "",
                 ].join(" ")}
             >
-                <div className={["flex h-full flex-col md:h-auto", isEffectiveLg ? "md:h-full" : ""].join(" ")}>
+                <div className={["flex h-full flex-col md:h-auto", isDesktopShell ? "md:h-full" : ""].join(" ")}>
                     <HomeTopbar hideLanguage={!sidebarOpen} />
-                    <main className="flex min-h-0 grow flex-col md:pr-12">
+                    <main className="flex min-h-0 grow flex-col md:bg-kumo-elevated md:pr-12">
                         <div
                             className={[
                                 "mx-auto h-full w-full grow overflow-hidden border-r border-kumo-line md:h-auto",
-                                isEffectiveLg ? "md:h-full" : "",
+                                isDesktopShell ? "md:h-full" : "",
                             ].join(" ")}
                         >
                             <HomeGrid

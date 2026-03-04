@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/CLAUDE.md
 
 成员清单
-HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 md 整区 Guide 宿主；Guide 打开时接入页面级阻断锁
+HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 md 整区 Guide 宿主；`mid` 复用桌面双栏壳层；Guide 打开时接入页面级阻断锁
 ComponentCell.jsx: 网格单元壳，负责标题与内容排布
 ComponentGrid.jsx: 旧版组件墙网格（备用）
 ComponentData.js: 旧版网格条目数据（备用）
@@ -26,5 +26,6 @@ HomeGrid 从 vendor 薄包装切换为本地编排实现；旧网格模块继续
 2026-02-26: HomeGrid 移动主容器补充 `overscroll-y-contain`，与页面级 `overflow-y: hidden` 协同，避免触控板/双指下拉将滚动链泄漏到 viewport。
 2026-02-26: HomeGrid 新增 Skeleton Base AutoFlow（`AUTOFLOW_STORAGE_KEY=registry.settingsAutoflow.v1`、200ms/卡），首次选型后 `revealStage` 自动递进；点击未解锁卡可快进全解锁，后续进入直接全开。
 2026-03-04: HomeGrid 新增 `effectiveLayoutTier` 输入并改为条件化 md/lg 渲染：双栏与 Guide 宿主显示不再直接依赖 `lg:*` 屏宽断点，可在 `1024~1314 + 侧栏打开` 强制走 md 语义。
+2026-03-04: HomeGrid 新增 `mid` 壳层语义：`1024~1314 + 侧栏打开` 仍保留 preview/settings 双栏与 LG Guide 宿主，仅把 Setting Panel 内部降为单列。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

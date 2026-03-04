@@ -31,9 +31,9 @@ html {
 
 :root {
   color-scheme: light;
-  --registry-topbar-height: 49px;
+  --registry-topbar-height: 48px;
   --registry-rail-width: 48px;
-  --registry-tools-rail-width: 49px;
+  --registry-tools-rail-width: 48px;
   --registry-sidebar-panel-width: 290px;
 }
 
