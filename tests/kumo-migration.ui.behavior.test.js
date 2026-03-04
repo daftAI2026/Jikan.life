@@ -885,6 +885,7 @@ test("Goal url card uses setup title and set flow guarded by copy success", () =
 
   assert.match(gridSource, /const SETUP_FLOW_TYPES = new Set\(\["year", "goal"\]\)/)
   assert.match(urlSource, /const SETUP_FLOW_TYPES = new Set\(\["year", "goal"\]\)/)
+  assert.match(urlSource, /render: \(\{ config, effectiveLayoutTier, onSetIt, t, url \}\) =>/)
   assert.match(urlSource, /resolveTitle:\s*\(\{\s*config,\s*t\s*\}\)\s*=>[\s\S]*?SETUP_FLOW_TYPES\.has\(config\.selectedType\)\s*\?\s*t\("setup\.title"\)\s*:\s*"Collapsible"/)
   assert.match(urlSource, /if\s*\(config\.selectedType === "goal"\)/)
   assert.match(urlSource, /w-\[220px\] max-w-full flex-col gap-2 px-3 py-1/)
@@ -909,6 +910,7 @@ test("Goal url card uses setup title and set flow guarded by copy success", () =
   assert.match(gridSource, /<SetupGuidePanel[\s\S]*?onClose=\{handleCloseSetupPanel\}/)
   assert.match(gridSource, /<SetupGuidePanel[\s\S]*?url=\{viewModel\.url\}/)
   assert.match(paneSource, /onSetIt,/)
+  assert.match(paneSource, /const cardViewModel = \{[\s\S]*effectiveLayoutTier,[\s\S]*\}/)
   assert.match(paneSource, /isSetupPanelOpen,/)
   assert.match(paneSource, /setupPlatform,/)
   assert.match(paneSource, /onCloseSetupPanel,/)
@@ -927,6 +929,16 @@ test("Year merged slot uses setup url card as slot 5 with compact inline row on 
   assert.match(source, /className=\{resolveCardShellClassName\(\{ selectedType: config\.selectedType, cardId, isMid \}\)\}/)
   assert.match(source, /if \(isMid\) return ""/)
   assert.match(urlSource, /if\s*\(config\.selectedType === "year"\)/)
+  assert.match(urlSource, /const isMidYear = config\.selectedType === "year" && effectiveLayoutTier === "mid"/)
+  assert.match(urlSource, /if \(isMidYear\) \{/)
+  assert.match(urlSource, /className="w-full px-4 py-1"/)
+  assert.match(urlSource, /grid-cols-\[minmax\(0,1fr\)_auto\]/)
+  assert.match(urlSource, /items-center gap-2/)
+  assert.match(urlSource, /className="min-w-0 w-full font-mono text-xs"/)
+  assert.match(
+    urlSource,
+    /className="min-w-\[88px\] shrink-0 justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint"/
+  )
   assert.match(urlSource, /w-full px-4 py-1/)
   assert.match(urlSource, /md:px-\[calc\(25%-100px\)\]/)
   assert.match(urlSource, /flex max-w-full flex-col gap-2 md:flex-row md:items-center md:gap-2/)

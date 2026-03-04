@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.8] - 2026-03-04
+
+### UI & UX
+- **Responsive URL Card**: Refactored the `url-card` to specifically handle the `mid` layout tier when configuring the "year" wallpaper. It now transitions to a tight grid layout (`grid-cols-[minmax(0,1fr)_auto]`) that anchors the title on the left and the button on the right, preventing the button from being aggressively squeezed or wrapping awkwardly on intermediate screens.
+
+### Architecture
+- **State Passthrough**: Updated `HomeSettingsPane` to inject `effectiveLayoutTier` into the card view model, allowing individual settings cards to make micro-layout adjustments based on the fluid desktop shell state.
+
+### Documentation & Tests
+- **Fractal Protocol**: Updated `tests/CLAUDE.md` to document the new responsive test constraints.
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to assert the specific `grid` layout boundaries and class compositions of the `url-card` under the `mid` conceptual tier.
 ## [1.7.7] - 2026-03-04
 
 ### UI & UX
