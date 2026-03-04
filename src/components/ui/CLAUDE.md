@@ -1,5 +1,5 @@
 # components/ui/
-> L2 | 父级: /src/CLAUDE.md
+> L2 | 父级: /src/components/CLAUDE.md
 
 成员清单
 input.jsx: 输入框组件，Kumo Input 适配层

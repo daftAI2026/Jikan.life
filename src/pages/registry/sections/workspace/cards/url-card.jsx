@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 Kumo Button/Input/Collapsible 与 url actions/config/effectiveLayoutTier 链路
+ * [INPUT]: 依赖 Kumo Button/Input/Collapsible 与 url actions/config/effectiveLayoutTier 链路（Set it 回调可接收触发元素）
  * [OUTPUT]: 对外提供 urlCard 定义（Set it 收口卡，含 Year/Goal 专属布局与 mid(year/goal) 抗挤压布局）
  * [POS]: workspace/cards 的流程收口卡，承接 URL 展示与 Set it 触发（mid+year/goal 下对齐标题左锚/序号右锚）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -21,7 +21,7 @@ function renderMidAnchoredUrlRow({ onSetIt, t, url }) {
                 <KumoButton
                     variant="secondary"
                     className="min-w-[88px] shrink-0 justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint"
-                    onClick={() => void onSetIt()}
+                    onClick={(event) => void onSetIt(event.currentTarget)}
                 >
                     {t("url.set")}
                 </KumoButton>
@@ -55,7 +55,7 @@ const urlCard = {
                         <KumoButton
                             variant="secondary"
                             className="min-w-[88px] justify-center px-4 text-center transition-colors not-disabled:hover:!bg-kumo-tint md:shrink-0"
-                            onClick={() => void onSetIt()}
+                            onClick={(event) => void onSetIt(event.currentTarget)}
                         >
                             {t("url.set")}
                         </KumoButton>
@@ -80,7 +80,7 @@ const urlCard = {
                     <KumoButton
                         variant="secondary"
                         className="w-full justify-center text-center transition-colors not-disabled:hover:!bg-kumo-tint"
-                        onClick={() => void onSetIt()}
+                        onClick={(event) => void onSetIt(event.currentTarget)}
                     >
                         {t("url.set")}
                     </KumoButton>

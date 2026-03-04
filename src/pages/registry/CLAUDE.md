@@ -12,11 +12,23 @@ sections/ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入
 sections/LanguageSelect.jsx: Home UI 语言切换组件（触发器为线框地球图标+语言名；菜单为国旗+语言名并保留默认选中勾；桌面挂载于顶栏左侧，移动端挂载于底部 footer 中置入口）
 sections/SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
 sections/JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用上游 docs 源码）
+sections/home-sidebar-cards.jsx: HomeSidebar 卡片层，封装 year/life/goal 卡片数据构造、过滤策略与渲染循环
+sections/home-sidebar-visuals.jsx: HomeSidebar 视觉层，封装 Year/Life/Goal 三类卡片预览
+sections/home-sidebar-date-stats.js: HomeSidebar 日期统计层，封装 yearStats 计算与 Goal 预览布局生成
+sections/useRegistryBlockingScrollLock.js: Registry 阻断层滚动锁基础设施（引用计数）
 sections/CLAUDE.md: sections 子模块文档
 sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层（含 Skeleton Base 首次 AutoFlow stage 管理）
 sections/workspace/useHomeWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
+sections/workspace/config-actions.js: 配置动作工厂层，统一 set*/apply*/copyUrl 状态更新语义
+sections/workspace/config-init.js: 配置初始化层，默认配置、类型映射与颜色归一
+sections/workspace/goal-date-updater.js: Goal 日期状态层，range/start/date 三个语义入口
+sections/workspace/url-builder.js: URL 构建层，year/life/goal 参数序列化
+sections/workspace/view-model-mappers.js: 视图模型映射层，国家/语言选项与调色板组装
+sections/workspace/device-visibility.js: 设备可见性策略单一真相源
 sections/workspace/HomePreviewPane.jsx: 左侧手机预览画布（支持空态 Skeleton 引导）
 sections/workspace/HomeSettingsPane.jsx: 右侧六卡设置面板编排层（负责卡序、Skeleton Base 渐进解锁与 Set-it 门控），业务卡实现下沉到 cards 子模块
+sections/workspace/SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构
+sections/workspace/SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入）
 sections/workspace/CLAUDE.md: 双栏工作区子模块文档
 sections/workspace/cards/index.js: Setting Panel 业务卡聚合入口（导出 CARD_REGISTRY）
 sections/workspace/cards/CLAUDE.md: Setting Panel 业务卡子模块文档

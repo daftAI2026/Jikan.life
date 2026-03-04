@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.12] - 2026-03-04
+
+### Documentation
+- **GEB Protocol Audit**: Full L2 parent link integrity sweep — fixed 4 broken parent references (`icons/` and `ui/` pointed to `/src/CLAUDE.md` instead of `/src/components/CLAUDE.md`; `sections/components/` and `sections/workspace/` pointed to `registry/CLAUDE.md` instead of `sections/CLAUDE.md`).
+- **GEB Member Completeness**: Backfilled 12 missing members in `registry/CLAUDE.md` (HomeSidebar 3-layer split + workspace modularization files) and 3 missing members in `doc/CLAUDE.md` (`ghost-dependency-investigation`, `PLAN_REVIEW_REPORT`, refactoring plan).
+- **GEB Formatting**: Fixed `.github/CLAUDE.md` where `[PROTOCOL]` tag was embedded inside member description.
+
 ## [1.7.11] - 2026-03-04
 
 ### Chore

@@ -2,7 +2,7 @@
  * [INPUT]: 依赖 shared/wallpaper-core.js, ../svg.js, ../timezone.js
  * [OUTPUT]: generateLifeCalendar 函数 (SVG string)
  * [POS]: Worker 生命日历生成器，使用共享核心计算布局，支持 foregroundOverride
- * [PROTOCOL]: 变更时更新此头部，然后同步检查 shared/wallpaper-core.js
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
 import { createSVG, rect, circle, text, parseColor, colorWithAlpha, contrastAlpha as svgContrastAlpha } from '../svg.js';

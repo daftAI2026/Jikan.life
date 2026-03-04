@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText/Surface/Text/Banner/Badge), @phosphor-icons/react(XIcon/Warning), @/lib/utils(cn), i18n t() 与平台参数，以及可选宿主样式注入（containerClassName/asideClassName/visibilityClassName）
- * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚）
+ * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚；关闭态 inert + aria 隔离）
  * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo Surface 组件并收敛滚动职责
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -106,7 +106,9 @@ function SetupGuidePanel({
         >
             <aside
                 role="dialog"
-                aria-modal={open}
+                aria-modal={open ? true : undefined}
+                aria-hidden={!open}
+                inert={open ? undefined : true}
                 aria-label={setupTitle}
                 className={cn(
                     DEFAULT_ASIDE_CLASSNAME,

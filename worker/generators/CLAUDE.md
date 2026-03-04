@@ -25,4 +25,4 @@ Worker Request → generators/*.js → shared/wallpaper-core.js (compute*Layout)
 - 前端 Canvas 渲染 (src/lib/renderer.js) 与后端 SVG 生成必须使用相同的 `compute*Layout` 函数
 - 任何布局逻辑变更必须在 shared/wallpaper-core.js 中进行
 
-[PROTOCOL]: 变更时更新此头部，然后同步检查 shared/wallpaper-core.js 和 src/lib/renderer.js
+[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

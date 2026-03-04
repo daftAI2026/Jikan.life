@@ -7,7 +7,7 @@ kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Butt
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
-helpers/source-test-helpers.js: 测试辅助工具，统一源码读取、目录扫描与 named import 断言。
+helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束 getContrastBase 感知阈值 0.179、resolveContrastBase 覆盖逻辑和 contrastAlpha 向后兼容。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
@@ -23,6 +23,9 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 2026-03-04: 新增 `registry-effective-layout.unit.test.js`，覆盖 `window.innerWidth + sidebarOpen` 的有效布局层级矩阵（1314 含边界）并验证 `1024~1314` 区间行为。
 2026-03-04: 更新 `registry-effective-layout.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：`open + 1024~1314 => mid`，并新增 HomeSettingsPane 中间态单列等分行护栏（year=5；goal/life/空态=6）。
 2026-03-04: 更新 `kumo-migration.ui.behavior.test.js`：新增 `mid + year/goal` URL 收口卡护栏（`effectiveLayoutTier` 透传、`grid-cols-[minmax(0,1fr)_auto]`、`gap-2`、输入框可缩/按钮不缩）并保留非 mid 的 `md:px-[calc(25%-100px)]` 与 goal 旧布局断言。
+2026-03-04: 更新 `kumo-migration.ui.behavior.test.js`：新增 SetupGuidePanel 关闭态隔离护栏（`aria-modal` 打开态限定、`aria-hidden`、`inert`），并为 Set-it 链路增加 `event.currentTarget` 透传与 HomeGrid 关闭后回焦断言。
+2026-03-04: 更新 `kumo-migration.ui.behavior.test.js`：SetupGuide 挂载策略改为单宿主互斥护栏（HomeGrid 仅 `effectiveLayoutTier==="md"` 挂载，HomeSettingsPane 仅非 md 挂载），并移除 `guideVisibilityClassName` 旧断言。
+2026-03-04: 更新 `kumo-migration.ui.behavior.test.js`：Guide 宿主判定改为 HomeGrid 单一真相源护栏（`shouldRenderPaneGuideHost = !shouldRenderGridGuideHost` + 透传到 HomeSettingsPane）。
 2026-03-01: 新增 `wallpaper-core-api.behavior.test.js`（冻结 facade 导出集合 23 项）与 `wallpaper-visual-snapshots.behavior.test.js`（固定 Date + Year/Life/Goal SVG sha256 护栏）；`kumo-migration.core.behavior.test.js` 将 goalDefault 校验从源码形状断言升级为运行时行为断言。
 2026-03-01: 新增 `goal-date-updater.unit.test.js` 与 `date-math.unit.test.js`；`kumo-migration.core/ui` 将 Goal 更新与 Sidebar 拆分护栏从源码形状断言升级为行为语义断言。
 2026-03-01: 删除 `date-picker.behavior.test.js`，其必要删除护栏并入迁移测试；`kumo-migration.behavior.test.js` 拆分为 `kumo-migration.ui.behavior.test.js` 与 `kumo-migration.core.behavior.test.js`，并抽出 `helpers/source-test-helpers.js` 复用工具函数。
