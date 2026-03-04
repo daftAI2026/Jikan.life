@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.17] - 2026-03-05
+
+### Infrastructure
+- **Git Hooks Engine**: Introduced an enclosed local Git Hooks mechanism (`scripts/git-hooks`) to establish a `pre-commit` guard. It seamlessly guarantees execution of `npm run version` checks and automatically stages synchronized metadata (`README.md`, `package-lock.json`) before committing.
+- **Lifecycle Integration**: Integrated `hooks:install` into local `postinstall` routines, binding the hooks registry autonomously for team environments.
+- **CI Pipeline**: Strengthened `.github/workflows/ci.yml` validation pipeline to execute `npm run check:version-metadata` aggressively preventing metadata divergence from polluting mainline.
+
+### Documentation
+- **Fractal Protocol**: Extended architectural documentation (`CLAUDE.md`) in `.github/`, `scripts/`, and `tests/` to track the `git-hooks` scope boundaries and CI validation protocol changes.
+
+### Tests
+- **Infrastructure Guards**: Augmented `.behavior.test.js` matrix to rigidly assert `postinstall` sequence and explicitly trace `pre-commit` hook execution chains mapped to `package.json`.
+
 ## [1.7.16] - 2026-03-05
 
 ### Architecture

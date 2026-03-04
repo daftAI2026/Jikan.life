@@ -20,6 +20,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：新增提交流程与 CI 一致性护栏，强制 `hooks:install/postinstall`、`scripts/git-hooks/pre-commit` 自动同步链路，以及 CI 必跑 `check:version-metadata`。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：将版本同步护栏收敛为统一入口，强制存在 `sync/check:version-metadata` 并要求 `npm version` 链路仅引用该聚合脚本，同时禁止旧分裂命令回流。
 2026-03-04: 新增 `registry-effective-layout.unit.test.js`，覆盖 `window.innerWidth + sidebarOpen` 的有效布局层级矩阵（1314 含边界）并验证 `1024~1314` 区间行为。
 2026-03-04: 更新 `registry-effective-layout.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：`open + 1024~1314 => mid`，并新增 HomeSettingsPane 中间态单列等分行护栏（year=5；goal/life/空态=6）。

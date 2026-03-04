@@ -53,6 +53,40 @@ test("version metadata sync script uses explicit lock-field checks instead of st
   )
 })
 
+test("git pre-commit hook auto-syncs version metadata", () => {
+  const pkg = readJson("package.json")
+  const scripts = pkg.scripts || {}
+  const hookSource = readSource("scripts/git-hooks/pre-commit")
+
+  assert.match(
+    scripts["hooks:install"] || "",
+    /git config core\.hooksPath scripts\/git-hooks/,
+    "hooks:install should configure repo hooks path"
+  )
+  assert.match(
+    scripts["postinstall"] || "",
+    /hooks:install/,
+    "postinstall should auto-install git hooks"
+  )
+  assert.match(
+    hookSource,
+    /node scripts\/sync-version-metadata\.js/,
+    "pre-commit hook should run version metadata sync"
+  )
+  assert.match(
+    hookSource,
+    /git add README\.md package-lock\.json/,
+    "pre-commit hook should stage synchronized metadata files"
+  )
+})
+
+test("CI pipeline enforces version metadata check", () => {
+  const source = readSource(".github/workflows/ci.yml")
+
+  assert.match(source, /Run version metadata check/)
+  assert.match(source, /npm run check:version-metadata/)
+})
+
 test("index.html sets data-mode on html element", () => {
   const source = readSource("index.html")
   assert.match(source, /<html[^>]*data-mode=/)

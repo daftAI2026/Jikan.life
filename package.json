@@ -1,6 +1,6 @@
 {
   "name": "jikan-life",
-  "version": "1.7.16",
+  "version": "1.7.17",
   "description": "Jikan.life - Dynamic wallpaper generator",
   "main": "worker/index.js",
   "type": "module",
@@ -11,6 +11,8 @@
     "preview": "vite preview",
     "sync:version-metadata": "node scripts/sync-version-metadata.js",
     "check:version-metadata": "node scripts/sync-version-metadata.js --check",
+    "hooks:install": "git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git config core.hooksPath scripts/git-hooks || true",
+    "postinstall": "npm run hooks:install",
     "version": "npm run sync:version-metadata",
     "worker:dev": "wrangler dev",
     "worker:deploy": "wrangler deploy"
