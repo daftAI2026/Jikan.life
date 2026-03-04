@@ -13,7 +13,10 @@
   <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
   <img src="https://img.shields.io/badge/version-1.5.0-green" alt="Version" />
-  <img src="https://img.shields.io/badge/i18n-EN%20%7C%20简中%20%7C%20繁中%20%7C%20日本語-orange" alt="i18n" />
+</p>
+
+<p align="center">
+  <strong>Languages:</strong> 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語
 </p>
 
 ---
@@ -50,7 +53,7 @@ Browser (React)                     Cloudflare Worker
 | **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) (`@cloudflare/kumo`) · Base UI |
 | **Backend** | Cloudflare Workers · Resvg WASM (SVG → PNG) |
 | **Shared** | Unified wallpaper-core (Canvas + SVG) |
-| **i18n** | English · 简体中文 · 繁體中文 · 日本語 |
+| **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
 | **CI/CD** | GitHub Actions · Cloudflare Static Assets |
 
 ## 🚀 Getting Started
@@ -94,7 +97,7 @@ JIKAN supports **4 languages** across both the UI and the wallpaper text itself:
 
 - 🇺🇸 English
 - 🇨🇳 简体中文
-- 🇹🇼 繁體中文
+- 🇨🇳 繁體中文
 - 🇯🇵 日本語
 
 Language is auto-detected via IP geolocation and can be overridden manually. Wallpaper text language is independently configurable.

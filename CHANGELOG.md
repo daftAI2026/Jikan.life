@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.15] - 2026-03-05
+
+### Documentation
+- **I18n Flags Allocation**: Updated language representations in `README.md` to use regional emojis (🇺🇸, 🇨🇳, 🇯🇵), explicitly aligning both Simplified Chinese and Traditional Chinese with the 🇨🇳 flag.
+
 ## [1.7.14] - 2026-03-05
 
 ### Tests
