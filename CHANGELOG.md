@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.16] - 2026-03-05
+
+### Architecture
+- **Version Lifecycle**: Introduced `sync-version-metadata.js` to unify the synchronization of the `README.md` version badge and `package-lock.json` top-level version metadata during the `npm version` lifecycle.
+- **Migration Guards**: Transitioned from brittle stringify diffs to explicit target-field mutations for locking down the package-lock sync. Deprecated and removed legacy split commands (`sync:readme-version`, `sync:package-lock-version`).
+
+### Documentation
+- **Badge Accuracy**: Synchronized the `README.md` version badge to reflect the current active version, and added an official `i18n` language support badge.
+- **Fractal Protocol**: Updated L2 member listings in `scripts/CLAUDE.md` and added architectural tracking in `tests/CLAUDE.md` to reflect the new unified version sync script.
+
+### Tests
+- **Lifecycle Guards**: Expanded `kumo-migration.ui.behavior.test.js` to strictly assert the presence of `sync/check:version-metadata` scripts and ensure legacy version sync commands are fully eradicated from `package.json`.
+
 ## [1.7.15] - 2026-03-05
 
 ### Documentation

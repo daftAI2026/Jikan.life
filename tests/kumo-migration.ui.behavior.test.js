@@ -24,6 +24,35 @@ test("react-icons is removed from dependencies", () => {
   assert.equal(deps["react-icons"], undefined)
 })
 
+test("version metadata sync script is wired into npm version lifecycle", () => {
+  const pkg = readJson("package.json")
+  const scripts = pkg.scripts || {}
+
+  assert.ok(scripts["sync:version-metadata"], "sync:version-metadata script missing")
+  assert.ok(scripts["check:version-metadata"], "check:version-metadata script missing")
+  assert.match(
+    scripts.version || "",
+    /sync:version-metadata/,
+    "version lifecycle should include unified version metadata sync"
+  )
+  assert.equal(scripts["sync:readme-version"], undefined, "legacy sync:readme-version should be removed")
+  assert.equal(scripts["sync:package-lock-version"], undefined, "legacy sync:package-lock-version should be removed")
+})
+
+test("version metadata sync script uses explicit lock-field checks instead of stringify diff", () => {
+  const source = readSource("scripts/sync-version-metadata.js")
+
+  assert.match(source, /const lockVersionChanged =/)
+  assert.match(source, /const lockRootPackageVersionChanged =/)
+  assert.match(source, /const packageLockChanged = lockVersionChanged \|\| lockRootPackageVersionChanged/)
+
+  assert.doesNotMatch(
+    source,
+    /JSON\.stringify\(nextPackageLock\)\s*!==\s*JSON\.stringify\(packageLock\)/,
+    "package-lock change detection should not rely on whole-object stringify diff"
+  )
+})
+
 test("index.html sets data-mode on html element", () => {
   const source = readSource("index.html")
   assert.match(source, /<html[^>]*data-mode=/)
