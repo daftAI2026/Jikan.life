@@ -121,7 +121,7 @@ function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier 
                     t={viewModel.t}
                     url={viewModel.url}
                     containerClassName="overflow-hidden overscroll-none"
-                    asideClassName="md:w-full"
+                    asideClassName="md:w-full md:border-l-0 md:border-r"
                 />
             </div>
 

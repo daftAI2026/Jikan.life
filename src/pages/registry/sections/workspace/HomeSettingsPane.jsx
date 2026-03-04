@@ -97,7 +97,6 @@ function HomeSettingsPane(props) {
     const isLg = effectiveLayoutTier === "lg"
     const isDesktopShell = isMid || isLg
     const guideVisibilityClassName = effectiveLayoutTier === "md" ? "hidden" : "block"
-    const guideAsideClassName = isMid ? "lg:!border-l" : undefined
     const rowCount = resolveMidRowCount(config.selectedType)
     const gridInlineStyle = isMid ? { gridTemplateRows: `repeat(${rowCount}, minmax(0, 1fr))` } : undefined
     const todayISO = getLocalTodayISO()
@@ -189,7 +188,6 @@ function HomeSettingsPane(props) {
                 t={t}
                 url={url}
                 visibilityClassName={guideVisibilityClassName}
-                asideClassName={guideAsideClassName}
             />
         </div>
     )
