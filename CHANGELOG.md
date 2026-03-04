@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.10] - 2026-03-04
+
+### Architecture
+- **Mainline Integration**: Merged the mid-tier responsive layout enhancements into the main branch. This brings fluid, non-collapsing grid layouts to intermediate screen sizes (1024-1314px) when the sidebar is active.
 ## [1.7.9] - 2026-03-04
 
 ### UI & UX
