@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.6] - 2026-03-04
+
+### Architecture
+- **Responsive Engine Upgrade**: Introduced the `mid` conceptual tier to `effective-layout-tier.js` to handle transitional screen sizes (1024px-1314px) when the sidebar is open. This bridges the gap between the strict mobile `md` layout and the full desktop `lg` layout.
+
+### UI & UX
+- **Desktop Shell Fluidity**: Upgraded `HomeGrid`, `HomeSettingsPane`, and `SettingsCardShell` to treat the new `mid` tier as part of the `isDesktopShell` context. This allows settings cards to gracefully render in a single-column grid with equal-height rows on intermediate screens, rather than collapsing into the mobile overscroll list.
+
+### Tests
+- **Responsive Logic Guards**: Updated unit tests (`registry-effective-layout.unit.test.js`) and UI behavior tests (`kumo-migration.ui.behavior.test.js`) to strictly assert the output constraints of the new `mid` tier boundaries.
 ## [1.7.5] - 2026-03-04
 
 ### Infrastructure
