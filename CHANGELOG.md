@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.18] - 2026-03-05
+
+### UI & UX
+- **Responsive Colors Card**: Extended the `mid` layout tier optimizations to the colors configuration card for "year" and "goal" wallpapers. The color picker now elegantly transitions into a refined two-column parameter grid (`grid-cols-2`) and a wider four-column preset grid (`grid-cols-4`) on intermediate screens, synchronizing with the responsive behavior of the URL card when the sidebar is active.
+
+### Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to strictly assert the new structural layout constraints and conditional rendering boundaries of the `colors-card` under the `mid` conceptual tier.
+
 ## [1.7.17] - 2026-03-05
 
 ### Infrastructure

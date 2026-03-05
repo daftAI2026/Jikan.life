@@ -747,7 +747,7 @@ test("Registry settings does not render selected type badge", () => {
   assert.doesNotMatch(hookSource, /getTypeName/)
 })
 
-test("Registry settings colors use shared ColorPicker component", () => {
+test("Registry settings colors use shared ColorPicker component with mid year/goal two-column layout", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
   const fieldShellSource = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
 
@@ -755,6 +755,13 @@ test("Registry settings colors use shared ColorPicker component", () => {
   assertNamedImports(source, "./CardField", ["CardField", "CardFieldsStack"])
   assert.match(source, /titleKey:\s*"config\.colors"/)
   assert.match(source, /<CardFieldsStack>/)
+  assert.match(source, /render:\s*\(\{\s*actions,\s*config,\s*effectiveLayoutTier,\s*palettePresets,\s*t\s*\}\)\s*=>/)
+  assert.match(
+    source,
+    /const isMidYearOrGoal = effectiveLayoutTier === "mid" && \(config\.selectedType === "year" \|\| config\.selectedType === "goal"\)/
+  )
+  assert.match(source, /if \(isMidYearOrGoal\) \{/)
+  assert.match(source, /className:\s*"w-\[200px\] max-w-full grid grid-cols-4 gap-2"/)
   assert.match(fieldShellSource, /flex w-full max-w-full flex-col items-center px-4 py-1/)
   assert.match(fieldShellSource, /gap-4/)
   assert.match(source, /className="grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
@@ -766,7 +773,7 @@ test("Registry settings colors use shared ColorPicker component", () => {
   assert.match(source, /actions\.setBackgroundColor/)
   assert.match(source, /actions\.setAccentColor/)
   assert.match(source, /actions\.applyPalette\(preset\.bg,\s*preset\.accent\)/)
-  assert.match(source, /className="flex w-\[200px\] max-w-full flex-wrap gap-2"/)
+  assert.match(source, /className:\s*"flex w-\[200px\] max-w-full flex-wrap gap-2"/)
   assert.match(fieldShellSource, /w-\[200px\] max-w-full/)
   assert.doesNotMatch(source, /title:\s*"Switch"/)
   assert.doesNotMatch(source, /<Switch/)

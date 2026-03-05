@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
-[INPUT]: 依赖 /Users/luo/Desktop/ClaudeCode/Jikan.life/src/main.jsx 作为应用入口
-[OUTPUT]: 对外提供 Jikan 的 HTML 基础结构、主题初始化与 SEO 元数据 (OG/Twitter/Robots)
-[POS]: 项目根页面模板，承载全局 meta (i18n: EN+CN+JP)、字体与 theme 引导 (读 localStorage "mode")
+[INPUT]: 依赖 /Users/luo/Desktop/ClaudeCode/Jikan.life/src/main.jsx 作为应用入口，依赖 https://umami.sofxcking.cool/script.js 注入访问统计
+[OUTPUT]: 对外提供 Jikan 的 HTML 基础结构、主题初始化、SEO 元数据 (OG/Twitter/Robots) 与 Umami 统计脚本加载
+[POS]: 项目根页面模板，承载全局 meta (i18n: EN+CN+JP)、字体、theme 引导 (读 localStorage "mode") 与站点统计入口
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 <html lang="en" class="bg-kumo-elevated" data-mode="light">
@@ -50,6 +50,7 @@
             }
         })()
     </script>
+    <script defer src="https://umami.sofxcking.cool/script.js" data-website-id="dcb4d9b3-bf52-4983-95d0-49b4355057dc"></script>
 </head>
 
 <body>
