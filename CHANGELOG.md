@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.19] - 2026-03-06
+
+### UI & UX
+- **Device Select Polish**: Streamlined the `device-card` configuration by hiding the explicit resolution dimensions text beneath the dropdown. This reduces visual clutter while retaining the device resolution information within the input's tooltip.
+
+### Documentation & Tests
+- **Fractal Protocol Sync**: Updated `workspace/CLAUDE.md` and `workspace/cards/CLAUDE.md` to document the new `SHOW_DEVICE_RESOLUTION_HINT` local switch.
+- **UI Constraints**: Synchronized `kumo-migration.ui.behavior.test.js` to assert the structural removal of the standalone resolution text and the new descriptive label bindings.
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions in `package.json`, including `@cloudflare/kumo` to `1.10.0`, `framer-motion` to `12.35.0`, and `react-aria-components` to `1.16.0`.
+
 ## [1.7.18] - 2026-03-05
 
 ### UI & UX

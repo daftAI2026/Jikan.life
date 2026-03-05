@@ -26,6 +26,7 @@ workspace/ - Home 双栏工作区子模块 (11 files + cards/ 子目录)
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
+2026-03-06: `device-card` 的分辨率注释改为本地开关 `SHOW_DEVICE_RESOLUTION_HINT=false` 控制，默认关闭；当前仅保留机型选择主路径，设备提示语义继续留在卡片标题 tooltip（`config.deviceTooltip`）。
 2026-03-01: 新增 `config-actions.js`，`useHomeWallpaperConfig` 动作集合下沉为工厂；主 hook 收敛为编排层。
 2026-03-01: `goal-date-updater.js` 从 `type` 分派重构为显式语义入口（range/start/date），并保留历史错误语义兼容。
 2026-03-01: `useHomeWallpaperConfig` 拆分为 `config-init/goal-date-updater/url-builder/view-model-mappers` 四层，主 hook 聚焦状态编排；同时移除无效 `deviceOptions` 返回与透传链路。

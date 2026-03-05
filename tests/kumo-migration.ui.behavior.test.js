@@ -780,9 +780,10 @@ test("Registry settings colors use shared ColorPicker component with mid year/go
   assert.doesNotMatch(source, /type="color"/)
 })
 
-test("Registry settings device card uses grouped Select with resolution hint", () => {
+test("Registry settings device card uses grouped Select without resolution hint", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/device-card.jsx")
 
+  assert.match(source, /const SHOW_DEVICE_RESOLUTION_HINT = false/)
   assert.match(source, /titleKey:\s*"config\.device"/)
   assert.match(source, /titleTooltipKey:\s*"config\.deviceTooltip"/)
   assert.match(source, /actions\.setDevice/)
@@ -792,9 +793,12 @@ test("Registry settings device card uses grouped Select with resolution hint", (
   assert.match(source, /SelectBase\.Group/)
   assert.match(source, /const shouldShowGroupLabel = VISIBLE_DEVICE_CATEGORIES\.length > 1/)
   assert.match(source, /shouldShowGroupLabel && \(/)
-  assert.match(source, /selectedDevice\.width/)
-  assert.match(source, /selectedDevice\.height/)
-  assert.match(source, /×/)
+  assert.match(source, /label=\{t\("config\.device"\)\}/)
+  assert.match(
+    source,
+    /description=\{SHOW_DEVICE_RESOLUTION_HINT \? `\$\{t\("config\.deviceResolution"\)\}: \$\{selectedDevice\.width\} × \$\{selectedDevice\.height\}` : undefined\}/
+  )
+  assert.doesNotMatch(source, /<p className=\"w-\[200px\] max-w-full pl-\[12px\] text-xs text-kumo-subtle\">/)
   assert.doesNotMatch(source, /title:\s*"Dropdown"/)
   assert.doesNotMatch(source, /<DropdownMenu/)
   assert.doesNotMatch(source, /Worker/)
