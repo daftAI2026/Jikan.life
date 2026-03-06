@@ -39,7 +39,7 @@ function SetupGuideStep({ index, title, descriptionHtml, badgeLabel }) {
                     {index}
                 </span>
                 <Text as="h4" variant="body" size="sm" bold>{title}</Text>
-                {badgeLabel ? <Badge variant="secondary">{badgeLabel}</Badge> : null}
+                {badgeLabel ? <Badge variant="success">{badgeLabel}</Badge> : null}
             </header>
             <div
                 className={STEP_DESC_TEXT_CLASSNAME}

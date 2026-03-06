@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.24] - 2026-03-07
+
+### UI & UX
+- **Setup Guide Polish**: Upgraded the "Completed" step badge inside `SetupGuidePanel` from a neutral `secondary` variant to an affirmative `success` semantic color to provide clearer visual recognition during the setup workflow.
+
+### Tests
+- **UI Constraints**: Synchronized `kumo-migration.ui.behavior.test.js` to strictly assert the updated `success` variant on the Setup Guide step badge.
+
 ## [1.7.23] - 2026-03-06
 
 ### Infrastructure & Performance

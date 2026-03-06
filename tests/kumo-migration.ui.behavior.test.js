@@ -1110,6 +1110,8 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
   assert.match(source, /<header className="relative flex items-start border-b border-kumo-line px-4 py-4">/)
   assert.match(source, /<Text as="h3" variant="heading3" DANGEROUS_className="leading-6">/)
   assert.match(source, /<Text as="h4" variant="body" size="sm" bold>/)
+  assert.match(source, /<Badge variant="success">\{badgeLabel\}<\/Badge>/)
+  assert.doesNotMatch(source, /<Badge variant="secondary">\{badgeLabel\}<\/Badge>/)
   assert.match(source, /min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-y-contain p-4/)
   assert.match(source, /const STEP_DESC_TEXT_CLASSNAME = "text-sm leading-5 text-kumo-subtle \[\&_strong\]:font-semibold \[\&_strong\]:text-kumo-default"/)
   assert.match(source, /className=\{STEP_DESC_TEXT_CLASSNAME\}/)
