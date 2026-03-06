@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/sections/CLAUDE.md
 
 成员清单
-HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 md 整区 Guide 宿主；`mid` 复用桌面双栏壳层；Guide 打开时接入页面级阻断锁
+HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 md 整区 Guide 宿主；`mid` 复用桌面双栏壳层；Guide 打开时接入页面级阻断锁；真 `md` 下宿主左边界会避让 style 抽屉
 ComponentCell.jsx: 网格单元壳，负责标题与内容排布
 ComponentGrid.jsx: 旧版组件墙网格（备用）
 ComponentData.js: 旧版网格条目数据（备用）
@@ -30,5 +30,6 @@ HomeGrid 从 vendor 薄包装切换为本地编排实现；旧网格模块继续
 2026-03-04: HomeGrid 的 Set-it 触发链路新增“关闭后回焦”语义：记录触发按钮元素并在 `handleCloseSetupPanel` 关闭后一帧 `focus({ preventScroll: true })` 回退，保证键盘流程连续。
 2026-03-04: HomeGrid 的 SetupGuidePanel 挂载收敛为单宿主策略：仅当 `effectiveLayoutTier === "md"` 时渲染 md 固定覆盖宿主，避免与 HomeSettingsPane 双挂载造成语义重复。
 2026-03-04: Guide 宿主判定收敛为 HomeGrid 单一真相源：新增 `shouldRenderPaneGuideHost = !shouldRenderGridGuideHost` 并透传给 HomeSettingsPane，移除跨文件重复 tier 条件。
+2026-03-07: HomeGrid 新增 `sidebarOpen` 输入；真 `md` 下 md Guide 宿主左边界改为按抽屉开关切换，打开时使用 `rail + sidebar panel width` 避让 `Choose your style`，关闭时保持原 `rail` 起点。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

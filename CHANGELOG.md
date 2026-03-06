@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.25] - 2026-03-07
+
+### UI & UX
+- **Setup Guide Layout**: Enhanced the `md` responsive layout tier for the Setup Guide panel (`SetupGuidePanel`). The guide host now dynamically reacts to the `sidebarOpen` state, automatically shifting its left boundary to prevent overlapping the "Choose your style" drawer when the sidebar is active.
+
+### Architecture
+- **State Passthrough**: Updated `HomePage` to explicitly pass the `sidebarOpen` state down into `HomeGrid`, establishing a clean data flow for the guide host width calculations.
+
+### Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to strictly assert the new `sidebarOpen` prop drilling and the dynamic `className` calculations within `HomeGrid` that govern the Setup Guide's horizontal positioning on intermediate screens.
+
 ## [1.7.24] - 2026-03-07
 
 ### UI & UX

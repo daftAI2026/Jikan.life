@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/HomeSidebar/ThemeToggle/MobileFooter/HomeGrid), localStorage(registry.settingsAutoflow.v1), effective-layout-tier 判定器
- * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier，支持 mid）
- * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（mid 复用桌面壳层）
+ * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier 与 sidebarOpen，支持 mid）
+ * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（mid 复用桌面壳层；md guide 宿主避让 style 抽屉）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -109,6 +109,7 @@ function HomePage() {
                                 selectedStyle={selectedStyle}
                                 forceOnboarding={forceOnboarding}
                                 effectiveLayoutTier={effectiveLayoutTier}
+                                sidebarOpen={sidebarOpen}
                             />
                         </div>
                     </main>

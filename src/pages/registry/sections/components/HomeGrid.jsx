@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effectiveLayoutTier
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖 + effectiveLayoutTier 驱动的 md/mid/lg 宿主切换）
- * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动；mid 复用桌面壳层）
+ * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effectiveLayoutTier 与 sidebarOpen
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖 + effectiveLayoutTier 驱动的 md/mid/lg 宿主切换；md guide 宿主按 sidebarOpen 避让 style 抽屉）
+ * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动；mid 复用桌面壳层）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -22,12 +22,19 @@ function resolveMaxRevealStage(selectedType) {
     return 6
 }
 
-function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier = "lg" }) {
+function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier = "lg", sidebarOpen = false }) {
     const viewModel = useHomeWallpaperConfig({ selectedStyle })
     const toastManager = useKumoToastManager()
     const isDesktopShell = effectiveLayoutTier === "lg" || effectiveLayoutTier === "mid"
     const shouldRenderGridGuideHost = effectiveLayoutTier === "md"
     const shouldRenderPaneGuideHost = !shouldRenderGridGuideHost
+    const guideHostClassName = [
+        "pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 z-40 hidden md:block",
+        sidebarOpen
+            ? "left-[calc(var(--registry-rail-width)+var(--registry-sidebar-panel-width))]"
+            : "left-[var(--registry-rail-width)]",
+        isDesktopShell ? "md:hidden" : "",
+    ].join(" ")
     const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
     const [setupPlatform, setSetupPlatform] = useState("ios")
     const setupTriggerRef = useRef(null)
@@ -117,12 +124,7 @@ function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier 
             ].join(" ")}
         >
             {shouldRenderGridGuideHost ? (
-                <div
-                    className={[
-                        "pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 left-[var(--registry-rail-width)] z-40 hidden md:block",
-                        isDesktopShell ? "md:hidden" : "",
-                    ].join(" ")}
-                >
+                <div className={guideHostClassName}>
                     <SetupGuidePanel
                         open={isSetupPanelOpen}
                         platform={setupPlatform}

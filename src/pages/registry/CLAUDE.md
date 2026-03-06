@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/CLAUDE.md
 
 成员清单
-HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算 effectiveLayoutTier 并向工作区透传（`mid` 复用桌面壳层）
+HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算 effectiveLayoutTier 并向工作区透传 `effectiveLayoutTier/sidebarOpen`（`mid` 复用桌面壳层；md guide 宿主避让 style 抽屉）
 effective-layout-tier.js: 有效布局层级判定单一真相源，封装 `768/1024/1314` 阈值与“`1024~1314 + 抽屉打开 => mid`”规则
 registry-data.js: Registry 旧版导航与示例数据（备用）
 sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage（侧栏收起时隐藏左侧语言切换），右侧展示 GitHub 与小红书社交入口
@@ -66,5 +66,6 @@ ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 Ho
 2026-03-04: `HomePage` 移动端 footer 抽离为 `sections/MobileFooter.jsx`，页面层仅保留编排职责，底栏实现独立维护。
 2026-03-04: 新增 `effective-layout-tier.js` 并接入 `HomePage -> HomeGrid -> HomeSettingsPane`：当抽屉打开且 `window.innerWidth<=1314` 时，`1024+` 视口按 md 语义渲染；抽屉关闭保持 lg 语义。
 2026-03-04: 有效布局层级扩展 `mid`：`1024~1314 + 侧栏打开` 保持 LG 壳层，仅将 Setting Panel 切换为单列等分行（year=5、goal/life/空态=6）。
+2026-03-07: `HomePage` 继续向 `HomeGrid` 透传 `sidebarOpen`；真 `md` 下 SetupGuide 宿主左边界随 style 抽屉开关切换，抽屉打开时避让 `Choose your style` 面板，不再整块覆盖。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
