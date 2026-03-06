@@ -1,12 +1,13 @@
 /**
- * [INPUT]: 依赖 Kumo DatePicker/Popover/Button、shared goal 日期约束常量、 useDateFnsLocale
+ * [INPUT]: 依赖 Kumo DatePicker/Popover/Button、shared goal 日期约束常量、 useDateFnsLocale、cn
  * [OUTPUT]: 对外提供 GoalDateRangeField（Goal 第③卡的区间日期选择器，含 Next 30/90 days presets）
- * [POS]: workspace/cards 的 Goal 日期字段组件，承接官方 DatePicker(range) 本体与 presets 交互
+ * [POS]: workspace/cards 的 Goal 日期字段组件，承接官方 DatePicker(range) 本体与 presets 交互（支持触发按钮宽度覆盖）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button, DatePicker } from "@/components/ui/kumo"
 import { Popover } from "@/components/ui/popover"
 import { useDateFnsLocale } from "@/lib/I18nContext"
+import { cn } from "@/lib/utils"
 import { addDays, getLocalTodayISO, toISODate, toLocalDate } from "@/lib/date-utils"
 import { formatCaption as defaultFormatCaption } from "react-day-picker"
 import {
@@ -26,7 +27,7 @@ function getRangeLabel({ startISO, endISO, t }) {
     return t("placeholder.selectDateRange")
 }
 
-function GoalDateRangeField({ startISO, endISO, onChange, t }) {
+function GoalDateRangeField({ startISO, endISO, onChange, t, triggerClassName }) {
     const dateLocale = useDateFnsLocale()
     const startDate = toLocalDate(startISO)
     const endDate = toLocalDate(endISO)
@@ -59,7 +60,10 @@ function GoalDateRangeField({ startISO, endISO, onChange, t }) {
             <Popover.Trigger asChild>
                 <Button
                     variant="outline"
-                    className="h-9 w-[200px] max-w-full justify-start gap-2 rounded-lg px-3 text-left font-normal"
+                    className={cn(
+                        "h-9 w-[200px] max-w-full justify-start gap-2 rounded-lg px-3 text-left font-normal",
+                        triggerClassName
+                    )}
                 >
                     <span className="truncate text-sm">{getRangeLabel({ startISO, endISO, t })}</span>
                 </Button>

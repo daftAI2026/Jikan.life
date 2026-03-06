@@ -937,19 +937,33 @@ test("Goal countdown keeps url card at slot 6 for Set flow", () => {
   )
 })
 
-test("Goal fields card uses goal name + date range field wiring", () => {
+test("Goal fields card uses goal name + date range wiring with mid goal equal-width layout", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/goal-fields-card.jsx")
   const fieldShellSource = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
+  const rangeSource = readSource("src/pages/registry/sections/workspace/cards/goal-date-range-field.jsx")
 
   assert.match(source, /title:\s*"Goal"/)
   assertNamedImports(source, "./CardField", ["CardField", "CardFieldsStack"])
   assert.match(source, /<CardFieldsStack>/)
   assert.match(fieldShellSource, /function CardFieldsStack/)
+  assert.match(source, /render:\s*\(\{\s*actions,\s*config,\s*effectiveLayoutTier,\s*t\s*\}\)\s*=>/)
+  assert.match(source, /const isMidGoal = effectiveLayoutTier === "mid" && config\.selectedType === "goal"/)
+  assert.match(source, /if \(isMidGoal\) \{/)
+  assert.match(source, /grid w-full max-w-full grid-cols-2 items-start gap-2/)
+  assert.match(source, /className="min-w-0 w-full"/)
   assert.match(source, /actions\.setGoalName/)
   assert.match(source, /actions\.setGoalRange/)
   assert.match(source, /t\("config\.dateRange"\)/)
   assert.match(source, /GoalDateRangeField/)
+  assert.match(source, /className="w-full"/)
+  assert.match(source, /triggerClassName="h-9 w-full justify-start gap-2 rounded-lg px-3 text-left font-normal"/)
   assert.match(source, /className="w-\[200px\] max-w-full"/)
+  assert.match(rangeSource, /function GoalDateRangeField\(\{ startISO, endISO, onChange, t, triggerClassName \}\)/)
+  assert.match(rangeSource, /import \{ cn \} from "@\/lib\/utils"/)
+  assert.match(
+    rangeSource,
+    /className=\{cn\(\s*"h-9 w-\[200px\] max-w-full justify-start gap-2 rounded-lg px-3 text-left font-normal",\s*triggerClassName\s*\)\}/
+  )
   assert.doesNotMatch(source, /SettingsCardDatePickerField/)
 })
 

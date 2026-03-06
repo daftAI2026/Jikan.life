@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.21] - 2026-03-06
+
+### UI & UX
+- **Responsive Goal Card**: Upgraded the Goal fields card to natively support the `mid` layout tier. On intermediate screens, the Goal Name and Target Date range fields now render side-by-side in an equal-width grid (`grid-cols-2`), with the date trigger button smoothly spanning its full container width.
+
+### Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigidly assert the structural `grid-cols-2` layout constraints and specific conditional rendering boundaries of the `goal-fields-card` under the `mid` conceptual tier.
+
 ## [1.7.20] - 2026-03-06
 
 ### UI & UX
