@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.23] - 2026-03-06
+
+### Infrastructure & Performance
+- **Chunk Splitting Strategy**: Implemented deterministic `manualChunks` in `vite.config.js` to split the JavaScript payload into optimized vendor groups (`react-core`, `router`, `motion`, `kumo`, `aria`, `date`, `icons`). This prevents massive monolithic bundles, unlocks parallel downloading, and significantly improves long-term browser caching efficiency.
+
 ## [1.7.22] - 2026-03-06
 
 ### Architecture
