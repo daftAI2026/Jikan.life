@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.20] - 2026-03-06
+
+### UI & UX
+- **Popover Stability**: Refactored `colors-card` layout and `CardField` enclosures to eradicate `space-y` CSS utilities. This prevents aggressive structural shifting when Base UI's `Popover` injects hidden visually-hidden guard elements alongside trigger targets, substituting them for resilient `mb-1.5` margins.
+- **Responsive Colors Card**: Streamlined the `mid` layout tier for "year" and "goal" styles. It now retains the standard `lg` two-column configuration (`grid-cols-2`) for color pickers while intelligently hiding the dense preset palette grid, maintaining visual balance without interface crushing when the sidebar is active.
+
+### Tests
+- **UI Constraints**: Augmented `kumo-migration.ui.behavior.test.js` to rigidly forbid `space-y` variants near Select/Popover boundaries, and updated assertions to validate the new conditional rendering logic for `colors-card` presets on intermediate layout tiers.
+
 ## [1.7.19] - 2026-03-06
 
 ### UI & UX

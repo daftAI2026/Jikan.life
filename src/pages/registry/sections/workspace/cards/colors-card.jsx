@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 Kumo Button、ColorPicker、palettePresets 与颜色 actions/config/effectiveLayoutTier 链路
  * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡）
- * [POS]: workspace/cards 的颜色配置卡，承接 background/accent 与 presets 应用（mid+year/goal 下采用双列排布）
+ * [POS]: workspace/cards 的颜色配置卡，承接 background/accent 与 presets 应用（mid+year/goal 下仅保留与 lg 同构的 picker 区）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button as KumoButton } from "@/components/ui/kumo"
@@ -35,6 +35,31 @@ function renderPresetButtons({ actions, palettePresets, className }) {
     )
 }
 
+function renderColorPickers({ actions, className, config, t }) {
+    return (
+        <div className={className}>
+            <div className="min-w-0">
+                <p className="mb-1.5 text-xs text-kumo-subtle">{t("config.background")}</p>
+                <ColorPicker
+                    className="w-full"
+                    value={config.bgColor}
+                    showValue={false}
+                    onChange={(value) => actions.setBackgroundColor(value)}
+                />
+            </div>
+            <div className="min-w-0">
+                <p className="mb-1.5 text-xs text-kumo-subtle">{t("config.accent")}</p>
+                <ColorPicker
+                    className="w-full"
+                    value={config.accentColor}
+                    showValue={false}
+                    onChange={(value) => actions.setAccentColor(value)}
+                />
+            </div>
+        </div>
+    )
+}
+
 const colorsCard = {
     titleKey: "config.colors",
     render: ({ actions, config, effectiveLayoutTier, palettePresets, t }) => {
@@ -42,63 +67,28 @@ const colorsCard = {
 
         if (isMidYearOrGoal) {
             return (
-                <div className="flex w-full max-w-full items-start justify-center gap-4 px-4 py-1">
+                <CardFieldsStack>
                     <CardField className="space-y-2">
-                        <div className="grid w-[200px] max-w-full grid-cols-1 gap-2">
-                            <div className="min-w-0 space-y-1.5">
-                                <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
-                                <ColorPicker
-                                    className="w-full"
-                                    value={config.bgColor}
-                                    showValue={false}
-                                    onChange={(value) => actions.setBackgroundColor(value)}
-                                />
-                            </div>
-                            <div className="min-w-0 space-y-1.5">
-                                <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
-                                <ColorPicker
-                                    className="w-full"
-                                    value={config.accentColor}
-                                    showValue={false}
-                                    onChange={(value) => actions.setAccentColor(value)}
-                                />
-                            </div>
-                        </div>
-                    </CardField>
-                    <CardField label={t("config.colorPresets")} labelClassName="block">
-                        {renderPresetButtons({
+                        {renderColorPickers({
                             actions,
-                            palettePresets,
-                            className: "w-[200px] max-w-full grid grid-cols-4 gap-2",
+                            className: "grid w-[200px] max-w-full grid-cols-2 gap-2",
+                            config,
+                            t,
                         })}
                     </CardField>
-                </div>
+                </CardFieldsStack>
             )
         }
 
         return (
             <CardFieldsStack>
                 <CardField className="space-y-2">
-                    <div className="grid w-[200px] max-w-full grid-cols-2 gap-2">
-                        <div className="min-w-0 space-y-1.5">
-                            <p className="text-xs text-kumo-subtle">{t("config.background")}</p>
-                            <ColorPicker
-                                className="w-full"
-                                value={config.bgColor}
-                                showValue={false}
-                                onChange={(value) => actions.setBackgroundColor(value)}
-                            />
-                        </div>
-                        <div className="min-w-0 space-y-1.5">
-                            <p className="text-xs text-kumo-subtle">{t("config.accent")}</p>
-                            <ColorPicker
-                                className="w-full"
-                                value={config.accentColor}
-                                showValue={false}
-                                onChange={(value) => actions.setAccentColor(value)}
-                            />
-                        </div>
-                    </div>
+                    {renderColorPickers({
+                        actions,
+                        className: "grid w-[200px] max-w-full grid-cols-2 gap-2",
+                        config,
+                        t,
+                    })}
                 </CardField>
                 <CardField label={t("config.colorPresets")} labelClassName="block">
                     {renderPresetButtons({

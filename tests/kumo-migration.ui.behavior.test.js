@@ -261,6 +261,27 @@ test("Color primitives avoid overflow clipping so thumbs stay visible", () => {
   assert.doesNotMatch(source, /h-7 w-\[192px\] overflow-hidden/)
 })
 
+test("Workspace field shells avoid space-y layouts that shift popover triggers when Base UI inserts guards", () => {
+  const cardField = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
+  const colorsCard = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
+
+  assert.doesNotMatch(
+    cardField,
+    /w-\[200px\] max-w-full space-y-1\.5/,
+    "CardField should not use space-y on direct children because Popover injects hidden siblings around triggers"
+  )
+  assert.match(cardField, /w-\[200px\] max-w-full/)
+  assert.match(cardField, /mb-1\.5/)
+
+  assert.doesNotMatch(
+    colorsCard,
+    /min-w-0 space-y-1\.5/,
+    "ColorPicker wrappers should not use space-y because Popover injects hidden siblings around triggers"
+  )
+  assert.match(colorsCard, /min-w-0/)
+  assert.match(colorsCard, /mb-1\.5/)
+})
+
 test("No shadcn Select subcomponents remain in src", () => {
   const sourceFiles = listFiles("src").filter((file) => file.endsWith(".jsx"))
   const forbidden = [
@@ -747,7 +768,7 @@ test("Registry settings does not render selected type badge", () => {
   assert.doesNotMatch(hookSource, /getTypeName/)
 })
 
-test("Registry settings colors use shared ColorPicker component with mid year/goal two-column layout", () => {
+test("Registry settings colors keep lg picker layout and hide presets in mid year/goal", () => {
   const source = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
   const fieldShellSource = readSource("src/pages/registry/sections/workspace/cards/CardField.jsx")
 
@@ -761,19 +782,21 @@ test("Registry settings colors use shared ColorPicker component with mid year/go
     /const isMidYearOrGoal = effectiveLayoutTier === "mid" && \(config\.selectedType === "year" \|\| config\.selectedType === "goal"\)/
   )
   assert.match(source, /if \(isMidYearOrGoal\) \{/)
-  assert.match(source, /className:\s*"w-\[200px\] max-w-full grid grid-cols-4 gap-2"/)
   assert.match(fieldShellSource, /flex w-full max-w-full flex-col items-center px-4 py-1/)
   assert.match(fieldShellSource, /gap-4/)
-  assert.match(source, /className="grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
-  assert.match(source, /className="min-w-0 space-y-1\.5"/)
+  assert.match(source, /className:\s*"grid w-\[200px\] max-w-full grid-cols-2 gap-2"/)
+  assert.doesNotMatch(source, /className:\s*"w-\[200px\] max-w-full grid grid-cols-4 gap-2"/)
+  assert.match(source, /className="min-w-0"/)
+  assert.match(source, /className="mb-1\.5 text-xs text-kumo-subtle"/)
+  assert.doesNotMatch(source, /className="min-w-0 space-y-1\.5"/)
   assert.match(source, /ColorPicker[\s\S]*?className="w-full"/)
   assert.match(source, /t\("config\.background"\)[\s\S]*?<ColorPicker[\s\S]*?showValue=\{false\}/)
   assert.match(source, /t\("config\.accent"\)[\s\S]*?<ColorPicker[\s\S]*?showValue=\{false\}/)
-  assert.match(source, /t\("config\.colorPresets"\)/)
   assert.match(source, /actions\.setBackgroundColor/)
   assert.match(source, /actions\.setAccentColor/)
   assert.match(source, /actions\.applyPalette\(preset\.bg,\s*preset\.accent\)/)
   assert.match(source, /className:\s*"flex w-\[200px\] max-w-full flex-wrap gap-2"/)
+  assert.match(source, /<CardField label=\{t\("config\.colorPresets"\)\} labelClassName="block">/)
   assert.match(fieldShellSource, /w-\[200px\] max-w-full/)
   assert.doesNotMatch(source, /title:\s*"Switch"/)
   assert.doesNotMatch(source, /<Switch/)

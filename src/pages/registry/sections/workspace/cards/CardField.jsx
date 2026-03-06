@@ -16,9 +16,9 @@ function CardFieldsStack({ children, className = "", gap = "gap-4" }) {
 
 function CardField({ label, hint, children, className = "", labelClassName = "" }) {
     return (
-        <div className={cn("w-[200px] max-w-full space-y-1.5", className)}>
+        <div className={cn("w-[200px] max-w-full", className)}>
             {(label || hint) && (
-                <div className={cn("inline-flex items-center gap-1 text-xs text-kumo-subtle", labelClassName)}>
+                <div className={cn("mb-1.5 inline-flex items-center gap-1 text-xs text-kumo-subtle", labelClassName)}>
                     {label ? <span>{label}</span> : null}
                     {hint ? <span>{hint}</span> : null}
                 </div>
