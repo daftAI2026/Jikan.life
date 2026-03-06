@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.22] - 2026-03-06
+
+### Architecture
+- **Mainline Integration**: Merged the mid-tier responsive layout enhancements (`colors-card` and `goal-fields-card`) into the main branch, solidifying fluid grid adaptations for intermediate screen sizes when the sidebar is active.
+
 ## [1.7.21] - 2026-03-06
 
 ### UI & UX
