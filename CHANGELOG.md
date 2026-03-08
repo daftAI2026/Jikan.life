@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.26] - 2026-03-08
+
+### UI & UX
+- **Goal Date Range Responsive**: Replaced hardcoded pixel values (`252px`/`276px`/`544px`) in the Goal date range popover with CSS variable derivations (`--rdp-day-width`, `--rdp-months-gap`), retaining the viewport-driven compact/wide behavior while eliminating coupling to Kumo internal sizing constants. Compact mode still stacks to single-month and hides the "Next 90 days" preset; wide mode restores dual-month side-by-side layout.
+- **Card Title i18n**: Migrated hardcoded card titles (`"Goal"`, `"Life"`) to i18n keys (`config.goal`, `config.life`) across `goal-fields-card` and `life-fields-card`, with translations added for all four languages (EN/CN/TW/JA).
+- **Preset Buttons Refactor**: Refactored inline preset buttons to a declarative `PRESETS` array with `.map()` rendering and `data-preset` attributes for cleaner structure and testability.
+
+### Tests
+- **Responsive Logic Guards**: Expanded `kumo-migration.ui.behavior.test.js` with comprehensive assertions for the viewport-driven compact/wide mode: CSS variable derivation constants, `matchMedia` listener setup, `datePickerStyles` conditional structure, `visiblePresets` filtering, popover alignment/width switching, and absence of legacy DOM measurement APIs (`ResizeObserver`, `requestAnimationFrame`, `querySelector`).
+- **i18n Guards**: Added assertions to verify `config.goal` and `config.life` translation keys exist in all four language blocks and that legacy hardcoded titles are fully eradicated.
+
 ## [1.7.25] - 2026-03-07
 
 ### UI & UX

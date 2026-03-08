@@ -10,7 +10,7 @@ import { toISODate, toLocalDate } from "@/lib/date-utils"
 import { CardField, CardFieldsStack } from "./CardField"
 
 const lifeFieldsCard = {
-    title: "Life",
+    titleKey: "config.life",
     render: ({ actions, config, t, todayISO }) => {
         const dobDate = toLocalDate(config.dob)
         const todayDate = toLocalDate(todayISO)

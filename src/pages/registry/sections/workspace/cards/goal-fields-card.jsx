@@ -9,7 +9,7 @@ import { CardField, CardFieldsStack } from "./CardField"
 import { GoalDateRangeField } from "./goal-date-range-field"
 
 const goalFieldsCard = {
-    title: "Goal",
+    titleKey: "config.goal",
     render: ({ actions, config, effectiveLayoutTier, t }) => {
         const isMidGoal = effectiveLayoutTier === "mid" && config.selectedType === "goal"
 
