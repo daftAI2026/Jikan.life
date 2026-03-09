@@ -9,7 +9,8 @@ goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyG
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
-HomePreviewPane.jsx: 左侧手机预览面板，支持“未选风格 SkeletonLine 引导态”与 Canvas 实时壁纸渲染切换；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 preview 视口，确保所见即所得。
+HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，确保所见即所得。
+LockScreenPreviewFrame.jsx: Figma 锁屏壳私有 frame，收口 `450x920 / 402x874 / inset 24,23` 基准与 overlay/bezel 静态资源。
 HomeSettingsPane.jsx: 右侧设置面板主容器；回归 pane 编排层，只负责卡片顺序、6 站位空态 Skeleton Base、`revealStage` 渐进解锁、segmented workspace（`mobile + md drawer open`）与 grid 布局分流、title/body skeleton 与 `useAnchoredSetupRow` 语义收口；Guide 宿主继续读取 `shouldRenderPaneGuideHost`，导出 `SETTINGS_CARD_IDS`
 HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；承载 active card 壳、tab rail、隐藏测量节点、tab label skeleton 与视图专属 helper/常量，不再与 pane 编排层混写
 use-md-bottom-tabs-metrics.js: md bottom-tabs 私有测量 hook；输入 `tabsContainerRef/measureTriggerRefs/measureLabels`，统一首帧同步自然宽测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、1px deadzone 与 live-resize indicator 显隐/禁过渡策略，输出 `distributedTabWidths/indicatorClassName`
@@ -19,15 +20,16 @@ SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧
 cards/: Setting Panel 业务卡子模块目录，承载 location/wallpaper/goal/life/colors/device/url 卡片实现与聚合入口（详见 cards/CLAUDE.md）
 
 结构
-workspace/ - Home 双栏工作区子模块 (14 files + cards/ 子目录)
+workspace/ - Home 双栏工作区子模块 (15 files + cards/ 子目录)
 
 架构决策
-采用“状态 hook + 左右面板”分层，HomeGrid 负责工作区编排并统一持有 Set-it 流程状态与 AutoFlow stage（浏览器级一次引导），同时把 segmented workspace（`mobile + md drawer open`）收敛为单一布尔真相源后透传给 pane。右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦；在 segmented workspace 下，pane 从多卡 grid 切为“上方单卡 + 底部 segmented tabs”，且空态不再回退 grid，而是直接显示六项全量 tabs（第 3 项固定占位 `Goal`）与单卡 skeleton。当前层次再收口为三段：`HomeSettingsPane.jsx` 负责编排与业务推导，`HomeSettingsPaneBottomTabsLayout.jsx` 负责 bottom-tabs 完整视图，`use-md-bottom-tabs-metrics.js` 负责测量链。tabs 壳层与单卡壳层常驻，`selectedType` 与 `revealStage` 只控制 title/tab label/body 的 skeleton 是否解开，不再控制底栏容器是否存在。底部宽度链已进一步收口到 `use-md-bottom-tabs-metrics.js`：首帧同步测 hidden trigger 自然宽，缓存 natural widths，字体未就绪时走 `document.fonts.ready` 补测，ResizeObserver 只观察 `[role="tablist"]` 并以 1px deadzone 过滤亚像素抖动；最终仍由 `md-bottom-tabs-widths.js` 负责分配算法，再通过容器 CSS 变量 + trigger 级 className 直接控制 Kumo trigger 本体，而不是回写到 label wrapper。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
+采用“状态 hook + 左右面板”分层，HomeGrid 负责工作区编排并统一持有 Set-it 流程状态与 AutoFlow stage（浏览器级一次引导），同时把 segmented workspace（`mobile + md drawer open`）收敛为单一布尔真相源后透传给 pane。左侧 preview 现已再拆成“内容渲染 + 壳层 frame”两层：`HomePreviewPane.jsx` 只负责空态提示与 live Canvas 绘制，并始终按导出坐标先绘制、再以单一 `previewScale` 严格等比缩放；`LockScreenPreviewFrame.jsx` 固定维护 Figma `Lock Screen` 的缩放真相源，并以 Wallpaper 槽位高度 `510px` 反推整机尺寸，消除旧通用手机壳的魔法数字。右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦；在 segmented workspace 下，pane 从多卡 grid 切为“上方单卡 + 底部 segmented tabs”，且空态不再回退 grid，而是直接显示六项全量 tabs（第 3 项固定占位 `Goal`）与单卡 skeleton。当前层次再收口为三段：`HomeSettingsPane.jsx` 负责编排与业务推导，`HomeSettingsPaneBottomTabsLayout.jsx` 负责 bottom-tabs 完整视图，`use-md-bottom-tabs-metrics.js` 负责测量链。tabs 壳层与单卡壳层常驻，`selectedType` 与 `revealStage` 只控制 title/tab label/body 的 skeleton 是否解开，不再控制底栏容器是否存在。底部宽度链已进一步收口到 `use-md-bottom-tabs-metrics.js`：首帧同步测 hidden trigger 自然宽，缓存 natural widths，字体未就绪时走 `document.fonts.ready` 补测，ResizeObserver 只观察 `[role="tablist"]` 并以 1px deadzone 过滤亚像素抖动；最终仍由 `md-bottom-tabs-widths.js` 负责分配算法，再通过容器 CSS 变量 + trigger 级 className 直接控制 Kumo trigger 本体，而不是回写到 label wrapper。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
 
 开发规范
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
+2026-03-10: 新增 `LockScreenPreviewFrame.jsx` 与 `public/preview/ios26001/*` 静态 SVG，左侧 preview 固定切到 Figma `Lock Screen` 壳层；以 `Wallpaper 402x874` 为比例真相源并锁定目标高度 `510px`，`HomePreviewPane` 仅保留 live canvas / 空态提示内容。
 2026-03-10: `HomePreviewPane` 的 preview 缩放矩阵收口为严格等比 `previewScale`，移除 `scaleX/scaleY` 分离缩放导致的几何轻微椭圆化；渲染路径仍保持“导出坐标先绘制，再映射到 preview”不变。
 2026-03-10: `HomePreviewPane` 的 `year/life/goal` 预览统一改为“原始设备坐标绘制 + preview 缩放显示”，消除 `goal` 专属特判并让三类壁纸都与导出成品保持同一坐标语义。
 2026-03-09: 新增 `HomeSettingsPaneBottomTabsLayout.jsx`，将 `HomeSettingsPane` 中的 bottom-tabs 完整视图链与视图专属 helper/常量整体提取到私有文件；`HomeSettingsPane.jsx` 进一步收敛为编排层，保留 `MD_BOTTOM_TABS_SLOT_COUNT` 作为 pane 侧布局常量，新视图文件不反向依赖该常量。

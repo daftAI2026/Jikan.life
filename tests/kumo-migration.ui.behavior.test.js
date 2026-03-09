@@ -6,7 +6,7 @@
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { assertNamedImports, listFiles, path, pathToFileURL, readSource } from "./helpers/source-test-helpers.js"
+import { assertNamedImports, fs, listFiles, path, pathToFileURL, readSource } from "./helpers/source-test-helpers.js"
 
 test("Registry workspace no longer hardcodes UI language to English", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
@@ -641,6 +641,11 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
 test("HomePreviewPane scales all wallpaper previews from base device coordinates", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
+  assert.match(
+    source,
+    /const SCREEN_WIDTH = LOCK_SCREEN_DARK_LAYOUT\.wallpaper\.width \* LOCK_SCREEN_DARK_LAYOUT\.scale/
+  )
+  assert.match(source, /const SCREEN_HEIGHT = LOCK_SCREEN_DARK_LAYOUT\.targetHeight/)
   assert.match(source, /const previewScale = Math\.max\(SCREEN_WIDTH \/ baseWidth,\s*SCREEN_HEIGHT \/ baseHeight\)/)
   assert.match(source, /const previewWidth = baseWidth \* previewScale/)
   assert.match(source, /const previewHeight = baseHeight \* previewScale/)
@@ -658,6 +663,49 @@ test("HomePreviewPane scales all wallpaper previews from base device coordinates
   assert.doesNotMatch(source, /drawYearProgress\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawLifeCalendar\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawGoalCountdown\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
+})
+
+test("HomePreviewPane delegates lock screen chrome to LockScreenPreviewFrame", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
+
+  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame", "LOCK_SCREEN_DARK_LAYOUT"])
+  assert.match(source, /<LockScreenPreviewFrame showOverlay=\{Boolean\(config\.selectedType\)\}>/)
+  assert.match(source, /aria-label="Wallpaper live preview canvas"/)
+  assert.doesNotMatch(source, /rounded-\[40px\]/)
+  assert.doesNotMatch(source, /top-\[10px\]/)
+})
+
+test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", () => {
+  const source = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
+
+  assert.match(source, /const LOCK_SCREEN_DARK_LAYOUT =/)
+  assert.match(source, /const BEZEL_INSET = 1/)
+  assert.match(source, /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true\s*\}\)/)
+  assert.match(source, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
+  assert.match(source, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
+  assert.match(source, /targetHeight:\s*510/)
+  assert.match(source, /scale:\s*510\s*\/\s*874/)
+  assert.match(source, /width:\s*`\$\{scaledWallpaperWidth\}px`/)
+  assert.match(source, /height:\s*`\$\{scaledWallpaperHeight\}px`/)
+  assert.match(source, /const bezelScale = \(scaledShellWidth - BEZEL_INSET \* 2\) \/ scaledShellWidth/)
+  assert.match(source, /left:\s*`\$\{scaledBezelLeft\}px`/)
+  assert.match(source, /top:\s*`\$\{scaledBezelTop\}px`/)
+  assert.match(source, /width:\s*`\$\{scaledBezelWidth\}px`/)
+  assert.match(source, /height:\s*`\$\{scaledBezelHeight\}px`/)
+  assert.match(source, /showOverlay \? \(/)
+  assert.match(source, /"\/preview\/ios26001\/lock-screen-dark-overlay\.svg"/)
+  assert.match(source, /"\/preview\/ios26001\/lock-screen-dark-bezel\.svg"/)
+})
+
+test("Public preview includes lock screen shell assets", () => {
+  assert.ok(
+    fs.existsSync(path.join(process.cwd(), "public/preview/ios26001/lock-screen-dark-overlay.svg")),
+    "lock screen overlay asset missing"
+  )
+  assert.ok(
+    fs.existsSync(path.join(process.cwd(), "public/preview/ios26001/lock-screen-dark-bezel.svg")),
+    "lock screen bezel asset missing"
+  )
 })
 
 test("HomeSettingsPane uses six-slot skeleton base and stage-based reveal", () => {

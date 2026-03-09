@@ -27,6 +27,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 2026-03-10: 更新 `wallpaper-visual-snapshots.behavior.test.js` 与 `kumo-migration.ui.foundation.behavior.test.js`：将 Year/Life/Goal 视觉快照预期收敛到 `EXPECTED_HASHES` 常量，并新增 `sync:wallpaper-snapshots` 脚本护栏，要求基线更新通过统一脚本回写，避免人肉复制 sha256 导致 CI 漂移。
 2026-03-10: 更新 `kumo-migration.ui.registry-shell.behavior.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 Goal range restart 桥接放行唯一合法路径 `src/components/ui/kumo.jsx -> vendor/kumo-date-picker`，并新增源码护栏要求 committed/draft 分层、`rangeSelectionBehavior="restart"`、`onRangeComplete` 与 `Popover` 受控开关共存，防止临时 vendor 扩散到页面层。
 2026-03-10: 更新 `wallpaper-core-api.behavior.test.js`：新增 Year dot 尺寸常量护栏，锁定 facade 暴露与当前共享常量语义，防止圆点微调时 preview/Worker 共享比例漂移。
+2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：新增 Figma 锁屏 preview 护栏，强制 `HomePreviewPane` 委托 `LockScreenPreviewFrame`、锁定 `450x920 / 402x874 / inset 24,23 / targetHeight 510` 布局真相源，并要求 `public/preview/ios26001/*` 静态壳资源存在。
 2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：要求 `HomePreviewPane` 使用单一 `previewScale` 做严格等比缩放，禁止回流 `scaleX/scaleY` 分离缩放。
 2026-03-10: 新增 `kumo-migration.ui.bottom-tabs.behavior.test.js`，继续从 `kumo-migration.ui.behavior.test.js` 抽离 md bottom-tabs 视图拆分、测量链与 skeleton 护栏，使 Workspace 主文件回到 800 行以下，降低导航壳与复杂底栏回归的耦合噪音。
 2026-03-10: 新增 `kumo-migration.ui.foundation.behavior.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，并收缩 `kumo-migration.ui.behavior.test.js` 为 Workspace/Settings 复杂交互护栏；拆分基础层、页面壳层与 workspace 层职责，避免 1500+ 行单文件回归时定位噪音。
