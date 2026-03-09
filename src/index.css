@@ -32,6 +32,7 @@ html {
 :root {
   color-scheme: light;
   --registry-topbar-height: 48px;
+  --registry-mobile-footer-height: 0px;
   --registry-rail-width: 48px;
   --registry-tools-rail-width: 48px;
   --registry-sidebar-panel-width: 290px;
@@ -76,12 +77,12 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
 
 @media (max-width: 767px) {
   .registry-main-content-mobile-height {
-    height: calc(100vh - var(--registry-topbar-height) - var(--registry-topbar-height));
+    height: calc(100vh - var(--registry-topbar-height) - var(--registry-mobile-footer-height));
   }
 
   @supports (height: 100dvh) {
     .registry-main-content-mobile-height {
-      height: calc(100dvh - var(--registry-topbar-height) - var(--registry-topbar-height));
+      height: calc(100dvh - var(--registry-topbar-height) - var(--registry-mobile-footer-height));
     }
   }
 }

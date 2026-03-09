@@ -1,6 +1,6 @@
 {
   "name": "jikan-life",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "Jikan.life - Dynamic wallpaper generator",
   "main": "worker/index.js",
   "type": "module",

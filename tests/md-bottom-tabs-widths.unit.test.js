@@ -67,3 +67,13 @@ test("md bottom tabs shrink all tabs evenly after every item has been leveled", 
     [70, 70, 70]
   )
 })
+
+test("md bottom tabs keep evenly sharing extra width in wider containers", () => {
+  assert.deepEqual(
+    resolveMdBottomTabWidths({
+      naturalWidths: [92, 116, 148],
+      containerWidth: 476,
+    }),
+    [132, 156, 188]
+  )
+})

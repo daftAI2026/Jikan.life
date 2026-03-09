@@ -12,6 +12,14 @@ import { useMdBottomTabsMetrics } from "./use-md-bottom-tabs-metrics"
 
 const MD_BOTTOM_TAB_WIDTH_VAR_PREFIX = "--md-tab-w-"
 const MD_BOTTOM_TAB_MEASURE_TRIGGER_CLASSNAME = "inline-flex items-center rounded-lg px-2.5 text-base whitespace-nowrap"
+const MD_BOTTOM_TAB_TRIGGER_CLASSNAMES = [
+    "min-w-0 justify-center w-[var(--md-tab-w-0)] [flex:0_0_var(--md-tab-w-0)]",
+    "min-w-0 justify-center w-[var(--md-tab-w-1)] [flex:0_0_var(--md-tab-w-1)]",
+    "min-w-0 justify-center w-[var(--md-tab-w-2)] [flex:0_0_var(--md-tab-w-2)]",
+    "min-w-0 justify-center w-[var(--md-tab-w-3)] [flex:0_0_var(--md-tab-w-3)]",
+    "min-w-0 justify-center w-[var(--md-tab-w-4)] [flex:0_0_var(--md-tab-w-4)]",
+    "min-w-0 justify-center w-[var(--md-tab-w-5)] [flex:0_0_var(--md-tab-w-5)]",
+]
 const MD_TAB_LABEL_KEY_BY_CARD_ID = {
     location: "config.location",
     "wallpaper-lang": "config.wallpaperLang",
@@ -47,12 +55,8 @@ function resolveMdBottomTabsWidthVars(widths) {
     }, {})
 }
 
-function resolveMdBottomTabTriggerClassName(index, tabCount) {
-    const triggerClassNames = Array.from({ length: tabCount }, (_, triggerIndex) => {
-        const widthVarName = resolveMdBottomTabsWidthVarName(triggerIndex)
-        return `min-w-0 justify-center w-[var(${widthVarName})] [flex:0_0_var(${widthVarName})]`
-    })
-    return triggerClassNames[index] ?? "min-w-0 justify-center"
+function resolveMdBottomTabTriggerClassName(index) {
+    return MD_BOTTOM_TAB_TRIGGER_CLASSNAMES[index] ?? "min-w-0 justify-center"
 }
 
 function resolveMdBottomTabLabelContent(cardId, isLabelRevealed, t) {
@@ -116,7 +120,6 @@ export function HomeSettingsPaneBottomTabsLayout({
         measureLabels,
     })
     const bottomTabsWidthVars = resolveMdBottomTabsWidthVars(distributedTabWidths)
-    const tabCount = bottomTabsCardOrder.length
 
     return (
         <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
@@ -177,7 +180,7 @@ export function HomeSettingsPaneBottomTabsLayout({
                             tabs={bottomTabsCardOrder.map((cardId, index) => ({
                                 value: cardId,
                                 label: resolveMdBottomTabLabelContent(cardId, revealedTabs.includes(cardId), t),
-                                className: resolveMdBottomTabTriggerClassName(index, tabCount),
+                                className: resolveMdBottomTabTriggerClassName(index),
                             }))}
                             value={currentActiveTab}
                             onValueChange={setActiveTabId}

@@ -15,6 +15,7 @@ import { resolveEffectiveLayoutTier } from "./effective-layout-tier"
 
 const AUTOFLOW_STORAGE_KEY = "registry.settingsAutoflow.v1"
 const ONBOARDING_FORCE_QUERY_VALUE = "force"
+const SHOW_MOBILE_FOOTER = false
 
 function isForceOnboardingEnabled(search) {
     const params = new URLSearchParams(search)
@@ -33,8 +34,6 @@ function HomePage() {
     const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth, sidebarOpen })
     const isDesktopShell = effectiveLayoutTier === "lg" || effectiveLayoutTier === "mid"
     const isMdClosedPane = effectiveLayoutTier === "md" && !sidebarOpen
-    const useDesktopShellContainer = isDesktopShell || isMdClosedPane
-
     useEffect(() => {
         if (!forceOnboarding) return
         setSelectedStyle(null)
@@ -76,7 +75,12 @@ function HomePage() {
     }, [])
 
     return (
-        <div className="isolate">
+        <div
+            className="isolate"
+            style={{
+                "--registry-mobile-footer-height": SHOW_MOBILE_FOOTER ? "var(--registry-topbar-height)" : "0px",
+            }}
+        >
             <HomeSidebar
                 currentPath={location.pathname}
                 selectedStyle={selectedStyle}
@@ -89,7 +93,7 @@ function HomePage() {
                 <ThemeToggle />
             </div>
 
-            <MobileFooter />
+            {SHOW_MOBILE_FOOTER && <MobileFooter />}
 
             <div
                 id="main-content"

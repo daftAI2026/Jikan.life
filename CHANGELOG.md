@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.4] - 2026-03-10
+
+### Architecture
+- **Bottom Tabs Performance Constraint**: Replaced runtime `Array.from` flex class generation in `HomeSettingsPaneBottomTabsLayout` with a pre-compiled `MD_BOTTOM_TAB_TRIGGER_CLASSNAMES` constant array. This structurally eliminates dynamic array instantiation during render cycles, completely stabilizing DOM flex boundaries.
+
+### UI & UX
+- **Mobile Footer Guard**: Appended a `SHOW_MOBILE_FOOTER` strict feature gateway in `HomePage.jsx` to dynamically control the instantiation of the mobile interaction footer.
+
+### Tests
+- **UI Architecture Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigidly forbid dynamic tab width iteration, asserting the new pre-compiled flex array constraints and the new `useMdBottomTabsLayout` layout variable.
+- **Width Algorithmic Guards**: Expanded unit tests (`md-bottom-tabs-widths.unit.test.js`) boundary testing to assert that surplus container width is shared completely evenly across segmented tabs once baseline natural targets are matched.
+
 ## [1.8.3] - 2026-03-09
 
 ### Infrastructure
@@ -18,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation & Tests
 - **Fractal Protocol**: Updated component L2 and L3 records across `tests/CLAUDE.md`, `scripts/CLAUDE.md`, and `src/pages/registry/sections/workspace/CLAUDE.md` to reflect the new version synchronization hook and the bottom tabs extraction.
 - **UI Architecture Guards**: Adapted `kumo-migration.ui.behavior.test.js` to rigidly assert the boundaries of the newly isolated `HomeSettingsPaneBottomTabsLayout` source block.
+
 ## [1.8.2] - 2026-03-09
 
 ### Architecture
