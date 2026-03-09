@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-03-09
+
+### UI & UX
+- **Bottom Tabs Performance**: Optimized the `md` layout tier segmented bottom tabs in `HomeSettingsPane`. Migrated from deferred `requestAnimationFrame` measurements to synchronous layout effects. Natural width measurements are now rigidly cached in refs, and continuous window resizing selectively suspends the active tab indicator transition, entirely eliminating resize jitter and animation lag.
+
+### Documentation & Tests
+- **Fractal Protocol**: Updated structural tracking in `workspace/CLAUDE.md` and `tests/CLAUDE.md` reflecting the new synchronous resize and indicator handling constraints.
+- **Performance Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigidly assert the synchronous width initialization, `naturalTabWidthsRef` caching strategy, and conditional indicator transition logic.
+
 ## [1.8.0] - 2026-03-09
 
 ### UI & UX

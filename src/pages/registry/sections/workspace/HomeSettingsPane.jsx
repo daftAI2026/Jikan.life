@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useLayoutEffect/useRef/useState)、@/components/ui/kumo(SkeletonLine/Tabs)、md-bottom-tabs-widths、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 `md + drawer open` 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 pane 级 Guide 宿主；布局模式由 HomeGrid 显式收口后透传，避免 pane 内再次推理 sidebar 语义；md bottom-tabs 宽度由“自然宽测量 + 分配算法”单向投影回 trigger 本体，title/tab label 的 reveal 与卡片主体解锁解耦
+ * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 pane 级 Guide 宿主；布局模式由 HomeGrid 显式收口后透传，避免 pane 内再次推理 sidebar 语义；md bottom-tabs 宽度由“自然宽缓存 + 分配算法”单向投影回 trigger 本体，resize 时仅重算容器宽并临时关闭 indicator 过渡，title/tab label 的 reveal 与卡片主体解锁解耦
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useLayoutEffect, useRef, useState } from "react"
@@ -152,6 +152,10 @@ function resolveMdBottomTabsWidthVars(widths) {
     }, {})
 }
 
+function resolveMdBottomTabsDistributedWidths({ naturalWidths, containerWidth }) {
+    return resolveMdBottomTabWidths({ naturalWidths, containerWidth })
+}
+
 function resolveMdBottomTabTriggerClassName(index) {
     return MD_BOTTOM_TAB_TRIGGER_CLASSNAMES[index] ?? "min-w-0 justify-center"
 }
@@ -197,7 +201,10 @@ function HomeSettingsPaneBottomTabsLayout({
 }) {
     const tabsContainerRef = useRef(null)
     const measureTriggerRefs = useRef([])
+    const naturalTabWidthsRef = useRef([])
+    const resizeSettledTimeoutRef = useRef(null)
     const [distributedTabWidths, setDistributedTabWidths] = useState([])
+    const [isResizingTabs, setIsResizingTabs] = useState(false)
 
     const activeSlotIndex = currentActiveTab ? bottomTabsCardOrder.indexOf(currentActiveTab) : 0
     const activeCardDefinition = currentActiveTab
@@ -221,39 +228,53 @@ function HomeSettingsPaneBottomTabsLayout({
 
         const containerElement = tabsContainerRef.current
         if (!containerElement) return undefined
+        const tabsListElement = containerElement.querySelector('[role="tablist"]')
+        if (!tabsListElement) return undefined
+
+        const naturalWidths = measureTriggerRefs.current
+            .slice(0, bottomTabsCardOrder.length)
+            .map((element) => element?.getBoundingClientRect().width ?? 0)
+        naturalTabWidthsRef.current = naturalWidths
+        setDistributedTabWidths(resolveMdBottomTabsDistributedWidths({
+            naturalWidths,
+            containerWidth: tabsListElement.getBoundingClientRect().width,
+        }))
 
         let frameId = 0
         let resizeObserver = null
 
-        const measureTabWidths = () => {
-            const naturalWidths = measureTriggerRefs.current
-                .slice(0, bottomTabsCardOrder.length)
-                .map((element) => element?.getBoundingClientRect().width ?? 0)
-            const tabsListElement = containerElement.querySelector('[role="tablist"]')
-            const availableWidth = tabsListElement?.getBoundingClientRect().width ?? containerElement.getBoundingClientRect().width
-            const nextWidths = resolveMdBottomTabWidths({ naturalWidths, containerWidth: availableWidth })
-
-            setDistributedTabWidths((previousWidths) => (
-                areTabWidthsEqual(previousWidths, nextWidths) ? previousWidths : nextWidths
-            ))
-        }
-
-        const scheduleMeasurement = () => {
+        const scheduleResizeMeasurement = () => {
             cancelAnimationFrame(frameId)
-            frameId = requestAnimationFrame(measureTabWidths)
-        }
+            frameId = requestAnimationFrame(() => {
+                const nextWidths = resolveMdBottomTabsDistributedWidths({
+                    naturalWidths: naturalTabWidthsRef.current,
+                    containerWidth: tabsListElement.getBoundingClientRect().width,
+                })
 
-        scheduleMeasurement()
+                setDistributedTabWidths((previousWidths) => (
+                    areTabWidthsEqual(previousWidths, nextWidths) ? previousWidths : nextWidths
+                ))
+            })
+        }
 
         if (typeof ResizeObserver === "function") {
-            resizeObserver = new ResizeObserver(scheduleMeasurement)
-            resizeObserver.observe(containerElement)
-            const tabsListElement = containerElement.querySelector('[role="tablist"]')
-            if (tabsListElement) resizeObserver.observe(tabsListElement)
+            resizeObserver = new ResizeObserver(() => {
+                setIsResizingTabs(true)
+                scheduleResizeMeasurement()
+                window.clearTimeout(resizeSettledTimeoutRef.current)
+                resizeSettledTimeoutRef.current = window.setTimeout(() => {
+                    setIsResizingTabs(false)
+                    resizeSettledTimeoutRef.current = null
+                }, 120)
+            })
+            resizeObserver.observe(tabsListElement)
         }
 
         return () => {
             cancelAnimationFrame(frameId)
+            window.clearTimeout(resizeSettledTimeoutRef.current)
+            resizeSettledTimeoutRef.current = null
+            setIsResizingTabs(false)
             resizeObserver?.disconnect()
         }
     }, [tabLabelsKey, bottomTabsCardOrder.length])
@@ -311,6 +332,7 @@ function HomeSettingsPaneBottomTabsLayout({
                         </div>
                         <Tabs
                             className="w-full"
+                            indicatorClassName={isResizingTabs ? "!transition-none" : undefined}
                             listClassName="w-full"
                             variant="segmented"
                             tabs={bottomTabsCardOrder.map((cardId, index) => ({
