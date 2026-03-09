@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.6] - 2026-03-10
+
+### Architecture
+- **Workspace Decoupling**: Finalized the complete decoupling of the `md` layout tier segmented bottom tabs. Extracted the complex logic from `HomeSettingsPane` into independent layout blocks, significantly enhancing single-responsibility.
+- **Unified Segmented Flow**: Transitioned both the `mobile` layout tier and the `md` open-sidebar configurations into a unified segmented workspace flow, solidifying the structural handling of constrained responsive spaces.
+
+### UI & UX
+- **Performance Optimization**: Optimized the `md` bottom tabs by resolving synchronous resize edge cases and disabling visual transitions during active layout resizing. This entirely prevents UI flickering and jank during dynamic window adjustments.
+
 ## [1.8.5] - 2026-03-10
 
 ### Architecture
