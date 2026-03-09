@@ -4,7 +4,7 @@ Thumbs.db
 *.swp
 
 # Dependencies
-node_modules/
+node_modules
 
 # Cloudflare Workers
 .wrangler/

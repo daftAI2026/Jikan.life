@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useState)、@/components/ui/kumo(SkeletonLine)、HomeSettingsPaneBottomTabsLayout、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
- * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 `md + drawer open` 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；md bottom-tabs 专属视图已提取到私有文件，pane 只保留分流与业务编排
+ * [INPUT]: 依赖 react(useState)、@/components/ui/kumo(SkeletonLine)、HomeSettingsPaneBottomTabsLayout、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/segmented-workspace/guide-host 参数
+ * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 segmented workspace 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
+ * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；segmented workspace 专属视图已提取到私有文件，pane 只保留分流与业务编排
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState } from "react"
@@ -215,13 +215,13 @@ function HomeSettingsPane(props) {
         revealStage = 0,
         onRequestRevealAll,
         effectiveLayoutTier = "lg",
-        useMdBottomTabsLayout = false,
+        useSegmentedWorkspaceLayout = false,
         shouldRenderPaneGuideHost = true,
     } = props
     const [activeTabId, setActiveTabId] = useState(null)
     const isMid = effectiveLayoutTier === "mid"
     const isLg = effectiveLayoutTier === "lg"
-    const shouldUseAnchoredSetupRow = effectiveLayoutTier === "mid" || useMdBottomTabsLayout
+    const shouldUseAnchoredSetupRow = effectiveLayoutTier === "mid" || useSegmentedWorkspaceLayout
     const rowCount = resolveMidRowCount(config.selectedType)
     const todayISO = getLocalTodayISO()
 
@@ -266,7 +266,7 @@ function HomeSettingsPane(props) {
         />
     )
 
-    if (useMdBottomTabsLayout) return <HomeSettingsPaneBottomTabsLayout
+    if (useSegmentedWorkspaceLayout) return <HomeSettingsPaneBottomTabsLayout
         bottomTabsCardOrder={bottomTabsCardOrder}
         revealedTabs={revealedTabs}
         cardViewModel={cardViewModel}

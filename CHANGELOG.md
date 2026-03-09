@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.5] - 2026-03-10
+
+### Architecture
+- **Segmented Workspace Architecture**: Generalized the specific `md` bottom-tabs layout condition (`useMdBottomTabsLayout`) into a broader `useSegmentedWorkspaceLayout` via the newly introduced `shouldUseSegmentedWorkspace` entity in `effective-layout-tier.js`. This efficiently routes both the `mobile` layout tier and the `md` open-sidebar configurations through the same decoupled layout logic, entirely unifying the structural handling of constrained responsive spaces.
+
+### Documentation & Tests
+- **Fractal Protocol**: Documented the architectural shift from `useMdBottomTabsLayout` to `useSegmentedWorkspaceLayout` within `src/pages/registry/CLAUDE.md`, `src/pages/registry/sections/workspace/CLAUDE.md`, and `tests/CLAUDE.md`, mapping out the expanded responsibilities of the segmented setup.
+- **Responsive Logic Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly assert the boundaries of the unified `useSegmentedWorkspaceLayout` variable and container classnames. Expanded the `registry-effective-layout.unit.test.js` matrix to explicitly lock down the routing of the `mobile` tier into the segmented workspace while protecting desktop shells.
+
 ## [1.8.4] - 2026-03-10
 
 ### Architecture

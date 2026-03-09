@@ -3,7 +3,7 @@
 
 成员清单
 HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算真实 `effectiveLayoutTier + isDesktopShell` 并向工作区透传（顶层 header/main-content 保持真实 tier 语义）
-effective-layout-tier.js: 布局判定单一真相源，封装 `768/1024/1314` 阈值，并导出真实 tier 与桌面壳启用 helper
+effective-layout-tier.js: 布局判定单一真相源，封装 `768/1024/1314` 阈值，并导出真实 tier、desktop shell 与 segmented workspace helper
 registry-data.js: Registry 旧版导航与示例数据（备用）
 sections/HomeTopbar.jsx: 顶栏区域，支持 hideLanguage（侧栏收起时隐藏左侧语言切换），右侧展示 GitHub 与小红书社交入口
 sections/MobileFooter.jsx: 移动端底部栏（左 GitHub / 中语言切换 / 右小红书），复用顶部轨道宽度保证左右边界对齐
@@ -17,7 +17,7 @@ sections/home-sidebar-visuals.jsx: HomeSidebar 视觉层，封装 Year/Life/Goal
 sections/home-sidebar-date-stats.js: HomeSidebar 日期统计层，封装 yearStats 计算与 Goal 预览布局生成
 sections/useRegistryBlockingScrollLock.js: Registry 阻断层滚动锁基础设施（引用计数）
 sections/CLAUDE.md: sections 子模块文档
-sections/components/HomeGrid.jsx: preview|settings 双栏工作区编排层（含 Skeleton Base 首次 AutoFlow stage 管理）
+sections/components/HomeGrid.jsx: preview|settings 工作区编排层（含 Skeleton Base 首次 AutoFlow stage 管理；mobile 与 `md + drawer open` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下）
 sections/workspace/useHomeWallpaperConfig.js: 双栏工作区状态核心与 URL 生成逻辑
 sections/workspace/config-actions.js: 配置动作工厂层，统一 set*/apply*/copyUrl 状态更新语义
 sections/workspace/config-init.js: 配置初始化层，默认配置、类型映射与颜色归一
@@ -68,5 +68,6 @@ ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 Ho
 2026-03-04: 有效布局层级扩展 `mid`：`1024~1314 + 侧栏打开` 保持 LG 壳层，仅将 Setting Panel 切换为单列等分行（year=5、goal/life/空态=6）。
 2026-03-07: `HomePage` 继续向 `HomeGrid` 透传 `sidebarOpen`；真 `md` 下 SetupGuide 宿主左边界随 style 抽屉开关切换，抽屉打开时避让 `Choose your style` 面板，不再整块覆盖。
 2026-03-09: 收回 `settingsLayoutTier` 抽象；`HomeGrid` 内部改用局部 `paneEffectiveLayoutTier` 让真 `md + 抽屉关闭` 直接复用 mid 的 `HomeSettingsPane` 代码路径；`HomePage` 维持真实 tier，不再参与该状态的额外高度修补。
+2026-03-10: 新增 `shouldUseSegmentedWorkspace` 并收口 `mobile + md drawer open` 到同一 segmented workspace；Guide 宿主拆为“md 固定覆盖 + mobile 覆盖 header 以下整块内容”，同时保持 tabs 视图实现不变。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

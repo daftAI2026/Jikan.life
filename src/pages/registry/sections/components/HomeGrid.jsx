@@ -1,12 +1,12 @@
 /**
- * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effective-layout-tier 的桌面壳 helper，以及 effectiveLayoutTier/sidebarOpen
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖；md guide 宿主仅在抽屉打开时启用，`md + 抽屉关闭` 只在 pane 内局部复用 mid 路径，`md + 抽屉打开` 可切到底部 Tabs 模式）
- * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动；底部 Tabs 模式的壳层判定在此收口，空态也直接进入该模式）
+ * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effective-layout-tier 的桌面壳/segmented helper，以及 effectiveLayoutTier/sidebarOpen
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖；mobile 与 `md + 抽屉打开` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下整块内容）
+ * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动；segmented workspace 的壳层判定在此收口，空态也直接进入该模式）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useKumoToastManager } from "@/components/ui/kumo"
-import { shouldUseDesktopWorkspaceShell } from "../../effective-layout-tier"
+import { shouldUseDesktopWorkspaceShell, shouldUseSegmentedWorkspace } from "../../effective-layout-tier"
 import { useRegistryBlockingScrollLock } from "../useRegistryBlockingScrollLock"
 import { HomePreviewPane } from "../workspace/HomePreviewPane"
 import { HomeSettingsPane } from "../workspace/HomeSettingsPane"
@@ -32,15 +32,19 @@ function HomeGrid({
     const viewModel = useHomeWallpaperConfig({ selectedStyle })
     const toastManager = useKumoToastManager()
     const isDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen })
+    const useSegmentedWorkspaceLayout = shouldUseSegmentedWorkspace({ effectiveLayoutTier, sidebarOpen })
     const paneEffectiveLayoutTier = effectiveLayoutTier === "md" && !sidebarOpen ? "mid" : effectiveLayoutTier
-    const useMdBottomTabsLayout = effectiveLayoutTier === "md" && sidebarOpen
-    const workspaceLayoutClassName = useMdBottomTabsLayout
-        ? "md:h-[calc(100vh-var(--registry-topbar-height))] md:grid-rows-[auto_minmax(0,1fr)] md:overflow-hidden"
+    const segmentedWorkspaceLayoutClassName = effectiveLayoutTier === "mobile"
+        ? "h-full grid-rows-[auto_minmax(0,1fr)] overflow-y-hidden"
+        : "md:h-[calc(100vh-var(--registry-topbar-height))] md:grid-rows-[auto_minmax(0,1fr)] md:overflow-hidden"
+    const workspaceLayoutClassName = useSegmentedWorkspaceLayout
+        ? segmentedWorkspaceLayoutClassName
         : isDesktopShell
             ? "md:h-full md:grid-cols-2 md:divide-x md:divide-kumo-line md:overflow-hidden"
-            : "md:h-auto md:overflow-y-visible md:overscroll-y-auto"
+            : "overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible md:overscroll-y-auto"
     const shouldRenderGridGuideHost = effectiveLayoutTier === "md" && sidebarOpen
-    const shouldRenderPaneGuideHost = !shouldRenderGridGuideHost
+    const shouldRenderMobileGuideHost = effectiveLayoutTier === "mobile"
+    const shouldRenderPaneGuideHost = !shouldRenderGridGuideHost && !shouldRenderMobileGuideHost
     const guideHostClassName = [
         "pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 z-40 hidden md:block",
         sidebarOpen
@@ -132,7 +136,7 @@ function HomeGrid({
         <div
             data-registry-workspace
             className={[
-                "relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-kumo-elevated",
+                "relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden bg-kumo-elevated",
                 workspaceLayoutClassName,
             ].join(" ")}
         >
@@ -146,6 +150,18 @@ function HomeGrid({
                         url={viewModel.url}
                         containerClassName="overflow-hidden overscroll-none"
                         asideClassName="md:w-full md:border-l-0 md:border-r"
+                    />
+                </div>
+            ) : null}
+            {shouldRenderMobileGuideHost ? (
+                <div className="pointer-events-none absolute inset-0 z-40 md:hidden">
+                    <SetupGuidePanel
+                        open={isSetupPanelOpen}
+                        platform={setupPlatform}
+                        onClose={handleCloseSetupPanel}
+                        t={viewModel.t}
+                        url={viewModel.url}
+                        containerClassName="overflow-hidden overscroll-none"
                     />
                 </div>
             ) : null}
@@ -166,7 +182,7 @@ function HomeGrid({
 
             <section
                 data-registry-pane="settings"
-                className={isDesktopShell || useMdBottomTabsLayout ? "md:min-h-0" : ""}
+                className={useSegmentedWorkspaceLayout ? "min-h-0" : isDesktopShell ? "md:min-h-0" : ""}
             >
                 <HomeSettingsPane
                     t={viewModel.t}
@@ -184,7 +200,7 @@ function HomeGrid({
                     revealStage={revealStage}
                     onRequestRevealAll={handleRevealAll}
                     effectiveLayoutTier={paneEffectiveLayoutTier}
-                    useMdBottomTabsLayout={useMdBottomTabsLayout}
+                    useSegmentedWorkspaceLayout={useSegmentedWorkspaceLayout}
                     shouldRenderPaneGuideHost={shouldRenderPaneGuideHost}
                 />
             </section>

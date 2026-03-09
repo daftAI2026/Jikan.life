@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖布局阈值常量与侧栏开关状态（sidebarOpen）
- * [OUTPUT]: 对外提供真实 tier 判定与桌面壳启用判定 helper（含 LG_MIN/MD_MIN/SIDEBAR_MID_MAX）
- * [POS]: pages/registry 的布局判定单一真相源，负责真实 viewport tier 与工作区桌面壳启用规则，供 HomePage/HomeGrid/测试共享
+ * [OUTPUT]: 对外提供真实 tier 判定、桌面壳启用判定与 segmented workspace 启用 helper（含 LG_MIN/MD_MIN/SIDEBAR_MID_MAX）
+ * [POS]: pages/registry 的布局判定单一真相源，负责真实 viewport tier 与工作区壳层规则，供 HomePage/HomeGrid/测试共享
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -22,4 +22,16 @@ function shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen }) {
     return false
 }
 
-export { LG_MIN, MD_MIN, SIDEBAR_MID_MAX, resolveEffectiveLayoutTier, shouldUseDesktopWorkspaceShell }
+function shouldUseSegmentedWorkspace({ effectiveLayoutTier, sidebarOpen }) {
+    if (effectiveLayoutTier === "mobile") return true
+    return effectiveLayoutTier === "md" && sidebarOpen
+}
+
+export {
+    LG_MIN,
+    MD_MIN,
+    SIDEBAR_MID_MAX,
+    resolveEffectiveLayoutTier,
+    shouldUseDesktopWorkspaceShell,
+    shouldUseSegmentedWorkspace,
+}
