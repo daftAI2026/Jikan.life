@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-03-09
+
+### UI & UX
+- **Segmented Bottom Tabs (MD)**: Refactored the `md` layout tier (tablet) settings pane to utilize a sticky bottom tab bar for navigation when the sidebar is open. Implemented a sophisticated width distribution algorithm (`resolveMdBottomTabWidths`) that accurately balances natural label widths against available container space, ensuring tabs occupy the full width synchronously without horizontal scrolling or premature truncation.
+- **Empty State Skeletons**: Enhanced the bottom tabs component to gracefully handle empty states by rendering structural skeletons (`SettingsTabLabelSkeleton` and `SettingsCardTitleSkeleton`) prior to configuration initialization, maintaining layout stability during the setup sequence.
+
+### Architecture
+- **MD Layout Transformation**: Decoupled the `md` open-sidebar layout from the monolithic `lg` layout grids and `mobile` lists. Introduced a localized `HomeSettingsPaneBottomTabsLayout` architecture that explicitly mounts a single focal card and manages its transition state independently via the new `md-bottom-tabs` segmented control.
+
+### Tests
+- **Bottom Tabs Constraints**: Introduced dedicated unit test suite (`md-bottom-tabs-widths.unit.test.js`) to strictly validate the width leveling and shrinking algorithmic semantics.
+- **UI Architecture Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigorously assert the structural boundaries, rendering properties, and skeleton loading sequences of the new `md` bottom tabs wrapper.
+
 ## [1.7.27] - 2026-03-09
 
 ### Architecture

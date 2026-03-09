@@ -11,7 +11,7 @@ tooltip.jsx: 工具提示，Kumo Tooltip 适配层
 color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，ColorThumb 采用外圈+中心点分层常量，作为颜色面板视觉样式单一来源
 color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `1:2+弹性输入` 布局，通道输入使用配置映射并维持对外 hex 协议
 use-color-picker-state-bridge.js: ColorPicker 状态桥 hook，负责外部受控 hex 与内部 Color 对象同步保护
-kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` / `SkeletonLine` 对外导出）
+kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` / `SkeletonLine` / `Tabs` 对外导出）
 
 **设计语言**: Kumo UI (Base UI) + Kumo 原生 Token
 - 颜色: 禁止硬编码，仅使用 Kumo 原生变量 (var(--color-kumo-*) / var(--text-color-kumo-*))
@@ -36,5 +36,6 @@ kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上
 2026-02-28: 删除零引用的本地 `dropdown-menu.jsx`，清理非活跃链路旧语义 token 残留。
 2026-03-01: 删除零调用方的 `card.jsx`/`field.jsx`/`label.jsx`/`separator.jsx`，卸载 `@radix-ui/react-label` 和 `@radix-ui/react-separator`。
 2026-03-01: ColorPicker 切换为直接使用 Kumo Button，删除本地 `button.jsx` 适配层，卸载 `@radix-ui/react-slot` 和 `class-variance-authority`。
+2026-03-09: `kumo.jsx` 新增 `Tabs` 导出，供 workspace 在 `md + drawer open` 下接入官方 segmented tabs 底栏。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

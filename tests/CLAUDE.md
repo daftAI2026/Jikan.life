@@ -3,7 +3,8 @@
 
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
-kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳与 Setup 流程语义。
+kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳、md drawer-open bottom-tabs 常驻 skeleton 语义与 Setup 流程语义。
+md-bottom-tabs-widths.unit.test.js: md 底部 tabs 宽度分配算法单测，锁定“余量均分 + 最长项先压到次长项 + 压平后再联动收缩”语义。
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
@@ -21,6 +22,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 
 变更日志
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：新增提交流程与 CI 一致性护栏，强制 `hooks:install/postinstall`、`scripts/git-hooks/pre-commit` 自动同步链路，以及 CI 必跑 `check:version-metadata`。
+2026-03-09: 新增 `md-bottom-tabs-widths.unit.test.js`，锁定 md 底部 tabs 的“自然宽测量后余量均分 / 最长项先压到次长项 / 压平后再联动收缩”分配算法；并更新 `kumo-migration.ui.behavior.test.js`，要求 `HomeSettingsPane` 通过隐藏测量节点 + `resolveMdBottomTabWidths` + trigger 级 CSS 变量宽度控制实现底栏分配，不再回退到 label 假宽度或恒等宽 `flex-1`；同时锁定 `md + drawer open + selectedType === null` 时改走全量 tabs + 单卡 skeleton，而不是 6 格 grid reveal，并要求 tabs/title 壳层常驻、文案 skeleton 按 reveal 解开而非重挂载底栏；另要求第⑥卡在 `md` bottom-tabs 下复用 `mid` 的 anchored row 收口布局，不再把同一抗挤压语义绑死在 tier 名字上。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：将版本同步护栏收敛为统一入口，强制存在 `sync/check:version-metadata` 并要求 `npm version` 链路仅引用该聚合脚本，同时禁止旧分裂命令回流。
 2026-03-07: 更新 `kumo-migration.ui.behavior.test.js`：`HomeGrid` 新增 `sidebarOpen` 输入护栏，并锁定真 `md` 下 SetupGuide 宿主左边界随 style 抽屉开关在 `rail` 与 `rail + sidebar panel width` 间切换，防止再次盖住 `Choose your style`。
 2026-03-09: 更新 `registry-effective-layout.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：撤回 `settingsLayoutTier` 护栏，改为锁定 `HomeGrid` 在真 `md + 抽屉关闭` 时局部把右侧 pane 送进 mid 路径，并要求 `HomePage` 维持真实 tier，不再额外改 header/main-content 高度链。

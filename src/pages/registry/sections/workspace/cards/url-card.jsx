@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 Kumo Button/Input/Collapsible 与 url actions/config/effectiveLayoutTier 链路（Set it 回调可接收触发元素）
- * [OUTPUT]: 对外提供 urlCard 定义（Set it 收口卡，含 Year/Goal 专属布局与 mid(year/goal) 抗挤压布局）
- * [POS]: workspace/cards 的流程收口卡，承接 URL 展示与 Set it 触发（effective mid(year/goal) 时对齐标题左锚/序号右锚）
+ * [INPUT]: 依赖 Kumo Button/Input/Collapsible 与 url actions/config/effectiveLayoutTier/useAnchoredSetupRow 链路（Set it 回调可接收触发元素）
+ * [OUTPUT]: 对外提供 urlCard 定义（Set it 收口卡，含 Year/Goal 专属布局与单卡收口语义下的 anchored row 抗挤压布局）
+ * [POS]: workspace/cards 的流程收口卡，承接 URL 展示与 Set it 触发（effective mid 或 md bottom-tabs 单卡收口时对齐标题左锚/序号右锚）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button as KumoButton, Collapsible, Input } from "@/components/ui/kumo"
@@ -34,12 +34,13 @@ const urlCard = {
     resolveTitle: ({ config, t }) =>
         SETUP_FLOW_TYPES.has(config.selectedType) ? t("setup.title") : "Collapsible",
     title: "Collapsible",
-    render: ({ config, effectiveLayoutTier, onSetIt, t, url }) => {
+    render: ({ config, effectiveLayoutTier, onSetIt, t, url, useAnchoredSetupRow }) => {
         const isMidYear = config.selectedType === "year" && effectiveLayoutTier === "mid"
         const isMidGoal = config.selectedType === "goal" && effectiveLayoutTier === "mid"
+        const shouldUseAnchoredSetupRow = useAnchoredSetupRow || isMidYear || isMidGoal
 
         if (config.selectedType === "year") {
-            if (isMidYear) {
+            if (shouldUseAnchoredSetupRow) {
                 return renderMidAnchoredUrlRow({ onSetIt, t, url })
             }
 
@@ -65,7 +66,7 @@ const urlCard = {
         }
 
         if (config.selectedType === "goal") {
-            if (isMidGoal) {
+            if (shouldUseAnchoredSetupRow) {
                 return renderMidAnchoredUrlRow({ onSetIt, t, url })
             }
 

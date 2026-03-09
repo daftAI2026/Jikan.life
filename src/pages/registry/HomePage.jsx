@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/HomeSidebar/ThemeToggle/MobileFooter/HomeGrid), localStorage(registry.settingsAutoflow.v1)，以及 effective-layout-tier 的真实 viewport tier 判定
  * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier 与 sidebarOpen）
- * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（顶层 header 保持真实 tier 语义，工作区容器在 `md + 抽屉关闭` 时同步启用桌面壳高度链）
+ * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（顶层 header 保持真实 tier 语义，工作区容器仅在 `md + 抽屉关闭` 时同步启用桌面壳高度链）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -95,10 +95,17 @@ function HomePage() {
                 id="main-content"
                 className={[
                     "main-content registry-main-content-mobile-height mt-[var(--registry-topbar-height)] overflow-hidden transition-[margin] duration-300 md:mt-0 md:h-screen md:ml-[var(--registry-rail-width)] md:overflow-y-auto md:overscroll-y-none",
-                    useDesktopShellContainer ? "md:overflow-y-hidden" : "",
+                    isDesktopShell ? "md:overflow-y-hidden" : "",
+                    isMdClosedPane ? "md:overflow-y-hidden" : "",
                 ].join(" ")}
             >
-                <div className={["flex h-full flex-col md:h-auto", useDesktopShellContainer ? "md:h-full" : ""].join(" ")}>
+                <div
+                    className={[
+                        "flex h-full flex-col md:h-auto",
+                        isDesktopShell ? "md:h-full" : "",
+                        isMdClosedPane ? "md:h-full" : "",
+                    ].join(" ")}
+                >
                     <HomeTopbar hideLanguage={!sidebarOpen} />
                     <main className="flex min-h-0 grow flex-col md:bg-kumo-elevated md:pr-12">
                         <div
