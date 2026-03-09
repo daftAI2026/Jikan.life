@@ -3,7 +3,7 @@
 
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
-kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳、md drawer-open bottom-tabs 常驻 skeleton 语义与 Setup 流程语义。
+kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳、md drawer-open bottom-tabs 常驻 skeleton 语义、私有 hook 测量链下沉、tablist-only 观察、字体补测、deadzone 与 indicator live-resize 策略。
 md-bottom-tabs-widths.unit.test.js: md 底部 tabs 宽度分配算法单测，锁定“余量均分 + 最长项先压到次长项 + 压平后再联动收缩”语义。
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
@@ -21,6 +21,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-09: 更新 `kumo-migration.ui.behavior.test.js`：新增 `use-md-bottom-tabs-metrics.js` 私有 hook 护栏，强制 `HomeSettingsPane` 不再直接持有 tabs 测量/resize 状态，并锁定 hook 的输入签名、首帧同步测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、`>1px` deadzone、宽度未就绪时隐藏 indicator、live resize 时关闭 indicator 过渡，以及 6 槽 CSS var/trigger class 常量收口语义。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：新增提交流程与 CI 一致性护栏，强制 `hooks:install/postinstall`、`scripts/git-hooks/pre-commit` 自动同步链路，以及 CI 必跑 `check:version-metadata`。
 2026-03-09: 新增 `md-bottom-tabs-widths.unit.test.js`，锁定 md 底部 tabs 的“自然宽测量后余量均分 / 最长项先压到次长项 / 压平后再联动收缩”分配算法；并更新 `kumo-migration.ui.behavior.test.js`，要求 `HomeSettingsPane` 通过隐藏测量节点 + `resolveMdBottomTabWidths` + trigger 级 CSS 变量宽度控制实现底栏分配，不再回退到 label 假宽度或恒等宽 `flex-1`；同时锁定 `md + drawer open + selectedType === null` 时改走全量 tabs + 单卡 skeleton，而不是 6 格 grid reveal，并要求 tabs/title 壳层常驻、文案 skeleton 按 reveal 解开而非重挂载底栏；另要求第⑥卡在 `md` bottom-tabs 下复用 `mid` 的 anchored row 收口布局，不再把同一抗挤压语义绑死在 tier 名字上；同时新增首帧同步测量、natural widths 缓存、仅观察 tablist 宽和 resize 期间关闭 indicator 过渡的护栏，防止小胶囊宽度错乱与拖窗追赶动画回流。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：将版本同步护栏收敛为统一入口，强制存在 `sync/check:version-metadata` 并要求 `npm version` 链路仅引用该聚合脚本，同时禁止旧分裂命令回流。

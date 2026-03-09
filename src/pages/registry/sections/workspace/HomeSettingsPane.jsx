@@ -1,34 +1,31 @@
 /**
- * [INPUT]: 依赖 react(useLayoutEffect/useRef/useState)、@/components/ui/kumo(SkeletonLine/Tabs)、md-bottom-tabs-widths、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
+ * [INPUT]: 依赖 react(useRef/useState)、@/components/ui/kumo(SkeletonLine/Tabs)、use-md-bottom-tabs-metrics、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 `md + drawer open` 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 pane 级 Guide 宿主；布局模式由 HomeGrid 显式收口后透传，避免 pane 内再次推理 sidebar 语义；md bottom-tabs 宽度由“自然宽缓存 + 分配算法”单向投影回 trigger 本体，resize 时仅重算容器宽并临时关闭 indicator 过渡，title/tab label 的 reveal 与卡片主体解锁解耦
+ * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；md bottom-tabs 的测量/resize/indicator 策略全部下沉到私有 hook，pane 只保留 tabs JSX 与业务编排
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useLayoutEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { SkeletonLine, Tabs } from "@/components/ui/kumo"
 import { getLocalTodayISO } from "@/lib/date-utils"
 import { CARD_REGISTRY } from "./cards"
-import { resolveMdBottomTabWidths } from "./md-bottom-tabs-widths"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
+import { useMdBottomTabsMetrics } from "./use-md-bottom-tabs-metrics"
 
 const YEAR_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device", "url"]
 const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "life-fields", "colors", "device", "url"]
 const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
 const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
 const MD_BOTTOM_TABS_EMPTY_STATE_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
-const SETTINGS_CARD_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
-const SKELETON_SLOT_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
-const MID_SKELETON_ROW_COUNT = 6
+const MD_BOTTOM_TABS_SLOT_COUNT = 6
+const MD_BOTTOM_TAB_WIDTH_VAR_PREFIX = "--md-tab-w-"
+const SETTINGS_SLOT_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
+const MID_SKELETON_ROW_COUNT = MD_BOTTOM_TABS_SLOT_COUNT
 const MD_BOTTOM_TAB_MEASURE_TRIGGER_CLASSNAME = "inline-flex items-center rounded-lg px-2.5 text-base whitespace-nowrap"
-const MD_BOTTOM_TAB_TRIGGER_CLASSNAMES = [
-    "min-w-0 justify-center w-[var(--md-tab-w-0)] [flex:0_0_var(--md-tab-w-0)]",
-    "min-w-0 justify-center w-[var(--md-tab-w-1)] [flex:0_0_var(--md-tab-w-1)]",
-    "min-w-0 justify-center w-[var(--md-tab-w-2)] [flex:0_0_var(--md-tab-w-2)]",
-    "min-w-0 justify-center w-[var(--md-tab-w-3)] [flex:0_0_var(--md-tab-w-3)]",
-    "min-w-0 justify-center w-[var(--md-tab-w-4)] [flex:0_0_var(--md-tab-w-4)]",
-    "min-w-0 justify-center w-[var(--md-tab-w-5)] [flex:0_0_var(--md-tab-w-5)]",
-]
+const MD_BOTTOM_TAB_TRIGGER_CLASSNAMES = Array.from({ length: MD_BOTTOM_TABS_SLOT_COUNT }, (_, index) => {
+    const widthVarName = resolveMdBottomTabsWidthVarName(index)
+    return `min-w-0 justify-center w-[var(${widthVarName})] [flex:0_0_var(${widthVarName})]`
+})
 const CARD_SHELL_CLASS_BY_TYPE = {
     year: {
         url: "md:col-span-2",
@@ -67,7 +64,7 @@ function resolveMdBottomTabsRevealedCardIds(selectedType, cardOrder, unlockedCou
 
 function resolveMidRowCount(selectedType) {
     if (selectedType === "year") return 5
-    if (selectedType === "goal" || selectedType === "life") return 6
+    if (selectedType === "goal" || selectedType === "life") return MD_BOTTOM_TABS_SLOT_COUNT
     return MID_SKELETON_ROW_COUNT
 }
 
@@ -140,20 +137,15 @@ function SettingsTabLabelSkeleton() {
     )
 }
 
-function areTabWidthsEqual(left, right) {
-    if (left.length !== right.length) return false
-    return left.every((width, index) => Math.abs(width - right[index]) < 0.5)
+function resolveMdBottomTabsWidthVarName(index) {
+    return `${MD_BOTTOM_TAB_WIDTH_VAR_PREFIX}${index}`
 }
 
 function resolveMdBottomTabsWidthVars(widths) {
     return widths.reduce((styleVars, width, index) => {
-        styleVars[`--md-tab-w-${index}`] = `${Math.max(0, width)}px`
+        styleVars[resolveMdBottomTabsWidthVarName(index)] = `${Math.max(0, width)}px`
         return styleVars
     }, {})
-}
-
-function resolveMdBottomTabsDistributedWidths({ naturalWidths, containerWidth }) {
-    return resolveMdBottomTabWidths({ naturalWidths, containerWidth })
 }
 
 function resolveMdBottomTabTriggerClassName(index) {
@@ -201,10 +193,6 @@ function HomeSettingsPaneBottomTabsLayout({
 }) {
     const tabsContainerRef = useRef(null)
     const measureTriggerRefs = useRef([])
-    const naturalTabWidthsRef = useRef([])
-    const resizeSettledTimeoutRef = useRef(null)
-    const [distributedTabWidths, setDistributedTabWidths] = useState([])
-    const [isResizingTabs, setIsResizingTabs] = useState(false)
 
     const activeSlotIndex = currentActiveTab ? bottomTabsCardOrder.indexOf(currentActiveTab) : 0
     const activeCardDefinition = currentActiveTab
@@ -217,67 +205,12 @@ function HomeSettingsPaneBottomTabsLayout({
         isActiveTabRevealed,
     })
     const measureLabels = bottomTabsCardOrder.map((cardId) => resolveMdTabLabel(cardId, t))
-    const tabLabelsKey = measureLabels.join("|")
+    const { distributedTabWidths, indicatorClassName } = useMdBottomTabsMetrics({
+        tabsContainerRef,
+        measureTriggerRefs,
+        measureLabels,
+    })
     const bottomTabsWidthVars = resolveMdBottomTabsWidthVars(distributedTabWidths)
-
-    useLayoutEffect(() => {
-        if (bottomTabsCardOrder.length === 0) {
-            setDistributedTabWidths([])
-            return undefined
-        }
-
-        const containerElement = tabsContainerRef.current
-        if (!containerElement) return undefined
-        const tabsListElement = containerElement.querySelector('[role="tablist"]')
-        if (!tabsListElement) return undefined
-
-        const naturalWidths = measureTriggerRefs.current
-            .slice(0, bottomTabsCardOrder.length)
-            .map((element) => element?.getBoundingClientRect().width ?? 0)
-        naturalTabWidthsRef.current = naturalWidths
-        setDistributedTabWidths(resolveMdBottomTabsDistributedWidths({
-            naturalWidths,
-            containerWidth: tabsListElement.getBoundingClientRect().width,
-        }))
-
-        let frameId = 0
-        let resizeObserver = null
-
-        const scheduleResizeMeasurement = () => {
-            cancelAnimationFrame(frameId)
-            frameId = requestAnimationFrame(() => {
-                const nextWidths = resolveMdBottomTabsDistributedWidths({
-                    naturalWidths: naturalTabWidthsRef.current,
-                    containerWidth: tabsListElement.getBoundingClientRect().width,
-                })
-
-                setDistributedTabWidths((previousWidths) => (
-                    areTabWidthsEqual(previousWidths, nextWidths) ? previousWidths : nextWidths
-                ))
-            })
-        }
-
-        if (typeof ResizeObserver === "function") {
-            resizeObserver = new ResizeObserver(() => {
-                setIsResizingTabs(true)
-                scheduleResizeMeasurement()
-                window.clearTimeout(resizeSettledTimeoutRef.current)
-                resizeSettledTimeoutRef.current = window.setTimeout(() => {
-                    setIsResizingTabs(false)
-                    resizeSettledTimeoutRef.current = null
-                }, 120)
-            })
-            resizeObserver.observe(tabsListElement)
-        }
-
-        return () => {
-            cancelAnimationFrame(frameId)
-            window.clearTimeout(resizeSettledTimeoutRef.current)
-            resizeSettledTimeoutRef.current = null
-            setIsResizingTabs(false)
-            resizeObserver?.disconnect()
-        }
-    }, [tabLabelsKey, bottomTabsCardOrder.length])
 
     return (
         <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
@@ -287,7 +220,7 @@ function HomeSettingsPaneBottomTabsLayout({
                         cardId={currentActiveTab}
                         title={activeTitleState.title}
                         titleTooltip={activeTitleState.titleTooltip}
-                        indexMark={SETTINGS_CARD_MARKS[Math.max(0, activeSlotIndex)]}
+                        indexMark={SETTINGS_SLOT_MARKS[Math.max(0, activeSlotIndex)]}
                         isIndexActive={activeTitleState.isIndexActive}
                         className="h-full"
                         compactAtDesktop={false}
@@ -300,7 +233,7 @@ function HomeSettingsPaneBottomTabsLayout({
                     <SettingsCardShell
                         cardId="skeleton-slot-1"
                         title={<SettingsCardTitleSkeleton />}
-                        indexMark={SETTINGS_CARD_MARKS[0]}
+                        indexMark={SETTINGS_SLOT_MARKS[0]}
                         isIndexActive={false}
                         className="h-full"
                         compactAtDesktop={false}
@@ -332,7 +265,7 @@ function HomeSettingsPaneBottomTabsLayout({
                         </div>
                         <Tabs
                             className="w-full"
-                            indicatorClassName={isResizingTabs ? "!transition-none" : undefined}
+                            indicatorClassName={indicatorClassName}
                             listClassName="w-full"
                             variant="segmented"
                             tabs={bottomTabsCardOrder.map((cardId, index) => ({
@@ -404,7 +337,7 @@ function HomeSettingsPaneGridLayout({
                 ].join(" ")}
             >
                 {!config.selectedType
-                    ? SKELETON_SLOT_MARKS.map((indexMark, slotIndex) => (
+                    ? SETTINGS_SLOT_MARKS.map((indexMark, slotIndex) => (
                         <SettingsCardShell
                             key={`skeleton-slot-${slotIndex + 1}`}
                             cardId={`skeleton-slot-${slotIndex + 1}`}
@@ -432,7 +365,7 @@ function HomeSettingsPaneGridLayout({
                                 cardId={cardId}
                                 title={title}
                                 titleTooltip={titleTooltip}
-                                indexMark={SETTINGS_CARD_MARKS[slotIndex]}
+                                indexMark={SETTINGS_SLOT_MARKS[slotIndex]}
                                 isIndexActive={isUnlocked}
                                 className={resolveCardShellClassName({ selectedType: config.selectedType, cardId, isMid })}
                                 compactAtDesktop={isDesktopShell}

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.2] - 2026-03-09
+
+### Architecture
+- **Bottom Tabs Decoupling**: Completely decoupled the `md` layout tier segmented bottom tabs logic from the monolithic `HomeSettingsPane`. Extracted the complex DOM measurement and resize observation logic into a dedicated `useMdBottomTabsMetrics` hook, and isolated the bottom tabs layout construction into an independent `HomeSettingsPaneBottomTabsLayout` component block. `HomeSettingsPane` now acts strictly as a state orchestrator, vastly improving code clarity and runtime stability.
+- **Constants Consolidation**: Extracted hardcoded constants (e.g., the 6-slot skeleton bounds) into shared tokens like `MD_BOTTOM_TABS_SLOT_COUNT` and `SETTINGS_SLOT_MARKS` to ensure a single source of truth across the workspace layout.
+
+### Documentation & Tests
+- **Fractal Protocol**: Synchronized L2 module maps in `sections/workspace/CLAUDE.md` and `tests/CLAUDE.md` to document the new `use-md-bottom-tabs-metrics.js` hook.
+- **UI Architecture Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly assert the usage of the new centralized slot constants and independent title-skelton behaviors rather than brittle hardcoded arrays.
+
 ## [1.8.1] - 2026-03-09
 
 ### UI & UX
