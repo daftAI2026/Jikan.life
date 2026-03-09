@@ -1,12 +1,12 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 pages/registry/effective-layout-tier
- * [OUTPUT]: 抽屉开关驱动的有效布局层级判定矩阵单元测试（含 mid 中间态）
- * [POS]: tests/ 的布局策略护栏，确保 `1024~1314 + 侧栏打开 => mid` 规则稳定
+ * [OUTPUT]: 抽屉开关驱动的布局 helper 判定矩阵单元测试（真实 tier + desktop shell）
+ * [POS]: tests/ 的布局策略护栏，确保 `1024~1314 + 侧栏打开 => mid` 与 `md + 抽屉关闭 => desktop shell` 规则稳定
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { resolveEffectiveLayoutTier } from "../src/pages/registry/effective-layout-tier.js"
+import { resolveEffectiveLayoutTier, shouldUseDesktopWorkspaceShell } from "../src/pages/registry/effective-layout-tier.js"
 
 test("returns mid at 1314 when sidebar is open", () => {
     const tier = resolveEffectiveLayoutTier({ viewportWidth: 1314, sidebarOpen: true })
@@ -43,4 +43,41 @@ test("keeps md for 900 regardless of sidebar state", () => {
 test("keeps mobile for widths below md", () => {
     const tier = resolveEffectiveLayoutTier({ viewportWidth: 767, sidebarOpen: true })
     assert.equal(tier, "mobile")
+})
+
+test("does not change real layout tier for md widths when sidebar closes", () => {
+    const tier = resolveEffectiveLayoutTier({ viewportWidth: 900, sidebarOpen: false })
+    assert.equal(tier, "md")
+})
+
+test("keeps md sidebar open outside desktop shell", () => {
+    const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth: 900, sidebarOpen: true })
+    const useDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen: true })
+
+    assert.equal(effectiveLayoutTier, "md")
+    assert.equal(useDesktopShell, false)
+})
+
+test("routes md closed state to desktop shell without changing real layout tier", () => {
+    const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth: 900, sidebarOpen: false })
+    const useDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen: false })
+
+    assert.equal(effectiveLayoutTier, "md")
+    assert.equal(useDesktopShell, true)
+})
+
+test("keeps open 1024 sidebar state on desktop shell", () => {
+    const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth: 1024, sidebarOpen: true })
+    const useDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen: true })
+
+    assert.equal(effectiveLayoutTier, "mid")
+    assert.equal(useDesktopShell, true)
+})
+
+test("keeps lg desktop shell for closed wide desktop widths", () => {
+    const effectiveLayoutTier = resolveEffectiveLayoutTier({ viewportWidth: 1200, sidebarOpen: false })
+    const useDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen: false })
+
+    assert.equal(effectiveLayoutTier, "lg")
+    assert.equal(useDesktopShell, true)
 })

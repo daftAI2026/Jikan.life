@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 Kumo Button、ColorPicker、palettePresets 与颜色 actions/config/effectiveLayoutTier 链路
  * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡）
- * [POS]: workspace/cards 的颜色配置卡，承接 background/accent 与 presets 应用（mid+year/goal 下仅保留与 lg 同构的 picker 区）
+ * [POS]: workspace/cards 的颜色配置卡，承接 background/accent 与 presets 应用（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button as KumoButton } from "@/components/ui/kumo"

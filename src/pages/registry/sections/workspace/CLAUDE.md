@@ -81,5 +81,6 @@ workspace/ - Home 双栏工作区子模块 (11 files + cards/ 子目录)
 2026-03-04: SetupGuidePanel 关闭态隔离升级：`aside` 增加 `inert` 与 `aria-hidden`，`aria-modal` 仅在打开态暴露；同时 Set-it 链路透传触发元素，由 HomeGrid 在关闭后执行焦点回退，避免键盘用户丢焦点。
 2026-03-04: HomeSettingsPane 的 Guide 挂载改为条件渲染（`effectiveLayoutTier !== "md"` 才挂载），移除仅用于隐藏另一宿主的 `visibilityClassName` 分支，实现与 HomeGrid 的单宿主互斥。
 2026-03-04: Guide 挂载规则再收敛：HomeSettingsPane 不再自行判断 tier，改为消费 HomeGrid 透传 `shouldRenderPaneGuideHost`，保证跨文件判定单一真相源。
+2026-03-09: 撤回 `settingsLayoutTier` 抽象；HomeSettingsPane 恢复直接消费 `effectiveLayoutTier`，由 HomeGrid 在真 `md + 抽屉关闭` 时局部传入 `mid`，从而直接复用原有 mid 分支并减少语义漂移。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

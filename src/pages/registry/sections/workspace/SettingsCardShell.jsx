@@ -23,7 +23,7 @@ function SettingsCardShell({
             data-home-settings-card={cardId}
             className={cn(
                 "relative flex min-h-[220px] items-center justify-center bg-kumo-elevated",
-                compactAtDesktop ? "lg:min-h-0" : "",
+                compactAtDesktop ? "md:min-h-0" : "",
                 className
             )}
         >

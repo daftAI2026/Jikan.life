@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 Input、GoalDateRangeField 与 Goal actions/config/effectiveLayoutTier 链路
  * [OUTPUT]: 对外提供 goalFieldsCard 定义（Goal 第③卡）
- * [POS]: workspace/cards 的 Goal 专属字段卡，承接 Goal Name/Date Range 及错误提示（mid+goal 下切换为等宽左右并排）
+ * [POS]: workspace/cards 的 Goal 专属字段卡，承接 Goal Name/Date Range 及错误提示（effective mid 时 Goal 切换为等宽左右并排）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Input } from "@/components/ui/kumo"

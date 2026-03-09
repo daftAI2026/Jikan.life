@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effectiveLayoutTier 与 sidebarOpen
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖 + effectiveLayoutTier 驱动的 md/mid/lg 宿主切换；md guide 宿主按 sidebarOpen 避让 style 抽屉）
- * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动；mid 复用桌面壳层）
+ * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effective-layout-tier 的桌面壳 helper，以及 effectiveLayoutTier/sidebarOpen
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow stage 管理 + onboarding=force 测试覆盖；md guide 宿主仅在抽屉打开时启用，`md + 抽屉关闭` 只在 pane 内局部复用 mid 路径）
+ * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路（Guide 打开时锁背景滚动）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useKumoToastManager } from "@/components/ui/kumo"
+import { shouldUseDesktopWorkspaceShell } from "../../effective-layout-tier"
 import { useRegistryBlockingScrollLock } from "../useRegistryBlockingScrollLock"
 import { HomePreviewPane } from "../workspace/HomePreviewPane"
 import { HomeSettingsPane } from "../workspace/HomeSettingsPane"
@@ -22,11 +23,17 @@ function resolveMaxRevealStage(selectedType) {
     return 6
 }
 
-function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier = "lg", sidebarOpen = false }) {
+function HomeGrid({
+    selectedStyle,
+    forceOnboarding = false,
+    effectiveLayoutTier = "lg",
+    sidebarOpen = false,
+}) {
     const viewModel = useHomeWallpaperConfig({ selectedStyle })
     const toastManager = useKumoToastManager()
-    const isDesktopShell = effectiveLayoutTier === "lg" || effectiveLayoutTier === "mid"
-    const shouldRenderGridGuideHost = effectiveLayoutTier === "md"
+    const isDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen })
+    const paneEffectiveLayoutTier = effectiveLayoutTier === "md" && !sidebarOpen ? "mid" : effectiveLayoutTier
+    const shouldRenderGridGuideHost = effectiveLayoutTier === "md" && sidebarOpen
     const shouldRenderPaneGuideHost = !shouldRenderGridGuideHost
     const guideHostClassName = [
         "pointer-events-none fixed top-[var(--registry-topbar-height)] right-[var(--registry-tools-rail-width)] bottom-0 z-40 hidden md:block",
@@ -170,7 +177,7 @@ function HomeGrid({ selectedStyle, forceOnboarding = false, effectiveLayoutTier 
                     onCloseSetupPanel={handleCloseSetupPanel}
                     revealStage={revealStage}
                     onRequestRevealAll={handleRevealAll}
-                    effectiveLayoutTier={effectiveLayoutTier}
+                    effectiveLayoutTier={paneEffectiveLayoutTier}
                     shouldRenderPaneGuideHost={shouldRenderPaneGuideHost}
                 />
             </section>

@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(SkeletonLine)、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/guide-host 参数
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base 与按 stage 渐进 reveal；Year 保持 5 卡宽收口；mid 下单列等分行）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 sm/lg Guide 宿主，Set-it/AutoFlow/effectiveLayoutTier 状态由 HomeGrid 上提统一管理（mid 复用桌面壳层，并将层级透传到卡片渲染层）
+ * [POS]: registry/sections/workspace 的右侧设置面板，负责卡片编排、空态引导与 pane 级 Guide 宿主，Set-it/AutoFlow/effectiveLayoutTier 状态由 HomeGrid 上提统一管理（`md + 抽屉关闭` 通过父层局部改写为 pane 级 mid）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { SkeletonLine } from "@/components/ui/kumo"
@@ -120,8 +120,8 @@ function HomeSettingsPane(props) {
     return (
         <div
             className={[
-                "relative h-full min-h-0 overflow-x-hidden overflow-y-auto md:h-auto md:overflow-y-visible",
-                isDesktopShell ? "md:h-full md:overflow-y-hidden" : "",
+                "relative h-full min-h-0 overflow-x-hidden overflow-y-auto",
+                isDesktopShell ? "md:h-full md:overflow-y-hidden" : "md:h-auto md:overflow-y-visible",
             ].join(" ")}
         >
             <section

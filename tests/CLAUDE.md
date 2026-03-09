@@ -2,8 +2,8 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
-registry-effective-layout.unit.test.js: 抽屉开关驱动的有效布局层级单测，锁定 `768/1024/1314` 阈值与 `sidebarOpen` 触发 `mid` 中间态矩阵。
-kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构与 Setup 流程语义。
+registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
+kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳与 Setup 流程语义。
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
@@ -23,6 +23,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：新增提交流程与 CI 一致性护栏，强制 `hooks:install/postinstall`、`scripts/git-hooks/pre-commit` 自动同步链路，以及 CI 必跑 `check:version-metadata`。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：将版本同步护栏收敛为统一入口，强制存在 `sync/check:version-metadata` 并要求 `npm version` 链路仅引用该聚合脚本，同时禁止旧分裂命令回流。
 2026-03-07: 更新 `kumo-migration.ui.behavior.test.js`：`HomeGrid` 新增 `sidebarOpen` 输入护栏，并锁定真 `md` 下 SetupGuide 宿主左边界随 style 抽屉开关在 `rail` 与 `rail + sidebar panel width` 间切换，防止再次盖住 `Choose your style`。
+2026-03-09: 更新 `registry-effective-layout.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：撤回 `settingsLayoutTier` 护栏，改为锁定 `HomeGrid` 在真 `md + 抽屉关闭` 时局部把右侧 pane 送进 mid 路径，并要求 `HomePage` 维持真实 tier，不再额外改 header/main-content 高度链。
 2026-03-04: 新增 `registry-effective-layout.unit.test.js`，覆盖 `window.innerWidth + sidebarOpen` 的有效布局层级矩阵（1314 含边界）并验证 `1024~1314` 区间行为。
 2026-03-04: 更新 `registry-effective-layout.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：`open + 1024~1314 => mid`，并新增 HomeSettingsPane 中间态单列等分行护栏（year=5；goal/life/空态=6）。
 2026-03-04: 更新 `kumo-migration.ui.behavior.test.js`：新增 `mid + year/goal` URL 收口卡护栏（`effectiveLayoutTier` 透传、`grid-cols-[minmax(0,1fr)_auto]`、`gap-2`、输入框可缩/按钮不缩）并保留非 mid 的 `md:px-[calc(25%-100px)]` 与 goal 旧布局断言。

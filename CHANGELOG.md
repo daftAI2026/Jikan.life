@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.27] - 2026-03-09
+
+### Architecture
+- **Desktop Shell Engine**: Introduced `shouldUseDesktopWorkspaceShell` to `effective-layout-tier.js` to intelligently route `md` tier (tablet) widths into the full desktop shell architecture when the sidebar is closed. This provides a fluid, unified configuration layout on iPads and smaller desktop windows without forcing the mobile overscroll paradigm unnecessarily.
+- **Layout Decoupling**: Refactored `HomeGrid` to decouple physical layout tiers (`effectiveLayoutTier`) from localized pane tiers (`paneEffectiveLayoutTier`), removing bloated layout overrides from nested components like `HomeSettingsPane` and establishing a clean, unidirectional layout flow.
+
+### Tests
+- **Responsive Logic Guards**: Expanded unit tests (`registry-effective-layout.unit.test.js`) and UI behavior tests (`kumo-migration.ui.behavior.test.js`) to rigorously validate the `md` closed sidebar state boundaries and guarantee that physical tier properties remain unmutated across state shifts.
+
 ## [1.7.26] - 2026-03-08
 
 ### UI & UX
