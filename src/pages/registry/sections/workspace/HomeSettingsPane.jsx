@@ -1,16 +1,16 @@
 /**
- * [INPUT]: 依赖 react(useRef/useState)、@/components/ui/kumo(SkeletonLine/Tabs)、use-md-bottom-tabs-metrics、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
+ * [INPUT]: 依赖 react(useState)、@/components/ui/kumo(SkeletonLine)、HomeSettingsPaneBottomTabsLayout、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/bottom-tabs/guide-host 参数
  * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 `md + drawer open` 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；md bottom-tabs 的测量/resize/indicator 策略全部下沉到私有 hook，pane 只保留 tabs JSX 与业务编排
+ * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；md bottom-tabs 专属视图已提取到私有文件，pane 只保留分流与业务编排
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useRef, useState } from "react"
-import { SkeletonLine, Tabs } from "@/components/ui/kumo"
+import { useState } from "react"
+import { SkeletonLine } from "@/components/ui/kumo"
 import { getLocalTodayISO } from "@/lib/date-utils"
 import { CARD_REGISTRY } from "./cards"
+import { HomeSettingsPaneBottomTabsLayout } from "./HomeSettingsPaneBottomTabsLayout"
 import { SettingsCardShell } from "./SettingsCardShell"
 import { SetupGuidePanel } from "./SetupGuidePanel"
-import { useMdBottomTabsMetrics } from "./use-md-bottom-tabs-metrics"
 
 const YEAR_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "colors", "device", "url"]
 const LIFE_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "life-fields", "colors", "device", "url"]
@@ -18,27 +18,12 @@ const GOAL_SETTINGS_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "co
 const SETTINGS_CARD_IDS = LIFE_SETTINGS_CARD_IDS
 const MD_BOTTOM_TABS_EMPTY_STATE_CARD_IDS = ["location", "wallpaper-lang", "goal-fields", "colors", "device", "url"]
 const MD_BOTTOM_TABS_SLOT_COUNT = 6
-const MD_BOTTOM_TAB_WIDTH_VAR_PREFIX = "--md-tab-w-"
 const SETTINGS_SLOT_MARKS = ["➊", "➋", "➌", "➍", "➎", "➏"]
 const MID_SKELETON_ROW_COUNT = MD_BOTTOM_TABS_SLOT_COUNT
-const MD_BOTTOM_TAB_MEASURE_TRIGGER_CLASSNAME = "inline-flex items-center rounded-lg px-2.5 text-base whitespace-nowrap"
-const MD_BOTTOM_TAB_TRIGGER_CLASSNAMES = Array.from({ length: MD_BOTTOM_TABS_SLOT_COUNT }, (_, index) => {
-    const widthVarName = resolveMdBottomTabsWidthVarName(index)
-    return `min-w-0 justify-center w-[var(${widthVarName})] [flex:0_0_var(${widthVarName})]`
-})
 const CARD_SHELL_CLASS_BY_TYPE = {
     year: {
         url: "md:col-span-2",
     },
-}
-const MD_TAB_LABEL_KEY_BY_CARD_ID = {
-    location: "config.location",
-    "wallpaper-lang": "config.wallpaperLang",
-    "goal-fields": "config.goal",
-    "life-fields": "config.life",
-    colors: "config.colors",
-    device: "config.device",
-    url: "setup.title",
 }
 
 const CARD_ORDER_BY_TYPE = {
@@ -94,12 +79,6 @@ function resolveCardDefinition(cardId, cardViewModel, t) {
     }
 }
 
-function resolveMdTabLabel(cardId, t) {
-    const labelKey = MD_TAB_LABEL_KEY_BY_CARD_ID[cardId]
-    if (!labelKey) return cardId
-    return t(labelKey)
-}
-
 function SettingsCardSkeleton({ onRequestRevealAll }) {
     const canFastForward = typeof onRequestRevealAll === "function"
 
@@ -126,177 +105,6 @@ function SettingsCardTitleSkeleton() {
         <span className="inline-flex w-[84px] max-w-full">
             <SkeletonLine minWidth={100} maxWidth={100} />
         </span>
-    )
-}
-
-function SettingsTabLabelSkeleton() {
-    return (
-        <span className="inline-flex w-full max-w-[84px]">
-            <SkeletonLine minWidth={100} maxWidth={100} />
-        </span>
-    )
-}
-
-function resolveMdBottomTabsWidthVarName(index) {
-    return `${MD_BOTTOM_TAB_WIDTH_VAR_PREFIX}${index}`
-}
-
-function resolveMdBottomTabsWidthVars(widths) {
-    return widths.reduce((styleVars, width, index) => {
-        styleVars[resolveMdBottomTabsWidthVarName(index)] = `${Math.max(0, width)}px`
-        return styleVars
-    }, {})
-}
-
-function resolveMdBottomTabTriggerClassName(index) {
-    return MD_BOTTOM_TAB_TRIGGER_CLASSNAMES[index] ?? "min-w-0 justify-center"
-}
-
-function resolveMdBottomTabLabelContent(cardId, isLabelRevealed, t) {
-    if (!isLabelRevealed) return <SettingsTabLabelSkeleton />
-    return <span className="block min-w-0 truncate text-center">{resolveMdTabLabel(cardId, t)}</span>
-}
-
-function resolveMdBottomTabsActiveTitle({
-    activeCardDefinition,
-    currentActiveTab,
-    isActiveTabRevealed,
-}) {
-    if (!currentActiveTab || !isActiveTabRevealed || !activeCardDefinition) {
-        return {
-            title: <SettingsCardTitleSkeleton />,
-            titleTooltip: undefined,
-            isIndexActive: false,
-        }
-    }
-
-    return {
-        title: activeCardDefinition.resolvedTitle,
-        titleTooltip: activeCardDefinition.resolvedTitleTooltip,
-        isIndexActive: true,
-    }
-}
-
-function HomeSettingsPaneBottomTabsLayout({
-    bottomTabsCardOrder,
-    revealedTabs,
-    cardViewModel,
-    currentActiveTab,
-    onCloseSetupPanel,
-    onRequestRevealAll,
-    isSetupPanelOpen,
-    setActiveTabId,
-    setupPlatform,
-    shouldRenderPaneGuideHost,
-    t,
-    url,
-}) {
-    const tabsContainerRef = useRef(null)
-    const measureTriggerRefs = useRef([])
-
-    const activeSlotIndex = currentActiveTab ? bottomTabsCardOrder.indexOf(currentActiveTab) : 0
-    const activeCardDefinition = currentActiveTab
-        ? resolveCardDefinition(currentActiveTab, cardViewModel, t)
-        : null
-    const isActiveTabRevealed = revealedTabs.includes(currentActiveTab)
-    const activeTitleState = resolveMdBottomTabsActiveTitle({
-        activeCardDefinition,
-        currentActiveTab,
-        isActiveTabRevealed,
-    })
-    const measureLabels = bottomTabsCardOrder.map((cardId) => resolveMdTabLabel(cardId, t))
-    const { distributedTabWidths, indicatorClassName } = useMdBottomTabsMetrics({
-        tabsContainerRef,
-        measureTriggerRefs,
-        measureLabels,
-    })
-    const bottomTabsWidthVars = resolveMdBottomTabsWidthVars(distributedTabWidths)
-
-    return (
-        <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
-            <div className="flex-1 min-h-0 overflow-hidden">
-                {currentActiveTab ? (
-                    <SettingsCardShell
-                        cardId={currentActiveTab}
-                        title={activeTitleState.title}
-                        titleTooltip={activeTitleState.titleTooltip}
-                        indexMark={SETTINGS_SLOT_MARKS[Math.max(0, activeSlotIndex)]}
-                        isIndexActive={activeTitleState.isIndexActive}
-                        className="h-full"
-                        compactAtDesktop={false}
-                    >
-                        {isActiveTabRevealed && activeCardDefinition
-                            ? activeCardDefinition.card.render(cardViewModel)
-                            : <SettingsCardSkeleton onRequestRevealAll={cardViewModel.config.selectedType ? onRequestRevealAll : undefined} />}
-                    </SettingsCardShell>
-                ) : (
-                    <SettingsCardShell
-                        cardId="skeleton-slot-1"
-                        title={<SettingsCardTitleSkeleton />}
-                        indexMark={SETTINGS_SLOT_MARKS[0]}
-                        isIndexActive={false}
-                        className="h-full"
-                        compactAtDesktop={false}
-                    >
-                        <SettingsCardSkeleton />
-                    </SettingsCardShell>
-                )}
-            </div>
-            <div className="border-t border-kumo-line bg-kumo-elevated" style={{ height: "var(--registry-topbar-height)" }}>
-                {bottomTabsCardOrder.length > 0 ? (
-                    <div
-                        ref={tabsContainerRef}
-                        data-home-md-bottom-tabs
-                        className="relative flex h-full items-center px-3"
-                        style={bottomTabsWidthVars}
-                    >
-                        <div aria-hidden className="pointer-events-none absolute left-0 top-0 invisible flex font-medium">
-                            {measureLabels.map((label, index) => (
-                                <span
-                                    key={`measure-${bottomTabsCardOrder[index]}`}
-                                    ref={(element) => {
-                                        measureTriggerRefs.current[index] = element
-                                    }}
-                                    className={MD_BOTTOM_TAB_MEASURE_TRIGGER_CLASSNAME}
-                                >
-                                    {label}
-                                </span>
-                            ))}
-                        </div>
-                        <Tabs
-                            className="w-full"
-                            indicatorClassName={indicatorClassName}
-                            listClassName="w-full"
-                            variant="segmented"
-                            tabs={bottomTabsCardOrder.map((cardId, index) => ({
-                                value: cardId,
-                                label: resolveMdBottomTabLabelContent(cardId, revealedTabs.includes(cardId), t),
-                                className: resolveMdBottomTabTriggerClassName(index),
-                            }))}
-                            value={currentActiveTab}
-                            onValueChange={setActiveTabId}
-                        />
-                    </div>
-                ) : (
-                    <div className="flex h-full items-center gap-2 px-3">
-                        {bottomTabsCardOrder.map((cardId) => (
-                            <div key={cardId} className="flex min-w-0 flex-1 justify-center">
-                                <SettingsTabLabelSkeleton />
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-            {shouldRenderPaneGuideHost ? (
-                <SetupGuidePanel
-                    open={isSetupPanelOpen}
-                    platform={setupPlatform}
-                    onClose={onCloseSetupPanel}
-                    t={t}
-                    url={url}
-                />
-            ) : null}
-        </div>
     )
 }
 
@@ -436,6 +244,9 @@ function HomeSettingsPane(props) {
     const unlockedCount = Math.min(cardOrder.length, Math.max(0, revealStage))
     const revealedTabs = resolveMdBottomTabsRevealedCardIds(config.selectedType, cardOrder, unlockedCount)
     const currentActiveTab = bottomTabsCardOrder.includes(activeTabId) ? activeTabId : bottomTabsCardOrder[0]
+    const activeCardDefinition = currentActiveTab
+        ? resolveCardDefinition(currentActiveTab, cardViewModel, t)
+        : null
     const gridLayout = (
         <HomeSettingsPaneGridLayout
             cardOrder={cardOrder}
@@ -460,11 +271,15 @@ function HomeSettingsPane(props) {
         revealedTabs={revealedTabs}
         cardViewModel={cardViewModel}
         currentActiveTab={currentActiveTab}
+        activeCardDefinition={activeCardDefinition}
+        SettingsCardSkeleton={SettingsCardSkeleton}
+        SettingsCardTitleSkeleton={SettingsCardTitleSkeleton}
         onCloseSetupPanel={onCloseSetupPanel}
         onRequestRevealAll={onRequestRevealAll}
         isSetupPanelOpen={isSetupPanelOpen}
         setActiveTabId={setActiveTabId}
         setupPlatform={setupPlatform}
+        slotMarks={SETTINGS_SLOT_MARKS}
         shouldRenderPaneGuideHost={shouldRenderPaneGuideHost}
         t={t}
         url={url}

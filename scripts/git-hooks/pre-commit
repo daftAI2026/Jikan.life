@@ -1,10 +1,15 @@
 #!/bin/sh
-# [INPUT]: 依赖 node 运行时与 scripts/sync-version-metadata.js，同步 package 元数据
-# [OUTPUT]: 在提交前自动对齐 README 版本徽章与 package-lock 顶层版本并写回暂存区
+# [INPUT]: 依赖 node 运行时、sync-changelog-version.js 与 sync-version-metadata.js
+# [OUTPUT]: 在提交前以 CHANGELOG.md 版本为源头，级联同步 package.json → README + package-lock
 # [POS]: scripts/git-hooks 的 pre-commit 闸门，阻止版本元数据漂移进入历史
 # [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 
 set -e
 
+# Step 1: CHANGELOG.md → package.json
+node scripts/sync-changelog-version.js
+
+# Step 2: package.json → README.md + package-lock.json
 node scripts/sync-version-metadata.js
-git add README.md package-lock.json
+
+git add package.json README.md package-lock.json

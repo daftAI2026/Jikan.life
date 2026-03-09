@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.3] - 2026-03-09
+
+### Infrastructure
+- **Version Synchronization Engine**: Implemented `scripts/sync-changelog-version.js` to automatically parse the latest version string from `CHANGELOG.md` and synchronize it into `package.json`. Integrated this seamlessly into the local `pre-commit` git hook, establishing the changelog as the single source of truth for repository versioning.
+
+### Architecture
+- **JSX Extraction Finalization**: Finalized the extraction of the `HomeSettingsPaneBottomTabsLayout` component layout layer from `HomeSettingsPane`, cleanly completing the structural decoupling of the `md` tier settings interface.
+
+### Documentation & Tests
+- **Fractal Protocol**: Updated component L2 and L3 records across `tests/CLAUDE.md`, `scripts/CLAUDE.md`, and `src/pages/registry/sections/workspace/CLAUDE.md` to reflect the new version synchronization hook and the bottom tabs extraction.
+- **UI Architecture Guards**: Adapted `kumo-migration.ui.behavior.test.js` to rigidly assert the boundaries of the newly isolated `HomeSettingsPaneBottomTabsLayout` source block.
 ## [1.8.2] - 2026-03-09
 
 ### Architecture
