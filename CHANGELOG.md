@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.15] - 2026-03-10
+
+### Documentation
+- **Architecture Updates**: Updated `CONTRIBUTING.md` to reflect the Cloudflare Worker `/generate` endpoint route, added `worker/index.js` to the directory structure, and refined the pull request checklist regarding rendering layout and shared modules.
+- **Root Context**: Correctly documented in `MULTILINGUAL.md` that the `I18nContext` provider is now located within `src/App.jsx` instead of the legacy `src/main.jsx`.
+- **Device Support Vision**: Clarified Android support status in `README.md`, noting that while MacroDroid setup copy and Android device data reside in the codebase, the public device picker intentionally keeps the Android entry hidden to focus on the iPhone experience.
+
 ## [1.8.14] - 2026-03-10
 
 ### UI & UX

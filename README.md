@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.8.14-green" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.8.15-green" alt="Version" />
   <img src="https://img.shields.io/badge/i18n-EN%20%7C%20zh--CN%20%7C%20zh--TW%20%7C%20ja-orange" alt="i18n" />
 </p>
 
@@ -103,7 +103,7 @@ Language is auto-detected via IP geolocation and can be overridden manually. Wal
 
 Pixel-perfect wallpaper generation with native resolution support for modern iPhones (including iPhone 17 series). Smart layout adjustments for Notch vs Dynamic Island devices.
 
-> Android support is architecturally ready (MacroDroid setup guide included) and will be fully enabled in a future release.
+> Android device data and MacroDroid setup copy are already in the codebase, but the current public device picker is intentionally limited to iPhone while the Android entry stays hidden.
 
 ## ❤️ Credits & Acknowledgements
 
