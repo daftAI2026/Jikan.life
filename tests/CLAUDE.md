@@ -24,7 +24,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
-2026-03-10: 更新 `wallpaper-visual-snapshots.behavior.test.js` 与 `kumo-migration.ui.foundation.behavior.test.js`：将 Year/Life/Goal 视觉快照预期收敛到 `EXPECTED_HASHES` 常量，并新增 `sync:wallpaper-snapshots` 脚本护栏，要求基线更新通过统一脚本回写，避免人肉复制 sha256 导致 CI 漂移。
+2026-03-10: 更新 `wallpaper-visual-snapshots.behavior.test.js` 与 `kumo-migration.ui.foundation.behavior.test.js`：将 Year/Life/Goal 视觉快照预期收敛到 `EXPECTED_HASHES` 常量，并同步 Year SVG 基线到 `YEAR_DOT_RADIUS_SCALE=0.8` 后的稳定输出；新增 `sync:wallpaper-snapshots` 脚本护栏，要求基线更新通过统一脚本回写，避免人肉复制 sha256 导致 CI 漂移。
 2026-03-10: 更新 `kumo-migration.ui.registry-shell.behavior.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 Goal range restart 桥接放行唯一合法路径 `src/components/ui/kumo.jsx -> vendor/kumo-date-picker`，并新增源码护栏要求 committed/draft 分层、`rangeSelectionBehavior="restart"`、`onRangeComplete` 与 `Popover` 受控开关共存，防止临时 vendor 扩散到页面层。
 2026-03-10: 更新 `wallpaper-core-api.behavior.test.js`：新增 Year dot 尺寸常量护栏，锁定 facade 暴露与当前共享常量语义，防止圆点微调时 preview/Worker 共享比例漂移。
 2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：新增 Figma 锁屏 preview 护栏，强制 `HomePreviewPane` 委托 `LockScreenPreviewFrame`、锁定 `450x920 / 402x874 / inset 24,23 / targetHeight 510` 布局真相源，并要求 `public/preview/ios26001/*` 静态壳资源存在。
