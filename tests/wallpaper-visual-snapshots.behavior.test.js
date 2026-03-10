@@ -97,5 +97,5 @@ test("Goal countdown SVG snapshot hash stays stable", () => {
     })
   )
 
-  assert.equal(sha256(svg), "4776b15837995fe345a5e73f416a9dd3dd78fcd50b33fa6af1ff8e88527b53c9")
+  assert.equal(sha256(svg), "5f1980d0b89ba9e4e20c49cdde8a6e7a70f0cfa8e0498193b07b996fc71d039c")
 })

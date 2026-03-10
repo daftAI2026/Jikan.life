@@ -291,7 +291,7 @@ test("Goal URL builder keeps raw unicode goalName so worker validation sees the 
   assert.equal(parsed.goalName, goalName)
 })
 
-test("Worker goal SVG uses preview-sized ring stroke and number offset", async () => {
+test("Worker goal SVG uses shared goal ring stroke width and number offset", async () => {
   const goalGeneratorPath = pathToFileURL(path.join(process.cwd(), "worker/generators/goal.js")).href
   const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
   const { generateGoalCountdown } = await import(goalGeneratorPath)
@@ -324,7 +324,7 @@ test("Worker goal SVG uses preview-sized ring stroke and number offset", async (
     today: { year: 2026, month: 3, day: 10 },
   })
 
-  assert.match(svg, /stroke-width="6"/)
+  assert.match(svg, /stroke-width="8"/)
 
   const numberYMatch = svg.match(/<text x="589\.5" y="([^"]+)"[^>]*>296<\/text>/)
   assert.ok(numberYMatch, "expected goal days number text node")

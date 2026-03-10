@@ -23,6 +23,7 @@ function HomePreviewPane({ config, selectedDevice, t }) {
         const scale = Math.max(SCREEN_WIDTH / baseWidth, SCREEN_HEIGHT / baseHeight)
         const width = Math.max(1, Math.floor(baseWidth * scale))
         const height = Math.max(1, Math.floor(baseHeight * scale))
+        const previewScale = width / baseWidth
         const dpr = window.devicePixelRatio || 1
 
         canvas.width = Math.floor(width * dpr)
@@ -53,7 +54,16 @@ function HomePreviewPane({ config, selectedDevice, t }) {
             return
         }
 
-        drawGoalCountdown(ctx, width, height, renderConfig, selectedDevice.clockHeight)
+        if (config.selectedType === "goal") {
+            /* -----------------------------------------------------------------
+               Goal preview must share the export coordinate system so the ring
+               stroke scales down visually with the final wallpaper.
+               ----------------------------------------------------------------- */
+            ctx.save()
+            ctx.scale(previewScale, previewScale)
+            drawGoalCountdown(ctx, baseWidth, baseHeight, renderConfig, selectedDevice.clockHeight)
+            ctx.restore()
+        }
     }, [config, selectedDevice])
 
     useEffect(() => {

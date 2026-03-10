@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.9] - 2026-03-10
+
+### UI & UX
+- **Goal Ring WYSIWYG Parity**: Refactored the Goal countdown ring rendering in `HomePreviewPane`. By applying a dynamic `previewScale` and explicitly drawing from the base device coordinate system (`baseWidth`/`baseHeight`), the browser preview now perfectly reflects the exact scaled stroke width (`ringStrokeWidth`) of the final exported wallpaper, eliminating visual discrepancies.
+
+### Architecture
+- **Layout Math Calibration**: Calibrated the baseline Goal `ringStrokeWidth` from 6 to 8 in `shared/layout-core.js` to ensure the exported SVG stroke maintains elegant proportions at native device resolutions.
+
+### Tests
+- **Preview Scaling Guards**: Expanded `kumo-migration.ui.behavior.test.js` to strictly assert the new `ctx.scale` matrix isolation and coordinate scaling for the Goal countdown preview.
+- **Visual Hash Synchronization**: Updated `wallpaper-visual-snapshots.behavior.test.js` to lock down the new reference SVG hash resulting from the thickness adjustment.
+
 ## [1.8.8] - 2026-03-10
 
 ### Architecture

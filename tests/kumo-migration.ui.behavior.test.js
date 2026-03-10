@@ -1499,6 +1499,21 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
   assert.doesNotMatch(source, /SkeletonLine/)
 })
 
+test("HomePreviewPane scales goal preview from base device coordinates", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
+
+  assert.match(source, /const previewScale = width \/ baseWidth/)
+  assert.match(source, /if \(config\.selectedType === "year"\) \{/)
+  assert.match(source, /drawYearProgress\(ctx, width, height, renderConfig, selectedDevice\.clockHeight\)/)
+  assert.match(source, /if \(config\.selectedType === "life"\) \{/)
+  assert.match(source, /drawLifeCalendar\(ctx, width, height, renderConfig, selectedDevice\.clockHeight\)/)
+  assert.match(source, /if \(config\.selectedType === "goal"\) \{[\s\S]*ctx\.save\(\)/)
+  assert.match(source, /ctx\.scale\(previewScale,\s*previewScale\)/)
+  assert.match(source, /drawGoalCountdown\(ctx,\s*baseWidth,\s*baseHeight,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
+  assert.match(source, /ctx\.restore\(\)/)
+  assert.doesNotMatch(source, /drawGoalCountdown\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
+})
+
 test("HomeSettingsPane uses six-slot skeleton base and stage-based reveal", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 
