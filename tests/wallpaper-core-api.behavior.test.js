@@ -17,6 +17,7 @@ const EXPECTED_EXPORTS = [
   "contrastAlpha",
   "formatGoalDate",
   "getContrastBase",
+  "getDatePartsInTimezone",
   "getDayOfYear",
   "getDaysInYear",
   "getLuminance",

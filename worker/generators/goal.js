@@ -27,19 +27,7 @@ export function generateGoalCountdown(options) {
         lang = 'en',
         foregroundOverride = null
     } = options;
-
-    const decodeGoalName = (value) => {
-        if (typeof value !== 'string') return value;
-        if (!/%[0-9A-Fa-f]{2}/.test(value)) return value;
-        try {
-            return decodeURIComponent(value);
-        } catch (e) {
-            return value;
-        }
-    };
-
-    const decodedGoalName = decodeGoalName(goalName);
-    const resolvedGoalName = decodedGoalName?.trim() || getWallpaperText(lang, 'goalDefault', '');
+    const resolvedGoalName = goalName?.trim() || getWallpaperText(lang, 'goalDefault', '');
 
     // Use shared core for layout computation
     const today = getDateInTimezone(timezone);
@@ -68,17 +56,16 @@ export function generateGoalCountdown(options) {
     content.push(rect(0, 0, width, height, bgFill));
 
     // Background circle
-    const strokeWidth = width * 0.035;
-    content.push(`<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${ringMuted}" stroke-width="${strokeWidth}" fill="none" />`);
+    content.push(`<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${ringMuted}" stroke-width="${layout.ringStrokeWidth}" fill="none" />`);
 
     // Progress arc
     if (ring.progress > 0) {
         const endAngle = ring.progress * 360;
-        content.push(arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, accentFill, strokeWidth));
+        content.push(arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, accentFill, layout.ringStrokeWidth));
     }
 
     // Days number
-    content.push(text(ring.centerX, ring.centerY - height * 0.015, layout.daysRemaining.toString(), {
+    content.push(text(ring.centerX, layout.numberY, layout.daysRemaining.toString(), {
         fill: accentFill,
         fontSize: layout.numberFontSize,
         fontWeight: '700',

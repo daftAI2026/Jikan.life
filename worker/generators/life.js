@@ -54,18 +54,16 @@ export function generateLifeCalendar(options) {
     // Week grid (dots)
     for (const dot of layout.dots) {
         let fillColor;
-        let radius = dot.radius;
 
         if (dot.isCurrentWeek) {
             fillColor = accentFill;
-            radius = dot.radius * 1.15;
         } else if (dot.isLived) {
             fillColor = accentMuted;
         } else {
             fillColor = pendingFill;
         }
 
-        content.push(circle(dot.cx, dot.cy, radius, fillColor));
+        content.push(circle(dot.cx, dot.cy, dot.radius, fillColor));
     }
 
     // Stats text

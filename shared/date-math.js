@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无依赖（纯函数模块）
- * [OUTPUT]: 对外提供 toDayNumber、isLeapYear、getDaysInYear、getDayOfYear
- * [POS]: shared/ 的日期数学真相源，供 wallpaper-core 与前端日期工具复用
+ * [OUTPUT]: 对外提供 toDayNumber、isLeapYear、getDaysInYear、getDayOfYear、getDatePartsInTimezone
+ * [POS]: shared/ 的日期数学真相源，供 wallpaper-core、前端日期工具与跨端时区日期归一复用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -25,4 +25,34 @@ function getDayOfYear(year, month, day) {
     return dayNumber - startOfYear + 1
 }
 
-export { toDayNumber, isLeapYear, getDaysInYear, getDayOfYear }
+function getLocalDateParts(now) {
+    return {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        day: now.getDate(),
+    }
+}
+
+function getDatePartsInTimezone(timezone, now = new Date()) {
+    if (!timezone) return getLocalDateParts(now)
+
+    try {
+        const formatter = new Intl.DateTimeFormat("en-CA", {
+            timeZone: timezone,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+        const parts = formatter.formatToParts(now)
+
+        return {
+            year: Number.parseInt(parts.find((part) => part.type === "year")?.value, 10),
+            month: Number.parseInt(parts.find((part) => part.type === "month")?.value, 10),
+            day: Number.parseInt(parts.find((part) => part.type === "day")?.value, 10),
+        }
+    } catch {
+        return getLocalDateParts(now)
+    }
+}
+
+export { toDayNumber, isLeapYear, getDaysInYear, getDayOfYear, getDatePartsInTimezone }

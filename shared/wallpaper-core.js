@@ -36,4 +36,4 @@ export {
     computeGoalLayout
 } from './layout-core.js';
 
-export { toDayNumber, isLeapYear, getDaysInYear, getDayOfYear } from './date-math.js';
+export { toDayNumber, isLeapYear, getDaysInYear, getDayOfYear, getDatePartsInTimezone } from './date-math.js';

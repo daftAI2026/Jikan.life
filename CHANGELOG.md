@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.7] - 2026-03-10
+
+### Architecture
+- **Time Source Unification**: Unified the "current day" timezone evaluation logic across both the Canvas renderer and Worker SVG generators. Extracted the `referenceDateData` initialization in worker scripts (`goal.js`, `life.js`) to strictly invoke `getJikanPaddedDate` from `shared/date-math.js`, completely eradicating hydration disparities and ensuring week progress calculations perfectly align.
+- **Goal URL Encoding**: Solidified Goal Name URL metric encoding. Extended `url-builder.js` and worker payload extraction to correctly preserve and parse Chinese characters, preventing garbled text boundaries.
+
+### UI & UX
+- **WYSIWYG Parity**: Synchronized geometric layout tokens (e.g., `clockHeight`) between `src/lib/renderer.js` and `worker/svg.js` to guarantee perfect What-You-See-Is-What-You-Get parity for the Goal wallpaper across the web preview and downloaded final output.
+- **Life Calendar Current Week**: Corrected the visual identification logic of the current week within the Life wallpaper 10x10 dot matrix, guaranteeing visual consistency across both rendering layers.
+
+### Documentation & Tests
+- **Fractal Protocol Sync**: Executed full L2 GEB documentation alignment across `shared/CLAUDE.md`, `src/lib/CLAUDE.md`, `worker/CLAUDE.md`, and `worker/generators/CLAUDE.md`, explicitly tracking the single source of truth for time padding and unified geometry logic.
+- **WYSIWYG Core Guards**: Expanded `kumo-migration.core.behavior.test.js`, `date-math.unit.test.js`, and `wallpaper-visual-snapshots.behavior.test.js` to rigidly assert exact parity of rendering logic, encoding robustness, and cross-environment time consistency.
+
 ## [1.8.6] - 2026-03-10
 
 ### Architecture

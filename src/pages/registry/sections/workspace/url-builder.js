@@ -37,7 +37,7 @@ function buildWallpaperUrl({ config, selectedDevice, todayISO, clampLifespan }) 
             goalDate: config.goalDate,
             todayISO,
         })
-        if (config.goalName.trim()) params.set("goalName", encodeURIComponent(config.goalName.trim()))
+        if (config.goalName.trim()) params.set("goalName", config.goalName.trim())
         if (config.goalStart && !goalDateErrors.goalStartError) params.set("goalStart", config.goalStart)
         if (config.goalDate && !goalDateErrors.goalDateError) params.set("goal", config.goalDate)
     }

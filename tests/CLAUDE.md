@@ -21,6 +21,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-10: 更新 `date-math.unit.test.js` / `wallpaper-core-api.behavior.test.js` / `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：新增 shared 时区日期真相源护栏，强制 Preview 改走 `timezone` 而非浏览器本地日历；新增 Goal URL 中文名标准 UTF-8 编码护栏，禁止 `encodeURIComponent + URLSearchParams` 双编码回流；同时锁定 Worker `goal` 环线宽/数字 Y 偏移向前端 Preview 对齐，并要求 `life` 当前周圆点半径不再额外放大。
 2026-03-09: 更新 `kumo-migration.ui.behavior.test.js`：新增 `HomeSettingsPaneBottomTabsLayout.jsx` 视图提取护栏，强制 `HomeSettingsPane.jsx` 只保留编排层职责、`MD_BOTTOM_TABS_SLOT_COUNT` 继续留在 pane 侧，而 bottom-tabs 视图 helper/常量与 `useMdBottomTabsMetrics` 消费点下沉到独立私有文件，且新文件不反向依赖 pane 槽位常量。
 2026-03-09: 更新 `kumo-migration.ui.behavior.test.js`：新增 `use-md-bottom-tabs-metrics.js` 私有 hook 护栏，强制 `HomeSettingsPane` 不再直接持有 tabs 测量/resize 状态，并锁定 hook 的输入签名、首帧同步测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、`>1px` deadzone、宽度未就绪时隐藏 indicator、live resize 时关闭 indicator 过渡，以及 6 槽 CSS var/trigger class 常量收口语义。
 2026-03-05: 更新 `kumo-migration.ui.behavior.test.js`：新增提交流程与 CI 一致性护栏，强制 `hooks:install/postinstall`、`scripts/git-hooks/pre-commit` 自动同步链路，以及 CI 必跑 `check:version-metadata`。

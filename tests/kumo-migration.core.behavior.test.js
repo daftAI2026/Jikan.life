@@ -6,7 +6,33 @@
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { assertNamedImports, listFiles, path, readSource } from "./helpers/source-test-helpers.js"
+import { assertNamedImports, listFiles, path, pathToFileURL, readSource } from "./helpers/source-test-helpers.js"
+
+const FIXED_NOW_ISO = "2026-03-10T09:10:11.000Z"
+
+function withFixedDate(run) {
+  const RealDate = Date
+  class MockDate extends RealDate {
+    constructor(...args) {
+      if (args.length === 0) {
+        super(FIXED_NOW_ISO)
+        return
+      }
+      super(...args)
+    }
+
+    static now() {
+      return new RealDate(FIXED_NOW_ISO).getTime()
+    }
+  }
+
+  globalThis.Date = MockDate
+  try {
+    return run()
+  } finally {
+    globalThis.Date = RealDate
+  }
+}
 
 test("Wallpaper preview shares one language font strategy from shared core", async () => {
   const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
@@ -172,8 +198,15 @@ test("Renderer and worker pass goalStart into shared goal layout", () => {
   assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
   assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
   assert.match(goalGeneratorSource, /goalStart,/)
-  assert.match(goalGeneratorSource, /const decodedGoalName = decodeGoalName\(goalName\)/)
   assert.match(goalGeneratorSource, /goalStart,\s*goalName: resolvedGoalName/)
+})
+
+test("Renderer uses shared timezone date parts instead of browser-local now for preview layouts", () => {
+  const rendererSource = readSource("src/lib/renderer.js")
+
+  assert.match(rendererSource, /getDatePartsInTimezone/)
+  assert.doesNotMatch(rendererSource, /function getLocalToday\(/)
+  assert.doesNotMatch(rendererSource, /const now = new Date\(\);/)
 })
 
 test("Goal default label follows wallpaper language when goalName is empty", async () => {
@@ -188,7 +221,7 @@ test("Goal default label follows wallpaper language when goalName is empty", asy
   assert.equal(getWallpaperText("zh-TW", "goalDefault", ""), "目標")
   assert.equal(getWallpaperText("ja", "goalDefault", ""), "目標")
   assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*getWallpaperText\(config\.wallpaperLang,\s*'goalDefault',\s*''\)/)
-  assert.match(goalGeneratorSource, /const resolvedGoalName = decodedGoalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
+  assert.match(goalGeneratorSource, /const resolvedGoalName = goalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
   assert.match(validationSource, /goalName:\s*z\.string\(\)\.max\(100,\s*"Goal name too long"\)\.default\(''\)/)
 })
 
@@ -201,6 +234,112 @@ test("Goal preview and worker render goalName with foreground accent, not backgr
 
   assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,/)
   assert.doesNotMatch(goalGeneratorSource, /fill: svgContrastAlpha\(bgColor, 0\.9\),/)
+})
+
+test("Goal URL builder keeps raw unicode goalName so worker validation sees the real text length", async () => {
+  const validationPath = pathToFileURL(path.join(process.cwd(), "worker/validation.js")).href
+  const { validateParams } = await import(validationPath)
+  const urlBuilderSource = readSource("src/pages/registry/sections/workspace/url-builder.js")
+  const goalName = "目标" + "冲刺".repeat(19)
+  const params = new URLSearchParams()
+  params.set("goalName", goalName)
+  params.set("type", "goal")
+  params.set("bg", "000000")
+  params.set("accent", "FFFFFF")
+  params.set("width", "1179")
+  params.set("height", "2556")
+  params.set("clockHeight", "0.217")
+  params.set("lang", "zh-CN")
+  params.set("goalStart", "2026-03-01")
+  params.set("goal", "2026-06-01")
+
+  assert.doesNotMatch(urlBuilderSource, /encodeURIComponent\(config\.goalName\.trim\(\)\)/)
+  assert.match(params.toString(), /goalName=%E7%9B%AE/)
+  assert.doesNotMatch(params.toString(), /goalName=%25E7/)
+
+  const parsed = validateParams(new URL(`https://jikan.life/generate?${params.toString()}`))
+  assert.equal(parsed.goalName, goalName)
+})
+
+test("Worker goal SVG uses preview-sized ring stroke and number offset", async () => {
+  const goalGeneratorPath = pathToFileURL(path.join(process.cwd(), "worker/generators/goal.js")).href
+  const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
+  const { generateGoalCountdown } = await import(goalGeneratorPath)
+  const { computeGoalLayout } = await import(corePath)
+
+  const options = {
+    width: 1179,
+    height: 2556,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    timezone: "UTC",
+    goalDate: "2026-12-31",
+    goalStart: "2026-01-01",
+    goalName: "目标发布",
+    clockHeight: 0.18,
+    lang: "zh-CN",
+    foregroundOverride: null,
+  }
+  const svg = withFixedDate(() => generateGoalCountdown(options))
+  const layout = computeGoalLayout({
+    width: options.width,
+    height: options.height,
+    bgColor: options.bgColor,
+    accentColor: options.accentColor,
+    clockHeight: options.clockHeight,
+    lang: options.lang,
+    goalDate: options.goalDate,
+    goalStart: options.goalStart,
+    goalName: options.goalName,
+    today: { year: 2026, month: 3, day: 10 },
+  })
+
+  assert.match(svg, /stroke-width="6"/)
+
+  const numberYMatch = svg.match(/<text x="589\.5" y="([^"]+)"[^>]*>296<\/text>/)
+  assert.ok(numberYMatch, "expected goal days number text node")
+  assert.equal(Number(numberYMatch[1]), layout.ring.centerY - 4)
+})
+
+test("Worker life SVG keeps current-week radius identical to preview layout", async () => {
+  const lifeGeneratorPath = pathToFileURL(path.join(process.cwd(), "worker/generators/life.js")).href
+  const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
+  const { generateLifeCalendar } = await import(lifeGeneratorPath)
+  const { computeLifeLayout } = await import(corePath)
+
+  const options = {
+    width: 1179,
+    height: 2556,
+    bgColor: "#0F172A",
+    accentColor: "#22D3EE",
+    timezone: "UTC",
+    dob: "1995-07-14",
+    lifespan: 85,
+    clockHeight: 0.22,
+    lang: "ja",
+    foregroundOverride: null,
+  }
+  const svg = withFixedDate(() => generateLifeCalendar(options))
+  const layout = computeLifeLayout({
+    width: options.width,
+    height: options.height,
+    bgColor: options.bgColor,
+    accentColor: options.accentColor,
+    clockHeight: options.clockHeight,
+    lang: options.lang,
+    dob: options.dob,
+    lifespan: options.lifespan,
+    today: { year: 2026, month: 3, day: 10 },
+  })
+  const currentWeekDot = layout.dots.find((dot) => dot.isCurrentWeek)
+
+  assert.ok(currentWeekDot, "expected current week dot")
+
+  const escapedCx = String(currentWeekDot.cx).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const escapedCy = String(currentWeekDot.cy).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const radiusMatch = svg.match(new RegExp(`<circle cx="${escapedCx}" cy="${escapedCy}" r="([^"]+)" fill="#22D3EE" \\/>`))
+  assert.ok(radiusMatch, "expected current week circle in worker svg")
+  assert.equal(Number(radiusMatch[1]), currentWeekDot.radius)
 })
 
 test("Worker validation enforces goalStart schema, year range, and relation to goal", () => {

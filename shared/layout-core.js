@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/date-math + shared/wallpaper-color-core + shared/wallpaper-text
- * [OUTPUT]: 对外提供 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout
- * [POS]: shared/ 壁纸布局计算核心，负责 Year/Life/Goal 三类几何与统计数据
+ * [OUTPUT]: 对外提供 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout（含 Goal 渲染指标）
+ * [POS]: shared/ 壁纸布局计算核心，负责 Year/Life/Goal 三类几何、统计数据与 Goal 关键渲染指标
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -288,9 +288,11 @@ export function computeGoalLayout(options) {
         goalName,
         safeAccent,
         bgColor,
+        numberY: centerY - 4,
         labelY: centerY + (height * 0.08),
         goalNameY: height * 0.75,
         targetDateY: height * 0.77, // 新增
+        ringStrokeWidth: 6,
         numberFontSize: width * 0.2, // 修正：原版是 0.2
         labelFontSize: width * 0.04, // 修正：原版是 0.04
         nameFontSize: width * 0.05 // 修正：原版是 0.05

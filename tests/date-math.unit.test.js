@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert/node:path/node:url 与 shared/date-math 模块
- * [OUTPUT]: 日期数学单测（闰年、年天数、年内序号、日号一致性）
+ * [OUTPUT]: 日期数学单测（闰年、年天数、年内序号、日号一致性 + 时区日期归一）
  * [POS]: tests/ 的 shared 日期真相源护栏，防止多实现分裂与公式回归
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -15,6 +15,7 @@ const {
     isLeapYear,
     getDaysInYear,
     getDayOfYear,
+    getDatePartsInTimezone,
 } = await import(dateMathModuleUrl)
 
 test("isLeapYear follows Gregorian rules", () => {
@@ -39,4 +40,20 @@ test("toDayNumber increases by one across adjacent days", () => {
     const day1 = toDayNumber({ year: 2026, month: 3, day: 1 })
     const day2 = toDayNumber({ year: 2026, month: 3, day: 2 })
     assert.equal(day2 - day1, 1)
+})
+
+test("getDatePartsInTimezone resolves day boundaries from a shared timezone source", () => {
+    const fixedNow = new Date("2026-03-10T23:30:00.000Z")
+
+    assert.deepEqual(getDatePartsInTimezone("UTC", fixedNow), {
+        year: 2026,
+        month: 3,
+        day: 10,
+    })
+
+    assert.deepEqual(getDatePartsInTimezone("Asia/Tokyo", fixedNow), {
+        year: 2026,
+        month: 3,
+        day: 11,
+    })
 })

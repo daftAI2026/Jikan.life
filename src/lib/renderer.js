@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js
  * [OUTPUT]: 对外提供 drawYearProgress, drawLifeCalendar, drawGoalCountdown (Canvas 2D)
- * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局，**透传 foregroundOverride 与设备级 cols/padding 参数**
+ * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局与时区日期 helper，**透传 foregroundOverride 与设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -12,6 +12,7 @@ import {
     hexToRgba,
     contrastAlpha,
     getSafeAccent,
+    getDatePartsInTimezone,
     getDayOfYear as coreDayOfYear,
     getDaysInYear,
     isLeapYear,
@@ -31,13 +32,8 @@ export {
 
 // Legacy getDayOfYear (takes no args, uses current date)
 export function getDayOfYear() {
-    const now = new Date();
-    return coreDayOfYear(now.getFullYear(), now.getMonth() + 1, now.getDate());
-}
-
-function getLocalToday() {
-    const now = new Date();
-    return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    const today = getDatePartsInTimezone();
+    return coreDayOfYear(today.year, today.month, today.day);
 }
 
 /* ========================================================================
@@ -74,7 +70,7 @@ export function drawStats(ctx, width, y, text1, text2, config, fontScale = 1) {
    ======================================================================== */
 
 export function drawYearProgress(ctx, width, height, config, clockHeight) {
-    const now = new Date();
+    const today = getDatePartsInTimezone(config.timezone);
     const layout = computeYearLayout({
         width,
         height,
@@ -82,9 +78,9 @@ export function drawYearProgress(ctx, width, height, config, clockHeight) {
         accentColor: config.accentColor,
         clockHeight,
         lang: config.wallpaperLang,
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-        day: now.getDate(),
+        year: today.year,
+        month: today.month,
+        day: today.day,
         cols: config.cols,
         padding: config.padding
     });
@@ -112,7 +108,7 @@ export function drawYearProgress(ctx, width, height, config, clockHeight) {
    ======================================================================== */
 
 export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
-    const today = getLocalToday();
+    const today = getDatePartsInTimezone(config.timezone);
     const layout = computeLifeLayout({
         width,
         height,
@@ -148,7 +144,7 @@ export function drawLifeCalendar(ctx, width, height, config, clockHeight) {
    ======================================================================== */
 
 export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
-    const today = getLocalToday();
+    const today = getDatePartsInTimezone(config.timezone);
     const layout = computeGoalLayout({
         width,
         height,
@@ -167,7 +163,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
 
     // Background ring
     ctx.strokeStyle = contrastAlpha(bgColor, 0.1, config.foregroundOverride);
-    ctx.lineWidth = 6;
+    ctx.lineWidth = layout.ringStrokeWidth;
     ctx.beginPath();
     ctx.arc(ring.centerX, ring.centerY, ring.radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -175,7 +171,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     // Progress arc
     if (ring.progress > 0) {
         ctx.strokeStyle = safeAccent;
-        ctx.lineWidth = 6;
+        ctx.lineWidth = layout.ringStrokeWidth;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.arc(ring.centerX, ring.centerY, ring.radius, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * ring.progress));
@@ -187,7 +183,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     ctx.font = `700 ${layout.numberFontSize}px ${fontFamily}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(layout.daysRemaining.toString(), ring.centerX, ring.centerY - 4);
+    ctx.fillText(layout.daysRemaining.toString(), ring.centerX, layout.numberY);
 
     // "X days left" label
     ctx.fillStyle = contrastAlpha(bgColor, 0.5, config.foregroundOverride);
