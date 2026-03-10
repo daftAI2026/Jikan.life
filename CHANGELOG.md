@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.13] - 2026-03-10
+
+### UI & UX
+- **Goal Progress Localization**: Refactored the Goal wallpaper to use a localized fallback string (`goalDefault`) when the goal name is empty, automatically adapting to the user's `wallpaperLang` setting.
+- **I18n Font Parity**: Synchronized font-family resolution for Goal name characters between the web preview and Cloudflare Worker SVG generators, ensuring flawless multi-language typography for Japanese and Chinese glyphs.
+
+### Architecture
+- **Goal Ring Geometry**: Extracted Goal ring stroke width from raw math into the centralized `GOAL_RING_STROKE_WIDTH` constant in `shared/layout-core.js`. This eliminates magic numbers and guarantees geometric parity across rendering layers.
+
+### Documentation & Tests
+- **GEB Protocol**: Executed comprehensive L3 GEB documentation header updates across `worker/generators/goal.js` and shared core modules.
+- **Visual Hash Synchronization**: Leveraged `scripts/sync-wallpaper-snapshots.js` to rigidly lock down the new deterministic SHA-256 SVG hashes for the i18n font alignment.
+
 ## [1.8.12] - 2026-03-10
 
 ### Infrastructure & Tests
