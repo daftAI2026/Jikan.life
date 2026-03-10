@@ -58,7 +58,7 @@ test("Year calendar SVG snapshot hash stays stable", () => {
     })
   )
 
-  assert.equal(sha256(svg), "fb955f111f1421039c3947bffad0673a9cc060928112776fd7ebac1819adba01")
+  assert.equal(sha256(svg), "ddbc1767454357d57fe1b5f7c1fbff2f5607ba7b059cbb445b9e77335457e1c5")
 })
 
 test("Life calendar SVG snapshot hash stays stable", () => {
@@ -77,7 +77,7 @@ test("Life calendar SVG snapshot hash stays stable", () => {
     })
   )
 
-  assert.equal(sha256(svg), "dea2e0418df83a238a4f0884e30dba8aaa92e065e4698a87b9d35a3eb2462198")
+  assert.equal(sha256(svg), "97ff695c260e709ee5a0310f90c2c7d4d5e1ef70790cef5e1c64061761017659")
 })
 
 test("Goal countdown SVG snapshot hash stays stable", () => {
@@ -97,5 +97,5 @@ test("Goal countdown SVG snapshot hash stays stable", () => {
     })
   )
 
-  assert.equal(sha256(svg), "d7ffb00d26845b5b8cb0a60a4b93805633f7ba8e232aa76a91e4a2e5525343c7")
+  assert.equal(sha256(svg), "4776b15837995fe345a5e73f416a9dd3dd78fcd50b33fa6af1ff8e88527b53c9")
 })

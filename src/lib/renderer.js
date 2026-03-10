@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 shared/wallpaper-core.js
+ * [INPUT]: 依赖 shared/wallpaper-core.js（布局、时区日期与 goalName 字体解析）
  * [OUTPUT]: 对外提供 drawYearProgress, drawLifeCalendar, drawGoalCountdown (Canvas 2D)
- * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局与时区日期 helper，**透传 foregroundOverride 与设备级 cols/padding 参数**
+ * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局、时区日期 helper 与 goalName 多语言字体策略，**透传 foregroundOverride 与设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -18,6 +18,7 @@ import {
     isLeapYear,
     getWallpaperText,
     getWallpaperFontFamily,
+    resolveTextFontFamily,
     formatGoalDate
 } from '../../shared/wallpaper-core.js';
 
@@ -192,8 +193,9 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
 
     // Goal name
     if (layout.goalName) {
+        const goalNameFontFamily = resolveTextFontFamily(config.wallpaperLang, layout.goalName);
         ctx.fillStyle = safeAccent;
-        ctx.font = `600 ${layout.nameFontSize}px ${fontFamily}`;
+        ctx.font = `600 ${layout.nameFontSize}px ${goalNameFontFamily}`;
         ctx.fillText(layout.goalName, ring.centerX, layout.goalNameY);
     }
 

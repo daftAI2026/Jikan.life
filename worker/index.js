@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal}.js, ./validation.js, @resvg/resvg-wasm
+ * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal}.js, ./validation.js, ../shared/wallpaper-core.js(resolveFontBufferLanguages), @resvg/resvg-wasm
  * [OUTPUT]: 对外提供 default.fetch (Cloudflare Worker Handler)
- * [POS]: worker/index.js - Worker 核心入口，负责路由分发、WASM 初始化与图像生成
+ * [POS]: worker/index.js - Worker 核心入口，负责路由分发、WASM 初始化、goalName 感知字体加载与图像生成
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * 
  * Life Calendar Wallpaper - Cloudflare Worker
@@ -17,6 +17,7 @@ import { generateYearCalendar } from './generators/year.js';
 import { generateLifeCalendar } from './generators/life.js';
 import { generateGoalCountdown } from './generators/goal.js';
 import { validateParams } from './validation.js';
+import { resolveFontBufferLanguages } from '../shared/wallpaper-core.js';
 
 // Resvg WASM for SVG to PNG conversion
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
@@ -101,12 +102,12 @@ async function loadCJKFonts(lang) {
     }
 }
 
-// 获取完整字体列表（Inter + CJK）
-async function loadFonts(lang = 'en') {
+// 获取完整字体列表（Inter + 基础壁纸语言 + goalName 额外脚本）
+async function loadFonts(lang = 'en', goalName = '') {
     await loadInterFonts();
-    const cjkFonts = await loadCJKFonts(lang);
-    // CJK 字体在前，Inter 在后作为 fallback
-    return [...cjkFonts, ...interFontBuffers];
+    const cjkLangs = resolveFontBufferLanguages(lang, goalName);
+    const cjkFonts = await Promise.all(cjkLangs.map((fontLang) => loadCJKFonts(fontLang)));
+    return [...cjkFonts.flat(), ...interFontBuffers];
 }
 
 export default {
@@ -270,7 +271,7 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
 
         // Convert SVG to PNG using resvg
         await initializeWasm();
-        const fontBuffers = await loadFonts(validated.lang);
+        const fontBuffers = await loadFonts(validated.lang, validated.goalName);
 
         const resvg = new Resvg(svg, {
             fitTo: {
@@ -316,4 +317,3 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         return new Response('Internal Server Error', { status: 500, headers: corsHeaders });
     }
 }
-

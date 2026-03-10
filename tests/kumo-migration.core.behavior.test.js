@@ -36,7 +36,7 @@ function withFixedDate(run) {
 
 test("Wallpaper preview shares one language font strategy from shared core", async () => {
   const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
-  const { getWallpaperFontFamily } = await import(`file://${corePath}`)
+  const { getWallpaperFontFamily, resolveTextFontFamily } = await import(`file://${corePath}`)
   const rendererSource = readSource("src/lib/renderer.js")
   const yearSource = readSource("worker/generators/year.js")
   const lifeSource = readSource("worker/generators/life.js")
@@ -47,8 +47,11 @@ test("Wallpaper preview shares one language font strategy from shared core", asy
   assert.equal(getWallpaperFontFamily("zh-CN"), '"Noto Sans SC", "Inter", sans-serif')
   assert.equal(getWallpaperFontFamily("zh-TW"), '"Noto Sans TC", "Inter", sans-serif')
   assert.equal(getWallpaperFontFamily("ja"), '"Noto Sans JP", "Inter", sans-serif')
+  assert.equal(resolveTextFontFamily("en", "没什么"), '"Noto Sans SC", "Inter", sans-serif')
+  assert.equal(resolveTextFontFamily("en", "Launch カタカナ"), '"Noto Sans JP", "Inter", sans-serif')
 
   assert.match(rendererSource, /getWallpaperFontFamily/)
+  assert.match(rendererSource, /resolveTextFontFamily/)
   assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
   assert.doesNotMatch(yearSource, /font-family="Inter"/)
   assert.doesNotMatch(lifeSource, /font-family="Inter"/)
@@ -60,10 +63,13 @@ test("Wallpaper preview shares one language font strategy from shared core", asy
 
 test("Worker SVG reuses shared getWallpaperFontFamily without local font map", () => {
   const svgSource = readSource("worker/svg.js")
+  const workerSource = readSource("worker/index.js")
 
   assertNamedImports(svgSource, "../shared/wallpaper-core.js", ["getWallpaperFontFamily"])
   assert.match(svgSource, /getWallpaperFontFamily\(lang\)/)
   assert.doesNotMatch(svgSource, /FONT_FAMILY_BY_LANG/)
+  assert.match(workerSource, /resolveFontBufferLanguages/)
+  assert.match(workerSource, /loadFonts\(validated\.lang,\s*validated\.goalName\)/)
 })
 
 test("GoalStart is wired through registry config state and URL generation", () => {
@@ -230,10 +236,34 @@ test("Goal preview and worker render goalName with foreground accent, not backgr
   const goalGeneratorSource = readSource("worker/generators/goal.js")
 
   assert.match(rendererSource, /if \(layout\.goalName\) \{[\s\S]*ctx\.fillStyle = safeAccent;/)
+  assert.match(rendererSource, /const goalNameFontFamily = resolveTextFontFamily\(config\.wallpaperLang,\s*layout\.goalName\)/)
   assert.doesNotMatch(rendererSource, /ctx\.fillStyle = contrastAlpha\(bgColor, 0\.9\);/)
 
-  assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,/)
+  assert.match(goalGeneratorSource, /const goalNameFontFamily = resolveTextFontFamily\(lang,\s*layout\.goalName\)/)
+  assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,[\s\S]*fontFamily: goalNameFontFamily,/)
   assert.doesNotMatch(goalGeneratorSource, /fill: svgContrastAlpha\(bgColor, 0\.9\),/)
+})
+
+test("Goal worker resolves multilingual goalName font family independently from wallpaper language", async () => {
+  const goalGeneratorPath = pathToFileURL(path.join(process.cwd(), "worker/generators/goal.js")).href
+  const { generateGoalCountdown } = await import(goalGeneratorPath)
+
+  const svg = withFixedDate(() => generateGoalCountdown({
+    width: 1080,
+    height: 2340,
+    bgColor: "#000000",
+    accentColor: "#FFFFFF",
+    timezone: "Asia/Shanghai",
+    goalDate: "2026-04-24",
+    goalStart: "2026-03-12",
+    goalName: "Launch 没什么 カタカナ",
+    clockHeight: 0.217,
+    lang: "en",
+    foregroundOverride: null,
+  }))
+
+  assert.match(svg, /font-family="&quot;Noto Sans JP&quot;, &quot;Noto Sans SC&quot;, &quot;Inter&quot;, sans-serif" text-anchor="middle" dominant-baseline="middle">Launch 没什么 カタカナ<\/text>/)
+  assert.match(svg, />days left<\/text>/)
 })
 
 test("Goal URL builder keeps raw unicode goalName so worker validation sees the real text length", async () => {

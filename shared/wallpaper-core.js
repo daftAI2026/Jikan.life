@@ -26,7 +26,9 @@ export {
 
 export {
     getWallpaperText,
-    getWallpaperFontFamily
+    getWallpaperFontFamily,
+    resolveTextFontFamily,
+    resolveFontBufferLanguages
 } from './wallpaper-text.js';
 
 export {

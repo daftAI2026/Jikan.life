@@ -1,13 +1,13 @@
 /**
- * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText), ../svg.js, ../timezone.js
+ * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText/resolveTextFontFamily), ../svg.js, ../timezone.js
  * [OUTPUT]: generateGoalCountdown 函数 (SVG string)
- * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局，支持 foregroundOverride 与本地化 goalDefault
+ * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局，支持 foregroundOverride、本地化 goalDefault 与 goalName 多语言字体解析
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
 import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
 import { getDateInTimezone } from '../timezone.js';
-import { computeGoalLayout, formatGoalDate, getWallpaperText } from '../../shared/wallpaper-core.js';
+import { computeGoalLayout, formatGoalDate, getWallpaperText, resolveTextFontFamily } from '../../shared/wallpaper-core.js';
 
 /**
  * Generate Goal Countdown Wallpaper
@@ -84,10 +84,12 @@ export function generateGoalCountdown(options) {
 
     // Goal name
     if (layout.goalName) {
+        const goalNameFontFamily = resolveTextFontFamily(lang, layout.goalName);
         content.push(text(ring.centerX, layout.goalNameY, layout.goalName, {
             fill: accentFill,
             fontSize: layout.nameFontSize,
             fontWeight: '600',
+            fontFamily: goalNameFontFamily,
             textAnchor: 'middle',
             dominantBaseline: 'middle'
         }));

@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 ../shared/wallpaper-core.js 的字体与颜色能力
+ * [INPUT]: 依赖 ../shared/wallpaper-core.js 的字体与颜色能力，并预声明 Inter + Noto Sans JP/SC/TC 供多语言文本复用
  * [OUTPUT]: 对外提供 SVG 构建原语 (rect, circle, text, path, createSVG) 与颜色工具 (复用 shared，含 resolveContrastBase)
- * [POS]: worker/ 图形引擎，负责生成 XML 字符串，独立于 Canvas API
+ * [POS]: worker/ 图形引擎，负责生成 XML 字符串与 XML 安全字体属性，独立于 Canvas API
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 // SVG utility functions for building wallpaper graphics
@@ -17,7 +17,7 @@ export function createSVG(width, height, content, lang = 'en') {
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${fontFamily}">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=Noto+Sans+TC:wght@400;500;600;700&amp;display=swap');
     </style>
   </defs>
     ${content}
@@ -62,7 +62,7 @@ export function text(x, y, content, options = {}) {
     } = options;
 
     const inner = escape ? escapeXml(content) : content;
-    return `<text x="${x}" y="${y}" fill="${fill}" font-size="${fontSize}" font-weight="${fontWeight}" font-family="${fontFamily}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${inner}</text>`;
+    return `<text x="${x}" y="${y}" fill="${fill}" font-size="${fontSize}" font-weight="${fontWeight}" font-family="${escapeXmlAttribute(fontFamily)}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${inner}</text>`;
 }
 
 /**

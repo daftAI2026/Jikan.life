@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.8] - 2026-03-10
+
+### Architecture
+- **Dynamic Font Loading Engine**: Optimized Cloudflare Worker memory consumption by implementing `resolveFontBufferLanguages` in `shared/wallpaper-core.js`. The Worker now intelligently detects specific CJK scripts (JP/SC/TC) present in the `goalName` and dynamically loads only the strictly necessary font buffers (`Noto Sans`) during SVG-to-PNG conversion, eradicating the brute-force inclusion of all CJK fonts.
+- **Font Face Pre-declaration**: Synchronized Web (`src/lib/renderer.js`) and Worker (`worker/svg.js`) environments to explicitly pre-declare `Noto Sans JP`, `SC`, and `TC` within the SVG `<style>` `@import` definitions. This ensures flawless multi-language typography fallback for raw SVG exports without relying on local system fonts.
+
+### Documentation & Tests
+- **Fractal Protocol Sync**: Executed full L2 documentation alignment across `shared/CLAUDE.md`, `src/lib/CLAUDE.md`, `worker/CLAUDE.md`, and `worker/generators/CLAUDE.md`, documenting the new script detection utilities and the shift to intelligent font buffer loading.
+- **Typography Guards**: Expanded `kumo-migration.core.behavior.test.js`, `wallpaper-core-api.behavior.test.js`, and `wallpaper-visual-snapshots.behavior.test.js` to strictly assert the presence of script detection functions (`hasJapanese`, etc.) and to validate the exact `@import` URL payload constraints across both rendering environments, guaranteeing typographic parity.
+
 ## [1.8.7] - 2026-03-10
 
 ### Architecture

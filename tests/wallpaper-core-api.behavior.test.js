@@ -21,6 +21,8 @@ const EXPECTED_EXPORTS = [
   "getDayOfYear",
   "getDaysInYear",
   "getLuminance",
+  "resolveTextFontFamily",
+  "resolveFontBufferLanguages",
   "getSafeAccent",
   "getWallpaperFontFamily",
   "getWallpaperText",
@@ -50,6 +52,8 @@ test("wallpaper-core keeps key constants and text defaults", async () => {
     GOAL_TARGET_MAX_ISO,
     getWallpaperText,
     getWallpaperFontFamily,
+    resolveTextFontFamily,
+    resolveFontBufferLanguages,
   } = await import(`file://${corePath}`)
 
   assert.equal(GOAL_START_MIN_ISO, "1900-01-01")
@@ -64,6 +68,14 @@ test("wallpaper-core keeps key constants and text defaults", async () => {
   assert.equal(getWallpaperFontFamily("zh-CN"), "\"Noto Sans SC\", \"Inter\", sans-serif")
   assert.equal(getWallpaperFontFamily("zh-TW"), "\"Noto Sans TC\", \"Inter\", sans-serif")
   assert.equal(getWallpaperFontFamily("ja"), "\"Noto Sans JP\", \"Inter\", sans-serif")
+
+  assert.equal(resolveTextFontFamily("en", "Launch"), "\"Inter\", sans-serif")
+  assert.equal(resolveTextFontFamily("en", "没什么"), "\"Noto Sans SC\", \"Inter\", sans-serif")
+  assert.equal(resolveTextFontFamily("en", "Launch 没什么"), "\"Noto Sans SC\", \"Inter\", sans-serif")
+  assert.equal(resolveTextFontFamily("en", "カタカナ"), "\"Noto Sans JP\", \"Inter\", sans-serif")
+  assert.deepEqual(resolveFontBufferLanguages("en", "Launch"), [])
+  assert.deepEqual(resolveFontBufferLanguages("en", "没什么"), ["zh-CN"])
+  assert.deepEqual(resolveFontBufferLanguages("zh-TW", "沒什麼"), ["zh-TW"])
 })
 
 test("wallpaper-core keeps goal date validation behavior", async () => {
