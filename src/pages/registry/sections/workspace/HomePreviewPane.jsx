@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown)
  * [OUTPUT]: 对外提供 HomePreviewPane 组件（手机壳 + 空态提示文案/实时 Canvas 预览）
- * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染
+ * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标缩放到 preview 视口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef } from "react"
@@ -9,6 +9,11 @@ import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/ren
 
 const SCREEN_WIDTH = 240
 const SCREEN_HEIGHT = 510
+const rendererByType = {
+    year: drawYearProgress,
+    life: drawLifeCalendar,
+    goal: drawGoalCountdown,
+}
 
 function HomePreviewPane({ config, selectedDevice, t }) {
     const canvasRef = useRef(null)
@@ -23,7 +28,8 @@ function HomePreviewPane({ config, selectedDevice, t }) {
         const scale = Math.max(SCREEN_WIDTH / baseWidth, SCREEN_HEIGHT / baseHeight)
         const width = Math.max(1, Math.floor(baseWidth * scale))
         const height = Math.max(1, Math.floor(baseHeight * scale))
-        const previewScale = width / baseWidth
+        const scaleX = width / baseWidth
+        const scaleY = height / baseHeight
         const dpr = window.devicePixelRatio || 1
 
         canvas.width = Math.floor(width * dpr)
@@ -43,27 +49,17 @@ function HomePreviewPane({ config, selectedDevice, t }) {
             cols: selectedDevice.cols,
             padding: selectedDevice.padding,
         }
+        const drawWallpaperPreview = rendererByType[config.selectedType]
+        if (!drawWallpaperPreview) return
 
-        if (config.selectedType === "year") {
-            drawYearProgress(ctx, width, height, renderConfig, selectedDevice.clockHeight)
-            return
-        }
-
-        if (config.selectedType === "life") {
-            drawLifeCalendar(ctx, width, height, renderConfig, selectedDevice.clockHeight)
-            return
-        }
-
-        if (config.selectedType === "goal") {
-            /* -----------------------------------------------------------------
-               Goal preview must share the export coordinate system so the ring
-               stroke scales down visually with the final wallpaper.
-               ----------------------------------------------------------------- */
-            ctx.save()
-            ctx.scale(previewScale, previewScale)
-            drawGoalCountdown(ctx, baseWidth, baseHeight, renderConfig, selectedDevice.clockHeight)
-            ctx.restore()
-        }
+        /* -----------------------------------------------------------------
+           Preview should be a scaled version of the final wallpaper render.
+           All wallpaper types share one export-space draw path here.
+           ----------------------------------------------------------------- */
+        ctx.save()
+        ctx.scale(scaleX, scaleY)
+        drawWallpaperPreview(ctx, baseWidth, baseHeight, renderConfig, selectedDevice.clockHeight)
+        ctx.restore()
     }, [config, selectedDevice])
 
     useEffect(() => {

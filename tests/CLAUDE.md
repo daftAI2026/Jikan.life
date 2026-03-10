@@ -3,7 +3,10 @@
 
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
-kumo-migration.ui.behavior.test.js: Kumo 迁移 UI/工作区护栏，约束 Button/Select/Popover/ColorPicker 链路、HomeSidebar/Workspace 结构、外层桌面壳、md drawer-open bottom-tabs 常驻 skeleton 语义、bottom-tabs 单文件视图提取、私有 hook 测量链下沉、tablist-only 观察、字体补测、deadzone 与 indicator live-resize 策略。
+kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、全局入口、基础 UI 封装、ColorPicker 语义与通用禁用项。
+kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
+kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与底栏 skeleton 语义。
+kumo-migration.ui.behavior.test.js: Kumo Workspace/Settings 护栏，约束 workspace 配置、设备与日期卡片、SetupGuidePanel、HomeGrid、预览缩放与通用 skeleton 语义。
 md-bottom-tabs-widths.unit.test.js: md 底部 tabs 宽度分配算法单测，锁定“余量均分 + 最长项先压到次长项 + 压平后再联动收缩”语义。
 kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/renderer/i18n 关键语义与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
@@ -18,9 +21,11 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 测试采用 `node --test` 原生执行，迁移护栏以“行为断言 + 必要源码契约”并行，避免被实现形状绑架。
 
 开发规范
-新增 UI 迁移类改动时，必须同步补充 `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
+新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-10: 新增 `kumo-migration.ui.bottom-tabs.behavior.test.js`，继续从 `kumo-migration.ui.behavior.test.js` 抽离 md bottom-tabs 视图拆分、测量链与 skeleton 护栏，使 Workspace 主文件回到 800 行以下，降低导航壳与复杂底栏回归的耦合噪音。
+2026-03-10: 新增 `kumo-migration.ui.foundation.behavior.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，并收缩 `kumo-migration.ui.behavior.test.js` 为 Workspace/Settings 复杂交互护栏；拆分基础层、页面壳层与 workspace 层职责，避免 1500+ 行单文件回归时定位噪音。
 2026-03-10: 更新 `wallpaper-core-api.behavior.test.js` / `kumo-migration.core.behavior.test.js` / `worker-svg.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：新增 `goalName` 多语言字体策略护栏，要求 `Wallpaper Language` 仅控制固定文案语言，而 `goalName` 可在 `lang=en` 下独立触发中文/日文字体解析；同时锁定 Worker 字体 buffer 按 `goalName` 脚本补载，Preview 与 Worker 共享同一字体决策，并更新 SVG 快照基线以接受显式多字体导入。
 2026-03-10: 更新 `date-math.unit.test.js` / `wallpaper-core-api.behavior.test.js` / `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：新增 shared 时区日期真相源护栏，强制 Preview 改走 `timezone` 而非浏览器本地日历；新增 Goal URL 中文名标准 UTF-8 编码护栏，禁止 `encodeURIComponent + URLSearchParams` 双编码回流；同时锁定 Worker `goal` 环线宽/数字 Y 偏移向前端 Preview 对齐，并要求 `life` 当前周圆点半径不再额外放大。
 2026-03-09: 更新 `kumo-migration.ui.behavior.test.js`：新增 `HomeSettingsPaneBottomTabsLayout.jsx` 视图提取护栏，强制 `HomeSettingsPane.jsx` 只保留编排层职责、`MD_BOTTOM_TABS_SLOT_COUNT` 继续留在 pane 侧，而 bottom-tabs 视图 helper/常量与 `useMdBottomTabsMetrics` 消费点下沉到独立私有文件，且新文件不反向依赖 pane 槽位常量。

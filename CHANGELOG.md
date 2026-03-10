@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.10] - 2026-03-10
+
+### UI & UX
+- **Preview WYSIWYG Rendering Unification**: Refactored `HomePreviewPane` to use a unified rendering strategy for all wallpaper styles ("year", "life", and "goal"). The preview now universally calculates relative `scaleX` and `scaleY` factors dynamically from base device coordinates (`baseWidth`/`baseHeight`), guaranteeing mathematically identical rendering logic and removing visual disparities between the live browser preview and the exported high-resolution wallpaper across all types.
+
+### Tests
+- **Test Architecture Reorganization**: Completely shattered the massive monolithic `kumo-migration.ui.behavior.test.js` suite into focused, context-specific semantic domains (`kumo-migration.ui.foundation.behavior.test.js`, `kumo-migration.ui.registry-shell.behavior.test.js`, and `kumo-migration.ui.bottom-tabs.behavior.test.js`). This significantly improves maintainability and parallel execution speed.
+- **Preview Scaling Guards**: Expanded and adapted behavior tests to assert that `drawWallpaperPreview`, `scaleX`, and `scaleY` are applied universally for all configured wallpaper types instead of exclusively targeting the goal layout.
+
 ## [1.8.9] - 2026-03-10
 
 ### UI & UX
