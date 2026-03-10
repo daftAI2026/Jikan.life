@@ -24,6 +24,8 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-10: 更新 `wallpaper-core-api.behavior.test.js`：新增 Year dot 尺寸常量护栏，锁定 facade 暴露与当前共享常量语义，防止圆点微调时 preview/Worker 共享比例漂移。
+2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：要求 `HomePreviewPane` 使用单一 `previewScale` 做严格等比缩放，禁止回流 `scaleX/scaleY` 分离缩放。
 2026-03-10: 新增 `kumo-migration.ui.bottom-tabs.behavior.test.js`，继续从 `kumo-migration.ui.behavior.test.js` 抽离 md bottom-tabs 视图拆分、测量链与 skeleton 护栏，使 Workspace 主文件回到 800 行以下，降低导航壳与复杂底栏回归的耦合噪音。
 2026-03-10: 新增 `kumo-migration.ui.foundation.behavior.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，并收缩 `kumo-migration.ui.behavior.test.js` 为 Workspace/Settings 复杂交互护栏；拆分基础层、页面壳层与 workspace 层职责，避免 1500+ 行单文件回归时定位噪音。
 2026-03-10: 更新 `wallpaper-core-api.behavior.test.js` / `kumo-migration.core.behavior.test.js` / `worker-svg.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：新增 `goalName` 多语言字体策略护栏，要求 `Wallpaper Language` 仅控制固定文案语言，而 `goalName` 可在 `lang=en` 下独立触发中文/日文字体解析；同时锁定 Worker 字体 buffer 按 `goalName` 脚本补载，Preview 与 Worker 共享同一字体决策，并更新 SVG 快照基线以接受显式多字体导入。

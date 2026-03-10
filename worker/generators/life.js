@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js, ../svg.js, ../timezone.js
- * [OUTPUT]: generateLifeCalendar 函数 (SVG string)
+ * [OUTPUT]: 对外提供 `generateLifeCalendar(options)`，输入生命周历参数并返回生命日历壁纸 SVG 字符串
  * [POS]: Worker 生命日历生成器，使用共享核心计算布局，支持 foregroundOverride
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

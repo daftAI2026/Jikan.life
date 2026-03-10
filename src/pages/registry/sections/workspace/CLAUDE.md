@@ -9,15 +9,14 @@ goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyG
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
-HomePreviewPane.jsx: 左侧手机预览面板，支持“未选风格 SkeletonLine 引导态”与 Canvas 实时壁纸渲染切换；所有壁纸类型统一按导出坐标绘制后缩放到 preview 视口，确保所见即所得。
+HomePreviewPane.jsx: 左侧手机预览面板，支持“未选风格 SkeletonLine 引导态”与 Canvas 实时壁纸渲染切换；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 preview 视口，确保所见即所得。
 HomeSettingsPane.jsx: 右侧设置面板主容器；回归 pane 编排层，只负责卡片顺序、6 站位空态 Skeleton Base、`revealStage` 渐进解锁、segmented workspace（`mobile + md drawer open`）与 grid 布局分流、title/body skeleton 与 `useAnchoredSetupRow` 语义收口；Guide 宿主继续读取 `shouldRenderPaneGuideHost`，导出 `SETTINGS_CARD_IDS`
 HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；承载 active card 壳、tab rail、隐藏测量节点、tab label skeleton 与视图专属 helper/常量，不再与 pane 编排层混写
 use-md-bottom-tabs-metrics.js: md bottom-tabs 私有测量 hook；输入 `tabsContainerRef/measureTriggerRefs/measureLabels`，统一首帧同步自然宽测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、1px deadzone 与 live-resize indicator 显隐/禁过渡策略，输出 `distributedTabWidths/indicatorClassName`
 md-bottom-tabs-widths.js: md 底部 Tabs 宽度算法层；输入自然宽与容器宽，输出“余量均分 / 最长项先压到次长项 / 压平后再联动收缩”的目标宽数组，供 `HomeSettingsPane` 单向投影到 trigger 本体。
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（可选左上标题 + 可选问号提示 + 右上序号 ➊~➏ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持 `className` 承接 type 专属跨列布局，并通过 `compactAtDesktop` 控制是否启用 `lg:min-h-0`
 SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；支持 `containerClassName/asideClassName/visibilityClassName` 宿主样式注入以复用到 HomeGrid 的 md 整区覆盖场景；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo Surface 组件与提取常量化 className，并收敛为“仅步骤区滚动”；关闭态通过 `inert + aria-hidden` 严格隔离可访问性与事件焦点。
-cards/index.js: Setting Panel 业务语义聚合入口，导出 `CARD_REGISTRY`
-cards/CLAUDE.md: Setting Panel 业务卡子模块文档（location/wallpaper/goal/life/colors/device/url）
+cards/: Setting Panel 业务卡子模块目录，承载 location/wallpaper/goal/life/colors/device/url 卡片实现与聚合入口（详见 cards/CLAUDE.md）
 
 结构
 workspace/ - Home 双栏工作区子模块 (14 files + cards/ 子目录)
@@ -29,9 +28,11 @@ workspace/ - Home 双栏工作区子模块 (14 files + cards/ 子目录)
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
+2026-03-10: `HomePreviewPane` 的 preview 缩放矩阵收口为严格等比 `previewScale`，移除 `scaleX/scaleY` 分离缩放导致的几何轻微椭圆化；渲染路径仍保持“导出坐标先绘制，再映射到 preview”不变。
 2026-03-10: `HomePreviewPane` 的 `year/life/goal` 预览统一改为“原始设备坐标绘制 + preview 缩放显示”，消除 `goal` 专属特判并让三类壁纸都与导出成品保持同一坐标语义。
 2026-03-09: 新增 `HomeSettingsPaneBottomTabsLayout.jsx`，将 `HomeSettingsPane` 中的 bottom-tabs 完整视图链与视图专属 helper/常量整体提取到私有文件；`HomeSettingsPane.jsx` 进一步收敛为编排层，保留 `MD_BOTTOM_TABS_SLOT_COUNT` 作为 pane 侧布局常量，新视图文件不反向依赖该常量。
 2026-03-09: 新增 `use-md-bottom-tabs-metrics.js`，把 `HomeSettingsPane` 的 md bottom-tabs 测量链整体下沉到私有 hook；首帧同步测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、1px deadzone、live-resize indicator 隐藏/禁过渡策略统一由 hook 持有，`HomeSettingsPane` 回归编排层；同时将 6 槽 trigger/CSS var 假设收口到单一常量入口。
+2026-03-10: 成员清单收口为目录级地图，`cards/` 细节下沉到其独立 L2 文档，避免 workspace 父级穿透描述子模块文件。
 2026-03-06: `device-card` 的分辨率注释改为本地开关 `SHOW_DEVICE_RESOLUTION_HINT=false` 控制，默认关闭；当前仅保留机型选择主路径，设备提示语义继续留在卡片标题 tooltip（`config.deviceTooltip`）。
 2026-03-01: 新增 `config-actions.js`，`useHomeWallpaperConfig` 动作集合下沉为工厂；主 hook 收敛为编排层。
 2026-03-01: `goal-date-updater.js` 从 `type` 分派重构为显式语义入口（range/start/date），并保留历史错误语义兼容。

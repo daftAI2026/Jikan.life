@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown)
  * [OUTPUT]: 对外提供 HomePreviewPane 组件（手机壳 + 空态提示文案/实时 Canvas 预览）
- * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标缩放到 preview 视口
+ * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标严格等比缩放到 preview 视口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef } from "react"
@@ -25,24 +25,22 @@ function HomePreviewPane({ config, selectedDevice, t }) {
         const baseWidth = selectedDevice.width
         const baseHeight = selectedDevice.height
         // Use "cover" scaling so wallpaper fills the phone screen area.
-        const scale = Math.max(SCREEN_WIDTH / baseWidth, SCREEN_HEIGHT / baseHeight)
-        const width = Math.max(1, Math.floor(baseWidth * scale))
-        const height = Math.max(1, Math.floor(baseHeight * scale))
-        const scaleX = width / baseWidth
-        const scaleY = height / baseHeight
+        const previewScale = Math.max(SCREEN_WIDTH / baseWidth, SCREEN_HEIGHT / baseHeight)
+        const previewWidth = baseWidth * previewScale
+        const previewHeight = baseHeight * previewScale
         const dpr = window.devicePixelRatio || 1
 
-        canvas.width = Math.floor(width * dpr)
-        canvas.height = Math.floor(height * dpr)
-        canvas.style.width = `${width}px`
-        canvas.style.height = `${height}px`
+        canvas.width = Math.max(1, Math.ceil(previewWidth * dpr))
+        canvas.height = Math.max(1, Math.ceil(previewHeight * dpr))
+        canvas.style.width = `${previewWidth}px`
+        canvas.style.height = `${previewHeight}px`
 
         const ctx = canvas.getContext("2d")
         if (!ctx) return
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-        ctx.clearRect(0, 0, width, height)
+        ctx.clearRect(0, 0, previewWidth, previewHeight)
         ctx.fillStyle = config.bgColor
-        ctx.fillRect(0, 0, width, height)
+        ctx.fillRect(0, 0, previewWidth, previewHeight)
 
         const renderConfig = {
             ...config,
@@ -57,7 +55,7 @@ function HomePreviewPane({ config, selectedDevice, t }) {
            All wallpaper types share one export-space draw path here.
            ----------------------------------------------------------------- */
         ctx.save()
-        ctx.scale(scaleX, scaleY)
+        ctx.scale(previewScale, previewScale)
         drawWallpaperPreview(ctx, baseWidth, baseHeight, renderConfig, selectedDevice.clockHeight)
         ctx.restore()
     }, [config, selectedDevice])

@@ -1,3 +1,8 @@
+# [INPUT]: 依赖 GitHub Actions 官方 checkout/setup-node 动作与 package.json 中的 `check:version-metadata`、`test`、`build` 脚本
+# [OUTPUT]: 对 `main` 分支的 push/pull_request 提供主 CI 工作流，执行依赖安装、版本元数据校验、测试与构建，并向构建注入 `VITE_APP_VERSION=${{ github.sha }}`
+# [POS]: .github/workflows 的自动化闸门文件，被 GitHub Actions 直接消费；用于阻断版本漂移、回归失败与不可构建提交
+# [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+
 name: CI
 
 on:

@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 shared/wallpaper-core.js
- * [OUTPUT]: 对外提供 wallpaper-core API 兼容性护栏测试
+ * [OUTPUT]: 向 `node --test` 注册 `shared/wallpaper-core.js` facade API 护栏用例，冻结导出集合并校验关键常量、文案、日期校验与字体解析兼容行为
  * [POS]: tests/ 核心共享模块护栏，锁定 facade 导出集合与关键行为
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -11,6 +11,8 @@ import { path } from "./helpers/source-test-helpers.js"
 const EXPECTED_EXPORTS = [
   "GOAL_START_MIN_ISO",
   "GOAL_TARGET_MAX_ISO",
+  "YEAR_DOT_RADIUS_SCALE",
+  "YEAR_TODAY_DOT_RADIUS_SCALE",
   "computeGoalLayout",
   "computeLifeLayout",
   "computeYearLayout",
@@ -50,6 +52,8 @@ test("wallpaper-core keeps key constants and text defaults", async () => {
   const {
     GOAL_START_MIN_ISO,
     GOAL_TARGET_MAX_ISO,
+    YEAR_DOT_RADIUS_SCALE,
+    YEAR_TODAY_DOT_RADIUS_SCALE,
     getWallpaperText,
     getWallpaperFontFamily,
     resolveTextFontFamily,
@@ -58,6 +62,8 @@ test("wallpaper-core keeps key constants and text defaults", async () => {
 
   assert.equal(GOAL_START_MIN_ISO, "1900-01-01")
   assert.equal(GOAL_TARGET_MAX_ISO, "2100-12-31")
+  assert.equal(YEAR_DOT_RADIUS_SCALE, 0.8)
+  assert.equal(YEAR_TODAY_DOT_RADIUS_SCALE, 1.12)
 
   assert.equal(getWallpaperText("en", "goalDefault", ""), "Goal")
   assert.equal(getWallpaperText("zh-CN", "goalDefault", ""), "目标")

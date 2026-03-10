@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/date-math + shared/wallpaper-color-core + shared/wallpaper-text
- * [OUTPUT]: 对外提供 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout（含 Goal 渲染指标）
+ * [OUTPUT]: 对外提供 YEAR_DOT_RADIUS_SCALE/YEAR_TODAY_DOT_RADIUS_SCALE 与 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout（含 Goal 渲染指标）
  * [POS]: shared/ 壁纸布局计算核心，负责 Year/Life/Goal 三类几何、统计数据与 Goal 关键渲染指标
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -8,6 +8,9 @@
 import { getDayOfYear, getDaysInYear, toDayNumber } from "./date-math.js";
 import { getSafeAccent } from "./wallpaper-color-core.js";
 import { getWallpaperText } from "./wallpaper-text.js";
+
+export const YEAR_DOT_RADIUS_SCALE = 0.8;
+export const YEAR_TODAY_DOT_RADIUS_SCALE = 1.12;
 
 function isValidDateParts(year, month, day) {
     if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return false;
@@ -113,7 +116,7 @@ export function computeYearLayout(options) {
     const availableWidth = width - (padding * 2);
     const gap = Math.max(3, width * 0.008);
     const cellSize = (availableWidth - (gap * (cols - 1))) / cols;
-    const dotRadius = (cellSize / 2) * 0.85;
+    const dotRadius = (cellSize / 2) * YEAR_DOT_RADIUS_SCALE;
 
     const gridWidth = (cellSize * cols) + (gap * (cols - 1));
     const gridHeight = (cellSize * rows) + (gap * (rows - 1));
@@ -133,7 +136,13 @@ export function computeYearLayout(options) {
         const isCompleted = i < dayOfYear;
         const isToday = i === dayOfYear - 1;
 
-        dots.push({ cx, cy, isCompleted, isToday, radius: isToday ? dotRadius * 1.12 : dotRadius });
+        dots.push({
+            cx,
+            cy,
+            isCompleted,
+            isToday,
+            radius: isToday ? dotRadius * YEAR_TODAY_DOT_RADIUS_SCALE : dotRadius
+        });
     }
 
     // Stats

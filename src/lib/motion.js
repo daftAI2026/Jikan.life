@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无外部依赖
- * [OUTPUT]: Apple 级 Framer Motion 动画预设库
+ * [OUTPUT]: 对外提供 `snappy/gentle/bouncy/smooth/inertia` 五组 transition 预设，以及 `fadeInUp/fadeIn/scaleIn/slideInLeft/slideInRight/staggerContainer/staggerItem/hoverLift/tapScale/modalOverlay/modalContent/pageTransition/floatingAnimation/pulseAnimation` 动画 variants 常量
  * [POS]: 工具层 - 动画系统核心，供所有组件复用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

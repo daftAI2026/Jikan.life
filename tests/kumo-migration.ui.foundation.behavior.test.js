@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: Kumo UI 基础层迁移护栏测试
+ * [OUTPUT]: 向 `node --test` 注册 UI 基础层迁移护栏用例，覆盖依赖、版本同步链路、全局入口、基础 UI 组件与通用禁用项
  * [POS]: tests/ UI 迁移护栏的基础层，锁定依赖、全局入口、基础组件与通用禁用项
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

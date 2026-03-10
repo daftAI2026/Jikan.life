@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.11] - 2026-03-10
+
+### UI & UX
+- **Preview Scaling Strictness**: Upgraded `HomePreviewPane` to use a unified `previewScale` mathematical factor across both dimensions. This eliminates fractional scaling disparities between `scaleX` and `scaleY`, guaranteeing that the live browser preview renders with physically perfect proportions matching the final exported wallpaper.
+
+### Architecture
+- **Year Geometry Constants**: Extracted `YEAR_DOT_RADIUS_SCALE` and `YEAR_TODAY_DOT_RADIUS_SCALE` from raw inline math into exported constants within `shared/layout-core.js` and `shared/wallpaper-core.js`. This centralizes the single source of truth for the Year progress visual design.
+
+### Documentation & Tests
+- **Fractal Protocol**: Executed comprehensive L3 GEB documentation header updates across tests, `worker/generators`, and UI core components.
+- **Scaling Guards**: Strengthened test assertions to rigidly validate the new proportional `previewScale` logic and the extraction of Year dot dimension constants.
+
 ## [1.8.10] - 2026-03-10
 
 ### UI & UX

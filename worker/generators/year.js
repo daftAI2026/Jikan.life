@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js, ../svg.js, ../timezone.js
- * [OUTPUT]: generateYearCalendar 函数 (SVG string)
+ * [OUTPUT]: 对外提供 `generateYearCalendar(options)`，输入年份壁纸参数并返回年度进度壁纸 SVG 字符串
  * [POS]: Worker 年度进度生成器，使用共享核心计算布局，支持 foregroundOverride
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

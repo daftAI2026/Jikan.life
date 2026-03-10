@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText/resolveTextFontFamily), ../svg.js, ../timezone.js
- * [OUTPUT]: generateGoalCountdown 函数 (SVG string)
+ * [OUTPUT]: 对外提供 `generateGoalCountdown(options)`，输入目标倒计时参数并返回环形进度壁纸 SVG 字符串
  * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局，支持 foregroundOverride、本地化 goalDefault 与 goalName 多语言字体解析
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

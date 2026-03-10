@@ -3,8 +3,7 @@
 
 成员清单
 favicon.svg: 站点图标资源
-api/component-registry: Kumo SearchDialog 使用的静态组件注册表接口
-api/CLAUDE.md: public/api 子模块说明文档
+api/: 静态 API 资源目录，承载 SearchDialog 所需的 component registry 响应（详见 api/CLAUDE.md）
 
 结构
 public/ - Vite 静态资源根目录 (favicon + 静态 API 响应)
@@ -18,5 +17,6 @@ public 目录仅放静态可直接托管文件，不写业务逻辑代码。
 变更日志
 2026-02-11: 新增 api/component-registry 静态接口文件，支撑 Kumo SearchDialog 搜索能力。
 2026-02-12: 将 GitHub 小图标资源迁移至 `src/components/icons/`，避免无业务关联的品牌资产散落在 public 根目录。
+2026-03-10: 成员清单收口为目录级映射，`api/` 子树职责下沉到 `public/api/CLAUDE.md`，避免父级文档穿透描述子模块文件。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

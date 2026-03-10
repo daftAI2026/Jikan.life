@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: Kumo 迁移核心域护栏测试
+ * [OUTPUT]: 向 `node --test` 注册核心域迁移护栏用例，覆盖 shared 渲染核心、Worker、字体决策、i18n 与日期/编码兼容语义
  * [POS]: tests/ 迁移护栏（主题二：渲染核心、Worker、i18n 与主题）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

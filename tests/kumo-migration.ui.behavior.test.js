@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: Kumo Workspace/Settings 迁移护栏测试
+ * [OUTPUT]: 向 `node --test` 注册 Workspace/Settings 迁移护栏用例，覆盖工作区配置、设备/日期卡片、SetupGuidePanel、HomeGrid、预览缩放与通用 skeleton 语义
  * [POS]: tests/ UI 迁移护栏的复杂交互层，锁定 workspace 卡片、setup 流程与预览语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -615,17 +615,20 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
 test("HomePreviewPane scales all wallpaper previews from base device coordinates", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assert.match(source, /const scaleX = width \/ baseWidth/)
-  assert.match(source, /const scaleY = height \/ baseHeight/)
+  assert.match(source, /const previewScale = Math\.max\(SCREEN_WIDTH \/ baseWidth,\s*SCREEN_HEIGHT \/ baseHeight\)/)
+  assert.match(source, /const previewWidth = baseWidth \* previewScale/)
+  assert.match(source, /const previewHeight = baseHeight \* previewScale/)
   assert.match(source, /const rendererByType = \{/)
   assert.match(source, /year:\s*drawYearProgress/)
   assert.match(source, /life:\s*drawLifeCalendar/)
   assert.match(source, /goal:\s*drawGoalCountdown/)
   assert.match(source, /const drawWallpaperPreview = rendererByType\[config\.selectedType\]/)
   assert.match(source, /ctx\.save\(\)/)
-  assert.match(source, /ctx\.scale\(scaleX,\s*scaleY\)/)
+  assert.match(source, /ctx\.scale\(previewScale,\s*previewScale\)/)
   assert.match(source, /drawWallpaperPreview\(ctx,\s*baseWidth,\s*baseHeight,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.match(source, /ctx\.restore\(\)/)
+  assert.doesNotMatch(source, /const scaleX = width \/ baseWidth/)
+  assert.doesNotMatch(source, /const scaleY = height \/ baseHeight/)
   assert.doesNotMatch(source, /drawYearProgress\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawLifeCalendar\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawGoalCountdown\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)

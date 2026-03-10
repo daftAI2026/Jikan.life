@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: Kumo md bottom-tabs 护栏测试
+ * [OUTPUT]: 向 `node --test` 注册 md bottom-tabs 护栏用例，覆盖 HomeSettingsPane 视图拆分、tabs 测量链、宽度分配与底栏 skeleton 语义
  * [POS]: tests/ UI 迁移护栏的底栏导航层，锁定 HomeSettingsPane bottom-tabs 视图拆分、测量链与 skeleton 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

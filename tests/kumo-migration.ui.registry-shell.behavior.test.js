@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: Registry 壳层与导航迁移护栏测试
+ * [OUTPUT]: 向 `node --test` 注册 Registry 壳层护栏用例，覆盖 HomePage、Sidebar、Topbar、LanguageSelect、MobileFooter 与页面壳导入边界
  * [POS]: tests/ UI 迁移护栏的页面壳层，锁定 HomePage、Sidebar、Topbar、语言切换与壳层导入边界
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
