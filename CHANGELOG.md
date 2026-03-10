@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.14] - 2026-03-10
+
+### UI & UX
+- **Goal Range Restart Flow**: Upgraded the Goal Date Range picker to support a `restart` selection behavior. Introduced a drafted selection state (`draftRange`) that isolates in-progress selections from the trigger label, guaranteeing the UI label only updates upon a complete valid range selection (`onRangeComplete`).
+
+### Architecture
+- **Vendor Path Fencing**: Enforced a strict boundary on `vendor/kumo` DatePicker imports. Fenced all underlying date picker references strictly within the local bridge (`src/components/ui/kumo.jsx`), completely eradicating legacy decentralized vendor imports across the application source code.
+
+### Documentation & Tests
+- **Fractal Protocol**: Updated GEB documentation (`tests/CLAUDE.md`) to reflect the newly introduced bridge fencing and DatePicker range restart mechanisms.
+- **UI Architecture Guards**: Expanded `kumo-migration.ui.behavior.test.js` and `kumo-migration.ui.registry-shell.behavior.test.js` to rigidly assert the `draftRange` controlled state, the `rangeSelectionBehavior="restart"` attribute, and the strict isolation of direct vendor imports.
+
 ## [1.8.13] - 2026-03-10
 
 ### UI & UX

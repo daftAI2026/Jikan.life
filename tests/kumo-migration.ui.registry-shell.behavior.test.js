@@ -246,15 +246,23 @@ test("Registry page layer imports UI components via local ui entry only", () => 
   )
 })
 
-test("Source code has no direct vendor/kumo path references", () => {
+test("Source code keeps vendor/kumo references fenced to the local DatePicker bridge", () => {
   const sourceFiles = listFiles("src").filter((file) => file.endsWith(".jsx") || file.endsWith(".js"))
-  const offenders = sourceFiles.filter((file) => /vendor\/kumo/.test(readSource(file)))
+  const illegalVendorImports = sourceFiles.filter((file) => {
+    const source = readSource(file)
+    return /from ["'][^"']*vendor\/kumo(?!-date-picker)[^"']*["']/.test(source)
+  })
+  const bridgeImports = sourceFiles.filter((file) => {
+    const source = readSource(file)
+    return /from ["'][^"']*vendor\/kumo-date-picker[^"']*["']/.test(source)
+  })
 
   assert.equal(
-    offenders.length,
+    illegalVendorImports.length,
     0,
-    `source files should not reference vendor/kumo paths: ${offenders.join(", ")}`
+    `source files should not reference legacy vendor/kumo paths: ${illegalVendorImports.join(", ")}`
   )
+  assert.deepEqual(bridgeImports, ["src/components/ui/kumo.jsx"])
 })
 
 test("HomeSidebar is non-scrollable and hides Life style card", () => {

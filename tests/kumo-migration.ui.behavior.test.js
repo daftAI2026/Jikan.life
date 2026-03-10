@@ -527,6 +527,32 @@ test("Goal date range field uses viewport-driven compact mode instead of layout 
   assert.doesNotMatch(source, /@container/)
 })
 
+test("Goal date range field vendors restartable DatePicker flow without mutating trigger label draft", () => {
+  const kumoSource = readSource("src/components/ui/kumo.jsx")
+  const rangeSource = readSource("src/pages/registry/sections/workspace/cards/goal-date-range-field.jsx")
+
+  assert.match(kumoSource, /DatePicker/)
+  assert.doesNotMatch(kumoSource, /DatePicker,\s*[\s\S]*from "@cloudflare\/kumo"/)
+  assert.match(kumoSource, /from "@\/components\/ui\/vendor\/kumo-date-picker"/)
+
+  assertNamedImports(rangeSource, "@/components/ui/popover", ["Popover"])
+  assert.match(rangeSource, /const \[open, setOpen\] = useState\(false\)/)
+  assert.match(rangeSource, /const \[draftRange, setDraftRange\] = useState\(undefined\)/)
+  assert.match(rangeSource, /open=\{open\}/)
+  assert.match(rangeSource, /onOpenChange=\{handleOpenChange\}/)
+  assert.match(rangeSource, /selected=\{draftRange\}/)
+  assert.match(rangeSource, /onChange=\{handleDraftRangeChange\}/)
+  assert.match(rangeSource, /rangeSelectionBehavior="restart"/)
+  assert.match(rangeSource, /onRangeComplete=\{handleRangeComplete\}/)
+  assert.match(rangeSource, /function getRangeLabel\(\{ startISO, endISO, t \}\)/)
+  assert.match(rangeSource, /<span className="truncate text-sm">\{getRangeLabel\(\{ startISO, endISO, t \}\)\}<\/span>/)
+  assert.match(rangeSource, /handleRangeComplete = \(range\) =>/)
+  assert.match(rangeSource, /onChange\(\{\s*startISO: toISODate\(range\.from\),\s*endISO: toISODate\(range\.to\),?\s*\}\)/)
+  assert.match(rangeSource, /setOpen\(false\)/)
+  assert.match(rangeSource, /handlePresetSelect = \(days\) =>/)
+  assert.match(rangeSource, /onChange\(\{\s*startISO: toISODate\(today\),\s*endISO: toISODate\(nextDate\),?\s*\}\)/)
+})
+
 test("Legacy settings fallback is fully removed from HomeSettingsPane", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
 

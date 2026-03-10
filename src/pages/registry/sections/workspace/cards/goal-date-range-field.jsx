@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useState)、Kumo DatePicker/Popover/Button、shared goal 日期约束常量、useDateFnsLocale、cn、浏览器 matchMedia
- * [OUTPUT]: 对外提供 GoalDateRangeField（Goal 第③卡的区间日期选择器，支持堆叠态收口与 presets 裁剪）
- * [POS]: workspace/cards 的 Goal 日期字段组件，承接官方 DatePicker(range) 本体与 presets 交互；使用 viewport 驱动的 compact/wide 模式切换弹层宽度、对齐与 preset 裁剪，并跟随 DayPicker CSS 变量推导日历宽度
+ * [INPUT]: 依赖 react(useEffect/useState)、本地 vendored Kumo DatePicker/Popover/Button、shared goal 日期约束常量、useDateFnsLocale、cn、浏览器 matchMedia
+ * [OUTPUT]: 对外提供 GoalDateRangeField（Goal 第③卡的区间日期选择器，支持 committed/draft 分层、restart range 与 presets 裁剪）
+ * [POS]: workspace/cards 的 Goal 日期字段组件，承接 vendored DatePicker(range) 与 presets 交互；使用 viewport 驱动的 compact/wide 模式切换弹层宽度、对齐与 preset 裁剪，并把第二击提交与自动关闭收敛在字段内
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
@@ -62,6 +62,8 @@ function GoalDateRangeField({ startISO, endISO, onChange, t, triggerClassName })
     const maxDate = toLocalDate(GOAL_TARGET_MAX_ISO)
     const selectedRange = startDate ? { from: startDate, to: endDate } : undefined
     const today = toLocalDate(getLocalTodayISO()) || new Date()
+    const [open, setOpen] = useState(false)
+    const [draftRange, setDraftRange] = useState(undefined)
     const [isCompactViewport, setIsCompactViewport] = useState(() => isCompactGoalRangeViewport())
     const popoverWidth = isCompactViewport ? GOAL_RANGE_COMPACT_POPOVER_WIDTH_CSS : GOAL_RANGE_WIDE_POPOVER_WIDTH_CSS
     const datePickerStyles = isCompactViewport
@@ -94,15 +96,29 @@ function GoalDateRangeField({ startISO, endISO, onChange, t, triggerClassName })
         return () => mediaQuery.removeListener(handleViewportChange)
     }, [])
 
-    const handleDateRangeChange = (range) => {
-        if (!range?.from) {
-            onChange({ startISO: "", endISO: "" })
+    const handleOpenChange = (nextOpen) => {
+        setOpen(nextOpen)
+
+        if (nextOpen) {
+            setDraftRange(selectedRange)
             return
         }
+
+        setDraftRange(undefined)
+    }
+
+    const handleDraftRangeChange = (range) => {
+        setDraftRange(range?.from ? range : undefined)
+    }
+
+    const handleRangeComplete = (range) => {
+        if (!range?.from || !range?.to) return
+
         onChange({
             startISO: toISODate(range.from),
-            endISO: range.to ? toISODate(range.to) : "",
+            endISO: toISODate(range.to),
         })
+        setOpen(false)
     }
 
     const handlePresetSelect = (days) => {
@@ -111,10 +127,11 @@ function GoalDateRangeField({ startISO, endISO, onChange, t, triggerClassName })
             startISO: toISODate(today),
             endISO: toISODate(nextDate),
         })
+        setOpen(false)
     }
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={handleOpenChange}>
             <Popover.Trigger asChild>
                 <Button
                     variant="outline"
@@ -150,8 +167,10 @@ function GoalDateRangeField({ startISO, endISO, onChange, t, triggerClassName })
 
                     <DatePicker
                         mode="range"
-                        selected={selectedRange}
-                        onChange={handleDateRangeChange}
+                        selected={draftRange}
+                        onChange={handleDraftRangeChange}
+                        rangeSelectionBehavior="restart"
+                        onRangeComplete={handleRangeComplete}
                         numberOfMonths={2}
                         locale={dateLocale}
                         styles={datePickerStyles}
