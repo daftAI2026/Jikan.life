@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: 向 `node --test` 注册 UI 基础层迁移护栏用例，覆盖依赖、版本同步链路、全局入口、基础 UI 组件与通用禁用项
- * [POS]: tests/ UI 迁移护栏的基础层，锁定依赖、全局入口、基础组件与通用禁用项
+ * [OUTPUT]: 向 `node --test` 注册 UI 基础层迁移护栏用例，覆盖依赖、同步脚本链路、全局入口、基础 UI 组件与通用禁用项
+ * [POS]: tests/ UI 迁移护栏的基础层，锁定依赖、脚本链路、全局入口、基础组件与通用禁用项
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -37,6 +37,22 @@ test("version metadata sync script is wired into npm version lifecycle", () => {
   )
   assert.equal(scripts["sync:readme-version"], undefined, "legacy sync:readme-version should be removed")
   assert.equal(scripts["sync:package-lock-version"], undefined, "legacy sync:package-lock-version should be removed")
+})
+
+test("wallpaper snapshot sync script is wired into npm scripts", () => {
+  const pkg = readJson("package.json")
+  const scripts = pkg.scripts || {}
+  const source = readSource("scripts/sync-wallpaper-snapshots.js")
+
+  assert.equal(
+    scripts["sync:wallpaper-snapshots"],
+    "node scripts/sync-wallpaper-snapshots.js",
+    "package.json should expose a wallpaper snapshot sync command"
+  )
+  assert.match(source, /wallpaper-visual-snapshots\.behavior\.test\.js/)
+  assert.match(source, /generateYearCalendar/)
+  assert.match(source, /generateLifeCalendar/)
+  assert.match(source, /generateGoalCountdown/)
 })
 
 test("version metadata sync script uses explicit lock-field checks instead of stringify diff", () => {

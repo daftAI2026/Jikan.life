@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.12] - 2026-03-10
+
+### Infrastructure & Tests
+- **Visual Snapshot Synchronization**: Introduced `scripts/sync-wallpaper-snapshots.js` to automatically extract and synchronize deterministic SHA-256 SVG hashes from generator functions into the `wallpaper-visual-snapshots.behavior.test.js` suite.
+- **Workflow Automation**: Wired `sync:wallpaper-snapshots` into the `package.json` scripts, providing a single command to safely update visual snapshot expectations after intentional typography or geometric layout adjustments.
+
+### Documentation
+- **Fractal Protocol**: Executed full L2 GEB documentation alignment across `scripts/CLAUDE.md` and `tests/CLAUDE.md` to track the new hash synchronization script and its topological relationship with the visual behavior tests.
+
 ## [1.8.11] - 2026-03-10
 
 ### UI & UX
