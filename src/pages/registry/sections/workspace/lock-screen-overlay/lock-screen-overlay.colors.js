@@ -1,13 +1,38 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core 的背景明暗判断与 accent/bg hex 颜色字符串
- * [OUTPUT]: 对外提供 createLockScreenAccentOverlayColors、createLockScreenTopOverlayColors 与 resolveAccentAlpha 工具，生成 lock screen overlay 的颜色覆写映射
- * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏、home indicator 与底部 action icon token，并为 swipe-indicator 提供基于 bgColor 的动态拟合色
+ * [OUTPUT]: 对外提供 createLockScreenAccentOverlayColors、createLockScreenActionGlassMaterial、createLockScreenTopOverlayColors 与 resolveAccentAlpha 工具，生成 lock screen overlay 的颜色覆写映射与底部 action glass 材质 token
+ * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏、home indicator 与底部 action glass/icon token，并为 swipe-indicator 提供基于 bgColor 的动态拟合色
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { getContrastBase } from "../../../../../../shared/wallpaper-core.js"
 
 const TOP_COLOR_FOR_DARK_BG = "var(--color-white)"
 const TOP_COLOR_FOR_LIGHT_BG = "var(--color-black)"
+const ACTION_GLASS_BLUR = "blur(6px)"
+const ACTION_GLASS_DARK_MATERIAL = Object.freeze({
+    background: "rgba(255, 255, 255, 0.02)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    topHighlightColor: "rgba(255, 255, 255, 0.8)",
+    leftHighlightColor: "rgba(255, 255, 255, 0.8)",
+    innerGlowShadow:
+        "inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 0 rgba(255, 255, 255, 0)",
+})
+const ACTION_GLASS_COLORED_MATERIAL = Object.freeze({
+    background: "rgba(255, 255, 255, 0.06)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    topHighlightColor: "rgba(255, 255, 255, 0.8)",
+    leftHighlightColor: "rgba(255, 255, 255, 0.8)",
+    innerGlowShadow:
+        "inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 0 rgba(255, 255, 255, 0)",
+})
+const ACTION_GLASS_LIGHT_MATERIAL = Object.freeze({
+    background: "rgba(255, 255, 255, 0.09)",
+    borderColor: "rgba(255, 255, 255, 0.26)",
+    topHighlightColor: "rgba(255, 255, 255, 0.72)",
+    leftHighlightColor: "rgba(255, 255, 255, 0.72)",
+    innerGlowShadow:
+        "inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 0 rgba(255, 255, 255, 0)",
+})
 const SWIPE_INDICATOR_DARK_RGB = { red: 64, green: 64, blue: 64 }
 const SWIPE_INDICATOR_LIGHT_RGB = { red: 205, green: 209, blue: 204 }
 const SWIPE_INDICATOR_NEUTRAL_SATURATION_MAX = 0.18
@@ -133,6 +158,32 @@ function resolveTopTokenColor(bgColor) {
     return getContrastBase(bgColor) === "255,255,255" ? TOP_COLOR_FOR_DARK_BG : TOP_COLOR_FOR_LIGHT_BG
 }
 
+function createLockScreenActionGlassMaterial(bgColor) {
+    if (!isHexColor(bgColor)) {
+        return {
+            blur: ACTION_GLASS_BLUR,
+            ...ACTION_GLASS_COLORED_MATERIAL,
+        }
+    }
+
+    const backgroundRgb = parseHexColor(bgColor)
+    const relativeLuminance = resolveRelativeLuminance(backgroundRgb)
+    const backgroundHsl = resolveHslColor(backgroundRgb)
+    const material =
+        relativeLuminance >= 0.88
+            ? ACTION_GLASS_LIGHT_MATERIAL
+            : backgroundHsl.saturation > SWIPE_INDICATOR_NEUTRAL_SATURATION_MAX &&
+                relativeLuminance > SWIPE_INDICATOR_EXTREME_LUMINANCE_MIN &&
+                relativeLuminance < SWIPE_INDICATOR_EXTREME_LUMINANCE_MAX
+              ? ACTION_GLASS_COLORED_MATERIAL
+              : ACTION_GLASS_DARK_MATERIAL
+
+    return {
+        blur: ACTION_GLASS_BLUR,
+        ...material,
+    }
+}
+
 function resolveNeutralSwipeIndicatorColor(backgroundRgb) {
     const luminanceProgress = smoothstep(resolveRelativeLuminance(backgroundRgb))
 
@@ -208,4 +259,9 @@ function createLockScreenTopOverlayColors(bgColor) {
     }
 }
 
-export { createLockScreenAccentOverlayColors, createLockScreenTopOverlayColors, resolveAccentAlpha }
+export {
+    createLockScreenAccentOverlayColors,
+    createLockScreenActionGlassMaterial,
+    createLockScreenTopOverlayColors,
+    resolveAccentAlpha,
+}

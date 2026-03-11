@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.23] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Controls Material**: Upgraded the lock screen bottom actions (flashlight, camera) from legacy static SVG fills to robust CSS glassmorphism materials. Implemented dynamic backdrop filters, borders, top/left highlights, and inner glow drop shadows that intelligently adjust their intensity and opacity based on the wallpaper background color, guaranteeing premium Apple-like visual fidelity.
+
+### Architecture
+- **Action Glass Engineering**: Extracted dynamic glass configuration into an independent `createLockScreenActionGlassMaterial` engine within `lock-screen-overlay.colors.js`. This strictly decouples the complex multi-layer shadow and highlight layout logic from the core SVG structural markup.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the RGBA structural states of the new glass material engine across extreme dark, extreme light, and medium-saturated backgrounds.
+- **Structural Constraints**: Adapted `kumo-migration.ui.behavior.test.js` to enforce the absolute structural presence of `backdropFilter`, layer blending properties (`mixBlendMode`), and rendering passes of the dynamic background material.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the new dynamic glass engineering module and expanded CSS boundaries.
+
 ## [1.8.22] - 2026-03-11
 
 ### UI & UX

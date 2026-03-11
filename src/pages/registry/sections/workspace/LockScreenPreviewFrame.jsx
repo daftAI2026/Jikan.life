@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 React children、lock-screen-overlay inline 组件、Figma bezel 静态 SVG 资源
+ * [INPUT]: 依赖 React children、lock-screen-overlay inline 组件、Figma bezel 静态 SVG 资源与 workspace bgColor
  * [OUTPUT]: 对外提供 LockScreenPreviewFrame 组件、LOCK_SCREEN_LAYOUT 常量、overlay 默认颜色协议
- * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放，并把 overlay 颜色控制收口到稳定 layer id
+ * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放，并把 overlay 颜色控制与底部 action glass 背景色收口到稳定入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import {
@@ -34,7 +34,7 @@ const scaledBezelHeight = scaledShellHeight * bezelScale
 const scaledBezelLeft = (scaledShellWidth - scaledBezelWidth) / 2
 const scaledBezelTop = (scaledShellHeight - scaledBezelHeight) / 2
 
-function LockScreenPreviewFrame({ children, showOverlay = true, overlayColors }) {
+function LockScreenPreviewFrame({ children, showOverlay = true, overlayColors, overlayBackgroundColor }) {
     return (
         <div
             className="relative shrink-0"
@@ -59,6 +59,7 @@ function LockScreenPreviewFrame({ children, showOverlay = true, overlayColors })
             </div>
             {showOverlay ? (
                 <LockScreenOverlay
+                    backgroundColor={overlayBackgroundColor}
                     colors={overlayColors}
                     className="z-10"
                     style={{

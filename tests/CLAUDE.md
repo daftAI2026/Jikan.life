@@ -4,7 +4,7 @@
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
 lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定英文真实日期格式、24 小时制时间格式、Apple 判定、英文字体分流与分钟/午夜刷新计时。
-lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 校验 `#FFFFFF/#000000/#86261F` 三组真机近似样本。
+lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
 kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、全局入口、基础 UI 封装、ColorPicker 语义与通用禁用项。
 kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
 kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与底栏 skeleton 语义。
@@ -26,6 +26,9 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js`：将底部 action glass 材质透明度护栏改为 `dark=0.02 / colored=0.06 / light=0.09`，继续只锁背景透明度，不改边框、高光和 inset 阴影语义。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：将锁屏底部 action 阴影底盘护栏收回“保留原始底盘语义”，要求 `lock-screen-overlay.constants.js` 继续使用 `rgba(255,255,255,0.07)`，并锁定 `LockScreenOverlay.jsx` 的 `shadow svg` 层复用旧 `lock-screen-controls.svg` 的滤镜链、`mix-blend-mode: screen` 与单一过滤矩形结构，禁止再叠额外白色假底盘。
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为底部快捷按钮新增 action glass 护栏，要求 `lock-screen-overlay.colors.js` 暴露 `createLockScreenActionGlassMaterial()`，并锁定 `LockScreenOverlay.jsx` 采用 `shadow svg + glass dom + chrome svg` 混合结构、DOM glass 层包含 `backdrop-filter` / `-webkit-backdrop-filter`，同时 `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 必须透传 `bgColor`。
 2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `action-left-icon` / `action-right-icon` 不再使用写死浅灰，而是和 `home-indicator` 共用 `bgColor -> 明暗判断 -> pure black/white token` 规则。
 2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：锁屏 overlay 底部 controls 护栏改为 live Stack 语义，要求删除 `lock-screen-controls.svg` 黑盒引用、新增 `lock-screen-overlay.controls.js` 几何真相源、锁定 `Stack/Action 1/Action 2` 的 translate 与 Sketch 元数据常量，并同步要求 `public/preview/iPhone/lock-screen-controls.svg` 不再存在。
 2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 `swipe-indicator` 新增 bgColor 驱动的真机近似拟合护栏，锁定 `#FFFFFF -> #CDD1CC`、`#000000 -> #404040`、`#86261F -> #C2605D`（小容差）三组样本，并要求 `createLockScreenTopOverlayColors()` 显式回填 `swipe-indicator`；顶部 status bar 与 `home-indicator` 现锁定为 `var(--color-black)` / `var(--color-white)` pure token 规则。

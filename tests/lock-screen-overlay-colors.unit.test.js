@@ -3,6 +3,7 @@ import assert from "node:assert/strict"
 
 import {
   createLockScreenAccentOverlayColors,
+  createLockScreenActionGlassMaterial,
   createLockScreenTopOverlayColors,
 } from "../src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.colors.js"
 
@@ -104,4 +105,38 @@ test("Lock screen overlay top colors use pure black on light backgrounds", () =>
   assert.equal(colors.battery, "var(--color-black)")
   assert.equal(colors.wifi, "var(--color-black)")
   assert.equal(colors.cellular, "var(--color-black)")
+})
+
+test("Lock screen action glass material brightens on dark backgrounds", () => {
+  const material = createLockScreenActionGlassMaterial("#111111")
+
+  assert.equal(material.blur, "blur(6px)")
+  assert.match(material.background, /^rgba\(255, 255, 255, 0\.\d+\)$/)
+  assert.equal(material.background, "rgba(255, 255, 255, 0.02)")
+  assert.equal(material.borderColor, "rgba(255, 255, 255, 0.3)")
+  assert.equal(material.topHighlightColor, "rgba(255, 255, 255, 0.8)")
+  assert.equal(material.leftHighlightColor, "rgba(255, 255, 255, 0.8)")
+  assert.match(material.innerGlowShadow, /^inset /)
+})
+
+test("Lock screen action glass material softens on light backgrounds", () => {
+  const material = createLockScreenActionGlassMaterial("#F5F5F5")
+
+  assert.equal(material.background, "rgba(255, 255, 255, 0.09)")
+  assert.equal(material.borderColor, "rgba(255, 255, 255, 0.26)")
+  assert.equal(material.topHighlightColor, "rgba(255, 255, 255, 0.72)")
+  assert.equal(material.leftHighlightColor, "rgba(255, 255, 255, 0.72)")
+})
+
+test("Lock screen action glass material keeps medium intensity on colored backgrounds", () => {
+  const material = createLockScreenActionGlassMaterial("#86261F")
+
+  assert.equal(material.background, "rgba(255, 255, 255, 0.06)")
+  assert.equal(material.borderColor, "rgba(255, 255, 255, 0.3)")
+  assert.equal(material.topHighlightColor, "rgba(255, 255, 255, 0.8)")
+  assert.equal(material.leftHighlightColor, "rgba(255, 255, 255, 0.8)")
+  assert.match(
+    material.innerGlowShadow,
+    /inset 0 1px 0 rgba\(255, 255, 255, 0\.5\), inset 0 -1px 0 rgba\(255, 255, 255, 0\.1\), inset 0 0 0 0 rgba\(255, 255, 255, 0\)/
+  )
 })

@@ -687,7 +687,7 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   ])
   assert.match(
     source,
-    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors\s*\}\)/
+    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor\s*\}\)/
   )
   assert.match(source, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
   assert.match(source, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
@@ -702,6 +702,7 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   assert.match(source, /height:\s*`\$\{scaledBezelHeight\}px`/)
   assert.match(source, /showOverlay \? \(/)
   assert.match(source, /<LockScreenOverlay[\s\S]*?colors=\{overlayColors\}/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?backgroundColor=\{overlayBackgroundColor\}/)
   assert.match(source, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\}/)
@@ -755,12 +756,15 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
     /const WIDGET_BACKGROUND_COLOR = "color-mix\(in srgb, var\(--text-color-kumo-inverse\) 15%, transparent\)"/
   )
   assert.match(constantsSource, /"home-indicator":/)
+  assert.match(constantsSource, /"action-left-bg":\s*"rgba\(255, 255, 255, 0\.07\)"/)
+  assert.match(constantsSource, /"action-right-bg":\s*"rgba\(255, 255, 255, 0\.07\)"/)
   assert.match(constantsSource, /"widgets-complication-1-bg":\s*WIDGET_BACKGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-1-fg":\s*WIDGET_FOREGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-bg":\s*WIDGET_BACKGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-fg":\s*WIDGET_FOREGROUND_COLOR/)
-  assert.match(componentSource, /function LockScreenOverlay\(\{\s*className,\s*colors\s*=\s*\{\},\s*style\s*\}\)/)
+  assert.match(componentSource, /function LockScreenOverlay\(\{\s*backgroundColor,\s*className,\s*colors\s*=\s*\{\},\s*style\s*\}\)/)
   assert.match(componentSource, /data-lock-screen-overlay="lock-screen"/)
+  assert.match(componentSource, /data-overlay-glass-layer="lock-screen-actions"/)
   assert.match(componentSource, /viewBox="0 0 402 874"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"[\s\S]*?transform="translate\(0 830\)"/)
@@ -771,6 +775,21 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.doesNotMatch(componentSource, /lock-screen-controls\.svg/)
   assert.doesNotMatch(componentSource, /<image[\s\S]*?href=/)
   assert.match(componentSource, /data-overlay-node="stack"/)
+  assert.match(componentSource, /createLockScreenActionGlassMaterial\(backgroundColor\)/)
+  assert.match(componentSource, /backdropFilter:\s*material\.blur/)
+  assert.match(componentSource, /WebkitBackdropFilter:\s*material\.blur/)
+  assert.match(componentSource, /boxSizing:\s*"border-box"/)
+  assert.match(componentSource, /data-overlay-glass=\{actionName\}/)
+  assert.match(componentSource, /transform:\s*"rotate\(-45deg\)"/)
+  assert.match(componentSource, /transformOrigin:\s*"center"/)
+  assert.match(componentSource, /function renderControlShadow\(\{[\s\S]*?colors[\s\S]*?\}\)/)
+  assert.match(componentSource, /<g filter=\{`url\(#\$\{filterId\}\)`\}>/)
+  assert.match(componentSource, /resolveLayerStyle\(backgroundLayerId,\s*colors\),\s*mixBlendMode:\s*"screen"/)
+  assert.match(componentSource, /<feFlood floodOpacity="0" result="BackgroundImageFix" \/>/)
+  assert.match(componentSource, /<feComposite in2="hardAlpha" operator="out" \/>/)
+  assert.match(componentSource, /<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" \/>/)
+  assert.doesNotMatch(componentSource, /fill="#FFFFFF"/)
+  assert.doesNotMatch(componentSource, /fillOpacity="0\.42"/)
   assert.match(componentSource, /data-overlay-node=\{nodeName\}/)
   assert.match(componentSource, /nodeName: "action-left"/)
   assert.match(componentSource, /nodeName: "action-right"/)
@@ -864,8 +883,10 @@ test("Home preview maps accent and background colors into lock screen overlay", 
     /const overlayColors = \{\s*\.\.\.createLockScreenTopOverlayColors\(config\.bgColor\),\s*\.\.\.createLockScreenAccentOverlayColors\(config\.accentColor\),\s*\}/
   )
   assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayColors=\{overlayColors\}/)
+  assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayBackgroundColor=\{config\.bgColor\}/)
 
   assert.match(helperSource, /function createLockScreenAccentOverlayColors\(accentColor\)/)
+  assert.match(helperSource, /function createLockScreenActionGlassMaterial\(bgColor\)/)
   assert.match(helperSource, /function createLockScreenTopOverlayColors\(bgColor\)/)
   assert.match(helperSource, /function resolveSwipeIndicatorColor\(bgColor\)/)
   assert.match(helperSource, /"time-shape":\s*accentColor/)
@@ -887,8 +908,12 @@ test("Home preview maps accent and background colors into lock screen overlay", 
   assert.match(helperSource, /"swipe-indicator":\s*swipeIndicatorColor/)
   assert.doesNotMatch(helperSource, /"status-bar-leading":\s*accentColor/)
 
-  assert.match(frameSource, /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors\s*\}\)/)
+  assert.match(
+    frameSource,
+    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor\s*\}\)/
+  )
   assert.match(frameSource, /colors=\{overlayColors\}/)
+  assert.match(frameSource, /backgroundColor=\{overlayBackgroundColor\}/)
 })
 
 test("Public preview keeps only bezel shell asset at runtime", () => {
