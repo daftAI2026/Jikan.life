@@ -1,11 +1,11 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、`lock-screen-overlay.symbols` 几何常量与 `public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
- * [OUTPUT]: 对外提供 LockScreenDarkOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何，Stack 使用外部静态 controls 资源
+ * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、`lock-screen-overlay.symbols` 几何常量与 `public/preview/iPhone/lock-screen-controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
+ * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何，Stack 使用外部静态 controls 资源
  * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期/时间与英文字体策略由 runtime helper 收口，主时钟改用中线文本锚点维持锁屏观感，第 1/3/4 个圆形组件改为纯环+内联 SVG path，Stack 回退为静态资源引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
-import { LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS } from "./lock-screen-dark-overlay.constants"
+import { LOCK_SCREEN_OVERLAY_DEFAULT_COLORS } from "./lock-screen-overlay.constants"
 import {
     APPLE_WATCH_SYMBOL_PATH,
     SUN_HORIZON_FILL_BOTTOM_PATH,
@@ -20,21 +20,21 @@ import {
     resolveLockScreenEnglishFontFamily,
 } from "./lock-screen-overlay.runtime"
 
-const LOCK_SCREEN_CONTROLS_ASSET_SRC = "/preview/ios26001/Lock Screen - iPhone - Controls.svg"
+const LOCK_SCREEN_CONTROLS_ASSET_SRC = "/preview/iPhone/lock-screen-controls.svg"
 
 function joinClassName(...values) {
     return values.filter(Boolean).join(" ")
 }
 
 function resolveLayerColor(layerId, colors) {
-    return colors[layerId] ?? LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS[layerId]
+    return colors[layerId] ?? LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[layerId]
 }
 
 function resolveLayerStyle(layerId, colors, property = "fill") {
     return { [property]: resolveLayerColor(layerId, colors) }
 }
 
-function LockScreenDarkOverlay({ className, colors = {}, style }) {
+function LockScreenOverlay({ className, colors = {}, style }) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
     const dateText = formatLockScreenDate(currentDate)
     const timeText = formatLockScreenTime24(currentDate)
@@ -56,7 +56,7 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
             viewBox="0 0 402 874"
             aria-hidden="true"
             focusable="false"
-            data-lock-screen-overlay="dark"
+            data-lock-screen-overlay="lock-screen"
             className={joinClassName("pointer-events-none absolute inset-0 block", className)}
             style={style}
         >
@@ -262,4 +262,4 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
     )
 }
 
-export { LockScreenDarkOverlay, LOCK_SCREEN_CONTROLS_ASSET_SRC }
+export { LockScreenOverlay, LOCK_SCREEN_CONTROLS_ASSET_SRC }

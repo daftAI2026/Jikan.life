@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 无运行时依赖，仅维护锁屏 overlay 的稳定 layer id 与默认 dark 配色
- * [OUTPUT]: 对外提供 LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS 与 LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS 常量
+ * [INPUT]: 无运行时依赖，仅维护锁屏 overlay 的稳定 layer id 与默认配色
+ * [OUTPUT]: 对外提供 LOCK_SCREEN_OVERLAY_LAYER_IDS 与 LOCK_SCREEN_OVERLAY_DEFAULT_COLORS 常量
  * [POS]: workspace/lock-screen-overlay 的协议层，约束 overlay 组件与上游颜色覆写入口共享同一真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-const LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS = [
+const LOCK_SCREEN_OVERLAY_LAYER_IDS = [
     "home-indicator",
     "action-left-bg",
     "action-left-icon",
@@ -31,7 +31,7 @@ const LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS = [
 const WIDGET_FOREGROUND_COLOR = "var(--text-color-kumo-inverse)"
 const WIDGET_BACKGROUND_COLOR = "color-mix(in srgb, var(--text-color-kumo-inverse) 15%, transparent)"
 
-const LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS = {
+const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = {
     "home-indicator": "#FFFFFF",
     "action-left-bg": "rgba(255, 255, 255, 0.07)",
     "action-left-icon": "#D9D9D9",
@@ -55,6 +55,6 @@ const LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS = {
     cellular: "#FFFFFF",
 }
 
-Object.freeze(LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS)
+Object.freeze(LOCK_SCREEN_OVERLAY_DEFAULT_COLORS)
 
-export { LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS, LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS }
+export { LOCK_SCREEN_OVERLAY_DEFAULT_COLORS, LOCK_SCREEN_OVERLAY_LAYER_IDS }

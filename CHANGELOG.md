@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.20] - 2026-03-11
+
+### Architecture
+- **Theme Agnosticism**: Renamed `LockScreenDarkOverlay` to `LockScreenOverlay` and stripped out hardcoded "dark" semantic prefixes, unifying the lock screen preview into a single, theme-agnostic architecture.
+- **Asset Normalization**: Migrated all lock screen static preview assets from the device-specific `public/preview/ios26001` directory to a generic `public/preview/iPhone` namespace, eliminating rigid light/dark boundaries.
+
+### Documentation & Tests
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the component renaming and new asset paths.
+- **Visual Structure Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly enforce the new `LockScreenOverlay` interface bounds and migration to `public/preview/iPhone` runtime assets.
+
 ## [1.8.19] - 2026-03-11
 
 ### UI & UX

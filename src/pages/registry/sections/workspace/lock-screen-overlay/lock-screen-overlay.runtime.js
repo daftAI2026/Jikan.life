@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖浏览器 Date/Intl/navigator 运行时信号
  * [OUTPUT]: 对外提供锁屏 overlay 的英文日期格式化、24 小时制时间格式、Apple 平台判定、字体栈决策与分钟/午夜刷新计时 helper
- * [POS]: workspace/lock-screen-overlay 的运行时策略层，给 `LockScreenDarkOverlay.jsx` 提供真实日期、真实时间与英文字体分流真相源
+ * [POS]: workspace/lock-screen-overlay 的运行时策略层，给 `LockScreenOverlay.jsx` 提供真实日期、真实时间与英文字体分流真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 

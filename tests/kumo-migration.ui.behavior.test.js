@@ -643,9 +643,9 @@ test("HomePreviewPane scales all wallpaper previews from base device coordinates
 
   assert.match(
     source,
-    /const SCREEN_WIDTH = LOCK_SCREEN_DARK_LAYOUT\.wallpaper\.width \* LOCK_SCREEN_DARK_LAYOUT\.scale/
+    /const SCREEN_WIDTH = LOCK_SCREEN_LAYOUT\.wallpaper\.width \* LOCK_SCREEN_LAYOUT\.scale/
   )
-  assert.match(source, /const SCREEN_HEIGHT = LOCK_SCREEN_DARK_LAYOUT\.targetHeight/)
+  assert.match(source, /const SCREEN_HEIGHT = LOCK_SCREEN_LAYOUT\.targetHeight/)
   assert.match(source, /const previewScale = Math\.max\(SCREEN_WIDTH \/ baseWidth,\s*SCREEN_HEIGHT \/ baseHeight\)/)
   assert.match(source, /const previewWidth = baseWidth \* previewScale/)
   assert.match(source, /const previewHeight = baseHeight \* previewScale/)
@@ -668,7 +668,7 @@ test("HomePreviewPane scales all wallpaper previews from base device coordinates
 test("HomePreviewPane delegates lock screen chrome to LockScreenPreviewFrame", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame", "LOCK_SCREEN_DARK_LAYOUT"])
+  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame", "LOCK_SCREEN_LAYOUT"])
   assert.match(source, /<LockScreenPreviewFrame[\s\S]*?showOverlay=\{Boolean\(config\.selectedType\)\}[\s\S]*?>/)
   assert.match(source, /aria-label="Wallpaper live preview canvas"/)
   assert.doesNotMatch(source, /rounded-\[40px\]/)
@@ -678,12 +678,12 @@ test("HomePreviewPane delegates lock screen chrome to LockScreenPreviewFrame", (
 test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", () => {
   const source = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
 
-  assert.match(source, /const LOCK_SCREEN_DARK_LAYOUT =/)
+  assert.match(source, /const LOCK_SCREEN_LAYOUT =/)
   assert.match(source, /const BEZEL_INSET = 1/)
   assertNamedImports(source, "./lock-screen-overlay", [
-    "LockScreenDarkOverlay",
-    "LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS",
-    "LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS",
+    "LockScreenOverlay",
+    "LOCK_SCREEN_OVERLAY_DEFAULT_COLORS",
+    "LOCK_SCREEN_OVERLAY_LAYER_IDS",
   ])
   assert.match(
     source,
@@ -701,10 +701,10 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   assert.match(source, /width:\s*`\$\{scaledBezelWidth\}px`/)
   assert.match(source, /height:\s*`\$\{scaledBezelHeight\}px`/)
   assert.match(source, /showOverlay \? \(/)
-  assert.match(source, /<LockScreenDarkOverlay[\s\S]*?colors=\{overlayColors\}/)
-  assert.match(source, /"\/preview\/ios26001\/lock-screen-dark-bezel\.svg"/)
-  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
-  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS[\s\S]*?\}/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?colors=\{overlayColors\}/)
+  assert.match(source, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
+  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
+  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\}/)
   assert.doesNotMatch(source, /lock-screen-dark-overlay\.svg/)
   assert.doesNotMatch(source, /<img[\s\S]*?overlay/)
 })
@@ -712,10 +712,10 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
 test("Lock screen overlay exports stable layer ids and default colors", () => {
   const source = readSource("src/pages/registry/sections/workspace/lock-screen-overlay/index.js")
   const constantsSource = readSource(
-    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-dark-overlay.constants.js"
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.constants.js"
   )
   const componentSource = readSource(
-    "src/pages/registry/sections/workspace/lock-screen-overlay/LockScreenDarkOverlay.jsx"
+    "src/pages/registry/sections/workspace/lock-screen-overlay/LockScreenOverlay.jsx"
   )
   const symbolsSource = readSource(
     "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.symbols.js"
@@ -724,12 +724,12 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
     "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.runtime.js"
   )
 
-  assert.match(source, /export \{ LockScreenDarkOverlay \} from "\.\/LockScreenDarkOverlay"/)
+  assert.match(source, /export \{ LockScreenOverlay \} from "\.\/LockScreenOverlay"/)
   assert.match(
     source,
-    /export \{[\s\S]*?LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS[\s\S]*?LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS[\s\S]*?\} from "\.\/lock-screen-dark-overlay.constants"/
+    /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\} from "\.\/lock-screen-overlay.constants"/
   )
-  assert.match(constantsSource, /const LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS = \[/)
+  assert.match(constantsSource, /const LOCK_SCREEN_OVERLAY_LAYER_IDS = \[/)
   assert.match(constantsSource, /"home-indicator"/)
   assert.match(constantsSource, /"action-left-bg"/)
   assert.match(constantsSource, /"action-left-icon"/)
@@ -745,7 +745,7 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(constantsSource, /"battery"/)
   assert.match(constantsSource, /"wifi"/)
   assert.match(constantsSource, /"cellular"/)
-  assert.match(constantsSource, /const LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS = \{/)
+  assert.match(constantsSource, /const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = \{/)
   assert.match(constantsSource, /const WIDGET_FOREGROUND_COLOR = "var\(--text-color-kumo-inverse\)"/)
   assert.match(
     constantsSource,
@@ -756,15 +756,15 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(constantsSource, /"widgets-complication-1-fg":\s*WIDGET_FOREGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-bg":\s*WIDGET_BACKGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-fg":\s*WIDGET_FOREGROUND_COLOR/)
-  assert.match(componentSource, /function LockScreenDarkOverlay\(\{\s*className,\s*colors\s*=\s*\{\},\s*style\s*\}\)/)
-  assert.match(componentSource, /data-lock-screen-overlay="dark"/)
+  assert.match(componentSource, /function LockScreenOverlay\(\{\s*className,\s*colors\s*=\s*\{\},\s*style\s*\}\)/)
+  assert.match(componentSource, /data-lock-screen-overlay="lock-screen"/)
   assert.match(componentSource, /viewBox="0 0 402 874"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"[\s\S]*?transform="translate\(0 830\)"/)
   assert.doesNotMatch(componentSource, /data-overlay-layer="dynamic-island"/)
   assert.doesNotMatch(constantsSource, /"dynamic-island"/)
   assert.match(componentSource, /data-overlay-layer="widgets-complication-1-fg"/)
-  assert.match(componentSource, /Lock Screen - iPhone - Controls\.svg/)
+  assert.match(componentSource, /lock-screen-controls\.svg/)
   assert.match(componentSource, /<image[\s\S]*?href=\{LOCK_SCREEN_CONTROLS_ASSET_SRC\}/)
   assert.match(componentSource, /transform="translate\(30 679\)"/)
   assert.match(componentSource, /transform="translate\(0 766\)"/)
@@ -864,15 +864,15 @@ test("Home preview maps accent and background colors into lock screen overlay", 
 
 test("Public preview keeps only bezel shell asset at runtime", () => {
   assert.ok(
-    fs.existsSync(path.join(process.cwd(), "public/preview/ios26001/lock-screen-dark-bezel.svg")),
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-bezel.svg")),
     "lock screen bezel asset missing"
   )
   assert.ok(
-    fs.existsSync(path.join(process.cwd(), "public/preview/ios26001/Lock Screen - iPhone - Controls.svg")),
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-controls.svg")),
     "lock screen controls asset missing"
   )
   assert.equal(
-    fs.existsSync(path.join(process.cwd(), "public/preview/ios26001/lock-screen-dark-overlay.svg")),
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-overlay.svg")),
     false
   )
 })

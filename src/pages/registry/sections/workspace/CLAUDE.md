@@ -30,9 +30,10 @@ workspace/ - Home 双栏工作区子模块 (15 files + cards/ + lock-screen-over
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
-2026-03-11: `HomePreviewPane.jsx` 新增并扩展 `lock-screen-overlay/lock-screen-overlay.colors.js` 配色映射链：workspace `accentColor` 显式投影到锁屏 overlay 的 `time-shape`、`date-text` 与四个 widgets，widgets 继续保持 `fg = accent / bg = accent 15% alpha` 关系；workspace `bgColor` 则复用现有背景明暗判断规则，映射到整条 top 状态栏（`status-bar-leading/status-bar-trailing/battery/wifi/cellular`）与 `home-indicator` 的 `kumo default/inverse` token。`lock-screen-overlay/LockScreenDarkOverlay.jsx` 仍保留主时钟真实 24 小时制、真实英文日期与字体分流逻辑。
-2026-03-11: `lock-screen-overlay/LockScreenDarkOverlay.jsx` 改为“Stack 静态 controls + 其余层 inline”混合结构；`public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 升级为正式静态资源，运行时不再内联 Action 组几何。
-2026-03-10: 新增 `LockScreenPreviewFrame.jsx` 与 `public/preview/ios26001/*` 静态 SVG，左侧 preview 固定切到 Figma `Lock Screen` 壳层；以 `Wallpaper 402x874` 为比例真相源并锁定目标高度 `510px`，`HomePreviewPane` 仅保留 live canvas / 空态提示内容。
+2026-03-11: `HomePreviewPane.jsx` 新增并扩展 `lock-screen-overlay/lock-screen-overlay.colors.js` 配色映射链：workspace `accentColor` 显式投影到锁屏 overlay 的 `time-shape`、`date-text` 与四个 widgets，widgets 继续保持 `fg = accent / bg = accent 15% alpha` 关系；workspace `bgColor` 则复用现有背景明暗判断规则，映射到整条 top 状态栏（`status-bar-leading/status-bar-trailing/battery/wifi/cellular`）与 `home-indicator` 的 `kumo default/inverse` token。`lock-screen-overlay/LockScreenOverlay.jsx` 仍保留主时钟真实 24 小时制、真实英文日期与字体分流逻辑。
+2026-03-11: 锁屏 preview 命名链收平：overlay 组件与协议常量去掉 `dark` 历史前缀，静态资源同步迁移到 `public/preview/iPhone/lock-screen-*.svg`，整体语义从版本号目录回归到机型目录。
+2026-03-11: `lock-screen-overlay/LockScreenOverlay.jsx` 改为“Stack 静态 controls + 其余层 inline”混合结构；`public/preview/iPhone/lock-screen-controls.svg` 升级为正式静态资源，运行时不再内联 Action 组几何。
+2026-03-10: 新增 `LockScreenPreviewFrame.jsx` 与 `public/preview/iPhone/*` 静态 SVG，左侧 preview 固定切到 Figma `Lock Screen` 壳层；以 `Wallpaper 402x874` 为比例真相源并锁定目标高度 `510px`，`HomePreviewPane` 仅保留 live canvas / 空态提示内容。
 2026-03-10: `HomePreviewPane` 的 preview 缩放矩阵收口为严格等比 `previewScale`，移除 `scaleX/scaleY` 分离缩放导致的几何轻微椭圆化；渲染路径仍保持“导出坐标先绘制，再映射到 preview”不变。
 2026-03-10: `HomePreviewPane` 的 `year/life/goal` 预览统一改为“原始设备坐标绘制 + preview 缩放显示”，消除 `goal` 专属特判并让三类壁纸都与导出成品保持同一坐标语义。
 2026-03-09: 新增 `HomeSettingsPaneBottomTabsLayout.jsx`，将 `HomeSettingsPane` 中的 bottom-tabs 完整视图链与视图专属 helper/常量整体提取到私有文件；`HomeSettingsPane.jsx` 进一步收敛为编排层，保留 `MD_BOTTOM_TABS_SLOT_COUNT` 作为 pane 侧布局常量，新视图文件不反向依赖该常量。

@@ -6,14 +6,14 @@
  */
 import { useCallback, useEffect, useRef } from "react"
 import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/renderer"
-import { LockScreenPreviewFrame, LOCK_SCREEN_DARK_LAYOUT } from "./LockScreenPreviewFrame"
+import { LockScreenPreviewFrame, LOCK_SCREEN_LAYOUT } from "./LockScreenPreviewFrame"
 import {
     createLockScreenAccentOverlayColors,
     createLockScreenTopOverlayColors,
 } from "./lock-screen-overlay/lock-screen-overlay.colors"
 
-const SCREEN_WIDTH = LOCK_SCREEN_DARK_LAYOUT.wallpaper.width * LOCK_SCREEN_DARK_LAYOUT.scale
-const SCREEN_HEIGHT = LOCK_SCREEN_DARK_LAYOUT.targetHeight
+const SCREEN_WIDTH = LOCK_SCREEN_LAYOUT.wallpaper.width * LOCK_SCREEN_LAYOUT.scale
+const SCREEN_HEIGHT = LOCK_SCREEN_LAYOUT.targetHeight
 const rendererByType = {
     year: drawYearProgress,
     life: drawLifeCalendar,

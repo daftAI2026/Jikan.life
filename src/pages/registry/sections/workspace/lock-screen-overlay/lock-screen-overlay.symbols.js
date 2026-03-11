@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无运行时依赖，仅承载锁屏 overlay 内联 SVG 原始几何
  * [OUTPUT]: 对外提供 APPLE_WATCH_SYMBOL_PATH、SUN_HORIZON_FILL_TOP_PATH、SUN_HORIZON_FILL_BOTTOM_PATH、UMBRELLA_FILL_PATH 常量
- * [POS]: workspace/lock-screen-overlay 的私有 symbols 仓库，被 LockScreenDarkOverlay 消费；负责收口 widget icon path，避免渲染器继续膨胀
+ * [POS]: workspace/lock-screen-overlay 的私有 symbols 仓库，被 LockScreenOverlay 消费；负责收口 widget icon path，避免渲染器继续膨胀
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
