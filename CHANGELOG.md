@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-03-12
+
+### Architecture
+- **Mainline Integration**: Merged the comprehensive Lock Screen Preview Shell enhancements into the main branch. This merge brings the dynamic lock screen overlay runtime, unified typography parsing, precise goal ring geometries, WCAG contrast optimizations, and the decoupled "year" vs "goal" lock screen configurations to the core architecture.
+
+### Tests
+- **Visual Synchronization**: Locked down final visual snapshot hashes reflecting the restored typography and geometric alignments for the merged lock screen layout.
+
 ## [1.8.30] - 2026-03-12
 
 ### UI & UX
