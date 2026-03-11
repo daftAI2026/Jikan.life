@@ -299,7 +299,7 @@ export function computeGoalLayout(options) {
         bgColor,
         numberY: centerY - 4,
         labelY: centerY + (height * 0.08),
-        goalNameY: height * 0.75,
+        goalNameY: height * 0.73,
         targetDateY: height * 0.77, // 新增
         ringStrokeWidth: 8,
         numberFontSize: width * 0.2, // 修正：原版是 0.2

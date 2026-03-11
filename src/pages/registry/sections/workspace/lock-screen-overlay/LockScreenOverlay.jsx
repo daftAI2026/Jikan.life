@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor、overlayScale 与 wallpaperLang
+ * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor、overlayScale、wallpaperLang 与 showWidgets
  * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并按 Wallpaper Language 本地化，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，仅 `date-text` 使用本地化字体策略，其余 overlay 文字继续保持既有英文文本字体策略；底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，仅 `date-text` 使用本地化字体策略，其余 overlay 文字继续保持既有英文文本字体策略；支持上游按 preview type 控制整组 widgets 可见性；底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useId, useState } from "react"
@@ -130,7 +130,15 @@ function renderActionGlassPanel({ actionFrame, actionName, material }) {
     )
 }
 
-function LockScreenOverlay({ backgroundColor, className, colors = {}, overlayScale = 1, style, wallpaperLang }) {
+function LockScreenOverlay({
+    backgroundColor,
+    className,
+    colors = {},
+    overlayScale = 1,
+    showWidgets = true,
+    style,
+    wallpaperLang,
+}) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
     const dateText = formatLockScreenDate(currentDate, wallpaperLang)
     const timeText = formatLockScreenTime24(currentDate)
@@ -271,94 +279,96 @@ function LockScreenOverlay({ backgroundColor, className, colors = {}, overlaySca
                     })}
                 </g>
 
-                <g transform="translate(30 679)">
-                    <g transform="translate(270 0)">
-                        <g data-overlay-layer="widgets-complication-4-bg" style={resolveLayerStyle("widgets-complication-4-bg", colors)}>
-                            <path
-                                fillRule="evenodd"
-                                d="M65,36 C65,52.0167801 52.0158315,65 36,65 C19.9832199,65 7,52.0167801 7,36 C7,19.9832199 19.9832199,7 36,7 C52.0158315,7 65,19.9832199 65,36"
-                            />
-                        </g>
-                        <g data-overlay-layer="widgets-complication-4-fg" style={resolveLayerStyle("widgets-complication-4-fg", colors)}>
-                            <text x="19.2115942" y="40" fontFamily={overlayTextFontFamily} fontSize="15" fontWeight="500">
-                                8:26
-                            </text>
-                            <text x="27.6345215" y="55" fontFamily={overlayTextFontFamily} fontSize="11" fontWeight="400">
-                                PM
-                            </text>
-                            <g transform="translate(27.415 12.242) scale(0.6861)">
-                                <path d={SUN_HORIZON_FILL_TOP_PATH} />
-                                <path d={SUN_HORIZON_FILL_BOTTOM_PATH} />
-                            </g>
-                        </g>
-                    </g>
-
-                    <g transform="translate(180 0)">
-                        <g data-overlay-layer="widgets-complication-3-bg" style={resolveLayerStyle("widgets-complication-3-bg", colors)}>
-                            <path
-                                fillRule="evenodd"
-                                d="M65,36 C65,43.8325469 61.8948413,50.9398452 56.8483887,56.1580301 L56.8192561,56.1292934 C56.3208469,56.8498546 55.4886453,57.3219048 54.5461905,57.3219048 C53.0208326,57.3219048 51.7842857,56.0853579 51.7842857,54.56 C51.7842857,53.6175452 52.2563359,52.7853436 52.9768971,52.2869344 L52.9413476,52.2518843 C56.9887612,48.0338563 59.4761905,42.3074133 59.4761905,36 C59.4761905,24.3383512 50.9732708,14.6626657 39.8290033,12.8345154 C40.5021073,11.9894607 40.904762,10.9179434 40.904762,9.752381 C40.904762,8.86494252 40.6713419,8.03202223 40.2625482,7.31166663 C54.2574077,9.37201223 65,21.4314727 65,36 Z M31,9.752381 C31,10.9244445 31.407159,12.001411 32.0877513,12.8495547 C20.9844825,14.7108114 12.5238095,24.3673577 12.5238095,36 C12.5238095,42.6586255 15.2959634,48.6697797 19.7491123,52.9423038 L19.7164044,52.9756754 C20.0310454,53.4241873 20.2157143,53.9705278 20.2157143,54.56 C20.2157143,56.0853579 18.9791674,57.3219048 17.4538095,57.3219048 C16.8637043,57.3219048 16.3168236,57.1368391 15.8680404,56.8215809 L15.8419699,56.8483887 C10.3898333,51.5756837 7,44.1837108 7,36 C7,21.4680315 17.6887441,9.43255302 31.6331865,7.32661039 C31.2299314,8.04452105 31,8.87159935 31,9.752381 Z"
-                            />
-                        </g>
-                        <g data-overlay-layer="widgets-complication-3-fg" style={resolveLayerStyle("widgets-complication-3-fg", colors)}>
-                            <circle
-                                cx="35.95"
-                                cy="9.65"
-                                r="2.75"
-                                fillRule="nonzero"
-                                transform="translate(35.95 9.65) rotate(90) translate(-35.95 -9.65)"
-                            />
-                            <path d={UMBRELLA_FILL_PATH} transform="translate(28.572 46.433) scale(0.797)" />
-                            <text x="17.6740723" y="39" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="400">
-                                50%
-                            </text>
-                        </g>
-                    </g>
-
-                    <g transform="translate(90 0)">
-                        <g transform="translate(7 7)">
-                            <g data-overlay-layer="widgets-complication-2-bg" style={resolveLayerStyle("widgets-complication-2-bg", colors)}>
+                {showWidgets ? (
+                    <g transform="translate(30 679)">
+                        <g transform="translate(270 0)">
+                            <g data-overlay-layer="widgets-complication-4-bg" style={resolveLayerStyle("widgets-complication-4-bg", colors)}>
                                 <path
                                     fillRule="evenodd"
-                                    d="M58,28.9798986 C58,34.135712 56.6429884,39.1005509 54.1056161,43.4751446 C53.2577089,44.9369913 51.3857625,45.4344096 49.9245068,44.5861595 C48.4632511,43.7379094 47.9660339,41.8652059 48.8139411,40.4033592 C50.8142469,36.954703 51.8819888,33.0482025 51.8819888,28.9798986 C51.8819888,23.5425687 49.9818399,18.5484897 46.8085953,14.6244779 C48.9743633,14.1795374 50.7048005,12.5327621 51.2698066,10.4158039 C55.4714661,15.4434823 58,21.9163821 58,28.9798986 Z M29.0004749,0 C34.1221446,0 38.9338053,1.32679978 43.1099447,3.65528404 C41.1761333,4.583092 39.8299955,6.54477645 39.7929339,8.8183212 C36.5793997,7.09698299 32.9041821,6.12048558 29.0004749,6.12048558 C16.3614632,6.12048558 6.1180112,16.3553242 6.1180112,28.9798986 C6.1180112,33.0469666 7.18602963,36.9536979 9.18634515,40.4038529 C10.0339798,41.8658577 9.53641351,43.7384684 8.07499972,44.5864459 C6.61358594,45.4344233 4.74173233,44.9366558 3.89409768,43.474651 C1.3572301,39.099048 0,34.1344022 0,28.9798986 C0,12.9733655 12.9842837,0 29.0004749,0 Z"
+                                    d="M65,36 C65,52.0167801 52.0158315,65 36,65 C19.9832199,65 7,52.0167801 7,36 C7,19.9832199 19.9832199,7 36,7 C52.0158315,7 65,19.9832199 65,36"
                                 />
                             </g>
-                            <g data-overlay-layer="widgets-complication-2-fg" style={resolveLayerStyle("widgets-complication-2-fg", colors)}>
-                                <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
-                                <text x="14.8560182" y="35.5" fontFamily={overlayTextFontFamily} fontSize="24.5203082" fontWeight="400">
-                                    72
+                            <g data-overlay-layer="widgets-complication-4-fg" style={resolveLayerStyle("widgets-complication-4-fg", colors)}>
+                                <text x="19.2115942" y="40" fontFamily={overlayTextFontFamily} fontSize="15" fontWeight="500">
+                                    8:26
+                                </text>
+                                <text x="27.6345215" y="55" fontFamily={overlayTextFontFamily} fontSize="11" fontWeight="400">
+                                    PM
+                                </text>
+                                <g transform="translate(27.415 12.242) scale(0.6861)">
+                                    <path d={SUN_HORIZON_FILL_TOP_PATH} />
+                                    <path d={SUN_HORIZON_FILL_BOTTOM_PATH} />
+                                </g>
+                            </g>
+                        </g>
+
+                        <g transform="translate(180 0)">
+                            <g data-overlay-layer="widgets-complication-3-bg" style={resolveLayerStyle("widgets-complication-3-bg", colors)}>
+                                <path
+                                    fillRule="evenodd"
+                                    d="M65,36 C65,43.8325469 61.8948413,50.9398452 56.8483887,56.1580301 L56.8192561,56.1292934 C56.3208469,56.8498546 55.4886453,57.3219048 54.5461905,57.3219048 C53.0208326,57.3219048 51.7842857,56.0853579 51.7842857,54.56 C51.7842857,53.6175452 52.2563359,52.7853436 52.9768971,52.2869344 L52.9413476,52.2518843 C56.9887612,48.0338563 59.4761905,42.3074133 59.4761905,36 C59.4761905,24.3383512 50.9732708,14.6626657 39.8290033,12.8345154 C40.5021073,11.9894607 40.904762,10.9179434 40.904762,9.752381 C40.904762,8.86494252 40.6713419,8.03202223 40.2625482,7.31166663 C54.2574077,9.37201223 65,21.4314727 65,36 Z M31,9.752381 C31,10.9244445 31.407159,12.001411 32.0877513,12.8495547 C20.9844825,14.7108114 12.5238095,24.3673577 12.5238095,36 C12.5238095,42.6586255 15.2959634,48.6697797 19.7491123,52.9423038 L19.7164044,52.9756754 C20.0310454,53.4241873 20.2157143,53.9705278 20.2157143,54.56 C20.2157143,56.0853579 18.9791674,57.3219048 17.4538095,57.3219048 C16.8637043,57.3219048 16.3168236,57.1368391 15.8680404,56.8215809 L15.8419699,56.8483887 C10.3898333,51.5756837 7,44.1837108 7,36 C7,21.4680315 17.6887441,9.43255302 31.6331865,7.32661039 C31.2299314,8.04452105 31,8.87159935 31,9.752381 Z"
+                                />
+                            </g>
+                            <g data-overlay-layer="widgets-complication-3-fg" style={resolveLayerStyle("widgets-complication-3-fg", colors)}>
+                                <circle
+                                    cx="35.95"
+                                    cy="9.65"
+                                    r="2.75"
+                                    fillRule="nonzero"
+                                    transform="translate(35.95 9.65) rotate(90) translate(-35.95 -9.65)"
+                                />
+                                <path d={UMBRELLA_FILL_PATH} transform="translate(28.572 46.433) scale(0.797)" />
+                                <text x="17.6740723" y="39" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="400">
+                                    50%
                                 </text>
                             </g>
                         </g>
-                        <text
-                            data-overlay-layer="widgets-complication-2-fg"
-                            x="25.451483"
-                            y="62"
-                            fontFamily={overlayTextFontFamily}
-                            fontSize="12.2601541"
-                            fontWeight="400"
-                            style={resolveLayerStyle("widgets-complication-2-fg", colors)}
-                        >
-                            AQI
-                        </text>
-                    </g>
 
-                    <g>
-                        <g data-overlay-layer="widgets-complication-1-bg" style={resolveLayerStyle("widgets-complication-1-bg", colors)}>
-                            <path
-                                fillRule="evenodd"
-                                d="M36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C19.9837423,65 7,52.0162577 7,36 C7,19.9837423 19.9837423,7 36,7 Z M36,12.5238095 C23.034458,12.5238095 12.5238095,23.034458 12.5238095,36 C12.5238095,48.965542 23.034458,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
-                            />
+                        <g transform="translate(90 0)">
+                            <g transform="translate(7 7)">
+                                <g data-overlay-layer="widgets-complication-2-bg" style={resolveLayerStyle("widgets-complication-2-bg", colors)}>
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M58,28.9798986 C58,34.135712 56.6429884,39.1005509 54.1056161,43.4751446 C53.2577089,44.9369913 51.3857625,45.4344096 49.9245068,44.5861595 C48.4632511,43.7379094 47.9660339,41.8652059 48.8139411,40.4033592 C50.8142469,36.954703 51.8819888,33.0482025 51.8819888,28.9798986 C51.8819888,23.5425687 49.9818399,18.5484897 46.8085953,14.6244779 C48.9743633,14.1795374 50.7048005,12.5327621 51.2698066,10.4158039 C55.4714661,15.4434823 58,21.9163821 58,28.9798986 Z M29.0004749,0 C34.1221446,0 38.9338053,1.32679978 43.1099447,3.65528404 C41.1761333,4.583092 39.8299955,6.54477645 39.7929339,8.8183212 C36.5793997,7.09698299 32.9041821,6.12048558 29.0004749,6.12048558 C16.3614632,6.12048558 6.1180112,16.3553242 6.1180112,28.9798986 C6.1180112,33.0469666 7.18602963,36.9536979 9.18634515,40.4038529 C10.0339798,41.8658577 9.53641351,43.7384684 8.07499972,44.5864459 C6.61358594,45.4344233 4.74173233,44.9366558 3.89409768,43.474651 C1.3572301,39.099048 0,34.1344022 0,28.9798986 C0,12.9733655 12.9842837,0 29.0004749,0 Z"
+                                    />
+                                </g>
+                                <g data-overlay-layer="widgets-complication-2-fg" style={resolveLayerStyle("widgets-complication-2-fg", colors)}>
+                                    <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
+                                    <text x="14.8560182" y="35.5" fontFamily={overlayTextFontFamily} fontSize="24.5203082" fontWeight="400">
+                                        72
+                                    </text>
+                                </g>
+                            </g>
+                            <text
+                                data-overlay-layer="widgets-complication-2-fg"
+                                x="25.451483"
+                                y="62"
+                                fontFamily={overlayTextFontFamily}
+                                fontSize="12.2601541"
+                                fontWeight="400"
+                                style={resolveLayerStyle("widgets-complication-2-fg", colors)}
+                            >
+                                AQI
+                            </text>
                         </g>
-                        <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
-                            <path
-                                fillRule="evenodd"
-                                d="M35.8317525,12.518769 C34.3847423,12.4318173 33.2380952,11.2307679 33.2380952,9.76190476 C33.2380952,8.23654688 34.4746421,7 36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C27.9918711,65 20.7418711,61.7540644 15.4939033,56.5060967 L15.5013483,56.4996523 C15.0012478,55.9998064 14.6919048,55.3091239 14.6919048,54.5461905 C14.6919048,53.0208326 15.9284516,51.7842857 17.4538095,51.7842857 C18.2901248,51.7842857 19.0396219,52.1559982 19.5461006,52.7432227 L19.4489048,52.649 L19.7060231,52.9008575 C23.9280078,56.9721655 29.6715807,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
-                            />
-                            <path d={APPLE_WATCH_SYMBOL_PATH} transform="translate(27.16404 23.45508) scale(1.2)" />
+
+                        <g>
+                            <g data-overlay-layer="widgets-complication-1-bg" style={resolveLayerStyle("widgets-complication-1-bg", colors)}>
+                                <path
+                                    fillRule="evenodd"
+                                    d="M36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C19.9837423,65 7,52.0162577 7,36 C7,19.9837423 19.9837423,7 36,7 Z M36,12.5238095 C23.034458,12.5238095 12.5238095,23.034458 12.5238095,36 C12.5238095,48.965542 23.034458,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
+                                />
+                            </g>
+                            <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
+                                <path
+                                    fillRule="evenodd"
+                                    d="M35.8317525,12.518769 C34.3847423,12.4318173 33.2380952,11.2307679 33.2380952,9.76190476 C33.2380952,8.23654688 34.4746421,7 36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C27.9918711,65 20.7418711,61.7540644 15.4939033,56.5060967 L15.5013483,56.4996523 C15.0012478,55.9998064 14.6919048,55.3091239 14.6919048,54.5461905 C14.6919048,53.0208326 15.9284516,51.7842857 17.4538095,51.7842857 C18.2901248,51.7842857 19.0396219,52.1559982 19.5461006,52.7432227 L19.4489048,52.649 L19.7060231,52.9008575 C23.9280078,56.9721655 29.6715807,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
+                                />
+                                <path d={APPLE_WATCH_SYMBOL_PATH} transform="translate(27.16404 23.45508) scale(1.2)" />
+                            </g>
                         </g>
                     </g>
-                </g>
+                ) : null}
 
                 <rect
                     x="301.7"

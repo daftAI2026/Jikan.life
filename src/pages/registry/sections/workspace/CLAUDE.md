@@ -9,8 +9,8 @@ goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyG
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
-HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets、把 bgColor 按背景明暗规则投影到 top 状态栏与 `home-indicator` 的 pure black/white overlay 配色，同时驱动 `swipe-indicator` 的真机近似拟合色和底部 action glass 材质，并将 `wallpaperLang` 透传给锁屏 overlay，确保所见即所得。
-LockScreenPreviewFrame.jsx: Figma 锁屏壳私有 frame，收口 `450x920 / 402x874 / inset 24,23` 基准，overlay 改走 inline 组件，并额外透传 `bgColor + overlayScale + wallpaperLang` 给底部 action glass 与锁屏日期本地化链路；bezel 继续走静态资源。
+HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets、把 bgColor 按背景明暗规则投影到 top 状态栏与 `home-indicator` 的 pure black/white overlay 配色，同时驱动 `swipe-indicator` 的真机近似拟合色和底部 action glass 材质，并将 `wallpaperLang + showWidgets` 透传给锁屏 overlay，确保所见即所得。
+LockScreenPreviewFrame.jsx: Figma 锁屏壳私有 frame，收口 `450x920 / 402x874 / inset 24,23` 基准，overlay 改走 inline 组件，并额外透传 `bgColor + overlayScale + wallpaperLang + showWidgets` 给底部 action glass、锁屏日期本地化链路与 goal-only widget 隐藏策略；bezel 继续走静态资源。
 HomeSettingsPane.jsx: 右侧设置面板主容器；回归 pane 编排层，只负责卡片顺序、6 站位空态 Skeleton Base、`revealStage` 渐进解锁、segmented workspace（`mobile + md drawer open`）与 grid 布局分流、title/body skeleton 与 `useAnchoredSetupRow` 语义收口；Guide 宿主继续读取 `shouldRenderPaneGuideHost`，导出 `SETTINGS_CARD_IDS`
 HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；承载 active card 壳、tab rail、隐藏测量节点、tab label skeleton 与视图专属 helper/常量，不再与 pane 编排层混写
 use-md-bottom-tabs-metrics.js: md bottom-tabs 私有测量 hook；输入 `tabsContainerRef/measureTriggerRefs/measureLabels`，统一首帧同步自然宽测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、1px deadzone 与 live-resize indicator 显隐/禁过渡策略，输出 `distributedTabWidths/indicatorClassName`
@@ -30,6 +30,7 @@ workspace/ - Home 双栏工作区子模块 (15 files + cards/ + lock-screen-over
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。颜色相关自动前景决策统一复用 shared WCAG 核心，局部特例必须显式命名。
 
 变更日志
+2026-03-12: Goal Countdown 左侧锁屏预览新增 type-aware widget 可见性：`HomePreviewPane.jsx` 派生 `showWidgets = config.selectedType !== "goal"` 并沿 `LockScreenPreviewFrame -> LockScreenOverlay` 透传；仅 `goal` 预览隐藏四个 circular widgets，时间/日期/顶部状态栏/底部 controls 保持不变，生成链路与 URL 参数完全不受影响。
 2026-03-12: `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 新增 `wallpaperLang` 透传链；锁屏 overlay 仅 `date-text` 按壁纸语言输出 `en / zh-CN / zh-TW / ja` 本地化格式并复用 shared 字体真相源，其他 overlay 文本维持原有英文字体策略。
 2026-03-12: 锁屏底部 action glass 的 DOM 专属视觉补偿归零为 `0px/0px`；微调入口仍只存在于 `lock-screen-overlay/LockScreenOverlay.jsx` 的 glass 层，底盘与 icon 几何保持原始 Sketch frame。
 2026-03-12: 锁屏底部 action glass 的 DOM 专属视觉补偿从 `-1px/-1px` 调整为 `-3px/-3px`；该偏移仍只作用于 `lock-screen-overlay/LockScreenOverlay.jsx` 的 glass 圆盘，底盘与 icon 几何保持原始 Sketch frame。

@@ -331,6 +331,32 @@ test("Worker goal SVG uses shared goal ring stroke width and number offset", asy
   assert.equal(Number(numberYMatch[1]), layout.ring.centerY - 4)
 })
 
+test("Shared goal layout keeps goal name at 73% height for preview and worker consumers", async () => {
+  const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
+  const { computeGoalLayout } = await import(corePath)
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalWorkerSource = readSource("worker/generators/goal.js")
+
+  const width = 1179
+  const height = 2556
+  const layout = computeGoalLayout({
+    width,
+    height,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    goalDate: "2026-12-31",
+    goalStart: "2026-01-01",
+    goalName: "Goal",
+    today: { year: 2026, month: 3, day: 10 },
+  })
+
+  assert.equal(layout.goalNameY, height * 0.73)
+  assert.match(rendererSource, /fillText\(layout\.goalName,\s*ring\.centerX,\s*layout\.goalNameY\)/)
+  assert.match(goalWorkerSource, /text\(ring\.centerX,\s*layout\.goalNameY,\s*layout\.goalName/)
+})
+
 test("Worker life SVG keeps current-week radius identical to preview layout", async () => {
   const lifeGeneratorPath = pathToFileURL(path.join(process.cwd(), "worker/generators/life.js")).href
   const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href

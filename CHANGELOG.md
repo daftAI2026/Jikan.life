@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.27] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Universality**: Upgraded the lock screen preview shell to universally display the dynamic top status bar (cellular, wifi, battery, and top-corner time) across all wallpaper styles ("year", "life", and "goal").
+- **Widget Visibility**: Introduced conditional widget rendering. The main lock screen widgets (large clock and date) are now exclusively visible when configuring the "goal" wallpaper style, eliminating visual conflicts with the core graphics of the "year" and "life" layouts.
+- **Goal Geometry Refinement**: Lowered the vertical placement of the Goal countdown ring to shift the visual weight downwards. It now anchors its vertical center (`clockHeight`) dynamically based on a `0.6` factor of the minimum uniform dimension, providing breathing room for the newly introduced universal lock screen top overlay.
+
+### Architecture
+- **Preview Frame Decoupling**: Refactored `LockScreenPreviewFrame` and `LockScreenOverlay` to decouple the continuous top overlay rendering (`showOverlay`) from the main center content rendering (`showWidgets`). This architectural split allows surgical control over active preview layers based on the active `wallpaperType`.
+
+### Documentation & Tests
+- **Structural Constraints**: Updated `kumo-migration.ui.behavior.test.js` to strictly assert the new `showWidgets` props drilling and the conditional rendering boundaries of the main SVG widget grouping within `LockScreenOverlay`.
+- **Layout Math Guards**: Expanded `kumo-migration.core.behavior.test.js` to assert the updated `clockHeight` calculation mapping to the new `uniformDimension` constraint.
+- **Visual Hash Synchronization**: Locked down the new deterministic SHA-256 SVG hash for the Goal wallpaper in `wallpaper-visual-snapshots.behavior.test.js` to reflect the adjusted ring geometry.
+
 ## [1.8.26] - 2026-03-12
 
 ### UI & UX

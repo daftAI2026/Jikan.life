@@ -16,7 +16,7 @@ const FIXED_NOW_ISO = "2026-03-01T09:10:11.000Z"
 const EXPECTED_HASHES = {
   year: "ddf27b8de919b561326d03adcc6a3e688f6fce35e5a4a55e34749daa60ce46f6",
   life: "97ff695c260e709ee5a0310f90c2c7d4d5e1ef70790cef5e1c64061761017659",
-  goal: "5f1980d0b89ba9e4e20c49cdde8a6e7a70f0cfa8e0498193b07b996fc71d039c",
+  goal: "e7a0f2ce1b752f815b1cbfdf4bca5038910f24469173e359872297a621255d68",
 }
 
 function sha256(value) {
