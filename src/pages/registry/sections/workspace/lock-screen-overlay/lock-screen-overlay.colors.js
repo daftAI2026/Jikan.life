@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core 的背景明暗判断与 accent/bg hex 颜色字符串
  * [OUTPUT]: 对外提供 createLockScreenAccentOverlayColors、createLockScreenTopOverlayColors 与 resolveAccentAlpha 工具，生成 lock screen overlay 的颜色覆写映射
- * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏与 home indicator token，并为 swipe-indicator 提供基于 bgColor 的动态拟合色
+ * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏、home indicator 与底部 action icon token，并为 swipe-indicator 提供基于 bgColor 的动态拟合色
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { getContrastBase } from "../../../../../../shared/wallpaper-core.js"
@@ -197,6 +197,8 @@ function createLockScreenTopOverlayColors(bgColor) {
 
     return {
         "home-indicator": topColor,
+        "action-left-icon": topColor,
+        "action-right-icon": topColor,
         "status-bar-leading": topColor,
         "status-bar-trailing": topColor,
         battery: topColor,

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.22] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Controls**: Upgraded the lock screen preview overlay bottom action controls (flashlight and camera) from a static SVG asset to dynamic runtime SVG paths. These controls now accurately inherit their foreground color from the dynamic background contrast engine, instantly adapting to pure white on dark backgrounds and pure black on light backgrounds to ensure perfect visibility.
+
+### Architecture
+- **Preview Assets Decoupling**: Deleted the static `lock-screen-controls.svg` asset and extracted its structural geometry and rendering metadata into an isolated `lock-screen-overlay.controls.js` module. This completes the eradication of monolithic Figma SVG assets from the lock screen preview shell, enabling precise programmatic control over individual UI components.
+
+### Documentation & Tests
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `public/preview/CLAUDE.md`, `public/preview/iPhone/CLAUDE.md`, `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md`, reflecting the removal of the static asset and the introduction of the new dynamic controls module.
+- **Visual Structure Guards**: Updated `kumo-migration.ui.behavior.test.js` to strictly forbid the legacy `<image>` reference to `lock-screen-controls.svg`, now asserting the precise frame definitions (`ACTION_LEFT_FRAME`, `STACK_FRAME`) and the new controls module exports.
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the contrast behavior of the new `action-left-icon` and `action-right-icon` color mappings.
+
 ## [1.8.21] - 2026-03-11
 
 ### Architecture

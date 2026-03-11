@@ -714,6 +714,9 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   const constantsSource = readSource(
     "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.constants.js"
   )
+  const controlsSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.controls.js"
+  )
   const componentSource = readSource(
     "src/pages/registry/sections/workspace/lock-screen-overlay/LockScreenOverlay.jsx"
   )
@@ -764,10 +767,17 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.doesNotMatch(componentSource, /data-overlay-layer="dynamic-island"/)
   assert.doesNotMatch(constantsSource, /"dynamic-island"/)
   assert.match(componentSource, /data-overlay-layer="widgets-complication-1-fg"/)
-  assert.match(componentSource, /lock-screen-controls\.svg/)
-  assert.match(componentSource, /<image[\s\S]*?href=\{LOCK_SCREEN_CONTROLS_ASSET_SRC\}/)
+  assert.match(componentSource, /from "\.\/lock-screen-overlay\.controls"/)
+  assert.doesNotMatch(componentSource, /lock-screen-controls\.svg/)
+  assert.doesNotMatch(componentSource, /<image[\s\S]*?href=/)
+  assert.match(componentSource, /data-overlay-node="stack"/)
+  assert.match(componentSource, /data-overlay-node=\{nodeName\}/)
+  assert.match(componentSource, /nodeName: "action-left"/)
+  assert.match(componentSource, /nodeName: "action-right"/)
   assert.match(componentSource, /transform="translate\(30 679\)"/)
   assert.match(componentSource, /transform="translate\(0 766\)"/)
+  assert.match(componentSource, /actionFrame: ACTION_LEFT_FRAME/)
+  assert.match(componentSource, /actionFrame: ACTION_RIGHT_FRAME/)
   assert.match(componentSource, /transform="translate\(18 19\)"/)
   assert.match(componentSource, /data-overlay-layer="time-shape"/)
   assert.match(componentSource, /useEffect/)
@@ -782,6 +792,10 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
     componentSource,
     /from "\.\/lock-screen-overlay\.symbols"/
   )
+  assert.match(componentSource, /ACTION_LEFT_FRAME\.x/)
+  assert.match(componentSource, /ACTION_RIGHT_FRAME\.x/)
+  assert.match(componentSource, /STACK_FRAME\.y/)
+  assert.match(componentSource, /LOCK_SCREEN_CONTROLS_SKETCH_META/)
   assert.match(componentSource, /x="201"/)
   assert.match(componentSource, /fontSize="22"/)
   assert.match(componentSource, /fontWeight="500"/)
@@ -801,6 +815,19 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /d=\{APPLE_WATCH_SYMBOL_PATH\}/)
   assert.match(componentSource, /d=\{SUN_HORIZON_FILL_TOP_PATH\}/)
   assert.match(componentSource, /d=\{UMBRELLA_FILL_PATH\}/)
+  assert.match(controlsSource, /const STACK_FRAME = \{\s*x: 0,\s*y: 766,\s*width: 402,\s*height: 108,\s*\}/)
+  assert.match(controlsSource, /const ACTION_LEFT_FRAME = \{\s*x: 46,\s*y: 0,\s*width: 58,\s*height: 58,\s*\}/)
+  assert.match(controlsSource, /const ACTION_RIGHT_FRAME = \{\s*x: 298,\s*y: 0,\s*width: 58,\s*height: 58,\s*\}/)
+  assert.match(controlsSource, /const LOCK_SCREEN_CONTROLS_SKETCH_META = \{/)
+  assert.match(controlsSource, /page: "Page 1"/)
+  assert.match(controlsSource, /root: "iPhone locked"/)
+  assert.match(controlsSource, /stack: "Stack"/)
+  assert.match(controlsSource, /master: "System\/Lock Screen Widgets\/Control"/)
+  assert.match(controlsSource, /leftGlyphOverride: "􀝌"/)
+  assert.match(controlsSource, /rightGlyphOverride: "􀌟"/)
+  assert.match(controlsSource, /const ACTION_LEFT_ICON_PATH =/)
+  assert.match(controlsSource, /const ACTION_RIGHT_ICON_PATH =/)
+  assert.match(controlsSource, /export \{/)
   assert.doesNotMatch(componentSource, /􀿫/)
   assert.doesNotMatch(componentSource, /􀆴/)
   assert.doesNotMatch(componentSource, /􀙖/)
@@ -849,6 +876,8 @@ test("Home preview maps accent and background colors into lock screen overlay", 
   assert.match(helperSource, /"widgets-complication-4-bg":\s*resolveAccentAlpha\(accentColor,\s*0\.15\)/)
   assert.match(helperSource, /getContrastBase\(bgColor\)/)
   assert.match(helperSource, /"home-indicator":\s*topColor/)
+  assert.match(helperSource, /"action-left-icon":\s*topColor/)
+  assert.match(helperSource, /"action-right-icon":\s*topColor/)
   assert.match(helperSource, /"status-bar-leading":\s*topColor/)
   assert.match(helperSource, /"status-bar-trailing":\s*topColor/)
   assert.match(helperSource, /battery:\s*topColor/)
@@ -867,9 +896,9 @@ test("Public preview keeps only bezel shell asset at runtime", () => {
     fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-bezel.svg")),
     "lock screen bezel asset missing"
   )
-  assert.ok(
+  assert.equal(
     fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-controls.svg")),
-    "lock screen controls asset missing"
+    false
   )
   assert.equal(
     fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-overlay.svg")),

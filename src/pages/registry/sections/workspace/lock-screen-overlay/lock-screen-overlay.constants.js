@@ -34,9 +34,9 @@ const WIDGET_BACKGROUND_COLOR = "color-mix(in srgb, var(--text-color-kumo-invers
 const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = {
     "home-indicator": "var(--color-white)",
     "action-left-bg": "rgba(255, 255, 255, 0.07)",
-    "action-left-icon": "#D9D9D9",
+    "action-left-icon": "var(--color-white)",
     "action-right-bg": "rgba(255, 255, 255, 0.07)",
-    "action-right-icon": "#D9D9D9",
+    "action-right-icon": "var(--color-white)",
     "widgets-complication-1-bg": WIDGET_BACKGROUND_COLOR,
     "widgets-complication-1-fg": WIDGET_FOREGROUND_COLOR,
     "widgets-complication-2-bg": WIDGET_BACKGROUND_COLOR,

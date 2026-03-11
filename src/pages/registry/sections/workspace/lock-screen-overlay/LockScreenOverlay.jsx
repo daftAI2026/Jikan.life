@@ -1,11 +1,22 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、`lock-screen-overlay.symbols` 几何常量与 `public/preview/iPhone/lock-screen-controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
- * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何，Stack 使用外部静态 controls 资源
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期/时间与英文字体策略由 runtime helper 收口，主时钟改用中线文本锚点维持锁屏观感，第 1/3/4 个圆形组件改为纯环+内联 SVG path，Stack 回退为静态资源引用
+ * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量，可接收外部 layer id -> CSS color 覆写
+ * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何，Stack 改为 live `Stack -> Action -> bg/icon` 结构
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，日期/时间与英文字体策略由 runtime helper 收口，第 1/3/4 个圆形组件改为纯环+内联 SVG path，左右 action 保留 Sketch frame/master/override 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { LOCK_SCREEN_OVERLAY_DEFAULT_COLORS } from "./lock-screen-overlay.constants"
+import {
+    ACTION_CONTROL_CORNER_RADIUS,
+    ACTION_CONTROL_FILTER_FRAME,
+    ACTION_CONTROL_ICON_OPACITY,
+    ACTION_LEFT_FRAME,
+    ACTION_LEFT_ICON_PATH,
+    ACTION_RIGHT_FRAME,
+    ACTION_RIGHT_ICON_PATH,
+    LOCK_SCREEN_CONTROLS_SKETCH_META,
+    STACK_FRAME,
+} from "./lock-screen-overlay.controls"
 import {
     APPLE_WATCH_SYMBOL_PATH,
     SUN_HORIZON_FILL_BOTTOM_PATH,
@@ -20,8 +31,6 @@ import {
     resolveLockScreenEnglishFontFamily,
 } from "./lock-screen-overlay.runtime"
 
-const LOCK_SCREEN_CONTROLS_ASSET_SRC = "/preview/iPhone/lock-screen-controls.svg"
-
 function joinClassName(...values) {
     return values.filter(Boolean).join(" ")
 }
@@ -34,6 +43,51 @@ function resolveLayerStyle(layerId, colors, property = "fill") {
     return { [property]: resolveLayerColor(layerId, colors) }
 }
 
+function renderControlAction({
+    actionFrame,
+    backgroundLayerId,
+    iconLayerId,
+    iconPath,
+    iconGlyph,
+    iconTransform,
+    nodeName,
+    colors,
+    filterId,
+}) {
+    return (
+        <g
+            data-overlay-node={nodeName}
+            data-sketch-master={LOCK_SCREEN_CONTROLS_SKETCH_META.master}
+            data-sketch-glyph={iconGlyph}
+            transform={`translate(${actionFrame.x} ${actionFrame.y})`}
+        >
+            <g filter={`url(#${filterId})`}>
+                <rect
+                    width={actionFrame.width}
+                    height={actionFrame.height}
+                    rx={ACTION_CONTROL_CORNER_RADIUS}
+                    style={{
+                        ...resolveLayerStyle(backgroundLayerId, colors),
+                        mixBlendMode: "screen",
+                    }}
+                    shapeRendering="crispEdges"
+                    data-overlay-layer={backgroundLayerId}
+                />
+            </g>
+            <g
+                data-overlay-layer={iconLayerId}
+                opacity={ACTION_CONTROL_ICON_OPACITY}
+                style={{
+                    ...resolveLayerStyle(iconLayerId, colors),
+                    mixBlendMode: "plus-lighter",
+                }}
+            >
+                <path d={iconPath} transform={iconTransform} />
+            </g>
+        </g>
+    )
+}
+
 function LockScreenOverlay({ className, colors = {}, style }) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
     const dateText = formatLockScreenDate(currentDate)
@@ -42,6 +96,7 @@ function LockScreenOverlay({ className, colors = {}, style }) {
         isAppleRuntimePlatform(typeof navigator === "object" ? navigator : null)
     )
     const overlayTextFontFamily = englishFontFamily
+    const controlsFilterId = `lock-screen-controls-shadow-${useId().replace(/:/g, "")}`
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
@@ -60,6 +115,32 @@ function LockScreenOverlay({ className, colors = {}, style }) {
             className={joinClassName("pointer-events-none absolute inset-0 block", className)}
             style={style}
         >
+            <defs>
+                <filter
+                    id={controlsFilterId}
+                    x={ACTION_CONTROL_FILTER_FRAME.x}
+                    y={ACTION_CONTROL_FILTER_FRAME.y}
+                    width={ACTION_CONTROL_FILTER_FRAME.width}
+                    height={ACTION_CONTROL_FILTER_FRAME.height}
+                    filterUnits="userSpaceOnUse"
+                    colorInterpolationFilters="sRGB"
+                >
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix
+                        in="SourceAlpha"
+                        type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha"
+                    />
+                    <feOffset dy="8" />
+                    <feGaussianBlur stdDeviation="20" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+                </filter>
+            </defs>
+
             <g data-overlay-layer="home-indicator" transform="translate(0 830)" style={resolveLayerStyle("home-indicator", colors)}>
                 <path
                     fillRule="evenodd"
@@ -67,15 +148,35 @@ function LockScreenOverlay({ className, colors = {}, style }) {
                 />
             </g>
 
-            <g transform="translate(0 766)">
-                <image
-                    href={LOCK_SCREEN_CONTROLS_ASSET_SRC}
-                    x="0"
-                    y="-766"
-                    width="402"
-                    height="874"
-                    preserveAspectRatio="none"
-                />
+            <g
+                data-overlay-node="stack"
+                data-sketch-page={LOCK_SCREEN_CONTROLS_SKETCH_META.page}
+                data-sketch-root={LOCK_SCREEN_CONTROLS_SKETCH_META.root}
+                data-sketch-stack={LOCK_SCREEN_CONTROLS_SKETCH_META.stack}
+                transform="translate(0 766)"
+            >
+                {renderControlAction({
+                    actionFrame: ACTION_LEFT_FRAME,
+                    backgroundLayerId: "action-left-bg",
+                    iconLayerId: "action-left-icon",
+                    iconPath: ACTION_LEFT_ICON_PATH,
+                    iconGlyph: LOCK_SCREEN_CONTROLS_SKETCH_META.leftGlyphOverride,
+                    iconTransform: `translate(${-ACTION_LEFT_FRAME.x} ${-STACK_FRAME.y})`,
+                    nodeName: "action-left",
+                    colors,
+                    filterId: controlsFilterId,
+                })}
+                {renderControlAction({
+                    actionFrame: ACTION_RIGHT_FRAME,
+                    backgroundLayerId: "action-right-bg",
+                    iconLayerId: "action-right-icon",
+                    iconPath: ACTION_RIGHT_ICON_PATH,
+                    iconGlyph: LOCK_SCREEN_CONTROLS_SKETCH_META.rightGlyphOverride,
+                    iconTransform: `translate(${-ACTION_RIGHT_FRAME.x} ${-STACK_FRAME.y})`,
+                    nodeName: "action-right",
+                    colors,
+                    filterId: controlsFilterId,
+                })}
             </g>
 
             <g transform="translate(30 679)">
@@ -262,4 +363,4 @@ function LockScreenOverlay({ className, colors = {}, style }) {
     )
 }
 
-export { LockScreenOverlay, LOCK_SCREEN_CONTROLS_ASSET_SRC }
+export { LockScreenOverlay }

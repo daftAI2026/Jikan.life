@@ -26,6 +26,8 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `action-left-icon` / `action-right-icon` 不再使用写死浅灰，而是和 `home-indicator` 共用 `bgColor -> 明暗判断 -> pure black/white token` 规则。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：锁屏 overlay 底部 controls 护栏改为 live Stack 语义，要求删除 `lock-screen-controls.svg` 黑盒引用、新增 `lock-screen-overlay.controls.js` 几何真相源、锁定 `Stack/Action 1/Action 2` 的 translate 与 Sketch 元数据常量，并同步要求 `public/preview/iPhone/lock-screen-controls.svg` 不再存在。
 2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 `swipe-indicator` 新增 bgColor 驱动的真机近似拟合护栏，锁定 `#FFFFFF -> #CDD1CC`、`#000000 -> #404040`、`#86261F -> #C2605D`（小容差）三组样本，并要求 `createLockScreenTopOverlayColors()` 显式回填 `swipe-indicator`；顶部 status bar 与 `home-indicator` 现锁定为 `var(--color-black)` / `var(--color-white)` pure token 规则。
 2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：要求锁屏 overlay 不再输出 `dynamic-island` 节点，且协议常量中不再保留对应 layer id/default color；同时保持顶部 status bar 其余节点护栏不变。
 2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：为锁屏 overlay 第 3/4 个圆形组件补充 SVG 护栏，要求移除 `􀙖/􀆴` 字体 glyph，改为内联 `umbrella.fill` / `sun.horizon.fill` path，并禁止 `overlaySymbolFontFamily` 回流。
