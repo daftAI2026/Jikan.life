@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.24] - 2026-03-11
+
+### UI & UX
+- **Accent Color Lock**: Introduced an `accentMode` (`"auto"` vs `"manual"`) boundary. Manually selecting an accent color now locks it to manual mode, ensuring it stays unchanged when swapping background colors. Applying a predefined palette preset immediately restores the accent to automatic mode.
+
+### Architecture
+- **Contrast Core Engine**: Replaced the hardcoded `0.179` perceptual luminance split with precise, math-driven WCAG contrast ratios (`getContrastRatio`) across the `wallpaper-color-core.js` engine. Automatic text color assignment (`getContrastBase`) and safe accent fallback (`getSafeAccent`) now independently calculate and select whichever monochrome color produces the mathematically superior contrast ratio over the dynamic background.
+- **State Initialization Boundaries**: Centralized the accent auto/manual mode tracking and default resolution deep within the `config-init.js` layer.
+
+### Documentation & Tests
+- **Contrast Constraints Guards**: Refactored the `contrast-threshold.behavior.test.js` test suite to strictly assert WCAG math calculations instead of the legacy luminance values, verifying maximum contrast assignments for pure black/white text against multiple gray fields.
+- **UI Logic Guards**: Created the `accent-mode.behavior.test.js` suite to formally secure the workspace state transitions between auto/manual accent bindings on initialization, manual entry, and palette preset selection.
+- **API Topology Guards**: Asserted the newly exposed `getContrastRatio` function export through `wallpaper-core-api.behavior.test.js`.
+- **Fractal Protocol Sync**: Updated GEB protocol headers (`CLAUDE.md`) in `shared`, `tests`, and `src/pages/registry/sections/workspace` to document the architectural transition to WCAG contrast math and the implementation of the new `accentMode` boundary logic.
+
 ## [1.8.23] - 2026-03-11
 
 ### UI & UX

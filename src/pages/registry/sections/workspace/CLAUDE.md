@@ -3,8 +3,8 @@
 
 成员清单
 useHomeWallpaperConfig.js: 工作区状态编排核心，管理 selectedStyle 联动、生命周期、设备可见性与 URL 桥接；动作层委托 `config-actions.js` 生成（UI 文案跟随全局 i18n）
-config-actions.js: 配置动作工厂层，统一 `set*/apply*/copyUrl` 状态更新语义与 Goal 日期动作委托
-config-init.js: 配置初始化层，统一默认配置、类型映射与颜色归一（`resolveSelectedType/getInitialConfig/resolvePalette`）
+config-actions.js: 配置动作工厂层，统一 `set*/apply*/copyUrl` 状态更新语义、Goal 日期动作委托与 accent auto/manual 模式切换
+config-init.js: 配置初始化层，统一默认配置、类型映射与颜色归一（`resolveSelectedType/getInitialConfig/resolvePalette`），并维护 accent auto/manual 模式边界
 goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyGoalStartUpdate/applyGoalDateUpdate` 三个语义入口并复用统一验证流水线
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
@@ -27,9 +27,10 @@ workspace/ - Home 双栏工作区子模块 (15 files + cards/ + lock-screen-over
 采用“状态 hook + 左右面板”分层，HomeGrid 负责工作区编排并统一持有 Set-it 流程状态与 AutoFlow stage（浏览器级一次引导），同时把 segmented workspace（`mobile + md drawer open`）收敛为单一布尔真相源后透传给 pane。左侧 preview 现已再拆成“内容渲染 + 壳层 frame”两层：`HomePreviewPane.jsx` 只负责空态提示与 live Canvas 绘制，并始终按导出坐标先绘制、再以单一 `previewScale` 严格等比缩放；`LockScreenPreviewFrame.jsx` 固定维护 Figma `Lock Screen` 的缩放真相源，并以 Wallpaper 槽位高度 `510px` 反推整机尺寸，消除旧通用手机壳的魔法数字。overlay 不再依赖整图静态 SVG，而是下沉到 `lock-screen-overlay/` 私有模块：以 `402x874` 坐标系承载 jikan Sketch `iPhone locked` 的 live 层树，其中底部 controls 进一步分层为 `shadow svg + glass dom + chrome svg`，保留 SVG 外阴影与 icon path，同时把圆盘实体抬到 DOM 层吃真实 `backdrop-filter`；Widgets/Date/Status 继续由私有几何模块托管，并用稳定 layer id 暴露颜色覆写；bezel 继续保留为静态资源。右侧设置区采用“card registry（业务语义）+ card order by type（位置编排）+ 壳组件”模式，把“卡片是谁”和“卡片放哪”彻底解耦；在 segmented workspace 下，pane 从多卡 grid 切为“上方单卡 + 底部 segmented tabs”，且空态不再回退 grid，而是直接显示六项全量 tabs（第 3 项固定占位 `Goal`）与单卡 skeleton。当前层次再收口为三段：`HomeSettingsPane.jsx` 负责编排与业务推导，`HomeSettingsPaneBottomTabsLayout.jsx` 负责 bottom-tabs 完整视图，`use-md-bottom-tabs-metrics.js` 负责测量链。tabs 壳层与单卡壳层常驻，`selectedType` 与 `revealStage` 只控制 title/tab label/body 的 skeleton 是否解开，不再控制底栏容器是否存在。底部宽度链已进一步收口到 `use-md-bottom-tabs-metrics.js`：首帧同步测 hidden trigger 自然宽，缓存 natural widths，字体未就绪时走 `document.fonts.ready` 补测，ResizeObserver 只观察 `[role="tablist"]` 并以 1px deadzone 过滤亚像素抖动；最终仍由 `md-bottom-tabs-widths.js` 负责分配算法，再通过容器 CSS 变量 + trigger 级 className 直接控制 Kumo trigger 本体，而不是回写到 label wrapper。`➊~➏` 固定为槽位 UX 编号，不承载业务语义。当前 `year` 启用 5 卡顺序并将槽位⑤扩为收口宽卡；`goal` 启用独立 6 卡顺序（槽位③为 `goal-fields`，槽位⑥为 `url` 收口）；`life` 启用独立 6 卡顺序（槽位③为 `life-fields`，槽位⑥为 `url` 收口）。
 
 开发规范
-只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
+只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。颜色相关自动前景决策统一复用 shared WCAG 核心，局部特例必须显式命名。
 
 变更日志
+2026-03-11: workspace 颜色状态新增 `accentMode(auto|manual)` 语义：默认自动联动背景，用户手动改 `accent` 后锁定为 manual，不再因背景变化被回改；点 palette preset 恢复 auto。共享前景黑白切换统一收敛到 shared WCAG 对比度核心。
 2026-03-11: `HomePreviewPane.jsx` 现将 workspace `bgColor` 额外透传给 `LockScreenPreviewFrame.jsx`，供 `lock-screen-overlay/LockScreenOverlay.jsx` 生成底部快捷按钮的 action glass 材质；锁屏底部 controls 从纯 SVG 背景升级为 `shadow svg + glass dom + chrome svg` 混合结构，保留既有外阴影与 icon path，并让圆盘实体吃到 `backdrop-filter: blur(20px) saturate(180%)` 与高光边框。
 2026-03-11: `lock-screen-overlay/LockScreenOverlay.jsx` 删除 `public/preview/iPhone/lock-screen-controls.svg` 黑盒引用，新增 `lock-screen-overlay.controls.js` 托管 Sketch `Page 1 / iPhone locked / Stack` 的 frame/master/override 元数据与左右 action path；锁屏底部 controls 正式回归 live `Stack -> Action -> bg/icon` 结构，位置尺寸继续锁死在 `0,766 / 46,0 / 298,0 / 58x58` 真相源。
 2026-03-11: `HomePreviewPane.jsx` 新增并扩展 `lock-screen-overlay/lock-screen-overlay.colors.js` 配色映射链：workspace `accentColor` 显式投影到锁屏 overlay 的 `time-shape`、`date-text` 与四个 widgets，widgets 继续保持 `fg = accent / bg = accent 15% alpha` 关系；workspace `bgColor` 则复用现有背景明暗判断规则，映射到整条 top 状态栏（`status-bar-leading/status-bar-trailing/battery/wifi/cellular`）与 `home-indicator` 的 pure `black/white` palette token。`lock-screen-overlay/LockScreenOverlay.jsx` 仍保留主时钟真实 24 小时制、真实英文日期与字体分流逻辑。

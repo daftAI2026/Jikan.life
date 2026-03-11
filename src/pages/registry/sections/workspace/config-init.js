@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 shared/palettes 与 shared/wallpaper-core 的安全色计算
  * [OUTPUT]: 对外提供 STYLE_TO_TYPE、resolveSelectedType、clampLifespan、getInitialConfig
- * [POS]: workspace 配置初始化层，统一默认值、类型映射与颜色归一
+ * [POS]: workspace 配置初始化层，统一默认值、类型映射与颜色归一；维护 accent auto/manual 模式边界
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { DEFAULT_PALETTE } from "../../../../../shared/palettes"
@@ -20,6 +20,10 @@ function normalizeHexColor(value, fallback) {
     return trimmed.toUpperCase()
 }
 
+function resolveAccentMode(value, fallback = "auto") {
+    return value === "manual" || value === "auto" ? value : fallback
+}
+
 function getInitialConfig(selectedType) {
     const bgColor = normalizeHexColor(DEFAULT_PALETTE.bg, "#000000")
     const originalAccentColor = normalizeHexColor(DEFAULT_PALETTE.accent, "#FFFFFF")
@@ -33,6 +37,7 @@ function getInitialConfig(selectedType) {
         bgColor,
         accentColor,
         originalAccentColor,
+        accentMode: "auto",
         foregroundOverride: null,
         dob: "",
         lifespan: 80,
@@ -57,13 +62,21 @@ function resolveSelectedType(selectedStyle) {
 
 function resolvePalette(next, prev) {
     const bgColor = normalizeHexColor(next.bgColor, prev.bgColor)
-    const originalAccentColor = normalizeHexColor(next.originalAccentColor, next.accentColor)
-    const accentColor = getSafeAccent(bgColor, originalAccentColor)
+    const accentMode = resolveAccentMode(next.accentMode, resolveAccentMode(prev.accentMode))
+    const originalAccentColor = normalizeHexColor(
+        next.originalAccentColor,
+        next.accentColor ?? prev.originalAccentColor ?? prev.accentColor ?? "#FFFFFF"
+    )
+    const accentColor = accentMode === "manual"
+        ? normalizeHexColor(next.accentColor, prev.accentColor ?? originalAccentColor)
+        : getSafeAccent(bgColor, originalAccentColor)
+
     return {
         ...next,
         bgColor,
         originalAccentColor,
         accentColor,
+        accentMode,
     }
 }
 

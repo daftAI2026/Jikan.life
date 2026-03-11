@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无外部依赖（纯函数颜色数学）
- * [OUTPUT]: 对外提供 hexToRgba/getLuminance/getContrastBase/resolveContrastBase/contrastAlpha/isTooClose/isBlackOrWhite/getSafeAccent
- * [POS]: shared/ 壁纸颜色核心，供 layout-core 与 facade 复用
+ * [OUTPUT]: 对外提供 hexToRgba/getLuminance/getContrastRatio/getContrastBase/resolveContrastBase/contrastAlpha/isTooClose/isBlackOrWhite/getSafeAccent
+ * [POS]: shared/ 壁纸颜色核心，供 layout-core 与 facade 复用；自动明暗切换统一按 WCAG 对比度择优
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -24,12 +24,26 @@ export function getLuminance(hex) {
     const r = parseInt(hex.substring(0, 2), 16) / 255;
     const g = parseInt(hex.substring(2, 4), 16) / 255;
     const b = parseInt(hex.substring(4, 6), 16) / 255;
-    const toLinear = (c) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    const toLinear = (c) => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 }
 
+export function getContrastRatio(fgHex, bgHex) {
+    const fgLuminance = getLuminance(fgHex);
+    const bgLuminance = getLuminance(bgHex);
+    const lighter = Math.max(fgLuminance, bgLuminance);
+    const darker = Math.min(fgLuminance, bgLuminance);
+    return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(4));
+}
+
+function pickReadableMonochrome(bgHex) {
+    return getContrastRatio('#000000', bgHex) >= getContrastRatio('#FFFFFF', bgHex)
+        ? '0,0,0'
+        : '255,255,255';
+}
+
 export function getContrastBase(bgHex) {
-    return getLuminance(bgHex) > 0.179 ? '0,0,0' : '255,255,255';
+    return pickReadableMonochrome(bgHex);
 }
 
 /**
@@ -67,7 +81,7 @@ export function isBlackOrWhite(hex) {
  */
 export function getSafeAccent(bgHex, accentHex) {
     if (isBlackOrWhite(accentHex) && isTooClose(bgHex, accentHex)) {
-        return getLuminance(bgHex) > 0.5 ? '#000000' : '#FFFFFF';
+        return resolveContrastBase(bgHex) === '0,0,0' ? '#000000' : '#FFFFFF';
     }
     return accentHex;
 }
