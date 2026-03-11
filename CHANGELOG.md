@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.21] - 2026-03-11
+
+### Architecture
+- **Color Token Parity**: Migrated lock screen overlay top status elements (home indicator, status bar, battery, wifi, cellular) from absolute hex codes and contextual text tokens to the strict structural tokens (`var(--color-white)` and `var(--color-black)`), solidifying absolute contrast boundaries across runtime configurations.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Updated `lock-screen-overlay-colors.unit.test.js` to strictly assert the new pure white and pure black structural design tokens.
+- **Fractal Protocol**: Executed GEB architecture synchronization in `tests/CLAUDE.md` to formally document the transition to pure structural tokens for lock screen top overlays.
+
 ## [1.8.20] - 2026-03-11
 
 ### Architecture

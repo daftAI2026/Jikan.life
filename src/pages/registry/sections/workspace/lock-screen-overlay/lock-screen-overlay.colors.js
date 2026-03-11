@@ -6,8 +6,8 @@
  */
 import { getContrastBase } from "../../../../../../shared/wallpaper-core.js"
 
-const TOP_COLOR_FOR_DARK_BG = "var(--text-color-kumo-inverse)"
-const TOP_COLOR_FOR_LIGHT_BG = "var(--text-color-kumo-default)"
+const TOP_COLOR_FOR_DARK_BG = "var(--color-white)"
+const TOP_COLOR_FOR_LIGHT_BG = "var(--color-black)"
 const SWIPE_INDICATOR_DARK_RGB = { red: 64, green: 64, blue: 64 }
 const SWIPE_INDICATOR_LIGHT_RGB = { red: 205, green: 209, blue: 204 }
 const SWIPE_INDICATOR_NEUTRAL_SATURATION_MAX = 0.18

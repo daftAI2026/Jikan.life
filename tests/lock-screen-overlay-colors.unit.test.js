@@ -50,48 +50,48 @@ test("Lock screen overlay accent colors do not override top status time", () => 
   assert.equal(colors["status-bar-leading"], undefined)
 })
 
-test("Lock screen overlay top colors use inverse token on dark backgrounds", () => {
+test("Lock screen overlay top colors use pure white on dark backgrounds", () => {
   const colors = createLockScreenTopOverlayColors("#111111")
 
-  assert.equal(colors["home-indicator"], "var(--text-color-kumo-inverse)")
-  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-inverse)")
-  assert.equal(colors["status-bar-trailing"], "var(--text-color-kumo-inverse)")
-  assert.equal(colors.battery, "var(--text-color-kumo-inverse)")
-  assert.equal(colors.wifi, "var(--text-color-kumo-inverse)")
-  assert.equal(colors.cellular, "var(--text-color-kumo-inverse)")
+  assert.equal(colors["home-indicator"], "var(--color-white)")
+  assert.equal(colors["status-bar-leading"], "var(--color-white)")
+  assert.equal(colors["status-bar-trailing"], "var(--color-white)")
+  assert.equal(colors.battery, "var(--color-white)")
+  assert.equal(colors.wifi, "var(--color-white)")
+  assert.equal(colors.cellular, "var(--color-white)")
 })
 
 test("Lock screen overlay swipe indicator converges to the measured light neutral tone", () => {
   const colors = createLockScreenTopOverlayColors("#FFFFFF")
 
   assertHexClose(colors["swipe-indicator"], "#CDD1CC")
-  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-default)")
-  assert.equal(colors["home-indicator"], "var(--text-color-kumo-default)")
+  assert.equal(colors["status-bar-leading"], "var(--color-black)")
+  assert.equal(colors["home-indicator"], "var(--color-black)")
 })
 
 test("Lock screen overlay swipe indicator converges to the measured dark neutral tone", () => {
   const colors = createLockScreenTopOverlayColors("#000000")
 
   assertHexClose(colors["swipe-indicator"], "#404040")
-  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-inverse)")
-  assert.equal(colors["home-indicator"], "var(--text-color-kumo-inverse)")
+  assert.equal(colors["status-bar-leading"], "var(--color-white)")
+  assert.equal(colors["home-indicator"], "var(--color-white)")
 })
 
 test("Lock screen overlay swipe indicator keeps hue while softening a colored background", () => {
   const colors = createLockScreenTopOverlayColors("#86261F")
 
   assertHexClose(colors["swipe-indicator"], "#C2605D", 4)
-  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-inverse)")
-  assert.equal(colors["home-indicator"], "var(--text-color-kumo-inverse)")
+  assert.equal(colors["status-bar-leading"], "var(--color-white)")
+  assert.equal(colors["home-indicator"], "var(--color-white)")
 })
 
-test("Lock screen overlay top colors use default token on light backgrounds", () => {
+test("Lock screen overlay top colors use pure black on light backgrounds", () => {
   const colors = createLockScreenTopOverlayColors("#F5F5F5")
 
-  assert.equal(colors["home-indicator"], "var(--text-color-kumo-default)")
-  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-default)")
-  assert.equal(colors["status-bar-trailing"], "var(--text-color-kumo-default)")
-  assert.equal(colors.battery, "var(--text-color-kumo-default)")
-  assert.equal(colors.wifi, "var(--text-color-kumo-default)")
-  assert.equal(colors.cellular, "var(--text-color-kumo-default)")
+  assert.equal(colors["home-indicator"], "var(--color-black)")
+  assert.equal(colors["status-bar-leading"], "var(--color-black)")
+  assert.equal(colors["status-bar-trailing"], "var(--color-black)")
+  assert.equal(colors.battery, "var(--color-black)")
+  assert.equal(colors.wifi, "var(--color-black)")
+  assert.equal(colors.cellular, "var(--color-black)")
 })

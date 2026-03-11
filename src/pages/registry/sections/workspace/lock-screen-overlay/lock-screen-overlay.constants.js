@@ -32,7 +32,7 @@ const WIDGET_FOREGROUND_COLOR = "var(--text-color-kumo-inverse)"
 const WIDGET_BACKGROUND_COLOR = "color-mix(in srgb, var(--text-color-kumo-inverse) 15%, transparent)"
 
 const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = {
-    "home-indicator": "#FFFFFF",
+    "home-indicator": "var(--color-white)",
     "action-left-bg": "rgba(255, 255, 255, 0.07)",
     "action-left-icon": "#D9D9D9",
     "action-right-bg": "rgba(255, 255, 255, 0.07)",
@@ -48,11 +48,11 @@ const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = {
     "swipe-indicator": "rgba(255, 255, 255, 0.5)",
     "date-text": "#F5F5F5",
     "time-shape": "#F7F7F7",
-    "status-bar-leading": "#FFFFFF",
-    "status-bar-trailing": "#FFFFFF",
-    battery: "#FFFFFF",
-    wifi: "#FFFFFF",
-    cellular: "#FFFFFF",
+    "status-bar-leading": "var(--color-white)",
+    "status-bar-trailing": "var(--color-white)",
+    battery: "var(--color-white)",
+    wifi: "var(--color-white)",
+    cellular: "var(--color-white)",
 }
 
 Object.freeze(LOCK_SCREEN_OVERLAY_DEFAULT_COLORS)
