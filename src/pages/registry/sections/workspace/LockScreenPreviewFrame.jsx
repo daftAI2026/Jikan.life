@@ -1,16 +1,21 @@
 /**
- * [INPUT]: 依赖 React children、Figma 锁屏静态 SVG 资源
- * [OUTPUT]: 对外提供 LockScreenPreviewFrame 组件与 LOCK_SCREEN_DARK_LAYOUT 常量
- * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放
+ * [INPUT]: 依赖 React children、lock-screen-overlay inline 组件、Figma bezel 静态 SVG 资源
+ * [OUTPUT]: 对外提供 LockScreenPreviewFrame 组件、LOCK_SCREEN_DARK_LAYOUT 常量、overlay 默认颜色协议
+ * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放，并把 overlay 颜色控制收口到稳定 layer id
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import {
+    LockScreenDarkOverlay,
+    LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS,
+    LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS,
+} from "./lock-screen-overlay"
+
 const LOCK_SCREEN_DARK_LAYOUT = {
     shell: { width: 450, height: 920 },
     wallpaper: { width: 402, height: 874, left: 24, top: 23 },
     targetHeight: 510,
     scale: 510 / 874,
     assets: {
-        overlay: "/preview/ios26001/lock-screen-dark-overlay.svg",
         bezel: "/preview/ios26001/lock-screen-dark-bezel.svg",
     },
 }
@@ -29,7 +34,7 @@ const scaledBezelHeight = scaledShellHeight * bezelScale
 const scaledBezelLeft = (scaledShellWidth - scaledBezelWidth) / 2
 const scaledBezelTop = (scaledShellHeight - scaledBezelHeight) / 2
 
-function LockScreenPreviewFrame({ children, showOverlay = true }) {
+function LockScreenPreviewFrame({ children, showOverlay = true, overlayColors }) {
     return (
         <div
             className="relative shrink-0"
@@ -53,11 +58,9 @@ function LockScreenPreviewFrame({ children, showOverlay = true }) {
                 {children}
             </div>
             {showOverlay ? (
-                <img
-                    src={LOCK_SCREEN_DARK_LAYOUT.assets.overlay}
-                    alt=""
-                    aria-hidden="true"
-                    className="pointer-events-none absolute z-10 block"
+                <LockScreenDarkOverlay
+                    colors={overlayColors}
+                    className="z-10"
                     style={{
                         left: `${scaledWallpaperLeft}px`,
                         top: `${scaledWallpaperTop}px`,
@@ -82,4 +85,9 @@ function LockScreenPreviewFrame({ children, showOverlay = true }) {
     )
 }
 
-export { LockScreenPreviewFrame, LOCK_SCREEN_DARK_LAYOUT }
+export {
+    LockScreenPreviewFrame,
+    LOCK_SCREEN_DARK_LAYOUT,
+    LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS,
+    LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS,
+}

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.16] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Runtime**: Upgraded the lock screen preview overlay from a static Figma SVG to a dynamic runtime React component (`LockScreenDarkOverlay`). The lock screen preview now displays the real current date, automatically detects Apple/non-Apple platforms to serve the correct font stack, and automatically schedules midnight refreshes for precise date rendering.
+
+### Architecture
+- **Preview Assets Decoupling**: Deleted the monolithic static overlay asset (`lock-screen-dark-overlay.svg`) and extracted reusable sub-assets (like controls) to significantly increase the modularity of the preview shell.
+- **Overlay State Bridge**: Extracted lock-screen overlay specific logic, rendering elements, and runtime constants (e.g., `LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS`) into an isolated `lock-screen-overlay` domain, removing hardcoded date tokens from the presentation layer.
+
+### Documentation & Tests
+- **Runtime Layout Guards**: Added `lock-screen-overlay-runtime.unit.test.js` to rigidly validate cross-environment font resolution (Apple vs Windows/Android) and midnight calculation accuracy.
+- **Visual Integrity Guards**: Updated `kumo-migration.ui.behavior.test.js` to strictly assert the new overlay architecture, locking down the exact exported layer IDs, asserting the transition away from hardcoded Figma text fallback, and ensuring the runtime component bounds.
+- **Fractal Protocol**: Executed full GEB architecture sync across `tests/CLAUDE.md`, `public/preview/ios26001/CLAUDE.md`, and `src/pages/registry/sections/workspace/CLAUDE.md` to reflect the new overlay component layer and the removed monolithic SVGs.
+
 ## [1.8.15] - 2026-03-10
 
 ### Documentation
