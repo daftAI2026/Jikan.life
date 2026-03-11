@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.28] - 2026-03-12
+
+### Architecture
+- **Goal Ring Geometry Unification**: Extracted the Goal countdown ring drawing semantics into a shared `getGoalRingGeometry` engine (`shared/goal-ring-geometry.js`). All three rendering layers—Canvas preview (`renderer.js`), sidebar thumbnail (`home-sidebar-visuals.jsx`), and Worker SVG (`worker/generators/goal.js`)—now consume a single source of truth for visibility gating, sweep degrees, and stroke dash offset ratios, completely eradicating inline arc math duplication.
+- **Completion-Based Ring Semantics**: Reversed the ring drawing direction from "remaining ratio decrement" to "completed ratio clockwise sweep". The ring now starts empty at 0% and fills clockwise to 360° at 100%, aligning with the intuitive mental model of progress accumulation.
+
+### Documentation & Tests
+- **Ring Geometry Guards**: Expanded `kumo-migration.core.behavior.test.js` to assert completed-progress semantics (`progress = elapsed / total`), multi-scenario window calculations (explicit start, fallback 30-day, past-goal saturation), and strict `getGoalRingGeometry` import presence across all three rendering layers.
+- **Visual Hash Synchronization**: Updated `wallpaper-visual-snapshots.behavior.test.js` to lock down the new deterministic SHA-256 SVG hash reflecting the reversed ring sweep direction.
+
 ## [1.8.27] - 2026-03-12
 
 ### UI & UX

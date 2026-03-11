@@ -1,13 +1,14 @@
 /**
- * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText/resolveTextFontFamily), ../svg.js, ../timezone.js
+ * [INPUT]: 依赖 shared/wallpaper-core.js(computeGoalLayout/formatGoalDate/getWallpaperText/resolveTextFontFamily), shared/goal-ring-geometry.js, ../svg.js, ../timezone.js
  * [OUTPUT]: 对外提供 `generateGoalCountdown(options)`，输入目标倒计时参数并返回环形进度壁纸 SVG 字符串
- * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局，支持 foregroundOverride、本地化 goalDefault 与 goalName 多语言字体解析
+ * [POS]: Worker 目标倒计时生成器，使用共享核心计算布局与 Goal 圆环几何，支持 foregroundOverride、本地化 goalDefault 与 goalName 多语言字体解析
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
 import { createSVG, rect, text, arc, parseColor, contrastAlpha as svgContrastAlpha } from '../svg.js';
 import { getDateInTimezone } from '../timezone.js';
 import { computeGoalLayout, formatGoalDate, getWallpaperText, resolveTextFontFamily } from '../../shared/wallpaper-core.js';
+import { getGoalRingGeometry } from '../../shared/goal-ring-geometry.js';
 
 /**
  * Generate Goal Countdown Wallpaper
@@ -46,6 +47,7 @@ export function generateGoalCountdown(options) {
     });
 
     const { ring, safeAccent } = layout;
+    const ringGeometry = getGoalRingGeometry(ring.progress)
 
     const content = [];
     const bgFill = parseColor(bgColor);
@@ -59,9 +61,8 @@ export function generateGoalCountdown(options) {
     content.push(`<circle cx="${ring.centerX}" cy="${ring.centerY}" r="${ring.radius}" stroke="${ringMuted}" stroke-width="${layout.ringStrokeWidth}" fill="none" />`);
 
     // Progress arc
-    if (ring.progress > 0) {
-        const endAngle = ring.progress * 360;
-        content.push(arc(ring.centerX, ring.centerY, ring.radius, 0, endAngle, accentFill, layout.ringStrokeWidth));
+    if (ringGeometry.isVisible) {
+        content.push(arc(ring.centerX, ring.centerY, ring.radius, 0, ringGeometry.sweepDegrees, accentFill, layout.ringStrokeWidth));
     }
 
     // Days number

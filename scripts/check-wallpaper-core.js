@@ -71,7 +71,7 @@ const tests = [
         }
     },
     {
-        name: 'Goal date in past clamps remaining progress to 0%',
+        name: 'Goal date in past clamps completed progress to 100%',
         fn: () => {
             const layout = computeGoalLayout({
                 ...BASE_OPTIONS,
@@ -79,7 +79,7 @@ const tests = [
                 today: { year: 2025, month: 1, day: 10 }
             });
             assert(layout.daysRemaining === 0, `Expected 0 days remaining, got ${layout.daysRemaining}`);
-            assert(layout.ring.progress === 0, `Expected progress 0, got ${layout.ring.progress}`);
+            assert(layout.ring.progress === 1, `Expected progress 1, got ${layout.ring.progress}`);
         }
     },
     {
@@ -91,7 +91,7 @@ const tests = [
                 goalStart: '2025-01-01',
                 today: { year: 2025, month: 1, day: 10 }
             });
-            const expected = 10 / 19;
+            const expected = 9 / 19;
             assert(layout.daysRemaining === 10, `Expected 10 days remaining, got ${layout.daysRemaining}`);
             assert(Math.abs(layout.ring.progress - expected) < 0.0001, `Expected ${expected}, got ${layout.ring.progress}`);
         }
@@ -104,7 +104,7 @@ const tests = [
                 goalDate: '2025-02-10',
                 today: { year: 2025, month: 2, day: 1 }
             });
-            const expected = 9 / 30;
+            const expected = 21 / 30;
             assert(layout.daysRemaining === 9, `Expected 9 days remaining, got ${layout.daysRemaining}`);
             assert(Math.abs(layout.ring.progress - expected) < 0.0001, `Expected ${expected}, got ${layout.ring.progress}`);
         }
