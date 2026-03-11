@@ -1,10 +1,11 @@
 /**
- * [INPUT]: 依赖 @/lib/utils(cn)
+ * [INPUT]: 依赖 @/lib/utils(cn) 与 shared/goal-ring-geometry.js（Goal 圆环几何）
  * [OUTPUT]: 对外提供 YEAR_GRID_COLUMNS、YearVisual、LifeVisual、GoalVisual
  * [POS]: registry/sections 的 HomeSidebar 视觉层，封装三类风格卡预览渲染
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { cn } from "@/lib/utils"
+import { getGoalRingGeometry } from "../../../../shared/goal-ring-geometry.js"
 
 const YEAR_GRID_COLUMNS = 10
 const YEAR_DOT_STATE_TOKENS = {
@@ -67,9 +68,10 @@ function LifeVisual() {
 
 function GoalVisual({ layout }) {
     const { ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY } = layout
+    const ringGeometry = getGoalRingGeometry(ring.progress)
     const strokeWidth = 100 * 0.025
     const circumference = 2 * Math.PI * ring.radius
-    const strokeDashoffset = circumference * (1 - ring.progress)
+    const strokeDashoffset = circumference * ringGeometry.strokeDashoffsetRatio
 
     return (
         <div className="flex h-full items-center justify-center">
@@ -84,7 +86,7 @@ function GoalVisual({ layout }) {
                         strokeWidth={strokeWidth}
                         className="text-kumo-fill"
                     />
-                    {ring.progress > 0 && (
+                    {ringGeometry.isVisible && (
                         <circle
                             cx={ring.centerX}
                             cy={ring.centerY}

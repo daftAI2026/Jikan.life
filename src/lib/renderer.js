@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 shared/wallpaper-core.js（布局、时区日期与 goalName 字体解析）
+ * [INPUT]: 依赖 shared/wallpaper-core.js（布局、时区日期与 goalName 字体解析）与 shared/goal-ring-geometry.js（Goal 圆环几何）
  * [OUTPUT]: 对外提供 drawYearProgress, drawLifeCalendar, drawGoalCountdown (Canvas 2D)
- * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局、时区日期 helper 与 goalName 多语言字体策略，**透传 foregroundOverride 与设备级 cols/padding 参数**
+ * [POS]: lib/ 的前端 Canvas 渲染适配器，调用共享核心计算布局、时区日期 helper、Goal 圆环几何与 goalName 多语言字体策略，**透传 foregroundOverride 与设备级 cols/padding 参数**
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -21,6 +21,7 @@ import {
     resolveTextFontFamily,
     formatGoalDate
 } from '../../shared/wallpaper-core.js';
+import { getGoalRingGeometry } from '../../shared/goal-ring-geometry.js';
 
 // Re-export utilities for backward compatibility
 export {
@@ -160,6 +161,7 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     });
 
     const { ring, safeAccent, bgColor } = layout;
+    const ringGeometry = getGoalRingGeometry(ring.progress)
     const fontFamily = getWallpaperFontFamily(config.wallpaperLang);
 
     // Background ring
@@ -170,12 +172,12 @@ export function drawGoalCountdown(ctx, width, height, config, clockHeight) {
     ctx.stroke();
 
     // Progress arc
-    if (ring.progress > 0) {
+    if (ringGeometry.isVisible) {
         ctx.strokeStyle = safeAccent;
         ctx.lineWidth = layout.ringStrokeWidth;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.arc(ring.centerX, ring.centerY, ring.radius, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * ring.progress));
+        ctx.arc(ring.centerX, ring.centerY, ring.radius, ringGeometry.startAngleRadians, ringGeometry.endAngleRadians);
         ctx.stroke();
     }
 

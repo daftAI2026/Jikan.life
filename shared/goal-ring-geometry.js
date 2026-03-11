@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 无外部依赖（纯函数进度环几何）
- * [OUTPUT]: 对外提供 GOAL_RING_START_ANGLE_RADIANS/getGoalRingGeometry，统一 Goal 圆环的可见性、满圆态与绘制参数
+ * [OUTPUT]: 对外提供 GOAL_RING_START_ANGLE_RADIANS/getGoalRingGeometry，统一 Goal 圆环的可见性、满圆态与绘制参数（完成环顺时针语义）
  * [POS]: shared/ Goal 圆环几何真相源，供 choose 卡、Canvas 预览与 Worker SVG 共享
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */

@@ -3,6 +3,8 @@
 
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
+lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
+lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
 kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、全局入口、基础 UI 封装、ColorPicker 语义与通用禁用项。
 kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
 kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与底栏 skeleton 语义。
@@ -13,7 +15,8 @@ goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
 helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
-contrast-threshold.behavior.test.js: 颜色对比度护栏，约束 getContrastBase 感知阈值 0.179、resolveContrastBase 覆盖逻辑和 contrastAlpha 向后兼容。
+contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
+accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
 wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固定 Date 后校验 Year/Life/Goal 输出哈希不漂移。
 
@@ -24,9 +27,31 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
-2026-03-10: 更新 `wallpaper-visual-snapshots.behavior.test.js` 与 `kumo-migration.ui.foundation.behavior.test.js`：将 Year/Life/Goal 视觉快照预期收敛到 `EXPECTED_HASHES` 常量，并新增 `sync:wallpaper-snapshots` 脚本护栏，要求基线更新通过统一脚本回写，避免人肉复制 sha256 导致 CI 漂移。
+2026-03-12: 更新 `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：Goal 圆环护栏从“剩余比例递减环”翻为“完成比例顺时针增长环”，并新增 `goal-ring-geometry.js` 正式接线断言，防止再次出现“写了真相源但未消费”的孤儿模块。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将首次引导锁屏 overlay 收尾阶段纳入护栏，要求 `HomeGrid.jsx` 新增独立 `isPreviewChromeRevealed` 状态与 ref 化调度清理、卡片全解锁后额外停顿 `150ms` 再通过下一帧 `requestAnimationFrame` reveal preview chrome，并要求 `HomePreviewPane.jsx` 改为显式消费父级 `showOverlay`。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：要求 `LockScreenPreviewFrame.jsx` 为整套锁屏 overlay 增加独立淡入 wrapper（`data-preview-overlay="lock-screen"` + `animate-in fade-in duration-150`），防止动画回流到 `LockScreenOverlay.jsx` 内部层树。
+2026-03-12: 更新 `lock-screen-overlay-runtime.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 的 `wallpaperLang` 透传链，要求仅 `date-text` 按 `en / zh-CN / zh-TW / ja` 输出手工拼接格式并复用 `getWallpaperFontFamily`；其余 overlay 文本继续保持既有英文字体策略。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-3/-3` 收回到 `0/0`，继续要求 offset 只作用于 glass 原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-1/-1` 调整到 `-3/-3`，继续要求偏移只作用于 glass 原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：在统一 `402x874` glass 平面的前提下，重新允许 `LockScreenOverlay.jsx` 为 DOM glass 层声明 `ACTION_GLASS_OFFSET_X/Y = -1`，并锁定偏移只作用于 glass 的原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：要求 `LockScreenPreviewFrame -> LockScreenOverlay` 透传 `overlayScale={LOCK_SCREEN_LAYOUT.scale}`，并锁定 `LockScreenOverlay.jsx` 删除百分比 `resolveActionGlassFrameStyle()`、新增 `402x874` glass 平面与 `transform: scale(overlayScale)`，同时禁止任何 glass offset 常量或 `calc(...)` 定位补偿。
+2026-03-11: 新增 `accent-mode.behavior.test.js`，锁定 workspace 颜色状态的 `accentMode(auto|manual)` 边界；更新 `contrast-threshold.behavior.test.js` 与 `wallpaper-core-api.behavior.test.js`，将共享自动前景决策护栏收敛到 WCAG contrast ratio，并新增 `getContrastRatio` facade 导出检查。
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js`：将底部 action glass 材质透明度护栏改为 `dark=0.02 / colored=0.06 / light=0.09`，继续只锁背景透明度，不改边框、高光和 inset 阴影语义。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：将锁屏底部 action 阴影底盘护栏收回“保留原始底盘语义”，要求 `lock-screen-overlay.constants.js` 继续使用 `rgba(255,255,255,0.07)`，并锁定 `LockScreenOverlay.jsx` 的 `shadow svg` 层复用旧 `lock-screen-controls.svg` 的滤镜链、`mix-blend-mode: screen` 与单一过滤矩形结构，禁止再叠额外白色假底盘。
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为底部快捷按钮新增 action glass 护栏，要求 `lock-screen-overlay.colors.js` 暴露 `createLockScreenActionGlassMaterial()`，并锁定 `LockScreenOverlay.jsx` 采用 `shadow svg + glass dom + chrome svg` 混合结构、DOM glass 层包含 `backdrop-filter` / `-webkit-backdrop-filter`，同时 `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 必须透传 `bgColor`。
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `action-left-icon` / `action-right-icon` 不再使用写死浅灰，而是和 `home-indicator` 共用 `bgColor -> 明暗判断 -> pure black/white token` 规则。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：锁屏 overlay 底部 controls 护栏改为 live Stack 语义，要求删除 `lock-screen-controls.svg` 黑盒引用、新增 `lock-screen-overlay.controls.js` 几何真相源、锁定 `Stack/Action 1/Action 2` 的 translate 与 Sketch 元数据常量，并同步要求 `public/preview/iPhone/lock-screen-controls.svg` 不再存在。
+2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 `swipe-indicator` 新增 bgColor 驱动的真机近似拟合护栏，锁定 `#FFFFFF -> #CDD1CC`、`#000000 -> #404040`、`#86261F -> #C2605D`（小容差）三组样本，并要求 `createLockScreenTopOverlayColors()` 显式回填 `swipe-indicator`；顶部 status bar 与 `home-indicator` 现锁定为 `var(--color-black)` / `var(--color-white)` pure token 规则。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：要求锁屏 overlay 不再输出 `dynamic-island` 节点，且协议常量中不再保留对应 layer id/default color；同时保持顶部 status bar 其余节点护栏不变。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：为锁屏 overlay 第 3/4 个圆形组件补充 SVG 护栏，要求移除 `􀙖/􀆴` 字体 glyph，改为内联 `umbrella.fill` / `sun.horizon.fill` path，并禁止 `overlaySymbolFontFamily` 回流。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：为锁屏 overlay 第 1 个圆形组件补充 Sketch `iwatch` 护栏，要求移除 `72/52/89` 数字布局、保留 `widgets-complication-1-bg/fg` 颜色入口，并锁定中心 `applewatch` monochrome path。
+2026-03-11: 新增 `lock-screen-overlay-colors.unit.test.js` 并更新 `kumo-migration.ui.behavior.test.js`：为锁屏 overlay 的配色映射补充护栏，强制 `HomePreviewPane` 把 `config.accentColor` 显式投影到主时钟/日期/widgets、把 `config.bgColor` 按现有背景明暗规则投影到整条 top 状态栏与 `home-indicator`；同时锁定 widgets `bg = accent 15% alpha`，禁止 top/home-indicator 回流到 accent 驱动。
+2026-03-11: 更新 `lock-screen-overlay-runtime.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：为锁屏 overlay 的真实日期、真实 24 小时制时间、Apple/非 Apple 英文字体分流与分钟级自动刷新补充运行时/源码双护栏，禁止大时间回退为旧路径字形、禁止左上角回退为写死 `9:41`。
+2026-03-10: 更新 `wallpaper-visual-snapshots.behavior.test.js` 与 `kumo-migration.ui.foundation.behavior.test.js`：将 Year/Life/Goal 视觉快照预期收敛到 `EXPECTED_HASHES` 常量，并同步 Year SVG 基线到 `YEAR_DOT_RADIUS_SCALE=0.8` 后的稳定输出；新增 `sync:wallpaper-snapshots` 脚本护栏，要求基线更新通过统一脚本回写，避免人肉复制 sha256 导致 CI 漂移。
 2026-03-10: 更新 `kumo-migration.ui.registry-shell.behavior.test.js` 与 `kumo-migration.ui.behavior.test.js`：为 Goal range restart 桥接放行唯一合法路径 `src/components/ui/kumo.jsx -> vendor/kumo-date-picker`，并新增源码护栏要求 committed/draft 分层、`rangeSelectionBehavior="restart"`、`onRangeComplete` 与 `Popover` 受控开关共存，防止临时 vendor 扩散到页面层。
 2026-03-10: 更新 `wallpaper-core-api.behavior.test.js`：新增 Year dot 尺寸常量护栏，锁定 facade 暴露与当前共享常量语义，防止圆点微调时 preview/Worker 共享比例漂移。
+2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：锁屏 preview 命名链去历史化，要求 `LockScreenPreviewFrame` / `lock-screen-overlay` 统一改用 `LOCK_SCREEN_LAYOUT`、`LockScreenOverlay`、`LOCK_SCREEN_OVERLAY_*`，并要求静态壳资源位于 `public/preview/iPhone/lock-screen-*.svg`。
+2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：新增 Figma 锁屏 preview 护栏，强制 `HomePreviewPane` 委托 `LockScreenPreviewFrame`、锁定 `450x920 / 402x874 / inset 24,23 / targetHeight 510` 布局真相源，并要求 `public/preview/iPhone/*` 静态壳资源存在。
 2026-03-10: 更新 `kumo-migration.ui.behavior.test.js`：要求 `HomePreviewPane` 使用单一 `previewScale` 做严格等比缩放，禁止回流 `scaleX/scaleY` 分离缩放。
 2026-03-10: 新增 `kumo-migration.ui.bottom-tabs.behavior.test.js`，继续从 `kumo-migration.ui.behavior.test.js` 抽离 md bottom-tabs 视图拆分、测量链与 skeleton 护栏，使 Workspace 主文件回到 800 行以下，降低导航壳与复杂底栏回归的耦合噪音。
 2026-03-10: 新增 `kumo-migration.ui.foundation.behavior.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，并收缩 `kumo-migration.ui.behavior.test.js` 为 Workspace/Settings 复杂交互护栏；拆分基础层、页面壳层与 workspace 层职责，避免 1500+ 行单文件回归时定位噪音。

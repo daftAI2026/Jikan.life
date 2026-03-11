@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 updateConfig/generateUrl/todayISO 与外部注入的业务依赖（timezone、device、goal updater、lifespan）
  * [OUTPUT]: 对外提供 createConfigActions（生成 workspace 配置动作集合）
- * [POS]: workspace 动作工厂层，收敛 set/apply/copyUrl 更新语义，供 useHomeWallpaperConfig 编排层消费
+ * [POS]: workspace 动作工厂层，收敛 set/apply/copyUrl 更新语义，供 useHomeWallpaperConfig 编排层消费；负责 accent auto/manual 模式切换
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -23,12 +23,17 @@ function createConfigActions({ updateConfig, generateUrl, todayISO, deps }) {
             updateConfig({ bgColor: value })
         },
         setAccentColor(value) {
-            updateConfig({ originalAccentColor: value })
+            updateConfig({
+                originalAccentColor: value,
+                accentColor: value,
+                accentMode: "manual",
+            })
         },
         applyPalette(bg, accent) {
             updateConfig({
                 bgColor: bg,
                 originalAccentColor: accent,
+                accentMode: "auto",
                 foregroundOverride: null,
             })
         },

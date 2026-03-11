@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/date-math + shared/wallpaper-color-core + shared/wallpaper-text
- * [OUTPUT]: 对外提供 YEAR_DOT_RADIUS_SCALE/YEAR_TODAY_DOT_RADIUS_SCALE 与 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout（含 Goal 渲染指标）
+ * [OUTPUT]: 对外提供 YEAR_DOT_RADIUS_SCALE/YEAR_TODAY_DOT_RADIUS_SCALE 与 formatGoalDate/computeYearLayout/computeLifeLayout/computeGoalLayout（含 Goal 渲染指标与完成进度语义）
  * [POS]: shared/ 壁纸布局计算核心，负责 Year/Life/Goal 三类几何、统计数据与 Goal 关键渲染指标
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -284,7 +284,7 @@ export function computeGoalLayout(options) {
 
         daysRemaining = Math.max(0, goalDay - todayDay);
         const totalDays = Math.max(1, goalDay - startDay);
-        progress = clampNumber(daysRemaining / totalDays, 0, 1);
+        progress = clampNumber(1 - (daysRemaining / totalDays), 0, 1);
     }
 
     const safeAccent = getSafeAccent(bgColor, accentColor);
@@ -299,9 +299,9 @@ export function computeGoalLayout(options) {
         bgColor,
         numberY: centerY - 4,
         labelY: centerY + (height * 0.08),
-        goalNameY: height * 0.75,
+        goalNameY: height * 0.73,
         targetDateY: height * 0.77, // 新增
-        ringStrokeWidth: 8,
+        ringStrokeWidth: 20,
         numberFontSize: width * 0.2, // 修正：原版是 0.2
         labelFontSize: width * 0.04, // 修正：原版是 0.04
         nameFontSize: width * 0.05 // 修正：原版是 0.05

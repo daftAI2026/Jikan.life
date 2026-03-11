@@ -1,22 +1,32 @@
 /**
- * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown)
- * [OUTPUT]: 对外提供 HomePreviewPane 组件（手机壳 + 空态提示文案/实时 Canvas 预览）
- * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标严格等比缩放到 preview 视口
+ * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown), LockScreenPreviewFrame 与 lock-screen-overlay 配色/材质映射 helper，以及父级显式透传的 showOverlay
+ * [OUTPUT]: 对外提供 HomePreviewPane 组件（Figma 锁屏壳 + 空态提示文案/实时 Canvas 预览）
+ * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标严格等比缩放后投影到固定锁屏 Wallpaper 槽位；同时把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏 token 配色与底部 action glass 材质，并把父级控制的 preview chrome reveal、wallpaperLang 与 goal-only 的 preview widget 可见性透传给锁屏 overlay
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef } from "react"
 import { drawGoalCountdown, drawLifeCalendar, drawYearProgress } from "@/lib/renderer"
+import { LockScreenPreviewFrame, LOCK_SCREEN_LAYOUT } from "./LockScreenPreviewFrame"
+import {
+    createLockScreenAccentOverlayColors,
+    createLockScreenTopOverlayColors,
+} from "./lock-screen-overlay/lock-screen-overlay.colors"
 
-const SCREEN_WIDTH = 240
-const SCREEN_HEIGHT = 510
+const SCREEN_WIDTH = LOCK_SCREEN_LAYOUT.wallpaper.width * LOCK_SCREEN_LAYOUT.scale
+const SCREEN_HEIGHT = LOCK_SCREEN_LAYOUT.targetHeight
 const rendererByType = {
     year: drawYearProgress,
     life: drawLifeCalendar,
     goal: drawGoalCountdown,
 }
 
-function HomePreviewPane({ config, selectedDevice, t }) {
+function HomePreviewPane({ config, selectedDevice, showOverlay, t }) {
     const canvasRef = useRef(null)
+    const showWidgets = config.selectedType !== "goal"
+    const overlayColors = {
+        ...createLockScreenTopOverlayColors(config.bgColor),
+        ...createLockScreenAccentOverlayColors(config.accentColor),
+    }
 
     const drawPreview = useCallback(() => {
         const canvas = canvasRef.current
@@ -66,23 +76,25 @@ function HomePreviewPane({ config, selectedDevice, t }) {
 
     return (
         <div className="flex h-full min-h-[420px] flex-col items-center justify-center gap-4 px-6 py-8">
-            <div className="relative h-[530px] w-[260px] rounded-[40px] bg-kumo-recessed p-[10px] ring-1 ring-kumo-line">
-                <div className="absolute top-[10px] left-1/2 z-10 h-[28px] w-[100px] -translate-x-1/2 rounded-b-2xl bg-kumo-strong" />
-                <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[32px] bg-kumo-base">
-                    {config.selectedType ? (
-                        <canvas
-                            ref={canvasRef}
-                            className="rounded-[24px]"
-                            aria-label="Wallpaper live preview canvas"
-                        />
-                    ) : (
-                        <div className="px-6 text-center text-sm text-kumo-subtle">
-                            {t("preview.selectType")}
-                        </div>
-                    )}
-                </div>
-                <div className="absolute bottom-4 left-1/2 h-1 w-[100px] -translate-x-1/2 rounded-full bg-kumo-subtle/50" />
-            </div>
+            <LockScreenPreviewFrame
+                showOverlay={showOverlay}
+                showWidgets={showWidgets}
+                overlayColors={overlayColors}
+                overlayBackgroundColor={config.bgColor}
+                wallpaperLang={config.wallpaperLang}
+            >
+                {config.selectedType ? (
+                    <canvas
+                        ref={canvasRef}
+                        className="block shrink-0"
+                        aria-label="Wallpaper live preview canvas"
+                    />
+                ) : (
+                    <div className="px-6 text-center text-sm text-kumo-subtle">
+                        {t("preview.selectType")}
+                    </div>
+                )}
+            </LockScreenPreviewFrame>
             <p className="text-base font-medium text-kumo-subtle uppercase">
                 {t("preview.hint")}
             </p>

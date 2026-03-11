@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/{wallpaper-color-core,goal-validation,wallpaper-text,layout-core,date-math}
- * [OUTPUT]: 对外提供稳定的 wallpaper-core 公共 API（兼容 facade，含 Year dot 尺寸常量）
+ * [OUTPUT]: 对外提供稳定的 wallpaper-core 公共 API（兼容 facade，含 WCAG 对比度 helper 与 Year dot 尺寸常量）
  * [POS]: shared/ 对外兼容入口，保证历史 import 路径不变
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -8,6 +8,7 @@
 export {
     hexToRgba,
     getLuminance,
+    getContrastRatio,
     getContrastBase,
     resolveContrastBase,
     contrastAlpha,

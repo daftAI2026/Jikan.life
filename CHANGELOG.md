@@ -7,6 +7,203 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-03-12
+
+### Architecture
+- **Mainline Integration**: Merged the comprehensive Lock Screen Preview Shell enhancements into the main branch. This merge brings the dynamic lock screen overlay runtime, unified typography parsing, precise goal ring geometries, WCAG contrast optimizations, and the decoupled "year" vs "goal" lock screen configurations to the core architecture.
+
+### Tests
+- **Visual Synchronization**: Locked down final visual snapshot hashes reflecting the restored typography and geometric alignments for the merged lock screen layout.
+
+## [1.8.30] - 2026-03-12
+
+### UI & UX
+- **Goal Wallpaper Restoration**: Restored the original Figma typography metrics and layout geometry for the Goal wallpaper countdown. The completion ring stroke width has been significantly increased (from \`8\` to \`20\`), and font sizes for the number, label, and goal name have been reverted to their intended larger proportions, re-establishing visual impact.
+- **Localization Refusal**: Reverted the abbreviated "Days left" suffix (e.g., "天", "日") back to the fully verbose localized phrases (e.g., "剩余天数", "剩餘天數", "残り日数") across Chinese and Japanese targets to ensure semantic clarity.
+
+### Tests
+- **Structural Constraints**: Updated \`kumo-migration.core.behavior.test.js\` to strictly assert the new \`stroke-width="20"\` boundary for the Goal countdown ring.
+- **Visual Hash Synchronization**: Locked down the new deterministic SHA-256 SVG hash for the Goal wallpaper in \`wallpaper-visual-snapshots.behavior.test.js\` to reflect the restored typography and ring geometry.
+
+## [1.8.29] - 2026-03-12
+
+### UI & UX
+- **Preview Reveal Sequence**: Enhanced the initial onboarding sequence in the workspace grid by introducing a deliberate `150ms` delay after all configuration cards are unlocked before dynamically fading in the live browser preview chrome. This avoids simultaneous visual jumps and establishes a natural, step-by-step cognitive focal path.
+- **Lock Screen Isolation**: Wrapped the `LockScreenOverlay` within an independent animated container (`data-preview-overlay="lock-screen"`). This explicitly isolates DOM fade-in transitions, preventing React layout tracking or animation reflows from bleeding back into the complex SVG structural paths of the lock screen shell.
+
+### Architecture
+- **State Orchestration**: Refactored `HomePreviewPane` to explicitly consume a parent `showOverlay` boolean from the grid instead of internally computing fallback triggers, centralizing the entire onboarding display sequence up to the `HomeGrid` root boundary.
+- **Timer Garbage Collection**: Guarded `HomeGrid` with a robust `autoflowTimerRef` system that structurally collects and aggressively clears pending `setTimeout`, `setInterval`, and `requestAnimationFrame` IDs on unmount, completely eradicating concurrent racing conditions during fast progression.
+
+### Documentation & Tests
+- **UI Sequence Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigidly encompass the new onboarding preview mechanics, asserting the synchronized delay variables, refs for timer disposal, strict boolean prop drilling, and physical fade-in wrapper inclusion within `LockScreenPreviewFrame`.
+- **Fractal Protocol**: Applied GEB documentation sync to `tests/CLAUDE.md` documenting the 150ms reveal strategy and layout boundaries.
+
+## [1.8.28] - 2026-03-12
+
+### Architecture
+- **Goal Ring Geometry Unification**: Extracted the Goal countdown ring drawing semantics into a shared `getGoalRingGeometry` engine (`shared/goal-ring-geometry.js`). All three rendering layers—Canvas preview (`renderer.js`), sidebar thumbnail (`home-sidebar-visuals.jsx`), and Worker SVG (`worker/generators/goal.js`)—now consume a single source of truth for visibility gating, sweep degrees, and stroke dash offset ratios, completely eradicating inline arc math duplication.
+- **Completion-Based Ring Semantics**: Reversed the ring drawing direction from "remaining ratio decrement" to "completed ratio clockwise sweep". The ring now starts empty at 0% and fills clockwise to 360° at 100%, aligning with the intuitive mental model of progress accumulation.
+
+### Documentation & Tests
+- **Ring Geometry Guards**: Expanded `kumo-migration.core.behavior.test.js` to assert completed-progress semantics (`progress = elapsed / total`), multi-scenario window calculations (explicit start, fallback 30-day, past-goal saturation), and strict `getGoalRingGeometry` import presence across all three rendering layers.
+- **Visual Hash Synchronization**: Updated `wallpaper-visual-snapshots.behavior.test.js` to lock down the new deterministic SHA-256 SVG hash reflecting the reversed ring sweep direction.
+
+## [1.8.27] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Universality**: Upgraded the lock screen preview shell to universally display the dynamic top status bar (cellular, wifi, battery, and top-corner time) across all wallpaper styles ("year", "life", and "goal").
+- **Widget Visibility**: Introduced conditional widget rendering. The main lock screen widgets (large clock and date) are now exclusively visible when configuring the "goal" wallpaper style, eliminating visual conflicts with the core graphics of the "year" and "life" layouts.
+- **Goal Geometry Refinement**: Lowered the vertical placement of the Goal countdown ring to shift the visual weight downwards. It now anchors its vertical center (`clockHeight`) dynamically based on a `0.6` factor of the minimum uniform dimension, providing breathing room for the newly introduced universal lock screen top overlay.
+
+### Architecture
+- **Preview Frame Decoupling**: Refactored `LockScreenPreviewFrame` and `LockScreenOverlay` to decouple the continuous top overlay rendering (`showOverlay`) from the main center content rendering (`showWidgets`). This architectural split allows surgical control over active preview layers based on the active `wallpaperType`.
+
+### Documentation & Tests
+- **Structural Constraints**: Updated `kumo-migration.ui.behavior.test.js` to strictly assert the new `showWidgets` props drilling and the conditional rendering boundaries of the main SVG widget grouping within `LockScreenOverlay`.
+- **Layout Math Guards**: Expanded `kumo-migration.core.behavior.test.js` to assert the updated `clockHeight` calculation mapping to the new `uniformDimension` constraint.
+- **Visual Hash Synchronization**: Locked down the new deterministic SHA-256 SVG hash for the Goal wallpaper in `wallpaper-visual-snapshots.behavior.test.js` to reflect the adjusted ring geometry.
+
+## [1.8.26] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Date Localization**: Upgraded the lock screen preview to format its date dynamically based on the current `wallpaperLang` setting instead of defaulting to English. Dates are now localized correctly (e.g., `3月11日 星期三` for Simplified Chinese, `3月11日 水曜日` for Japanese) with precise formatting rules, strictly mirroring native OS typography.
+
+### Architecture
+- **Date Formatting Engine**: Refactored `formatLockScreenDate` in `lock-screen-overlay.runtime.js` to accept language targets, leveraging `Intl.DateTimeFormat` to construct localized strings while explicitly enforcing a single ASCII space delimiter between the month-day and weekday for CJK locales.
+- **Font Stack Resolution**: Replaced hardcoded English font fallbacks with a unified `resolveLockScreenFontFamily` mechanism. Non-Apple platforms now correctly dispatch to the official centralized `getWallpaperFontFamily` engine based on layout language.
+
+### Documentation & Tests
+- **Runtime Layout Guards**: Expanded `lock-screen-overlay-runtime.unit.test.js` to rigidly assert the exact output of multi-language date formatting strings and localized font family resolution mechanics.
+- **UI Architecture Guards**: Updated `kumo-migration.ui.behavior.test.js` to enforce the consumption of `wallpaperLang` within the overlay render boundary.
+
+## [1.8.25] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Glass Scaling**: Refactored the lock screen's bottom action glass layer to render within a unified `402x874` fixed internal coordinate plane, scaling the entire container surface universally via `transform: scale()`. This completely eliminates fractional calculation artifacts when resolving bottom action dimensions and guarantees flawless edge alignment at any preview size.
+
+### Architecture
+- **Glass Offset Constraints**: Deprecated percentage-based dimension calculations (`resolveActionGlassFrameStyle`) and `calc()` positioning for dynamic lock screen glass materials. Enforced absolute pixel boundaries using `ACTION_GLASS_OFFSET_X/Y` constants to prevent arbitrary UI shifts from bleeding into the parent container layout.
+
+### Documentation & Tests
+- **Structural Integrity Guards**: Rigidly updated `kumo-migration.ui.behavior.test.js` to assert the centralized container transform, strict `overlayScale` passthrough from `LockScreenPreviewFrame`, and zero-value offset constants, explicitly forbidding legacy `calc()` computations.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `tests/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `workspace/CLAUDE.md` to officially record the new universal scaling dimension and glass plane rendering boundaries.
+
+## [1.8.24] - 2026-03-11
+
+### UI & UX
+- **Accent Color Lock**: Introduced an `accentMode` (`"auto"` vs `"manual"`) boundary. Manually selecting an accent color now locks it to manual mode, ensuring it stays unchanged when swapping background colors. Applying a predefined palette preset immediately restores the accent to automatic mode.
+
+### Architecture
+- **Contrast Core Engine**: Replaced the hardcoded `0.179` perceptual luminance split with precise, math-driven WCAG contrast ratios (`getContrastRatio`) across the `wallpaper-color-core.js` engine. Automatic text color assignment (`getContrastBase`) and safe accent fallback (`getSafeAccent`) now independently calculate and select whichever monochrome color produces the mathematically superior contrast ratio over the dynamic background.
+- **State Initialization Boundaries**: Centralized the accent auto/manual mode tracking and default resolution deep within the `config-init.js` layer.
+
+### Documentation & Tests
+- **Contrast Constraints Guards**: Refactored the `contrast-threshold.behavior.test.js` test suite to strictly assert WCAG math calculations instead of the legacy luminance values, verifying maximum contrast assignments for pure black/white text against multiple gray fields.
+- **UI Logic Guards**: Created the `accent-mode.behavior.test.js` suite to formally secure the workspace state transitions between auto/manual accent bindings on initialization, manual entry, and palette preset selection.
+- **API Topology Guards**: Asserted the newly exposed `getContrastRatio` function export through `wallpaper-core-api.behavior.test.js`.
+- **Fractal Protocol Sync**: Updated GEB protocol headers (`CLAUDE.md`) in `shared`, `tests`, and `src/pages/registry/sections/workspace` to document the architectural transition to WCAG contrast math and the implementation of the new `accentMode` boundary logic.
+
+## [1.8.23] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Controls Material**: Upgraded the lock screen bottom actions (flashlight, camera) from legacy static SVG fills to robust CSS glassmorphism materials. Implemented dynamic backdrop filters, borders, top/left highlights, and inner glow drop shadows that intelligently adjust their intensity and opacity based on the wallpaper background color, guaranteeing premium Apple-like visual fidelity.
+
+### Architecture
+- **Action Glass Engineering**: Extracted dynamic glass configuration into an independent `createLockScreenActionGlassMaterial` engine within `lock-screen-overlay.colors.js`. This strictly decouples the complex multi-layer shadow and highlight layout logic from the core SVG structural markup.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the RGBA structural states of the new glass material engine across extreme dark, extreme light, and medium-saturated backgrounds.
+- **Structural Constraints**: Adapted `kumo-migration.ui.behavior.test.js` to enforce the absolute structural presence of `backdropFilter`, layer blending properties (`mixBlendMode`), and rendering passes of the dynamic background material.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the new dynamic glass engineering module and expanded CSS boundaries.
+
+## [1.8.22] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Controls**: Upgraded the lock screen preview overlay bottom action controls (flashlight and camera) from a static SVG asset to dynamic runtime SVG paths. These controls now accurately inherit their foreground color from the dynamic background contrast engine, instantly adapting to pure white on dark backgrounds and pure black on light backgrounds to ensure perfect visibility.
+
+### Architecture
+- **Preview Assets Decoupling**: Deleted the static `lock-screen-controls.svg` asset and extracted its structural geometry and rendering metadata into an isolated `lock-screen-overlay.controls.js` module. This completes the eradication of monolithic Figma SVG assets from the lock screen preview shell, enabling precise programmatic control over individual UI components.
+
+### Documentation & Tests
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `public/preview/CLAUDE.md`, `public/preview/iPhone/CLAUDE.md`, `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md`, reflecting the removal of the static asset and the introduction of the new dynamic controls module.
+- **Visual Structure Guards**: Updated `kumo-migration.ui.behavior.test.js` to strictly forbid the legacy `<image>` reference to `lock-screen-controls.svg`, now asserting the precise frame definitions (`ACTION_LEFT_FRAME`, `STACK_FRAME`) and the new controls module exports.
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the contrast behavior of the new `action-left-icon` and `action-right-icon` color mappings.
+
+## [1.8.21] - 2026-03-11
+
+### Architecture
+- **Color Token Parity**: Migrated lock screen overlay top status elements (home indicator, status bar, battery, wifi, cellular) from absolute hex codes and contextual text tokens to the strict structural tokens (`var(--color-white)` and `var(--color-black)`), solidifying absolute contrast boundaries across runtime configurations.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Updated `lock-screen-overlay-colors.unit.test.js` to strictly assert the new pure white and pure black structural design tokens.
+- **Fractal Protocol**: Executed GEB architecture synchronization in `tests/CLAUDE.md` to formally document the transition to pure structural tokens for lock screen top overlays.
+
+## [1.8.20] - 2026-03-11
+
+### Architecture
+- **Theme Agnosticism**: Renamed `LockScreenDarkOverlay` to `LockScreenOverlay` and stripped out hardcoded "dark" semantic prefixes, unifying the lock screen preview into a single, theme-agnostic architecture.
+- **Asset Normalization**: Migrated all lock screen static preview assets from the device-specific `public/preview/ios26001` directory to a generic `public/preview/iPhone` namespace, eliminating rigid light/dark boundaries.
+
+### Documentation & Tests
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the component renaming and new asset paths.
+- **Visual Structure Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly enforce the new `LockScreenOverlay` interface bounds and migration to `public/preview/iPhone` runtime assets.
+
+## [1.8.19] - 2026-03-11
+
+### UI & UX
+- **Swipe Indicator Contrast**: Upgraded the lock screen preview to calculate a sophisticated, context-aware color for the bottom swipe indicator. It now converges to measured neutral tones (light or dark) or retains hue while softening depending on the dynamic background color.
+- **Dynamic Island Removal**: Removed the static pseudo "Dynamic Island" element from the lock screen UI layer to provide a cleaner, uninterrupted wallpaper preview experience.
+
+### Architecture
+- **Symbol Geometry Extraction**: Eliminated reliance on the proprietary `SF Pro` font fallback for SF Symbols (e.g., Apple Watch, Sunrise, and Umbrella icons). These icons have been entirely replaced with pure SVG paths extracted into an independent `lock-screen-overlay.symbols.js` module, guaranteeing perfect icon rendering across all operating systems.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the light/dark neutral convergence and hue-retention logic of the new swipe indicator color generation.
+- **Structural Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly forbid the presence of legacy `SF Pro` font declarations for symbols, hardcoded complication text, and the dynamic island layer, verifying the new pure SVG path structures.
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the extracted symbols module and new color mechanics.
+
+## [1.8.18] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Color Integration**: Enhanced the lock screen preview overlay to dynamically respond to the user's background color. The top status bar (time, battery, wifi, cellular) and home indicator now automatically adapt their color contrast—using inverse tokens on dark backgrounds and default tokens on light backgrounds—ensuring optimal visibility.
+
+### Architecture
+- **Overlay Color Engineering**: Extracted `createLockScreenTopOverlayColors` within `lock-screen-overlay.colors.js` to compute background contrast logic independently. This separation shields the top status elements and home indicator from inappropriate accent color bleed.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly validate the light/dark background contrast token mapping. Extended `kumo-migration.ui.behavior.test.js` to assert the structural merging of both accent and background color profiles within `HomePreviewPane`.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the new top overlay color generation mechanics.
+
+## [1.8.17] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Real Time**: Upgraded the lock screen preview overlay to display the real 24-hour time for the main clock and the top-left status bar instead of hardcoded `9:41` and static SVG paths. The overlay now accurately refreshes automatically on the minute boundary.
+
+### Architecture
+- **Overlay Font Decoupling**: Separated the font stack responsibilities in `LockScreenDarkOverlay`. Regular text now universally follows the runtime platform font resolution (System Font or `Inter`), while SF Symbols glyphs are strictly isolated to use `SF Pro`, preventing font fallback drift on Windows/Android.
+- **Time Formatting Engine**: Extended `lock-screen-overlay.runtime.js` to provide consistent 24-hour `Intl.DateTimeFormat` text (`formatLockScreenTime24`) and precise minute-boundary calculation logic (`getMsUntilNextMinute`).
+- **Layout Alignment**: Corrected the lock screen widget group vertical offset from `669` to `679` to ensure perfect visual alignment with the new dynamic real-time text block geometry.
+
+### Documentation & Tests
+- **Runtime Integrity Guards**: Added unit tests to `lock-screen-overlay-runtime.unit.test.js` to rigidly assert the new 24-hour time formatting and next-minute boundary calculations.
+- **Visual Structure Guards**: Expanded `kumo-migration.ui.behavior.test.js` to enforce the structural absence of old hardcoded times (`9:41`), static clock path geometries, and unchecked inline `SF Pro` declarations on regular overlay text, locking down the exact exported real time properties.
+- **Fractal Protocol**: Executed full GEB architecture sync across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the new real-time components, decoupled font mechanics, and expanded test boundaries.
+
+## [1.8.16] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Runtime**: Upgraded the lock screen preview overlay from a static Figma SVG to a dynamic runtime React component (`LockScreenDarkOverlay`). The lock screen preview now displays the real current date, automatically detects Apple/non-Apple platforms to serve the correct font stack, and automatically schedules midnight refreshes for precise date rendering.
+
+### Architecture
+- **Preview Assets Decoupling**: Deleted the monolithic static overlay asset (`lock-screen-dark-overlay.svg`) and extracted reusable sub-assets (like controls) to significantly increase the modularity of the preview shell.
+- **Overlay State Bridge**: Extracted lock-screen overlay specific logic, rendering elements, and runtime constants (e.g., `LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS`) into an isolated `lock-screen-overlay` domain, removing hardcoded date tokens from the presentation layer.
+
+### Documentation & Tests
+- **Runtime Layout Guards**: Added `lock-screen-overlay-runtime.unit.test.js` to rigidly validate cross-environment font resolution (Apple vs Windows/Android) and midnight calculation accuracy.
+- **Visual Integrity Guards**: Updated `kumo-migration.ui.behavior.test.js` to strictly assert the new overlay architecture, locking down the exact exported layer IDs, asserting the transition away from hardcoded Figma text fallback, and ensuring the runtime component bounds.
+- **Fractal Protocol**: Executed full GEB architecture sync across `tests/CLAUDE.md`, `public/preview/ios26001/CLAUDE.md`, and `src/pages/registry/sections/workspace/CLAUDE.md` to reflect the new overlay component layer and the removed monolithic SVGs.
+
 ## [1.8.15] - 2026-03-10
 
 ### Documentation
@@ -54,11 +251,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preview Scaling Strictness**: Upgraded `HomePreviewPane` to use a unified `previewScale` mathematical factor across both dimensions. This eliminates fractional scaling disparities between `scaleX` and `scaleY`, guaranteeing that the live browser preview renders with physically perfect proportions matching the final exported wallpaper.
 
 ### Architecture
+- **Lock Screen Delegation**: Refactored `HomePreviewPane` to delegate lock screen frame rendering to `LockScreenPreviewFrame`, deriving shell metrics from Figma wallpaper geometry instead of hardcoded preview chrome numbers.
 - **Year Geometry Constants**: Extracted `YEAR_DOT_RADIUS_SCALE` and `YEAR_TODAY_DOT_RADIUS_SCALE` from raw inline math into exported constants within `shared/layout-core.js` and `shared/wallpaper-core.js`. This centralizes the single source of truth for the Year progress visual design.
 
 ### Documentation & Tests
 - **Fractal Protocol**: Executed comprehensive L3 GEB documentation header updates across tests, `worker/generators`, and UI core components.
-- **Scaling Guards**: Strengthened test assertions to rigidly validate the new proportional `previewScale` logic and the extraction of Year dot dimension constants.
+- **UI Architecture Guards**: Added strict assertions for `LockScreenPreviewFrame` delegation, Figma metric derivations, the existence of static shell assets in `public/preview/ios26001`, and the new proportional `previewScale` semantics.
 
 ## [1.8.10] - 2026-03-10
 

@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test, node:assert/strict, shared/wallpaper-core.js
- * [OUTPUT]: 明度阈值 + 前景色 override 行为回归测试
- * [POS]: tests/ 颜色对比度护栏，约束 getContrastBase 阈值与 resolveContrastBase 覆盖逻辑
+ * [OUTPUT]: WCAG 对比度 + 前景色 override 行为回归测试
+ * [POS]: tests/ 颜色对比度护栏，约束共享核心按 WCAG 对比度择优而非经验阈值
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -9,14 +9,20 @@ import assert from "node:assert/strict"
 
 import {
     getLuminance,
+    getContrastRatio,
     getContrastBase,
     resolveContrastBase,
     contrastAlpha
 } from "../shared/wallpaper-core.js"
 
 /* ========================================================================
-   getContrastBase 阈值行为 (0.179 感知中点)
+   WCAG 对比度行为
    ======================================================================== */
+
+test("getContrastRatio matches WCAG contrast math for black and white", () => {
+    assert.equal(getContrastRatio("#000000", "#FFFFFF"), 21)
+    assert.equal(getContrastRatio("#FFFFFF", "#000000"), 21)
+})
 
 test("getContrastBase returns black text for bright backgrounds", () => {
     // 纯白 luminance=1.0 → 黑色文字
@@ -28,15 +34,21 @@ test("getContrastBase returns white text for dark backgrounds", () => {
     assert.equal(getContrastBase("#000000"), "255,255,255")
 })
 
-test("getContrastBase uses 0.179 perceptual threshold, not 0.5", () => {
-    // #777777 luminance ≈ 0.184 → 刚好超过 0.179 → 黑色文字
+test("getContrastBase chooses the higher-contrast monochrome via WCAG ratio", () => {
     const midGrayLum = getLuminance("#777777")
-    assert.ok(midGrayLum > 0.179, `#777777 luminance ${midGrayLum} should exceed 0.179`)
+    const blackContrast = getContrastRatio("#000000", "#777777")
+    const whiteContrast = getContrastRatio("#FFFFFF", "#777777")
+
+    assert.ok(midGrayLum > 0.179, `#777777 luminance ${midGrayLum} should exceed the historical split`)
+    assert.ok(blackContrast > whiteContrast, "black should beat white on #777777")
     assert.equal(getContrastBase("#777777"), "0,0,0")
 
-    // #6F6F6F luminance ≈ 0.166 → 低于 0.179 → 白色文字
     const darkGrayLum = getLuminance("#6F6F6F")
-    assert.ok(darkGrayLum < 0.179, `#6F6F6F luminance ${darkGrayLum} should be below 0.179`)
+    const darkBlackContrast = getContrastRatio("#000000", "#6F6F6F")
+    const darkWhiteContrast = getContrastRatio("#FFFFFF", "#6F6F6F")
+
+    assert.ok(darkGrayLum < 0.179, `#6F6F6F luminance ${darkGrayLum} should be below the historical split`)
+    assert.ok(darkWhiteContrast > darkBlackContrast, "white should beat black on #6F6F6F")
     assert.equal(getContrastBase("#6F6F6F"), "255,255,255")
 })
 

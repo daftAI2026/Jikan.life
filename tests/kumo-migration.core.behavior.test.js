@@ -324,11 +324,94 @@ test("Worker goal SVG uses shared goal ring stroke width and number offset", asy
     today: { year: 2026, month: 3, day: 10 },
   })
 
-  assert.match(svg, /stroke-width="8"/)
+  assert.match(svg, /stroke-width="20"/)
 
   const numberYMatch = svg.match(/<text x="589\.5" y="([^"]+)"[^>]*>296<\/text>/)
   assert.ok(numberYMatch, "expected goal days number text node")
   assert.equal(Number(numberYMatch[1]), layout.ring.centerY - 4)
+})
+
+test("Goal completion ring uses completed progress semantics from shared layout", async () => {
+  const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
+  const { computeGoalLayout } = await import(corePath)
+
+  const explicitWindowLayout = computeGoalLayout({
+    width: 1179,
+    height: 2556,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    goalDate: "2025-01-20",
+    goalStart: "2025-01-01",
+    goalName: "Goal",
+    today: { year: 2025, month: 1, day: 10 },
+  })
+
+  const fallbackWindowLayout = computeGoalLayout({
+    width: 1179,
+    height: 2556,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    goalDate: "2025-02-10",
+    goalName: "Goal",
+    today: { year: 2025, month: 2, day: 1 },
+  })
+
+  const pastGoalLayout = computeGoalLayout({
+    width: 1179,
+    height: 2556,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    goalDate: "2025-01-09",
+    goalName: "Goal",
+    today: { year: 2025, month: 1, day: 10 },
+  })
+
+  assert.equal(explicitWindowLayout.daysRemaining, 10)
+  assert(Math.abs(explicitWindowLayout.ring.progress - (9 / 19)) < 0.0001, `Expected 9/19, got ${explicitWindowLayout.ring.progress}`)
+  assert(Math.abs(fallbackWindowLayout.ring.progress - (21 / 30)) < 0.0001, `Expected 21/30, got ${fallbackWindowLayout.ring.progress}`)
+  assert.equal(pastGoalLayout.ring.progress, 1)
+})
+
+test("Goal renderers consume shared goal ring geometry instead of inline math", () => {
+  const sidebarVisualsSource = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalWorkerSource = readSource("worker/generators/goal.js")
+
+  assert.match(sidebarVisualsSource, /getGoalRingGeometry/)
+  assert.match(rendererSource, /getGoalRingGeometry/)
+  assert.match(goalWorkerSource, /getGoalRingGeometry/)
+})
+
+test("Shared goal layout keeps goal name at 73% height for preview and worker consumers", async () => {
+  const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
+  const { computeGoalLayout } = await import(corePath)
+  const rendererSource = readSource("src/lib/renderer.js")
+  const goalWorkerSource = readSource("worker/generators/goal.js")
+
+  const width = 1179
+  const height = 2556
+  const layout = computeGoalLayout({
+    width,
+    height,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    goalDate: "2026-12-31",
+    goalStart: "2026-01-01",
+    goalName: "Goal",
+    today: { year: 2026, month: 3, day: 10 },
+  })
+
+  assert.equal(layout.goalNameY, height * 0.73)
+  assert.match(rendererSource, /fillText\(layout\.goalName,\s*ring\.centerX,\s*layout\.goalNameY\)/)
+  assert.match(goalWorkerSource, /text\(ring\.centerX,\s*layout\.goalNameY,\s*layout\.goalName/)
 })
 
 test("Worker life SVG keeps current-week radius identical to preview layout", async () => {

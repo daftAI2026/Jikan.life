@@ -6,7 +6,7 @@
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { assertNamedImports, listFiles, path, pathToFileURL, readSource } from "./helpers/source-test-helpers.js"
+import { assertNamedImports, fs, listFiles, path, pathToFileURL, readSource } from "./helpers/source-test-helpers.js"
 
 test("Registry workspace no longer hardcodes UI language to English", () => {
   const source = readSource("src/pages/registry/sections/workspace/useHomeWallpaperConfig.js")
@@ -593,9 +593,20 @@ test("HomeGrid provides split workspace layout", () => {
   assert.match(source, /localStorage\.setItem\(AUTOFLOW_STORAGE_KEY,\s*"1"\)/)
   assert.match(source, /if \(forceOnboarding\) return/)
   assert.match(source, /const shouldSkipAutoflow = hasSeenAutoflow && !forceOnboarding/)
+  assert.match(source, /const OVERLAY_REVEAL_DELAY_MS = 150/)
   assert.match(source, /const \[revealStage, setRevealStage\] = useState\(0\)/)
+  assert.match(source, /const \[isPreviewChromeRevealed, setIsPreviewChromeRevealed\] = useState\(false\)/)
   assert.match(source, /const \[hasSeenAutoflow, setHasSeenAutoflow\] = useState\(\(\) => \{/)
+  assert.match(source, /const autoflowTimerRef = useRef\(\{ intervalId: null, timeoutId: null, rafId: null \}\)/)
+  assert.match(source, /clearTimeout\(autoflowTimerRef\.current\.timeoutId\)/)
+  assert.match(source, /cancelAnimationFrame\(autoflowTimerRef\.current\.rafId\)/)
+  assert.match(source, /clearInterval\(autoflowTimerRef\.current\.intervalId\)/)
+  assert.match(source, /autoflowTimerRef\.current\.timeoutId = window\.setTimeout\(\(\) => \{/)
+  assert.match(source, /}, OVERLAY_REVEAL_DELAY_MS\)/)
+  assert.match(source, /autoflowTimerRef\.current\.rafId = window\.requestAnimationFrame\(\(\) => \{/)
+  assert.match(source, /setIsPreviewChromeRevealed\(true\)/)
   assert.match(source, /const handleRevealAll = useCallback\(\(\) => \{/)
+  assert.match(source, /setRevealStage\(maxStage\)\s*setIsPreviewChromeRevealed\(true\)/s)
   assert.match(source, /onRequestRevealAll=\{handleRevealAll\}/)
   assert.match(source, /data-registry-workspace/)
   assert.doesNotMatch(source, /grid-cols-1 overflow-x-hidden overflow-y-auto overscroll-y-contain md:h-auto md:overflow-y-visible md:overscroll-y-auto bg-kumo-elevated/)
@@ -603,6 +614,8 @@ test("HomeGrid provides split workspace layout", () => {
   assert.match(source, /data-registry-pane=["']settings["']/)
   assert.match(source, /<div\s+className=\{guideHostClassName\}>/)
   assert.match(source, /className="pointer-events-none absolute inset-0 z-40 md:hidden"/)
+  assert.match(source, /const showPreviewChrome = Boolean\(viewModel\.config\.selectedType\) && isPreviewChromeRevealed/)
+  assert.match(source, /<HomePreviewPane[\s\S]*?showOverlay=\{showPreviewChrome\}/)
   assert.match(source, /<HomeSettingsPane[\s\S]*?revealStage=\{revealStage\}/)
   assert.match(source, /<HomeSettingsPane[\s\S]*?effectiveLayoutTier=\{paneEffectiveLayoutTier\}/)
   assert.match(source, /<HomeSettingsPane[\s\S]*?useSegmentedWorkspaceLayout=\{useSegmentedWorkspaceLayout\}/)
@@ -633,7 +646,7 @@ test("HomeSettingsPane supports mid tier as desktop shell single-column equal ro
 test("HomePreviewPane keeps select-type hint before style selection", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assert.match(source, /function HomePreviewPane\(\{\s*config,\s*selectedDevice,\s*t\s*\}\)/)
+  assert.match(source, /function HomePreviewPane\(\{\s*config,\s*selectedDevice,\s*showOverlay,\s*t\s*\}\)/)
   assert.match(source, /preview\.selectType/)
   assert.doesNotMatch(source, /SkeletonLine/)
 })
@@ -641,6 +654,11 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
 test("HomePreviewPane scales all wallpaper previews from base device coordinates", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
+  assert.match(
+    source,
+    /const SCREEN_WIDTH = LOCK_SCREEN_LAYOUT\.wallpaper\.width \* LOCK_SCREEN_LAYOUT\.scale/
+  )
+  assert.match(source, /const SCREEN_HEIGHT = LOCK_SCREEN_LAYOUT\.targetHeight/)
   assert.match(source, /const previewScale = Math\.max\(SCREEN_WIDTH \/ baseWidth,\s*SCREEN_HEIGHT \/ baseHeight\)/)
   assert.match(source, /const previewWidth = baseWidth \* previewScale/)
   assert.match(source, /const previewHeight = baseHeight \* previewScale/)
@@ -658,6 +676,301 @@ test("HomePreviewPane scales all wallpaper previews from base device coordinates
   assert.doesNotMatch(source, /drawYearProgress\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawLifeCalendar\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
   assert.doesNotMatch(source, /drawGoalCountdown\(ctx,\s*width,\s*height,\s*renderConfig,\s*selectedDevice\.clockHeight\)/)
+})
+
+test("HomePreviewPane delegates lock screen chrome to LockScreenPreviewFrame", () => {
+  const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
+
+  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame", "LOCK_SCREEN_LAYOUT"])
+  assert.match(source, /const showWidgets = config\.selectedType !== "goal"/)
+  assert.match(source, /<LockScreenPreviewFrame[\s\S]*?showOverlay=\{showOverlay\}[\s\S]*?>/)
+  assert.match(source, /<LockScreenPreviewFrame[\s\S]*?showWidgets=\{showWidgets\}[\s\S]*?>/)
+  assert.match(source, /aria-label="Wallpaper live preview canvas"/)
+  assert.doesNotMatch(source, /rounded-\[40px\]/)
+  assert.doesNotMatch(source, /top-\[10px\]/)
+})
+
+test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", () => {
+  const source = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
+
+  assert.match(source, /const LOCK_SCREEN_LAYOUT =/)
+  assert.match(source, /const BEZEL_INSET = 1/)
+  assertNamedImports(source, "./lock-screen-overlay", [
+    "LockScreenOverlay",
+    "LOCK_SCREEN_OVERLAY_DEFAULT_COLORS",
+    "LOCK_SCREEN_OVERLAY_LAYER_IDS",
+  ])
+  assert.match(source, /function LockScreenPreviewFrame\(\{/)
+  assert.match(source, /showOverlay = true/)
+  assert.match(source, /showWidgets = true/)
+  assert.match(source, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
+  assert.match(source, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
+  assert.match(source, /targetHeight:\s*510/)
+  assert.match(source, /scale:\s*510\s*\/\s*874/)
+  assert.match(source, /width:\s*`\$\{scaledWallpaperWidth\}px`/)
+  assert.match(source, /height:\s*`\$\{scaledWallpaperHeight\}px`/)
+  assert.match(source, /const bezelScale = \(scaledShellWidth - BEZEL_INSET \* 2\) \/ scaledShellWidth/)
+  assert.match(source, /left:\s*`\$\{scaledBezelLeft\}px`/)
+  assert.match(source, /top:\s*`\$\{scaledBezelTop\}px`/)
+  assert.match(source, /width:\s*`\$\{scaledBezelWidth\}px`/)
+  assert.match(source, /height:\s*`\$\{scaledBezelHeight\}px`/)
+  assert.match(source, /showOverlay \? \(/)
+  assert.match(source, /data-preview-overlay=["']lock-screen["']/)
+  assert.match(source, /className="absolute inset-0 z-10 animate-in fade-in duration-500"/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?colors=\{overlayColors\}/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?backgroundColor=\{overlayBackgroundColor\}/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?showWidgets=\{showWidgets\}/)
+  assert.match(source, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
+  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
+  assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\}/)
+  assert.doesNotMatch(source, /lock-screen-dark-overlay\.svg/)
+  assert.doesNotMatch(source, /<img[\s\S]*?overlay/)
+})
+
+test("Lock screen overlay exports stable layer ids and default colors", () => {
+  const source = readSource("src/pages/registry/sections/workspace/lock-screen-overlay/index.js")
+  const constantsSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.constants.js"
+  )
+  const controlsSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.controls.js"
+  )
+  const componentSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/LockScreenOverlay.jsx"
+  )
+  const symbolsSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.symbols.js"
+  )
+  const runtimeSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.runtime.js"
+  )
+
+  assert.match(source, /export \{ LockScreenOverlay \} from "\.\/LockScreenOverlay"/)
+  assert.match(
+    source,
+    /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\} from "\.\/lock-screen-overlay.constants"/
+  )
+  assert.match(constantsSource, /const LOCK_SCREEN_OVERLAY_LAYER_IDS = \[/)
+  assert.match(constantsSource, /"home-indicator"/)
+  assert.match(constantsSource, /"action-left-bg"/)
+  assert.match(constantsSource, /"action-left-icon"/)
+  assert.match(constantsSource, /"action-right-bg"/)
+  assert.match(constantsSource, /"action-right-icon"/)
+  assert.match(constantsSource, /"widgets-complication-1-bg"/)
+  assert.match(constantsSource, /"widgets-complication-4-fg"/)
+  assert.match(constantsSource, /"swipe-indicator"/)
+  assert.match(constantsSource, /"date-text"/)
+  assert.match(constantsSource, /"time-shape"/)
+  assert.match(constantsSource, /"status-bar-leading"/)
+  assert.match(constantsSource, /"status-bar-trailing"/)
+  assert.match(constantsSource, /"battery"/)
+  assert.match(constantsSource, /"wifi"/)
+  assert.match(constantsSource, /"cellular"/)
+  assert.match(constantsSource, /const LOCK_SCREEN_OVERLAY_DEFAULT_COLORS = \{/)
+  assert.match(constantsSource, /const WIDGET_FOREGROUND_COLOR = "var\(--text-color-kumo-inverse\)"/)
+  assert.match(
+    constantsSource,
+    /const WIDGET_BACKGROUND_COLOR = "color-mix\(in srgb, var\(--text-color-kumo-inverse\) 15%, transparent\)"/
+  )
+  assert.match(constantsSource, /"home-indicator":/)
+  assert.match(constantsSource, /"action-left-bg":\s*"rgba\(255, 255, 255, 0\.07\)"/)
+  assert.match(constantsSource, /"action-right-bg":\s*"rgba\(255, 255, 255, 0\.07\)"/)
+  assert.match(constantsSource, /"widgets-complication-1-bg":\s*WIDGET_BACKGROUND_COLOR/)
+  assert.match(constantsSource, /"widgets-complication-1-fg":\s*WIDGET_FOREGROUND_COLOR/)
+  assert.match(constantsSource, /"widgets-complication-4-bg":\s*WIDGET_BACKGROUND_COLOR/)
+  assert.match(constantsSource, /"widgets-complication-4-fg":\s*WIDGET_FOREGROUND_COLOR/)
+  assert.match(componentSource, /function LockScreenOverlay\(\{/)
+  assert.match(componentSource, /colors\s*=\s*\{\}/)
+  assert.match(componentSource, /overlayScale = 1/)
+  assert.match(componentSource, /showWidgets = true/)
+  assert.match(componentSource, /data-lock-screen-overlay="lock-screen"/)
+  assert.match(componentSource, /data-overlay-glass-layer="lock-screen-actions"/)
+  assert.match(componentSource, /className="absolute left-0 top-0 overflow-hidden"/)
+  assert.match(componentSource, /width:\s*`\$\{OVERLAY_VIEWBOX_WIDTH\}px`/)
+  assert.match(componentSource, /height:\s*`\$\{OVERLAY_VIEWBOX_HEIGHT\}px`/)
+  assert.match(componentSource, /transform:\s*`scale\(\$\{overlayScale\}\)`/)
+  assert.match(componentSource, /transformOrigin:\s*"top left"/)
+  assert.match(componentSource, /viewBox="0 0 402 874"/)
+  assert.match(componentSource, /data-overlay-layer="home-indicator"/)
+  assert.match(componentSource, /data-overlay-layer="home-indicator"[\s\S]*?transform="translate\(0 830\)"/)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="dynamic-island"/)
+  assert.doesNotMatch(constantsSource, /"dynamic-island"/)
+  assert.match(componentSource, /data-overlay-layer="widgets-complication-1-fg"/)
+  assert.match(componentSource, /from "\.\/lock-screen-overlay\.controls"/)
+  assert.doesNotMatch(componentSource, /lock-screen-controls\.svg/)
+  assert.doesNotMatch(componentSource, /<image[\s\S]*?href=/)
+  assert.match(componentSource, /data-overlay-node="stack"/)
+  assert.match(componentSource, /createLockScreenActionGlassMaterial\(backgroundColor\)/)
+  assert.match(componentSource, /backdropFilter:\s*material\.blur/)
+  assert.match(componentSource, /WebkitBackdropFilter:\s*material\.blur/)
+  assert.match(componentSource, /boxSizing:\s*"border-box"/)
+  assert.match(componentSource, /data-overlay-glass=\{actionName\}/)
+  assert.match(componentSource, /const ACTION_GLASS_OFFSET_X = 0/)
+  assert.match(componentSource, /const ACTION_GLASS_OFFSET_Y = 0/)
+  assert.match(componentSource, /left:\s*`\$\{actionFrame\.x \+ ACTION_GLASS_OFFSET_X\}px`/)
+  assert.match(componentSource, /top:\s*`\$\{STACK_FRAME\.y \+ actionFrame\.y \+ ACTION_GLASS_OFFSET_Y\}px`/)
+  assert.match(componentSource, /width:\s*`\$\{actionFrame\.width\}px`/)
+  assert.match(componentSource, /height:\s*`\$\{actionFrame\.height\}px`/)
+  assert.match(componentSource, /transform:\s*"rotate\(-45deg\)"/)
+  assert.match(componentSource, /transformOrigin:\s*"center"/)
+  assert.doesNotMatch(componentSource, /resolveActionGlassFrameStyle/)
+  assert.doesNotMatch(componentSource, /calc\(/)
+  assert.match(componentSource, /function renderControlShadow\(\{[\s\S]*?colors[\s\S]*?\}\)/)
+  assert.match(componentSource, /<g filter=\{`url\(#\$\{filterId\}\)`\}>/)
+  assert.match(componentSource, /resolveLayerStyle\(backgroundLayerId,\s*colors\),\s*mixBlendMode:\s*"screen"/)
+  assert.match(componentSource, /<feFlood floodOpacity="0" result="BackgroundImageFix" \/>/)
+  assert.match(componentSource, /<feComposite in2="hardAlpha" operator="out" \/>/)
+  assert.match(componentSource, /<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" \/>/)
+  assert.doesNotMatch(componentSource, /fill="#FFFFFF"/)
+  assert.doesNotMatch(componentSource, /fillOpacity="0\.42"/)
+  assert.match(componentSource, /data-overlay-node=\{nodeName\}/)
+  assert.match(componentSource, /nodeName: "action-left"/)
+  assert.match(componentSource, /nodeName: "action-right"/)
+  assert.match(componentSource, /transform="translate\(30 679\)"/)
+  assert.match(componentSource, /transform="translate\(0 766\)"/)
+  assert.match(componentSource, /actionFrame: ACTION_LEFT_FRAME/)
+  assert.match(componentSource, /actionFrame: ACTION_RIGHT_FRAME/)
+  assert.match(componentSource, /transform="translate\(18 19\)"/)
+  assert.match(componentSource, /data-overlay-layer="time-shape"/)
+  assert.match(componentSource, /showWidgets \? \(/)
+  assert.match(componentSource, /showWidgets \? \([\s\S]*?<g transform="translate\(30 679\)">/)
+  assert.match(componentSource, /useEffect/)
+  assert.match(componentSource, /useState/)
+  assert.match(componentSource, /formatLockScreenDate/)
+  assert.match(componentSource, /formatLockScreenTime24/)
+  assert.match(componentSource, /resolveLockScreenFontFamily/)
+  assert.match(componentSource, /getMsUntilNextMinute/)
+  assert.match(componentSource, /formatLockScreenDate\(currentDate,\s*wallpaperLang\)/)
+  assert.match(componentSource, /const overlayTextFontFamily = resolveLockScreenFontFamily\(/)
+  assert.match(componentSource, /isAppleRuntimePlatform/)
+  assert.doesNotMatch(componentSource, /overlaySymbolFontFamily/)
+  assert.match(
+    componentSource,
+    /from "\.\/lock-screen-overlay\.symbols"/
+  )
+  assert.match(componentSource, /ACTION_LEFT_FRAME\.x/)
+  assert.match(componentSource, /ACTION_RIGHT_FRAME\.x/)
+  assert.match(componentSource, /STACK_FRAME\.y/)
+  assert.match(componentSource, /LOCK_SCREEN_CONTROLS_SKETCH_META/)
+  assert.match(componentSource, /x="201"/)
+  assert.match(componentSource, /fontSize="22"/)
+  assert.match(componentSource, /fontWeight="500"/)
+  assert.match(componentSource, /textAnchor="middle"/)
+  assert.match(componentSource, /fontSize="120"/)
+  assert.doesNotMatch(componentSource, />\s*Tue April 1\s*</)
+  assert.doesNotMatch(componentSource, />\s*9:41\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*72\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*52\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*89\s*</)
+  assert.doesNotMatch(componentSource, /M97\.0585938,115\.464844/)
+  assert.match(symbolsSource, /const APPLE_WATCH_SYMBOL_PATH =/)
+  assert.match(symbolsSource, /const SUN_HORIZON_FILL_TOP_PATH =/)
+  assert.match(symbolsSource, /const SUN_HORIZON_FILL_BOTTOM_PATH =/)
+  assert.match(symbolsSource, /const UMBRELLA_FILL_PATH =/)
+  assert.match(symbolsSource, /export \{/)
+  assert.match(componentSource, /d=\{APPLE_WATCH_SYMBOL_PATH\}/)
+  assert.match(componentSource, /d=\{SUN_HORIZON_FILL_TOP_PATH\}/)
+  assert.match(componentSource, /d=\{UMBRELLA_FILL_PATH\}/)
+  assert.match(controlsSource, /const STACK_FRAME = \{\s*x: 0,\s*y: 766,\s*width: 402,\s*height: 108,\s*\}/)
+  assert.match(controlsSource, /const ACTION_LEFT_FRAME = \{\s*x: 46,\s*y: 0,\s*width: 58,\s*height: 58,\s*\}/)
+  assert.match(controlsSource, /const ACTION_RIGHT_FRAME = \{\s*x: 298,\s*y: 0,\s*width: 58,\s*height: 58,\s*\}/)
+  assert.match(controlsSource, /const LOCK_SCREEN_CONTROLS_SKETCH_META = \{/)
+  assert.match(controlsSource, /page: "Page 1"/)
+  assert.match(controlsSource, /root: "iPhone locked"/)
+  assert.match(controlsSource, /stack: "Stack"/)
+  assert.match(controlsSource, /master: "System\/Lock Screen Widgets\/Control"/)
+  assert.match(controlsSource, /leftGlyphOverride: "􀝌"/)
+  assert.match(controlsSource, /rightGlyphOverride: "􀌟"/)
+  assert.match(controlsSource, /const ACTION_LEFT_ICON_PATH =/)
+  assert.match(controlsSource, /const ACTION_RIGHT_ICON_PATH =/)
+  assert.match(controlsSource, /export \{/)
+  assert.doesNotMatch(componentSource, /􀿫/)
+  assert.doesNotMatch(componentSource, /􀆴/)
+  assert.doesNotMatch(componentSource, /􀙖/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_SCALE/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_TRANSLATE_X/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_TRANSLATE_Y/)
+  assert.match(componentSource, /transform="translate\(27\.16404 23\.45508\) scale\(1\.2\)"/)
+  assert.match(componentSource, /transform="translate\(27\.415 12\.242\) scale\(0\.6861\)"/)
+  assert.match(componentSource, /transform="translate\(28\.572 46\.433\) scale\(0\.797\)"/)
+  assert.equal((componentSource.match(/fontFamily="SF Pro"/g) ?? []).length, 0)
+  assert.equal((componentSource.match(/fontFamily=\{overlaySymbolFontFamily\}/g) ?? []).length, 0)
+  assert.ok((componentSource.match(/fontFamily=\{overlayTextFontFamily\}/g) ?? []).length >= 5)
+  assert.match(componentSource, /data-overlay-layer="date-text"[\s\S]*?fontFamily=\{dateTextFontFamily\}/)
+  assert.match(componentSource, /style=\{\s*resolveLayerStyle\(/)
+  assert.match(runtimeSource, /function formatLockScreenDate/)
+  assert.match(runtimeSource, /function formatLockScreenTime24/)
+  assert.match(runtimeSource, /function isAppleRuntimePlatform/)
+  assert.match(runtimeSource, /function resolveLockScreenFontFamily/)
+  assert.match(runtimeSource, /getWallpaperFontFamily/)
+  assert.match(runtimeSource, /function getMsUntilNextMinute/)
+})
+
+test("Home preview maps accent and background colors into lock screen overlay", () => {
+  const previewSource = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
+  const frameSource = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
+  const helperSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.colors.js"
+  )
+
+  assert.match(
+    previewSource,
+    /import \{[\s\S]*?createLockScreenAccentOverlayColors,[\s\S]*?createLockScreenTopOverlayColors,[\s\S]*?\} from "\.\/lock-screen-overlay\/lock-screen-overlay\.colors"/
+  )
+  assert.match(
+    previewSource,
+    /const overlayColors = \{\s*\.\.\.createLockScreenTopOverlayColors\(config\.bgColor\),\s*\.\.\.createLockScreenAccentOverlayColors\(config\.accentColor\),\s*\}/
+  )
+  assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayColors=\{overlayColors\}/)
+  assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayBackgroundColor=\{config\.bgColor\}/)
+  assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?wallpaperLang=\{config\.wallpaperLang\}/)
+
+  assert.match(helperSource, /function createLockScreenAccentOverlayColors\(accentColor\)/)
+  assert.match(helperSource, /function createLockScreenActionGlassMaterial\(bgColor\)/)
+  assert.match(helperSource, /function createLockScreenTopOverlayColors\(bgColor\)/)
+  assert.match(helperSource, /function resolveSwipeIndicatorColor\(bgColor\)/)
+  assert.match(helperSource, /"time-shape":\s*accentColor/)
+  assert.match(helperSource, /"date-text":\s*accentColor/)
+  assert.match(helperSource, /"widgets-complication-1-fg":\s*accentColor/)
+  assert.match(helperSource, /"widgets-complication-4-fg":\s*accentColor/)
+  assert.match(helperSource, /"widgets-complication-1-bg":\s*resolveAccentAlpha\(accentColor,\s*0\.15\)/)
+  assert.match(helperSource, /"widgets-complication-4-bg":\s*resolveAccentAlpha\(accentColor,\s*0\.15\)/)
+  assert.match(helperSource, /getContrastBase\(bgColor\)/)
+  assert.match(helperSource, /"home-indicator":\s*topColor/)
+  assert.match(helperSource, /"action-left-icon":\s*topColor/)
+  assert.match(helperSource, /"action-right-icon":\s*topColor/)
+  assert.match(helperSource, /"status-bar-leading":\s*topColor/)
+  assert.match(helperSource, /"status-bar-trailing":\s*topColor/)
+  assert.match(helperSource, /battery:\s*topColor/)
+  assert.match(helperSource, /wifi:\s*topColor/)
+  assert.match(helperSource, /cellular:\s*topColor/)
+  assert.match(helperSource, /const swipeIndicatorColor = resolveSwipeIndicatorColor\(bgColor\)/)
+  assert.match(helperSource, /"swipe-indicator":\s*swipeIndicatorColor/)
+  assert.doesNotMatch(helperSource, /"status-bar-leading":\s*accentColor/)
+
+  assert.match(frameSource, /function LockScreenPreviewFrame\(\{/)
+  assert.match(frameSource, /showOverlay = true/)
+  assert.match(frameSource, /showWidgets = true/)
+  assert.match(frameSource, /colors=\{overlayColors\}/)
+  assert.match(frameSource, /backgroundColor=\{overlayBackgroundColor\}/)
+  assert.match(frameSource, /overlayScale=\{LOCK_SCREEN_LAYOUT\.scale\}/)
+  assert.match(frameSource, /showWidgets=\{showWidgets\}/)
+  assert.match(frameSource, /wallpaperLang=\{wallpaperLang\}/)
+})
+
+test("Public preview keeps only bezel shell asset at runtime", () => {
+  assert.ok(
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-bezel.svg")),
+    "lock screen bezel asset missing"
+  )
+  assert.equal(
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-controls.svg")),
+    false
+  )
+  assert.equal(
+    fs.existsSync(path.join(process.cwd(), "public/preview/iPhone/lock-screen-overlay.svg")),
+    false
+  )
 })
 
 test("HomeSettingsPane uses six-slot skeleton base and stage-based reveal", () => {
