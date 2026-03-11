@@ -1,7 +1,10 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 
-import { createLockScreenAccentOverlayColors } from "../src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.colors.js"
+import {
+  createLockScreenAccentOverlayColors,
+  createLockScreenTopOverlayColors,
+} from "../src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.colors.js"
 
 test("Lock screen overlay accent colors map time date and widget fg to accent", () => {
   const colors = createLockScreenAccentOverlayColors("#AABBCC")
@@ -23,4 +26,26 @@ test("Lock screen overlay accent colors do not override top status time", () => 
   const colors = createLockScreenAccentOverlayColors("#AABBCC")
 
   assert.equal(colors["status-bar-leading"], undefined)
+})
+
+test("Lock screen overlay top colors use inverse token on dark backgrounds", () => {
+  const colors = createLockScreenTopOverlayColors("#111111")
+
+  assert.equal(colors["home-indicator"], "var(--text-color-kumo-inverse)")
+  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-inverse)")
+  assert.equal(colors["status-bar-trailing"], "var(--text-color-kumo-inverse)")
+  assert.equal(colors.battery, "var(--text-color-kumo-inverse)")
+  assert.equal(colors.wifi, "var(--text-color-kumo-inverse)")
+  assert.equal(colors.cellular, "var(--text-color-kumo-inverse)")
+})
+
+test("Lock screen overlay top colors use default token on light backgrounds", () => {
+  const colors = createLockScreenTopOverlayColors("#F5F5F5")
+
+  assert.equal(colors["home-indicator"], "var(--text-color-kumo-default)")
+  assert.equal(colors["status-bar-leading"], "var(--text-color-kumo-default)")
+  assert.equal(colors["status-bar-trailing"], "var(--text-color-kumo-default)")
+  assert.equal(colors.battery, "var(--text-color-kumo-default)")
+  assert.equal(colors.wifi, "var(--text-color-kumo-default)")
+  assert.equal(colors.cellular, "var(--text-color-kumo-default)")
 })

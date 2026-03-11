@@ -55,7 +55,7 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
             className={joinClassName("pointer-events-none absolute inset-0 block", className)}
             style={style}
         >
-            <g data-overlay-layer="home-indicator" transform="translate(0 840)" style={resolveLayerStyle("home-indicator", colors)}>
+            <g data-overlay-layer="home-indicator" transform="translate(0 830)" style={resolveLayerStyle("home-indicator", colors)}>
                 <path
                     fillRule="evenodd"
                     d="M131.5,21 L270.5,21 C271.880712,21 273,22.1192881 273,23.5 C273,24.8807119 271.880712,26 270.5,26 L131.5,26 C130.119288,26 129,24.8807119 129,23.5 C129,22.1192881 130.119288,21 131.5,21 Z"

@@ -759,6 +759,7 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /data-lock-screen-overlay="dark"/)
   assert.match(componentSource, /viewBox="0 0 402 874"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"/)
+  assert.match(componentSource, /data-overlay-layer="home-indicator"[\s\S]*?transform="translate\(0 830\)"/)
   assert.match(componentSource, /data-overlay-layer="dynamic-island"/)
   assert.match(componentSource, /data-overlay-layer="widgets-complication-1-fg"/)
   assert.match(componentSource, /Lock Screen - iPhone - Controls\.svg/)
@@ -794,7 +795,7 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(runtimeSource, /function getMsUntilNextMinute/)
 })
 
-test("Home preview maps accent color into lock screen overlay without touching top status time", () => {
+test("Home preview maps accent and background colors into lock screen overlay", () => {
   const previewSource = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
   const frameSource = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
   const helperSource = readSource(
@@ -803,19 +804,30 @@ test("Home preview maps accent color into lock screen overlay without touching t
 
   assert.match(
     previewSource,
-    /import \{ createLockScreenAccentOverlayColors \} from "\.\/lock-screen-overlay\/lock-screen-overlay\.colors"/
+    /import \{[\s\S]*?createLockScreenAccentOverlayColors,[\s\S]*?createLockScreenTopOverlayColors,[\s\S]*?\} from "\.\/lock-screen-overlay\/lock-screen-overlay\.colors"/
   )
-  assert.match(previewSource, /const overlayColors = createLockScreenAccentOverlayColors\(config\.accentColor\)/)
+  assert.match(
+    previewSource,
+    /const overlayColors = \{\s*\.\.\.createLockScreenTopOverlayColors\(config\.bgColor\),\s*\.\.\.createLockScreenAccentOverlayColors\(config\.accentColor\),\s*\}/
+  )
   assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayColors=\{overlayColors\}/)
 
   assert.match(helperSource, /function createLockScreenAccentOverlayColors\(accentColor\)/)
+  assert.match(helperSource, /function createLockScreenTopOverlayColors\(bgColor\)/)
   assert.match(helperSource, /"time-shape":\s*accentColor/)
   assert.match(helperSource, /"date-text":\s*accentColor/)
   assert.match(helperSource, /"widgets-complication-1-fg":\s*accentColor/)
   assert.match(helperSource, /"widgets-complication-4-fg":\s*accentColor/)
   assert.match(helperSource, /"widgets-complication-1-bg":\s*resolveAccentAlpha\(accentColor,\s*0\.15\)/)
   assert.match(helperSource, /"widgets-complication-4-bg":\s*resolveAccentAlpha\(accentColor,\s*0\.15\)/)
-  assert.doesNotMatch(helperSource, /status-bar-leading/)
+  assert.match(helperSource, /getContrastBase\(bgColor\)/)
+  assert.match(helperSource, /"home-indicator":\s*topColor/)
+  assert.match(helperSource, /"status-bar-leading":\s*topColor/)
+  assert.match(helperSource, /"status-bar-trailing":\s*topColor/)
+  assert.match(helperSource, /battery:\s*topColor/)
+  assert.match(helperSource, /wifi:\s*topColor/)
+  assert.match(helperSource, /cellular:\s*topColor/)
+  assert.doesNotMatch(helperSource, /"status-bar-leading":\s*accentColor/)
 
   assert.match(frameSource, /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors\s*\}\)/)
   assert.match(frameSource, /colors=\{overlayColors\}/)

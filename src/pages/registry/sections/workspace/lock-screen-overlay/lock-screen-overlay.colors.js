@@ -1,9 +1,13 @@
 /**
- * [INPUT]: 依赖 accent hex 颜色字符串，无其他运行时依赖
- * [OUTPUT]: 对外提供 createLockScreenAccentOverlayColors 工具，生成主时钟/日期/widgets 的 overlay 颜色覆写映射
- * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到 lock screen overlay，同时保留 widgets fg/bg 派生关系并排除 top 状态栏时间
+ * [INPUT]: 依赖 shared/wallpaper-core 的背景明暗判断与 accent/bg hex 颜色字符串
+ * [OUTPUT]: 对外提供 createLockScreenAccentOverlayColors、createLockScreenTopOverlayColors 与 resolveAccentAlpha 工具，生成 lock screen overlay 的颜色覆写映射
+ * [POS]: workspace/lock-screen-overlay 的私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏与 home indicator token，并保留 widgets fg/bg 派生关系
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+import { getContrastBase } from "../../../../../../shared/wallpaper-core.js"
+
+const TOP_COLOR_FOR_DARK_BG = "var(--text-color-kumo-inverse)"
+const TOP_COLOR_FOR_LIGHT_BG = "var(--text-color-kumo-default)"
 
 function isHexColor(value) {
     return typeof value === "string" && /^#([0-9a-fA-F]{6})$/.test(value.trim())
@@ -18,6 +22,11 @@ function resolveAccentAlpha(accentColor, alpha) {
     const blue = Number.parseInt(normalized.slice(5, 7), 16)
 
     return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+}
+
+function resolveTopTokenColor(bgColor) {
+    if (!isHexColor(bgColor)) return undefined
+    return getContrastBase(bgColor) === "255,255,255" ? TOP_COLOR_FOR_DARK_BG : TOP_COLOR_FOR_LIGHT_BG
 }
 
 function createLockScreenAccentOverlayColors(accentColor) {
@@ -37,4 +46,18 @@ function createLockScreenAccentOverlayColors(accentColor) {
     }
 }
 
-export { createLockScreenAccentOverlayColors, resolveAccentAlpha }
+function createLockScreenTopOverlayColors(bgColor) {
+    const topColor = resolveTopTokenColor(bgColor)
+    if (!topColor) return {}
+
+    return {
+        "home-indicator": topColor,
+        "status-bar-leading": topColor,
+        "status-bar-trailing": topColor,
+        battery: topColor,
+        wifi: topColor,
+        cellular: topColor,
+    }
+}
+
+export { createLockScreenAccentOverlayColors, createLockScreenTopOverlayColors, resolveAccentAlpha }

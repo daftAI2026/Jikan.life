@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.18] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Color Integration**: Enhanced the lock screen preview overlay to dynamically respond to the user's background color. The top status bar (time, battery, wifi, cellular) and home indicator now automatically adapt their color contrast—using inverse tokens on dark backgrounds and default tokens on light backgrounds—ensuring optimal visibility.
+
+### Architecture
+- **Overlay Color Engineering**: Extracted `createLockScreenTopOverlayColors` within `lock-screen-overlay.colors.js` to compute background contrast logic independently. This separation shields the top status elements and home indicator from inappropriate accent color bleed.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly validate the light/dark background contrast token mapping. Extended `kumo-migration.ui.behavior.test.js` to assert the structural merging of both accent and background color profiles within `HomePreviewPane`.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the new top overlay color generation mechanics.
+
 ## [1.8.17] - 2026-03-11
 
 ### UI & UX

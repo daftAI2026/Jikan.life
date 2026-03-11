@@ -9,7 +9,7 @@ goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyG
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
-HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets overlay 配色，确保所见即所得。
+HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets、把 bgColor 按背景明暗规则投影到 top 状态栏 overlay 配色，确保所见即所得。
 LockScreenPreviewFrame.jsx: Figma 锁屏壳私有 frame，收口 `450x920 / 402x874 / inset 24,23` 基准，overlay 改走 inline 组件，bezel 继续走静态资源。
 HomeSettingsPane.jsx: 右侧设置面板主容器；回归 pane 编排层，只负责卡片顺序、6 站位空态 Skeleton Base、`revealStage` 渐进解锁、segmented workspace（`mobile + md drawer open`）与 grid 布局分流、title/body skeleton 与 `useAnchoredSetupRow` 语义收口；Guide 宿主继续读取 `shouldRenderPaneGuideHost`，导出 `SETTINGS_CARD_IDS`
 HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；承载 active card 壳、tab rail、隐藏测量节点、tab label skeleton 与视图专属 helper/常量，不再与 pane 编排层混写
@@ -30,7 +30,7 @@ workspace/ - Home 双栏工作区子模块 (15 files + cards/ + lock-screen-over
 只使用 Kumo token 与 `@/components/ui/*` 组件语义；任何配置字段新增必须同步更新 hook 输出和右侧表单映射，并同步 URL 参数链路。
 
 变更日志
-2026-03-11: `HomePreviewPane.jsx` 新增 `lock-screen-overlay/lock-screen-overlay.colors.js` 配色映射链，把 workspace `accentColor` 显式投影到锁屏 overlay 的 `time-shape`、`date-text` 与四个 widgets；widgets 继续保持 `fg = accent / bg = accent 15% alpha` 关系，`status-bar-leading` 作为 top 层时间保持独立不参与本轮 accent 映射。`lock-screen-overlay/LockScreenDarkOverlay.jsx` 仍保留主时钟真实 24 小时制、真实英文日期与字体分流逻辑。
+2026-03-11: `HomePreviewPane.jsx` 新增并扩展 `lock-screen-overlay/lock-screen-overlay.colors.js` 配色映射链：workspace `accentColor` 显式投影到锁屏 overlay 的 `time-shape`、`date-text` 与四个 widgets，widgets 继续保持 `fg = accent / bg = accent 15% alpha` 关系；workspace `bgColor` 则复用现有背景明暗判断规则，映射到整条 top 状态栏（`status-bar-leading/status-bar-trailing/battery/wifi/cellular`）与 `home-indicator` 的 `kumo default/inverse` token。`lock-screen-overlay/LockScreenDarkOverlay.jsx` 仍保留主时钟真实 24 小时制、真实英文日期与字体分流逻辑。
 2026-03-11: `lock-screen-overlay/LockScreenDarkOverlay.jsx` 改为“Stack 静态 controls + 其余层 inline”混合结构；`public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 升级为正式静态资源，运行时不再内联 Action 组几何。
 2026-03-10: 新增 `LockScreenPreviewFrame.jsx` 与 `public/preview/ios26001/*` 静态 SVG，左侧 preview 固定切到 Figma `Lock Screen` 壳层；以 `Wallpaper 402x874` 为比例真相源并锁定目标高度 `510px`，`HomePreviewPane` 仅保留 live canvas / 空态提示内容。
 2026-03-10: `HomePreviewPane` 的 preview 缩放矩阵收口为严格等比 `previewScale`，移除 `scaleX/scaleY` 分离缩放导致的几何轻微椭圆化；渲染路径仍保持“导出坐标先绘制，再映射到 preview”不变。
