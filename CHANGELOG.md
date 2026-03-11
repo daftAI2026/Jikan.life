@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.30] - 2026-03-12
+
+### UI & UX
+- **Goal Wallpaper Restoration**: Restored the original Figma typography metrics and layout geometry for the Goal wallpaper countdown. The completion ring stroke width has been significantly increased (from \`8\` to \`20\`), and font sizes for the number, label, and goal name have been reverted to their intended larger proportions, re-establishing visual impact.
+- **Localization Refusal**: Reverted the abbreviated "Days left" suffix (e.g., "天", "日") back to the fully verbose localized phrases (e.g., "剩余天数", "剩餘天數", "残り日数") across Chinese and Japanese targets to ensure semantic clarity.
+
+### Tests
+- **Structural Constraints**: Updated \`kumo-migration.core.behavior.test.js\` to strictly assert the new \`stroke-width="20"\` boundary for the Goal countdown ring.
+- **Visual Hash Synchronization**: Locked down the new deterministic SHA-256 SVG hash for the Goal wallpaper in \`wallpaper-visual-snapshots.behavior.test.js\` to reflect the restored typography and ring geometry.
+
 ## [1.8.29] - 2026-03-12
 
 ### UI & UX

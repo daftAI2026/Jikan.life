@@ -301,7 +301,7 @@ export function computeGoalLayout(options) {
         labelY: centerY + (height * 0.08),
         goalNameY: height * 0.73,
         targetDateY: height * 0.77, // 新增
-        ringStrokeWidth: 8,
+        ringStrokeWidth: 20,
         numberFontSize: width * 0.2, // 修正：原版是 0.2
         labelFontSize: width * 0.04, // 修正：原版是 0.04
         nameFontSize: width * 0.05 // 修正：原版是 0.05

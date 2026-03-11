@@ -324,7 +324,7 @@ test("Worker goal SVG uses shared goal ring stroke width and number offset", asy
     today: { year: 2026, month: 3, day: 10 },
   })
 
-  assert.match(svg, /stroke-width="8"/)
+  assert.match(svg, /stroke-width="20"/)
 
   const numberYMatch = svg.match(/<text x="589\.5" y="([^"]+)"[^>]*>296<\/text>/)
   assert.ok(numberYMatch, "expected goal days number text node")
