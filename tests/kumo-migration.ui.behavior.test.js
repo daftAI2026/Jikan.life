@@ -717,6 +717,9 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   const componentSource = readSource(
     "src/pages/registry/sections/workspace/lock-screen-overlay/LockScreenDarkOverlay.jsx"
   )
+  const symbolsSource = readSource(
+    "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.symbols.js"
+  )
   const runtimeSource = readSource(
     "src/pages/registry/sections/workspace/lock-screen-overlay/lock-screen-overlay.runtime.js"
   )
@@ -737,7 +740,6 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(constantsSource, /"swipe-indicator"/)
   assert.match(constantsSource, /"date-text"/)
   assert.match(constantsSource, /"time-shape"/)
-  assert.match(constantsSource, /"dynamic-island"/)
   assert.match(constantsSource, /"status-bar-leading"/)
   assert.match(constantsSource, /"status-bar-trailing"/)
   assert.match(constantsSource, /"battery"/)
@@ -750,7 +752,6 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
     /const WIDGET_BACKGROUND_COLOR = "color-mix\(in srgb, var\(--text-color-kumo-inverse\) 15%, transparent\)"/
   )
   assert.match(constantsSource, /"home-indicator":/)
-  assert.match(constantsSource, /"dynamic-island":/)
   assert.match(constantsSource, /"widgets-complication-1-bg":\s*WIDGET_BACKGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-1-fg":\s*WIDGET_FOREGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-bg":\s*WIDGET_BACKGROUND_COLOR/)
@@ -760,7 +761,8 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /viewBox="0 0 402 874"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"/)
   assert.match(componentSource, /data-overlay-layer="home-indicator"[\s\S]*?transform="translate\(0 830\)"/)
-  assert.match(componentSource, /data-overlay-layer="dynamic-island"/)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="dynamic-island"/)
+  assert.doesNotMatch(constantsSource, /"dynamic-island"/)
   assert.match(componentSource, /data-overlay-layer="widgets-complication-1-fg"/)
   assert.match(componentSource, /Lock Screen - iPhone - Controls\.svg/)
   assert.match(componentSource, /<image[\s\S]*?href=\{LOCK_SCREEN_CONTROLS_ASSET_SRC\}/)
@@ -775,7 +777,11 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /resolveLockScreenEnglishFontFamily/)
   assert.match(componentSource, /getMsUntilNextMinute/)
   assert.match(componentSource, /const overlayTextFontFamily = englishFontFamily/)
-  assert.match(componentSource, /const overlaySymbolFontFamily = "SF Pro"/)
+  assert.doesNotMatch(componentSource, /overlaySymbolFontFamily/)
+  assert.match(
+    componentSource,
+    /from "\.\/lock-screen-overlay\.symbols"/
+  )
   assert.match(componentSource, /x="201"/)
   assert.match(componentSource, /fontSize="22"/)
   assert.match(componentSource, /fontWeight="500"/)
@@ -783,10 +789,30 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /fontSize="120"/)
   assert.doesNotMatch(componentSource, />\s*Tue April 1\s*</)
   assert.doesNotMatch(componentSource, />\s*9:41\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*72\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*52\s*</)
+  assert.doesNotMatch(componentSource, /data-overlay-layer="widgets-complication-1-fg"[\s\S]*?>\s*89\s*</)
   assert.doesNotMatch(componentSource, /M97\.0585938,115\.464844/)
+  assert.match(symbolsSource, /const APPLE_WATCH_SYMBOL_PATH =/)
+  assert.match(symbolsSource, /const SUN_HORIZON_FILL_TOP_PATH =/)
+  assert.match(symbolsSource, /const SUN_HORIZON_FILL_BOTTOM_PATH =/)
+  assert.match(symbolsSource, /const UMBRELLA_FILL_PATH =/)
+  assert.match(symbolsSource, /export \{/)
+  assert.match(componentSource, /d=\{APPLE_WATCH_SYMBOL_PATH\}/)
+  assert.match(componentSource, /d=\{SUN_HORIZON_FILL_TOP_PATH\}/)
+  assert.match(componentSource, /d=\{UMBRELLA_FILL_PATH\}/)
+  assert.doesNotMatch(componentSource, /􀿫/)
+  assert.doesNotMatch(componentSource, /􀆴/)
+  assert.doesNotMatch(componentSource, /􀙖/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_SCALE/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_TRANSLATE_X/)
+  assert.doesNotMatch(componentSource, /APPLE_WATCH_SYMBOL_TRANSLATE_Y/)
+  assert.match(componentSource, /transform="translate\(27\.16404 23\.45508\) scale\(1\.2\)"/)
+  assert.match(componentSource, /transform="translate\(27\.415 12\.242\) scale\(0\.6861\)"/)
+  assert.match(componentSource, /transform="translate\(28\.572 46\.433\) scale\(0\.797\)"/)
   assert.equal((componentSource.match(/fontFamily="SF Pro"/g) ?? []).length, 0)
-  assert.equal((componentSource.match(/fontFamily=\{overlaySymbolFontFamily\}/g) ?? []).length, 2)
-  assert.ok((componentSource.match(/fontFamily=\{overlayTextFontFamily\}/g) ?? []).length >= 9)
+  assert.equal((componentSource.match(/fontFamily=\{overlaySymbolFontFamily\}/g) ?? []).length, 0)
+  assert.ok((componentSource.match(/fontFamily=\{overlayTextFontFamily\}/g) ?? []).length >= 6)
   assert.match(componentSource, /style=\{\s*resolveLayerStyle\(/)
   assert.match(runtimeSource, /function formatLockScreenDate/)
   assert.match(runtimeSource, /function formatLockScreenTime24/)
@@ -814,6 +840,7 @@ test("Home preview maps accent and background colors into lock screen overlay", 
 
   assert.match(helperSource, /function createLockScreenAccentOverlayColors\(accentColor\)/)
   assert.match(helperSource, /function createLockScreenTopOverlayColors\(bgColor\)/)
+  assert.match(helperSource, /function resolveSwipeIndicatorColor\(bgColor\)/)
   assert.match(helperSource, /"time-shape":\s*accentColor/)
   assert.match(helperSource, /"date-text":\s*accentColor/)
   assert.match(helperSource, /"widgets-complication-1-fg":\s*accentColor/)
@@ -827,6 +854,8 @@ test("Home preview maps accent and background colors into lock screen overlay", 
   assert.match(helperSource, /battery:\s*topColor/)
   assert.match(helperSource, /wifi:\s*topColor/)
   assert.match(helperSource, /cellular:\s*topColor/)
+  assert.match(helperSource, /const swipeIndicatorColor = resolveSwipeIndicatorColor\(bgColor\)/)
+  assert.match(helperSource, /"swipe-indicator":\s*swipeIndicatorColor/)
   assert.doesNotMatch(helperSource, /"status-bar-leading":\s*accentColor/)
 
   assert.match(frameSource, /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors\s*\}\)/)

@@ -9,7 +9,7 @@ goal-date-updater.js: Goal 日期状态层，导出 `applyGoalRangeUpdate/applyG
 url-builder.js: URL 构建层，统一 year/life/goal 参数序列化与 Goal 日期校验
 view-model-mappers.js: 视图模型映射层，统一国家/语言选项与调色板 presets 组装
 device-visibility.js: 设备可见性策略单一真相源，统一导出可见分类集合与主分类常量，供渲染层与状态层共享。
-HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets、把 bgColor 按背景明暗规则投影到 top 状态栏 overlay 配色，确保所见即所得。
+HomePreviewPane.jsx: 左侧手机预览面板，固定挂载 Figma 锁屏壳；所有壁纸类型统一按导出坐标绘制后以严格等比缩放映射到 Wallpaper 槽位，并把 workspace accentColor 投影到主时钟/日期/widgets、把 bgColor 按背景明暗规则投影到 top 状态栏 overlay 配色，同时驱动 `swipe-indicator` 的真机近似拟合色，确保所见即所得。
 LockScreenPreviewFrame.jsx: Figma 锁屏壳私有 frame，收口 `450x920 / 402x874 / inset 24,23` 基准，overlay 改走 inline 组件，bezel 继续走静态资源。
 HomeSettingsPane.jsx: 右侧设置面板主容器；回归 pane 编排层，只负责卡片顺序、6 站位空态 Skeleton Base、`revealStage` 渐进解锁、segmented workspace（`mobile + md drawer open`）与 grid 布局分流、title/body skeleton 与 `useAnchoredSetupRow` 语义收口；Guide 宿主继续读取 `shouldRenderPaneGuideHost`，导出 `SETTINGS_CARD_IDS`
 HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；承载 active card 壳、tab rail、隐藏测量节点、tab label skeleton 与视图专属 helper/常量，不再与 pane 编排层混写

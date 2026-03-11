@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.19] - 2026-03-11
+
+### UI & UX
+- **Swipe Indicator Contrast**: Upgraded the lock screen preview to calculate a sophisticated, context-aware color for the bottom swipe indicator. It now converges to measured neutral tones (light or dark) or retains hue while softening depending on the dynamic background color.
+- **Dynamic Island Removal**: Removed the static pseudo "Dynamic Island" element from the lock screen UI layer to provide a cleaner, uninterrupted wallpaper preview experience.
+
+### Architecture
+- **Symbol Geometry Extraction**: Eliminated reliance on the proprietary `SF Pro` font fallback for SF Symbols (e.g., Apple Watch, Sunrise, and Umbrella icons). These icons have been entirely replaced with pure SVG paths extracted into an independent `lock-screen-overlay.symbols.js` module, guaranteeing perfect icon rendering across all operating systems.
+
+### Documentation & Tests
+- **Visual Integrity Guards**: Expanded unit tests (`lock-screen-overlay-colors.unit.test.js`) to rigidly assert the light/dark neutral convergence and hue-retention logic of the new swipe indicator color generation.
+- **Structural Guards**: Updated `kumo-migration.ui.behavior.test.js` to rigidly forbid the presence of legacy `SF Pro` font declarations for symbols, hardcoded complication text, and the dynamic island layer, verifying the new pure SVG path structures.
+- **Fractal Protocol**: Executed full GEB architecture synchronization across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` to reflect the extracted symbols module and new color mechanics.
+
 ## [1.8.18] - 2026-03-11
 
 ### UI & UX

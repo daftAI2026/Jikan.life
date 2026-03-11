@@ -1,11 +1,17 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper 与 `public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
- * [OUTPUT]: 对外提供 LockScreenDarkOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，普通 overlay 文本统一走收口字体策略，Stack 使用外部静态 controls 资源
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期/时间与英文字体策略由 runtime helper 收口，普通文本与 SF Symbols glyph 分离字体职责，主时钟改用中线文本锚点维持锁屏观感，Stack 回退为静态资源引用
+ * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、`lock-screen-overlay.symbols` 几何常量与 `public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
+ * [OUTPUT]: 对外提供 LockScreenDarkOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何，Stack 使用外部静态 controls 资源
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期/时间与英文字体策略由 runtime helper 收口，主时钟改用中线文本锚点维持锁屏观感，第 1/3/4 个圆形组件改为纯环+内联 SVG path，Stack 回退为静态资源引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
 import { LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS } from "./lock-screen-dark-overlay.constants"
+import {
+    APPLE_WATCH_SYMBOL_PATH,
+    SUN_HORIZON_FILL_BOTTOM_PATH,
+    SUN_HORIZON_FILL_TOP_PATH,
+    UMBRELLA_FILL_PATH,
+} from "./lock-screen-overlay.symbols"
 import {
     formatLockScreenDate,
     formatLockScreenTime24,
@@ -36,7 +42,6 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
         isAppleRuntimePlatform(typeof navigator === "object" ? navigator : null)
     )
     const overlayTextFontFamily = englishFontFamily
-    const overlaySymbolFontFamily = "SF Pro"
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
@@ -88,9 +93,10 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                         <text x="27.6345215" y="55" fontFamily={overlayTextFontFamily} fontSize="11" fontWeight="400">
                             PM
                         </text>
-                        <text x="26.9970703" y="22" fontFamily={overlaySymbolFontFamily} fontSize="12" fontWeight="400">
-                            􀆴
-                        </text>
+                        <g transform="translate(27.415 12.242) scale(0.6861)">
+                            <path d={SUN_HORIZON_FILL_TOP_PATH} />
+                            <path d={SUN_HORIZON_FILL_BOTTOM_PATH} />
+                        </g>
                     </g>
                 </g>
 
@@ -109,9 +115,10 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                             fillRule="nonzero"
                             transform="translate(35.95 9.65) rotate(90) translate(-35.95 -9.65)"
                         />
-                        <text x="27.2" y="61" fontFamily={overlaySymbolFontFamily} fontSize="15" fontWeight="500">
-                            􀙖
-                        </text>
+                        <path
+                            d={UMBRELLA_FILL_PATH}
+                            transform="translate(28.572 46.433) scale(0.797)"
+                        />
                         <text x="17.6740723" y="39" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="400">
                             50%
                         </text>
@@ -147,28 +154,22 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                 </g>
 
                 <g>
-                    <g transform="translate(7 7)">
-                        <g data-overlay-layer="widgets-complication-1-bg" style={resolveLayerStyle("widgets-complication-1-bg", colors)}>
-                            <path
-                                fillRule="evenodd"
-                                d="M58,28.9798986 C58,34.135712 56.6429884,39.1005509 54.1056161,43.4751446 C53.2577089,44.9369913 51.3857625,45.4344096 49.9245068,44.5861595 C48.4632511,43.7379094 47.9660339,41.8652059 48.8139411,40.4033592 C50.8142469,36.954703 51.8819888,33.0482025 51.8819888,28.9798986 C51.8819888,23.5425687 49.9818399,18.5484897 46.8085953,14.6244779 C48.9743633,14.1795374 50.7048005,12.5327621 51.2698066,10.4158039 C55.4714661,15.4434823 58,21.9163821 58,28.9798986 Z M29.0004749,0 C34.1221446,0 38.9338053,1.32679978 43.1099447,3.65528404 C41.1761333,4.583092 39.8299955,6.54477645 39.7929339,8.8183212 C36.5793997,7.09698299 32.9041821,6.12048558 29.0004749,6.12048558 C16.3614632,6.12048558 6.1180112,16.3553242 6.1180112,28.9798986 C6.1180112,33.0469666 7.18602963,36.9536979 9.18634515,40.4038529 C10.0339798,41.8658577 9.53641351,43.7384684 8.07499972,44.5864459 C6.61358594,45.4344233 4.74173233,44.9366558 3.89409768,43.474651 C1.3572301,39.099048 0,34.1344022 0,28.9798986 C0,12.9733655 12.9842837,0 29.0004749,0 Z"
-                            />
+                    <g data-overlay-layer="widgets-complication-1-bg" style={resolveLayerStyle("widgets-complication-1-bg", colors)}>
+                        <path
+                            fillRule="evenodd"
+                            d="M36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C19.9837423,65 7,52.0162577 7,36 C7,19.9837423 19.9837423,7 36,7 Z M36,12.5238095 C23.034458,12.5238095 12.5238095,23.034458 12.5238095,36 C12.5238095,48.965542 23.034458,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
+                        />
                     </g>
                     <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
-                        <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
-                        <text x="14.8560182" y="35.5" fontFamily={overlayTextFontFamily} fontSize="24.5203082" fontWeight="400">
-                            72
-                        </text>
+                        <path
+                            fillRule="evenodd"
+                            d="M35.8317525,12.518769 C34.3847423,12.4318173 33.2380952,11.2307679 33.2380952,9.76190476 C33.2380952,8.23654688 34.4746421,7 36,7 C52.0162577,7 65,19.9837423 65,36 C65,52.0162577 52.0162577,65 36,65 C27.9918711,65 20.7418711,61.7540644 15.4939033,56.5060967 L15.5013483,56.4996523 C15.0012478,55.9998064 14.6919048,55.3091239 14.6919048,54.5461905 C14.6919048,53.0208326 15.9284516,51.7842857 17.4538095,51.7842857 C18.2901248,51.7842857 19.0396219,52.1559982 19.5461006,52.7432227 L19.4489048,52.649 L19.7060231,52.9008575 C23.9280078,56.9721655 29.6715807,59.4761905 36,59.4761905 C48.965542,59.4761905 59.4761905,48.965542 59.4761905,36 C59.4761905,23.034458 48.965542,12.5238095 36,12.5238095 Z"
+                        />
+                        <path
+                            d={APPLE_WATCH_SYMBOL_PATH}
+                            transform="translate(27.16404 23.45508) scale(1.2)"
+                        />
                     </g>
-                </g>
-                <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
-                    <text x="38.975805" y="62" fontFamily={overlayTextFontFamily} fontSize="12.2601541" fontWeight="400">
-                        89
-                    </text>
-                    <text x="16.8385342" y="62" fontFamily={overlayTextFontFamily} fontSize="12.2601541" fontWeight="400">
-                        52
-                    </text>
-                </g>
                 </g>
             </g>
 
@@ -210,13 +211,6 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                 >
                     {dateText}
                 </text>
-            </g>
-
-            <g data-overlay-layer="dynamic-island" style={resolveLayerStyle("dynamic-island", colors)}>
-                <path
-                    fillRule="evenodd"
-                    d="M241.789447,51 C244.467293,51 247.097945,51.0103674 249.748729,50.3591695 C252.36387,49.7170534 254.778024,48.5034573 256.86413,46.7701811 C261.065054,43.2790742 263.5,38.0187003 263.5,32.5 C263.5,26.9812997 261.065384,21.7212621 256.86413,18.2301552 C254.778684,16.4972154 252.36519,15.2836193 249.750379,14.6411668 C247.098936,13.9896326 244.467953,14 241.789447,14 L160.210223,14 C157.532047,14 154.901725,13.9896326 152.250941,14.6408305 C149.6358,15.2829466 147.221646,16.4965427 145.13587,18.2298189 C140.934946,21.7209258 138.5,26.9812997 138.5,32.5 C138.5,38.018364 140.934946,43.2790742 145.13554,46.7698448 C147.220986,48.5027846 149.63448,49.7163807 152.249291,50.3588332 C154.900734,51.0103674 157.531717,51 160.210223,51 L241.789447,51 Z"
-                />
             </g>
 
             <g transform="translate(18 19)">
