@@ -28,6 +28,8 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 
 变更日志
 2026-03-12: 更新 `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：Goal 圆环护栏从“剩余比例递减环”翻为“完成比例顺时针增长环”，并新增 `goal-ring-geometry.js` 正式接线断言，防止再次出现“写了真相源但未消费”的孤儿模块。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将首次引导锁屏 overlay 收尾阶段纳入护栏，要求 `HomeGrid.jsx` 新增独立 `isPreviewChromeRevealed` 状态与 ref 化调度清理、卡片全解锁后额外停顿 `150ms` 再通过下一帧 `requestAnimationFrame` reveal preview chrome，并要求 `HomePreviewPane.jsx` 改为显式消费父级 `showOverlay`。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：要求 `LockScreenPreviewFrame.jsx` 为整套锁屏 overlay 增加独立淡入 wrapper（`data-preview-overlay="lock-screen"` + `animate-in fade-in duration-150`），防止动画回流到 `LockScreenOverlay.jsx` 内部层树。
 2026-03-12: 更新 `lock-screen-overlay-runtime.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 的 `wallpaperLang` 透传链，要求仅 `date-text` 按 `en / zh-CN / zh-TW / ja` 输出手工拼接格式并复用 `getWallpaperFontFamily`；其余 overlay 文本继续保持既有英文字体策略。
 2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-3/-3` 收回到 `0/0`，继续要求 offset 只作用于 glass 原始像素坐标，不回流到底盘或 icon。
 2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-1/-1` 调整到 `-3/-3`，继续要求偏移只作用于 glass 原始像素坐标，不回流到底盘或 icon。

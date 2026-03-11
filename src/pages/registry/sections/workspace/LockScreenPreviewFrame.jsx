@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 React children、lock-screen-overlay inline 组件、Figma bezel 静态 SVG 资源与 workspace bgColor / wallpaperLang / showWidgets
  * [OUTPUT]: 对外提供 LockScreenPreviewFrame 组件、LOCK_SCREEN_LAYOUT 常量、overlay 默认颜色协议
- * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放，并把 overlay 颜色控制、底部 action glass 背景色、Wallpaper Language、preview widget 可见性与统一 overlay scale 收口到稳定入口
+ * [POS]: registry/sections/workspace 的预览壳层，让 live preview 以 Wallpaper 槽位为基准反推整机缩放，并把 overlay 颜色控制、底部 action glass 背景色、Wallpaper Language、preview widget 可见性与统一 overlay scale 收口到稳定入口；overlay 进入时统一经由外层 wrapper 做轻量淡入，不把动画污染到内部 live 层树
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import {
@@ -65,20 +65,24 @@ function LockScreenPreviewFrame({
                 {children}
             </div>
             {showOverlay ? (
-                <LockScreenOverlay
-                    backgroundColor={overlayBackgroundColor}
-                    colors={overlayColors}
-                    overlayScale={LOCK_SCREEN_LAYOUT.scale}
-                    showWidgets={showWidgets}
-                    wallpaperLang={wallpaperLang}
-                    className="z-10"
-                    style={{
-                        left: `${scaledWallpaperLeft}px`,
-                        top: `${scaledWallpaperTop}px`,
-                        width: `${scaledWallpaperWidth}px`,
-                        height: `${scaledWallpaperHeight}px`,
-                    }}
-                />
+                <div
+                    data-preview-overlay="lock-screen"
+                    className="absolute inset-0 z-10 animate-in fade-in duration-500"
+                >
+                    <LockScreenOverlay
+                        backgroundColor={overlayBackgroundColor}
+                        colors={overlayColors}
+                        overlayScale={LOCK_SCREEN_LAYOUT.scale}
+                        showWidgets={showWidgets}
+                        wallpaperLang={wallpaperLang}
+                        style={{
+                            left: `${scaledWallpaperLeft}px`,
+                            top: `${scaledWallpaperTop}px`,
+                            width: `${scaledWallpaperWidth}px`,
+                            height: `${scaledWallpaperHeight}px`,
+                        }}
+                    />
+                </div>
             ) : null}
             <img
                 src={LOCK_SCREEN_LAYOUT.assets.bezel}

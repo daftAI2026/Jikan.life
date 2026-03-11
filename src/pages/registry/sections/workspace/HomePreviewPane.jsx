@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown), LockScreenPreviewFrame 与 lock-screen-overlay 配色/材质映射 helper
+ * [INPUT]: 依赖 react hooks, @/lib/renderer(drawYearProgress/drawLifeCalendar/drawGoalCountdown), LockScreenPreviewFrame 与 lock-screen-overlay 配色/材质映射 helper，以及父级显式透传的 showOverlay
  * [OUTPUT]: 对外提供 HomePreviewPane 组件（Figma 锁屏壳 + 空态提示文案/实时 Canvas 预览）
- * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标严格等比缩放后投影到固定锁屏 Wallpaper 槽位；同时把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏 token 配色与底部 action glass 材质，并把 wallpaperLang 与 goal-only 的 preview widget 可见性透传给锁屏 overlay
+ * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并按导出坐标严格等比缩放后投影到固定锁屏 Wallpaper 槽位；同时把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏 token 配色与底部 action glass 材质，并把父级控制的 preview chrome reveal、wallpaperLang 与 goal-only 的 preview widget 可见性透传给锁屏 overlay
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef } from "react"
@@ -20,7 +20,7 @@ const rendererByType = {
     goal: drawGoalCountdown,
 }
 
-function HomePreviewPane({ config, selectedDevice, t }) {
+function HomePreviewPane({ config, selectedDevice, showOverlay, t }) {
     const canvasRef = useRef(null)
     const showWidgets = config.selectedType !== "goal"
     const overlayColors = {
@@ -77,7 +77,7 @@ function HomePreviewPane({ config, selectedDevice, t }) {
     return (
         <div className="flex h-full min-h-[420px] flex-col items-center justify-center gap-4 px-6 py-8">
             <LockScreenPreviewFrame
-                showOverlay={Boolean(config.selectedType)}
+                showOverlay={showOverlay}
                 showWidgets={showWidgets}
                 overlayColors={overlayColors}
                 overlayBackgroundColor={config.bgColor}

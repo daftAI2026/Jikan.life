@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.29] - 2026-03-12
+
+### UI & UX
+- **Preview Reveal Sequence**: Enhanced the initial onboarding sequence in the workspace grid by introducing a deliberate `150ms` delay after all configuration cards are unlocked before dynamically fading in the live browser preview chrome. This avoids simultaneous visual jumps and establishes a natural, step-by-step cognitive focal path.
+- **Lock Screen Isolation**: Wrapped the `LockScreenOverlay` within an independent animated container (`data-preview-overlay="lock-screen"`). This explicitly isolates DOM fade-in transitions, preventing React layout tracking or animation reflows from bleeding back into the complex SVG structural paths of the lock screen shell.
+
+### Architecture
+- **State Orchestration**: Refactored `HomePreviewPane` to explicitly consume a parent `showOverlay` boolean from the grid instead of internally computing fallback triggers, centralizing the entire onboarding display sequence up to the `HomeGrid` root boundary.
+- **Timer Garbage Collection**: Guarded `HomeGrid` with a robust `autoflowTimerRef` system that structurally collects and aggressively clears pending `setTimeout`, `setInterval`, and `requestAnimationFrame` IDs on unmount, completely eradicating concurrent racing conditions during fast progression.
+
+### Documentation & Tests
+- **UI Sequence Guards**: Expanded `kumo-migration.ui.behavior.test.js` to rigidly encompass the new onboarding preview mechanics, asserting the synchronized delay variables, refs for timer disposal, strict boolean prop drilling, and physical fade-in wrapper inclusion within `LockScreenPreviewFrame`.
+- **Fractal Protocol**: Applied GEB documentation sync to `tests/CLAUDE.md` documenting the 150ms reveal strategy and layout boundaries.
+
 ## [1.8.28] - 2026-03-12
 
 ### Architecture
