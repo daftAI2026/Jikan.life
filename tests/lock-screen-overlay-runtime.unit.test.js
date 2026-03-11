@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert、node:path/node:url 与 lock-screen-overlay runtime helper
- * [OUTPUT]: 向 `node --test` 注册锁屏 overlay runtime helper 单测，覆盖英文日期格式、Apple 判定、字体栈决策与午夜刷新计时
- * [POS]: tests/ 的锁屏 overlay 运行时语义护栏，防止真实日期与英文设备字体分流回退成写死字符串
+ * [OUTPUT]: 向 `node --test` 注册锁屏 overlay runtime helper 单测，覆盖英文日期格式、24 小时制时间格式、Apple 判定、字体栈决策与分钟/午夜刷新计时
+ * [POS]: tests/ 的锁屏 overlay 运行时语义护栏，防止真实日期与真实系统时间回退成写死字符串
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -23,6 +23,19 @@ test("Lock screen overlay runtime formats English date as weekday month day", as
   assert.equal(
     formatLockScreenDate(new Date("2026-03-11T12:00:00Z")),
     "Wednesday, March 11"
+  )
+})
+
+test("Lock screen overlay runtime formats 24-hour time as HH:mm", async () => {
+  const { formatLockScreenTime24 } = await importRuntimeModule()
+
+  assert.equal(
+    formatLockScreenTime24(new Date("2026-03-11T10:24:00")),
+    "10:24"
+  )
+  assert.equal(
+    formatLockScreenTime24(new Date("2026-03-11T01:05:00")),
+    "01:05"
   )
 })
 
@@ -61,4 +74,13 @@ test("Lock screen overlay runtime computes milliseconds until next local midnigh
 
   assert.ok(duration > 0)
   assert.ok(duration <= 24 * 60 * 60 * 1000)
+})
+
+test("Lock screen overlay runtime computes milliseconds until next minute boundary", async () => {
+  const { getMsUntilNextMinute } = await importRuntimeModule()
+
+  const duration = getMsUntilNextMinute(new Date("2026-03-11T12:34:56.250"))
+
+  assert.ok(duration > 0)
+  assert.ok(duration <= 60 * 1000)
 })

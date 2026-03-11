@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.17] - 2026-03-11
+
+### UI & UX
+- **Lock Screen Real Time**: Upgraded the lock screen preview overlay to display the real 24-hour time for the main clock and the top-left status bar instead of hardcoded `9:41` and static SVG paths. The overlay now accurately refreshes automatically on the minute boundary.
+
+### Architecture
+- **Overlay Font Decoupling**: Separated the font stack responsibilities in `LockScreenDarkOverlay`. Regular text now universally follows the runtime platform font resolution (System Font or `Inter`), while SF Symbols glyphs are strictly isolated to use `SF Pro`, preventing font fallback drift on Windows/Android.
+- **Time Formatting Engine**: Extended `lock-screen-overlay.runtime.js` to provide consistent 24-hour `Intl.DateTimeFormat` text (`formatLockScreenTime24`) and precise minute-boundary calculation logic (`getMsUntilNextMinute`).
+- **Layout Alignment**: Corrected the lock screen widget group vertical offset from `669` to `679` to ensure perfect visual alignment with the new dynamic real-time text block geometry.
+
+### Documentation & Tests
+- **Runtime Integrity Guards**: Added unit tests to `lock-screen-overlay-runtime.unit.test.js` to rigidly assert the new 24-hour time formatting and next-minute boundary calculations.
+- **Visual Structure Guards**: Expanded `kumo-migration.ui.behavior.test.js` to enforce the structural absence of old hardcoded times (`9:41`), static clock path geometries, and unchecked inline `SF Pro` declarations on regular overlay text, locking down the exact exported real time properties.
+- **Fractal Protocol**: Executed full GEB architecture sync across `workspace/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `tests/CLAUDE.md` reflecting the new real-time components, decoupled font mechanics, and expanded test boundaries.
+
 ## [1.8.16] - 2026-03-11
 
 ### UI & UX

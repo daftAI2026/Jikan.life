@@ -29,20 +29,23 @@ const LOCK_SCREEN_DARK_OVERLAY_LAYER_IDS = [
     "cellular",
 ]
 
+const WIDGET_FOREGROUND_COLOR = "var(--text-color-kumo-inverse)"
+const WIDGET_BACKGROUND_COLOR = "color-mix(in srgb, var(--text-color-kumo-inverse) 15%, transparent)"
+
 const LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS = {
     "home-indicator": "#FFFFFF",
     "action-left-bg": "rgba(255, 255, 255, 0.07)",
     "action-left-icon": "#D9D9D9",
     "action-right-bg": "rgba(255, 255, 255, 0.07)",
     "action-right-icon": "#D9D9D9",
-    "widgets-complication-1-bg": "rgba(255, 255, 255, 0.12)",
-    "widgets-complication-1-fg": "var(--text-color-kumo-inverse)",
-    "widgets-complication-2-bg": "rgba(255, 255, 255, 0.12)",
-    "widgets-complication-2-fg": "var(--text-color-kumo-inverse)",
-    "widgets-complication-3-bg": "rgba(255, 255, 255, 0.12)",
-    "widgets-complication-3-fg": "var(--text-color-kumo-inverse)",
-    "widgets-complication-4-bg": "rgba(255, 255, 255, 0.12)",
-    "widgets-complication-4-fg": "var(--text-color-kumo-inverse)",
+    "widgets-complication-1-bg": WIDGET_BACKGROUND_COLOR,
+    "widgets-complication-1-fg": WIDGET_FOREGROUND_COLOR,
+    "widgets-complication-2-bg": WIDGET_BACKGROUND_COLOR,
+    "widgets-complication-2-fg": WIDGET_FOREGROUND_COLOR,
+    "widgets-complication-3-bg": WIDGET_BACKGROUND_COLOR,
+    "widgets-complication-3-fg": WIDGET_FOREGROUND_COLOR,
+    "widgets-complication-4-bg": WIDGET_BACKGROUND_COLOR,
+    "widgets-complication-4-fg": WIDGET_FOREGROUND_COLOR,
     "swipe-indicator": "rgba(255, 255, 255, 0.5)",
     "date-text": "#F5F5F5",
     "time-shape": "#F7F7F7",

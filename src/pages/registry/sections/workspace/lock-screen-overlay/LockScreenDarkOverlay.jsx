@@ -1,14 +1,15 @@
 /**
  * [INPUT]: 依赖 React 的 `useEffect/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper 与 `public/preview/ios26001/Lock Screen - iPhone - Controls.svg` 静态 Stack 资源，可接收外部 layer id -> CSS color 覆写
- * [OUTPUT]: 对外提供 LockScreenDarkOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 改为真实日期并锁定中线居中锚点，Stack 使用外部静态 controls 资源
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期与英文字体策略由 runtime helper 收口，长英文日期通过中线锚点维持锁屏观感，Stack 回退为静态资源引用
+ * [OUTPUT]: 对外提供 LockScreenDarkOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中 date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，普通 overlay 文本统一走收口字体策略，Stack 使用外部静态 controls 资源
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 继续 inline，日期/时间与英文字体策略由 runtime helper 收口，普通文本与 SF Symbols glyph 分离字体职责，主时钟改用中线文本锚点维持锁屏观感，Stack 回退为静态资源引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
 import { LOCK_SCREEN_DARK_OVERLAY_DEFAULT_COLORS } from "./lock-screen-dark-overlay.constants"
 import {
     formatLockScreenDate,
-    getMsUntilNextLocalMidnight,
+    formatLockScreenTime24,
+    getMsUntilNextMinute,
     isAppleRuntimePlatform,
     resolveLockScreenEnglishFontFamily,
 } from "./lock-screen-overlay.runtime"
@@ -30,14 +31,17 @@ function resolveLayerStyle(layerId, colors, property = "fill") {
 function LockScreenDarkOverlay({ className, colors = {}, style }) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
     const dateText = formatLockScreenDate(currentDate)
-    const dateFontFamily = resolveLockScreenEnglishFontFamily(
+    const timeText = formatLockScreenTime24(currentDate)
+    const englishFontFamily = resolveLockScreenEnglishFontFamily(
         isAppleRuntimePlatform(typeof navigator === "object" ? navigator : null)
     )
+    const overlayTextFontFamily = englishFontFamily
+    const overlaySymbolFontFamily = "SF Pro"
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
             setCurrentDate(new Date())
-        }, getMsUntilNextLocalMidnight(currentDate))
+        }, getMsUntilNextMinute(currentDate))
 
         return () => window.clearTimeout(timeoutId)
     }, [currentDate])
@@ -69,7 +73,7 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                 />
             </g>
 
-            <g transform="translate(30 669)">
+            <g transform="translate(30 679)">
                 <g transform="translate(270 0)">
                     <g data-overlay-layer="widgets-complication-4-bg" style={resolveLayerStyle("widgets-complication-4-bg", colors)}>
                         <path
@@ -78,13 +82,13 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                         />
                     </g>
                     <g data-overlay-layer="widgets-complication-4-fg" style={resolveLayerStyle("widgets-complication-4-fg", colors)}>
-                        <text x="19.2115942" y="40" fontFamily="SF Pro" fontSize="15" fontWeight="500">
+                        <text x="19.2115942" y="40" fontFamily={overlayTextFontFamily} fontSize="15" fontWeight="500">
                             8:26
                         </text>
-                        <text x="27.6345215" y="55" fontFamily="SF Pro" fontSize="11" fontWeight="400">
+                        <text x="27.6345215" y="55" fontFamily={overlayTextFontFamily} fontSize="11" fontWeight="400">
                             PM
                         </text>
-                        <text x="26.9970703" y="22" fontFamily="SF Pro" fontSize="12" fontWeight="400">
+                        <text x="26.9970703" y="22" fontFamily={overlaySymbolFontFamily} fontSize="12" fontWeight="400">
                             􀆴
                         </text>
                     </g>
@@ -105,10 +109,10 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                             fillRule="nonzero"
                             transform="translate(35.95 9.65) rotate(90) translate(-35.95 -9.65)"
                         />
-                        <text x="27.2" y="61" fontFamily="SF Pro" fontSize="15" fontWeight="500">
+                        <text x="27.2" y="61" fontFamily={overlaySymbolFontFamily} fontSize="15" fontWeight="500">
                             􀙖
                         </text>
-                        <text x="17.6740723" y="39" fontFamily="SF Pro" fontSize="17" fontWeight="400">
+                        <text x="17.6740723" y="39" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="400">
                             50%
                         </text>
                     </g>
@@ -121,22 +125,22 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                                 fillRule="evenodd"
                                 d="M58,28.9798986 C58,34.135712 56.6429884,39.1005509 54.1056161,43.4751446 C53.2577089,44.9369913 51.3857625,45.4344096 49.9245068,44.5861595 C48.4632511,43.7379094 47.9660339,41.8652059 48.8139411,40.4033592 C50.8142469,36.954703 51.8819888,33.0482025 51.8819888,28.9798986 C51.8819888,23.5425687 49.9818399,18.5484897 46.8085953,14.6244779 C48.9743633,14.1795374 50.7048005,12.5327621 51.2698066,10.4158039 C55.4714661,15.4434823 58,21.9163821 58,28.9798986 Z M29.0004749,0 C34.1221446,0 38.9338053,1.32679978 43.1099447,3.65528404 C41.1761333,4.583092 39.8299955,6.54477645 39.7929339,8.8183212 C36.5793997,7.09698299 32.9041821,6.12048558 29.0004749,6.12048558 C16.3614632,6.12048558 6.1180112,16.3553242 6.1180112,28.9798986 C6.1180112,33.0469666 7.18602963,36.9536979 9.18634515,40.4038529 C10.0339798,41.8658577 9.53641351,43.7384684 8.07499972,44.5864459 C6.61358594,45.4344233 4.74173233,44.9366558 3.89409768,43.474651 C1.3572301,39.099048 0,34.1344022 0,28.9798986 C0,12.9733655 12.9842837,0 29.0004749,0 Z"
                             />
-                        </g>
-                        <g data-overlay-layer="widgets-complication-2-fg" style={resolveLayerStyle("widgets-complication-2-fg", colors)}>
-                            <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
-                            <text x="14.8560182" y="35.5" fontFamily="SF Pro" fontSize="24.5203082" fontWeight="400">
-                                72
-                            </text>
-                        </g>
                     </g>
-                    <text
-                        data-overlay-layer="widgets-complication-2-fg"
-                        x="25.451483"
-                        y="62"
-                        fontFamily="SF Pro"
-                        fontSize="12.2601541"
-                        fontWeight="400"
-                        style={resolveLayerStyle("widgets-complication-2-fg", colors)}
+                    <g data-overlay-layer="widgets-complication-2-fg" style={resolveLayerStyle("widgets-complication-2-fg", colors)}>
+                        <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
+                        <text x="14.8560182" y="35.5" fontFamily={overlayTextFontFamily} fontSize="24.5203082" fontWeight="400">
+                            72
+                        </text>
+                    </g>
+                </g>
+                <text
+                    data-overlay-layer="widgets-complication-2-fg"
+                    x="25.451483"
+                    y="62"
+                    fontFamily={overlayTextFontFamily}
+                    fontSize="12.2601541"
+                    fontWeight="400"
+                    style={resolveLayerStyle("widgets-complication-2-fg", colors)}
                     >
                         AQI
                     </text>
@@ -149,22 +153,22 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
                                 fillRule="evenodd"
                                 d="M58,28.9798986 C58,34.135712 56.6429884,39.1005509 54.1056161,43.4751446 C53.2577089,44.9369913 51.3857625,45.4344096 49.9245068,44.5861595 C48.4632511,43.7379094 47.9660339,41.8652059 48.8139411,40.4033592 C50.8142469,36.954703 51.8819888,33.0482025 51.8819888,28.9798986 C51.8819888,23.5425687 49.9818399,18.5484897 46.8085953,14.6244779 C48.9743633,14.1795374 50.7048005,12.5327621 51.2698066,10.4158039 C55.4714661,15.4434823 58,21.9163821 58,28.9798986 Z M29.0004749,0 C34.1221446,0 38.9338053,1.32679978 43.1099447,3.65528404 C41.1761333,4.583092 39.8299955,6.54477645 39.7929339,8.8183212 C36.5793997,7.09698299 32.9041821,6.12048558 29.0004749,6.12048558 C16.3614632,6.12048558 6.1180112,16.3553242 6.1180112,28.9798986 C6.1180112,33.0469666 7.18602963,36.9536979 9.18634515,40.4038529 C10.0339798,41.8658577 9.53641351,43.7384684 8.07499972,44.5864459 C6.61358594,45.4344233 4.74173233,44.9366558 3.89409768,43.474651 C1.3572301,39.099048 0,34.1344022 0,28.9798986 C0,12.9733655 12.9842837,0 29.0004749,0 Z"
                             />
-                        </g>
-                        <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
-                            <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
-                            <text x="14.8560182" y="35.5" fontFamily="SF Pro" fontSize="24.5203082" fontWeight="400">
-                                72
-                            </text>
-                        </g>
                     </g>
                     <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
-                        <text x="38.975805" y="62" fontFamily="SF Pro" fontSize="12.2601541" fontWeight="400">
-                            89
-                        </text>
-                        <text x="16.8385342" y="62" fontFamily="SF Pro" fontSize="12.2601541" fontWeight="400">
-                            52
+                        <circle cx="45.5" cy="9.2203" r="3.5" fillRule="nonzero" />
+                        <text x="14.8560182" y="35.5" fontFamily={overlayTextFontFamily} fontSize="24.5203082" fontWeight="400">
+                            72
                         </text>
                     </g>
+                </g>
+                <g data-overlay-layer="widgets-complication-1-fg" style={resolveLayerStyle("widgets-complication-1-fg", colors)}>
+                    <text x="38.975805" y="62" fontFamily={overlayTextFontFamily} fontSize="12.2601541" fontWeight="400">
+                        89
+                    </text>
+                    <text x="16.8385342" y="62" fontFamily={overlayTextFontFamily} fontSize="12.2601541" fontWeight="400">
+                        52
+                    </text>
+                </g>
                 </g>
             </g>
 
@@ -180,34 +184,25 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
             />
 
             <g transform="translate(0 79)">
-                <g data-overlay-layer="time-shape" transform="translate(43.1357 8.0156)" style={resolveLayerStyle("time-shape", colors)}>
-                    <polygon
-                        fillRule="nonzero"
-                        points="27.2148438 114 27.2148438 45.6796875 26.8632813 45.6796875 5.30078125 60.328125 5.30078125 44.625 27.15625 29.4492188 44.734375 29.4492188 44.734375 114"
-                    />
-                    <path
-                        fillRule="nonzero"
-                        d="M97.0585938,115.464844 C89.9101563,115.464844 83.7626953,113.6875 78.6162109,110.132813 C73.4697266,106.578125 69.5146484,101.53418 66.7509766,95.0009766 C63.9873047,88.4677734 62.6054688,80.71875 62.6054688,71.7539063 L62.6054688,71.6367187 C62.6054688,62.671875 63.9873047,54.9228516 66.7509766,48.3896484 C69.5146484,41.8564453 73.4697266,36.8222656 78.6162109,33.2871094 C83.7626953,29.7519531 89.9101563,27.984375 97.0585938,27.984375 C104.207031,27.984375 110.354492,29.7519531 115.500977,33.2871094 C120.647461,36.8222656 124.602539,41.8564453 127.366211,48.3896484 C130.129883,54.9228516 131.511719,62.671875 131.511719,71.6367187 L131.511719,71.7539063 C131.511719,80.71875 130.129883,88.4677734 127.366211,95.0009766 C124.602539,101.53418 120.647461,106.578125 115.500977,110.132813 C110.354492,113.6875 104.207031,115.464844 97.0585938,115.464844 Z M97.0585938,101.314453 C100.574219,101.314453 103.567383,100.142578 106.038086,97.7988281 C108.508789,95.4550781 110.393555,92.0761719 111.692383,87.6621094 C112.991211,83.2480469 113.640625,77.9453125 113.640625,71.7539062 L113.640625,71.6367188 C113.640625,65.4453125 112.991211,60.1523438 111.692383,55.7578125 C110.393555,51.3632813 108.508789,47.9990234 106.038086,45.6650391 C103.567383,43.3310547 100.574219,42.1640625 97.0585938,42.1640625 C93.5429688,42.1640625 90.5498047,43.3310547 88.0791016,45.6650391 C85.6083984,47.9990234 83.7285156,51.3632813 82.4394531,55.7578125 C81.1503906,60.1523438 80.5058594,65.4453125 80.5058594,71.6367188 L80.5058594,71.7539062 C80.5058594,77.9453125 81.1503906,83.2480469 82.4394531,87.6621094 C83.7285156,92.0761719 85.6083984,95.4550781 88.0791016,97.7988281 C90.5498047,100.142578 93.5429688,101.314453 97.0585938,101.314453 Z"
-                    />
-                    <path
-                        fillRule="nonzero"
-                        d="M150.876953,102.046875 C148.220703,102.046875 145.974609,101.128906 144.138672,99.2929688 C142.302734,97.4570312 141.384766,95.2109375 141.384766,92.5546875 C141.384766,89.8984375 142.302734,87.6523438 144.138672,85.8164062 C145.974609,83.9804688 148.220703,83.0625 150.876953,83.0625 C153.533203,83.0625 155.779297,83.9804688 157.615234,85.8164062 C159.451172,87.6523438 160.369141,89.8984375 160.369141,92.5546875 C160.369141,95.2109375 159.451172,97.4570312 157.615234,99.2929688 C155.779297,101.128906 153.533203,102.046875 150.876953,102.046875 Z M150.876953,60.328125 C148.220703,60.328125 145.974609,59.4101563 144.138672,57.5742187 C142.302734,55.7382812 141.384766,53.4921875 141.384766,50.8359375 C141.384766,48.1796875 142.302734,45.9335938 144.138672,44.0976563 C145.974609,42.2617188 148.220703,41.34375 150.876953,41.34375 C153.533203,41.34375 155.779297,42.2617188 157.615234,44.0976563 C159.451172,45.9335938 160.369141,48.1796875 160.369141,50.8359375 C160.369141,53.4921875 159.451172,55.7382812 157.615234,57.5742187 C155.779297,59.4101563 153.533203,60.328125 150.876953,60.328125 Z"
-                    />
-                    <path
-                        fillRule="nonzero"
-                        d="M171.267578,114 L171.267578,101.900391 L201.150391,73.9511719 C204.802734,70.5332031 207.566406,67.6914063 209.441406,65.4257812 C211.316406,63.1601563 212.595703,61.1337891 213.279297,59.3466797 C213.962891,57.5595703 214.304688,55.6894531 214.304688,53.7363281 L214.304688,53.6191406 C214.304688,51.2949219 213.757813,49.2441406 212.664062,47.4667969 C211.570312,45.6894531 210.061523,44.2929687 208.137695,43.2773437 C206.213867,42.2617188 203.992187,41.7539063 201.472656,41.7539063 C198.601562,41.7539063 196.067383,42.3349609 193.870117,43.4970703 C191.672852,44.6591797 189.949219,46.2412109 188.699219,48.2431641 C187.449219,50.2451172 186.785156,52.515625 186.707031,55.0546875 L186.677734,55.5820312 L170.271484,55.5820312 L170.271484,55.1132812 C170.271484,49.8007812 171.619141,45.1035156 174.314453,41.0214844 C177.009766,36.9394531 180.706055,33.7460938 185.40332,31.4414062 C190.100586,29.1367188 195.427734,27.984375 201.384766,27.984375 C207.361328,27.984375 212.610352,29.0341797 217.131836,31.1337891 C221.65332,33.2333984 225.183594,36.1337891 227.722656,39.8349609 C230.261719,43.5361328 231.53125,47.7890625 231.53125,52.59375 L231.53125,52.7109375 C231.53125,56.1289063 230.920898,59.2929688 229.700195,62.203125 C228.479492,65.1132812 226.458008,68.1943359 223.635742,71.4462891 C220.813477,74.6982422 216.970703,78.5703125 212.107422,83.0625 L187.615234,105.386719 L194.382813,93.4921875 L194.382813,105.386719 L187.644531,99.9375 L232.732422,99.9375 L232.732422,114 L171.267578,114 Z"
-                    />
-                    <path
-                        fillRule="nonzero"
-                        d="M282.449219,114 L282.449219,98.5019531 L240.408203,98.5019531 L240.408203,83.7363281 C242.654297,80.1230469 244.910156,76.5048828 247.175781,72.8818359 C249.441406,69.2587891 251.707031,65.640625 253.972656,62.0273437 C256.238281,58.4140625 258.499023,54.7958984 260.754883,51.1728516 C263.010742,47.5498047 265.271484,43.9267578 267.537109,40.3037109 C269.802734,36.6806641 272.058594,33.0625 274.304688,29.4492188 L299.265625,29.4492188 L299.265625,84.3515625 L310.427734,84.3515625 L310.427734,98.5019531 L299.265625,98.5019531 L299.265625,114 L282.449219,114 Z M255.789062,84.8496094 L282.800781,84.8496094 L282.800781,42.2519531 L282.390625,42.2519531 C280.613281,45.0644531 278.84082,47.8720703 277.073242,50.6748047 C275.305664,53.4775391 273.538086,56.2802734 271.770508,59.0830078 C270.00293,61.8857422 268.225586,64.6982422 266.438477,67.5205078 C264.651367,70.3427734 262.874023,73.1552734 261.106445,75.9580078 C259.338867,78.7607422 257.566406,81.5683594 255.789062,84.3808594 L255.789062,84.8496094 Z"
-                    />
+                <g data-overlay-layer="time-shape" style={resolveLayerStyle("time-shape", colors)}>
+                    <text
+                        x="201"
+                        y="95"
+                        fontFamily={overlayTextFontFamily}
+                        fontSize="120"
+                        fontWeight="500"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                    >
+                        {timeText}
+                    </text>
                 </g>
 
                 <text
                     data-overlay-layer="date-text"
                     x="201"
                     y="21"
-                    fontFamily={dateFontFamily}
+                    fontFamily={overlayTextFontFamily}
                     fontSize="22"
                     fontWeight="500"
                     textAnchor="middle"
@@ -263,8 +258,8 @@ function LockScreenDarkOverlay({ className, colors = {}, style }) {
 
                 <g data-overlay-layer="status-bar-leading" style={resolveLayerStyle("status-bar-leading", colors)}>
                     <g transform="translate(13.3889 2)">
-                        <text x="25.0311649" y="16" fontFamily="SF Pro" fontSize="17" fontWeight="500">
-                            9:41
+                        <text x="25.0311649" y="16" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="500">
+                            {timeText}
                         </text>
                     </g>
                 </g>
