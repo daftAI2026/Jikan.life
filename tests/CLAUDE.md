@@ -3,7 +3,7 @@
 
 成员清单
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
-lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定英文真实日期格式、24 小时制时间格式、Apple 判定、英文字体分流与分钟/午夜刷新计时。
+lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
 lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
 kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、全局入口、基础 UI 封装、ColorPicker 语义与通用禁用项。
 kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
@@ -27,6 +27,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-12: 更新 `lock-screen-overlay-runtime.unit.test.js` 与 `kumo-migration.ui.behavior.test.js`：锁定 `HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 的 `wallpaperLang` 透传链，要求仅 `date-text` 按 `en / zh-CN / zh-TW / ja` 输出手工拼接格式并复用 `getWallpaperFontFamily`；其余 overlay 文本继续保持既有英文字体策略。
 2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-3/-3` 收回到 `0/0`，继续要求 offset 只作用于 glass 原始像素坐标，不回流到底盘或 icon。
 2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-1/-1` 调整到 `-3/-3`，继续要求偏移只作用于 glass 原始像素坐标，不回流到底盘或 icon。
 2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：在统一 `402x874` glass 平面的前提下，重新允许 `LockScreenOverlay.jsx` 为 DOM glass 层声明 `ACTION_GLASS_OFFSET_X/Y = -1`，并锁定偏移只作用于 glass 的原始像素坐标，不回流到底盘或 icon。

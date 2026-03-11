@@ -687,7 +687,7 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   ])
   assert.match(
     source,
-    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor\s*\}\)/
+    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor,\s*wallpaperLang\s*\}\)/
   )
   assert.match(source, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
   assert.match(source, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
@@ -703,6 +703,7 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   assert.match(source, /showOverlay \? \(/)
   assert.match(source, /<LockScreenOverlay[\s\S]*?colors=\{overlayColors\}/)
   assert.match(source, /<LockScreenOverlay[\s\S]*?backgroundColor=\{overlayBackgroundColor\}/)
+  assert.match(source, /<LockScreenOverlay[\s\S]*?wallpaperLang=\{wallpaperLang\}/)
   assert.match(source, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\}/)
@@ -762,7 +763,7 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(constantsSource, /"widgets-complication-1-fg":\s*WIDGET_FOREGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-bg":\s*WIDGET_BACKGROUND_COLOR/)
   assert.match(constantsSource, /"widgets-complication-4-fg":\s*WIDGET_FOREGROUND_COLOR/)
-  assert.match(componentSource, /function LockScreenOverlay\(\{\s*backgroundColor,\s*className,\s*colors\s*=\s*\{\},\s*overlayScale = 1,\s*style\s*\}\)/)
+  assert.match(componentSource, /function LockScreenOverlay\(\{\s*backgroundColor,\s*className,\s*colors\s*=\s*\{\},\s*overlayScale = 1,\s*style,\s*wallpaperLang\s*\}\)/)
   assert.match(componentSource, /data-lock-screen-overlay="lock-screen"/)
   assert.match(componentSource, /data-overlay-glass-layer="lock-screen-actions"/)
   assert.match(componentSource, /className="absolute left-0 top-0 overflow-hidden"/)
@@ -816,9 +817,11 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /useState/)
   assert.match(componentSource, /formatLockScreenDate/)
   assert.match(componentSource, /formatLockScreenTime24/)
-  assert.match(componentSource, /resolveLockScreenEnglishFontFamily/)
+  assert.match(componentSource, /resolveLockScreenFontFamily/)
   assert.match(componentSource, /getMsUntilNextMinute/)
-  assert.match(componentSource, /const overlayTextFontFamily = englishFontFamily/)
+  assert.match(componentSource, /formatLockScreenDate\(currentDate,\s*wallpaperLang\)/)
+  assert.match(componentSource, /const overlayTextFontFamily = resolveLockScreenFontFamily\(\s*isApplePlatform,\s*"en"\s*\)/)
+  assert.match(componentSource, /const dateTextFontFamily = resolveLockScreenFontFamily\(\s*isApplePlatform,\s*wallpaperLang\s*\)/)
   assert.doesNotMatch(componentSource, /overlaySymbolFontFamily/)
   assert.match(
     componentSource,
@@ -871,12 +874,14 @@ test("Lock screen overlay exports stable layer ids and default colors", () => {
   assert.match(componentSource, /transform="translate\(28\.572 46\.433\) scale\(0\.797\)"/)
   assert.equal((componentSource.match(/fontFamily="SF Pro"/g) ?? []).length, 0)
   assert.equal((componentSource.match(/fontFamily=\{overlaySymbolFontFamily\}/g) ?? []).length, 0)
-  assert.ok((componentSource.match(/fontFamily=\{overlayTextFontFamily\}/g) ?? []).length >= 6)
+  assert.ok((componentSource.match(/fontFamily=\{overlayTextFontFamily\}/g) ?? []).length >= 5)
+  assert.match(componentSource, /data-overlay-layer="date-text"[\s\S]*?fontFamily=\{dateTextFontFamily\}/)
   assert.match(componentSource, /style=\{\s*resolveLayerStyle\(/)
   assert.match(runtimeSource, /function formatLockScreenDate/)
   assert.match(runtimeSource, /function formatLockScreenTime24/)
   assert.match(runtimeSource, /function isAppleRuntimePlatform/)
-  assert.match(runtimeSource, /function resolveLockScreenEnglishFontFamily/)
+  assert.match(runtimeSource, /function resolveLockScreenFontFamily/)
+  assert.match(runtimeSource, /getWallpaperFontFamily/)
   assert.match(runtimeSource, /function getMsUntilNextMinute/)
 })
 
@@ -897,6 +902,7 @@ test("Home preview maps accent and background colors into lock screen overlay", 
   )
   assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayColors=\{overlayColors\}/)
   assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?overlayBackgroundColor=\{config\.bgColor\}/)
+  assert.match(previewSource, /<LockScreenPreviewFrame[\s\S]*?wallpaperLang=\{config\.wallpaperLang\}/)
 
   assert.match(helperSource, /function createLockScreenAccentOverlayColors\(accentColor\)/)
   assert.match(helperSource, /function createLockScreenActionGlassMaterial\(bgColor\)/)
@@ -923,11 +929,12 @@ test("Home preview maps accent and background colors into lock screen overlay", 
 
   assert.match(
     frameSource,
-    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor\s*\}\)/
+    /function LockScreenPreviewFrame\(\{\s*children,\s*showOverlay = true,\s*overlayColors,\s*overlayBackgroundColor,\s*wallpaperLang\s*\}\)/
   )
   assert.match(frameSource, /colors=\{overlayColors\}/)
   assert.match(frameSource, /backgroundColor=\{overlayBackgroundColor\}/)
   assert.match(frameSource, /overlayScale=\{LOCK_SCREEN_LAYOUT\.scale\}/)
+  assert.match(frameSource, /wallpaperLang=\{wallpaperLang\}/)
 })
 
 test("Public preview keeps only bezel shell asset at runtime", () => {

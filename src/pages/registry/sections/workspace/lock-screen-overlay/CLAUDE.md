@@ -2,17 +2,18 @@
 > L2 | 父级: /src/pages/registry/sections/workspace/CLAUDE.md
 
 成员清单
-LockScreenOverlay.jsx: overlay 渲染器，固定 `402x874` 坐标系；Widgets/Status 继续 inline，底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合分层，glass DOM 现运行在和 SVG 同构的 `402x874` 绝对平面并通过 `overlayScale` 统一缩放，主时钟改为 `120/Bold` 的居中文本并输出真实 24 小时制时间，左上角时间同步改成真实时间，普通文本统一复用 overlay 文本字体策略，`date-text` 保持真实英文日期
+LockScreenOverlay.jsx: overlay 渲染器，固定 `402x874` 坐标系；Widgets/Status 继续 inline，底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合分层，glass DOM 现运行在和 SVG 同构的 `402x874` 绝对平面并通过 `overlayScale` 统一缩放，主时钟改为 `120/Bold` 的居中文本并输出真实 24 小时制时间，左上角时间同步改成真实时间，除 `date-text` 外其余文本继续复用既有英文 overlay 字体策略，`date-text` 单独改为真实本地日期
 lock-screen-overlay.controls.js: overlay 私有 controls 几何仓库，集中承载 Sketch `Page 1 / iPhone locked / Stack` 的 frame、master/override 元数据、背景滤镜边界与左右 action icon path
 lock-screen-overlay.symbols.js: overlay 私有 icon 几何仓库，集中承载 `applewatch` / `umbrella.fill` / `sun.horizon.fill` 原始 SVG path，供渲染器按固定缩放复用
 lock-screen-overlay.colors.js: overlay 私有配色映射层，把 workspace accentColor 投影到主时钟/日期/widgets，把 workspace bgColor 按现有背景明暗规则投影到整条 top 状态栏、home indicator 与底部 action icon 的 pure black/white palette token，并额外生成底部 action glass 的 blur/border/highlight 材质 token；维持 widgets `fg = accent / bg = accent 15% alpha` 关系
-lock-screen-overlay.runtime.js: overlay runtime 策略层，负责英文日期格式化、24 小时制时间格式、Apple 平台判定、英文字体分流与分钟/午夜刷新计时
+lock-screen-overlay.runtime.js: overlay runtime 策略层，负责多语言日期格式化、24 小时制时间格式、Apple 平台判定、复用 shared 字体真相源的字体分流与分钟/午夜刷新计时
 lock-screen-overlay.constants.js: overlay 协议常量，定义公开 layer id 列表与默认 overlay 配色
 index.js: 子模块聚合出口，向 `LockScreenPreviewFrame` 暴露组件与颜色协议
 
 法则: 坐标固定·layer id 稳定·颜色入口集中·日期/时间 runtime 化但几何不漂移·accent 驱动主时钟/日期/widgets·top 状态栏、home indicator 与底部 action icon 仅由 bgColor 明暗驱动 pure black/white token·底部 controls 分层固定为 `shadow svg + glass dom + chrome svg`·swipe-indicator 由 bgColor 动态拟合·Sketch live 层级优先·禁止回退整图黑盒
 
 变更日志
+2026-03-12: 锁屏 overlay 现正式消费 `wallpaperLang`，但作用域只收敛到 `date-text`：`HomePreviewPane -> LockScreenPreviewFrame -> LockScreenOverlay` 全链路透传壁纸语言，`lock-screen-overlay.runtime.js` 用显式词表手工拼接 `en / zh-CN / zh-TW / ja` 日期格式，并仅让日期行复用 `shared/wallpaper-core.js#getWallpaperFontFamily`；主时钟、状态栏时间与 widget 文本继续保持既有英文字体策略不变。
 2026-03-12: 底部 action glass 的 DOM 专属视觉补偿收回到 `0px/0px`：`LockScreenOverlay.jsx` 继续保留 `ACTION_GLASS_OFFSET_X/Y` 作为 glass-only 微调入口，但当前值归零；`shadow svg` 底盘与 SVG icon 仍不参与偏移。
 2026-03-12: 底部 action glass 的 DOM 专属视觉补偿从 `-1px/-1px` 继续加深到 `-3px/-3px`：`LockScreenOverlay.jsx` 仍仅通过 `ACTION_GLASS_OFFSET_X/Y` 左上微调 glass 圆盘，`shadow svg` 底盘与 SVG icon 几何不参与偏移。
 2026-03-12: 在完成 glass 坐标系统一后，`LockScreenOverlay.jsx` 为 DOM glass 层恢复专属视觉补偿：`ACTION_GLASS_OFFSET_X/Y = -1`，仅让 glass 圆盘单独左移 1px、上移 1px；`shadow svg` 底盘与 SVG icon 继续停留在原始 frame，不参与偏移。

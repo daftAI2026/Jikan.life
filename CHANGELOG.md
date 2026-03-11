@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.26] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Date Localization**: Upgraded the lock screen preview to format its date dynamically based on the current `wallpaperLang` setting instead of defaulting to English. Dates are now localized correctly (e.g., `3月11日 星期三` for Simplified Chinese, `3月11日 水曜日` for Japanese) with precise formatting rules, strictly mirroring native OS typography.
+
+### Architecture
+- **Date Formatting Engine**: Refactored `formatLockScreenDate` in `lock-screen-overlay.runtime.js` to accept language targets, leveraging `Intl.DateTimeFormat` to construct localized strings while explicitly enforcing a single ASCII space delimiter between the month-day and weekday for CJK locales.
+- **Font Stack Resolution**: Replaced hardcoded English font fallbacks with a unified `resolveLockScreenFontFamily` mechanism. Non-Apple platforms now correctly dispatch to the official centralized `getWallpaperFontFamily` engine based on layout language.
+
+### Documentation & Tests
+- **Runtime Layout Guards**: Expanded `lock-screen-overlay-runtime.unit.test.js` to rigidly assert the exact output of multi-language date formatting strings and localized font family resolution mechanics.
+- **UI Architecture Guards**: Updated `kumo-migration.ui.behavior.test.js` to enforce the consumption of `wallpaperLang` within the overlay render boundary.
+
 ## [1.8.25] - 2026-03-12
 
 ### UI & UX
@@ -18,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation & Tests
 - **Structural Integrity Guards**: Rigidly updated `kumo-migration.ui.behavior.test.js` to assert the centralized container transform, strict `overlayScale` passthrough from `LockScreenPreviewFrame`, and zero-value offset constants, explicitly forbidding legacy `calc()` computations.
 - **Fractal Protocol**: Executed GEB architecture synchronization across `tests/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `workspace/CLAUDE.md` to officially record the new universal scaling dimension and glass plane rendering boundaries.
+
 ## [1.8.24] - 2026-03-11
 
 ### UI & UX

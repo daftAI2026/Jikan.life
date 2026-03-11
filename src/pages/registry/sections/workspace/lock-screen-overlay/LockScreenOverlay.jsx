@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor 与 overlayScale
- * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，日期/时间与英文字体策略由 runtime helper 收口，底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
+ * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor、overlayScale 与 wallpaperLang
+ * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并按 Wallpaper Language 本地化，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，仅 `date-text` 使用本地化字体策略，其余 overlay 文字继续保持既有英文文本字体策略；底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useId, useState } from "react"
@@ -29,7 +29,7 @@ import {
     formatLockScreenTime24,
     getMsUntilNextMinute,
     isAppleRuntimePlatform,
-    resolveLockScreenEnglishFontFamily,
+    resolveLockScreenFontFamily,
 } from "./lock-screen-overlay.runtime"
 
 const OVERLAY_VIEWBOX_WIDTH = 402
@@ -130,14 +130,19 @@ function renderActionGlassPanel({ actionFrame, actionName, material }) {
     )
 }
 
-function LockScreenOverlay({ backgroundColor, className, colors = {}, overlayScale = 1, style }) {
+function LockScreenOverlay({ backgroundColor, className, colors = {}, overlayScale = 1, style, wallpaperLang }) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
-    const dateText = formatLockScreenDate(currentDate)
+    const dateText = formatLockScreenDate(currentDate, wallpaperLang)
     const timeText = formatLockScreenTime24(currentDate)
-    const englishFontFamily = resolveLockScreenEnglishFontFamily(
-        isAppleRuntimePlatform(typeof navigator === "object" ? navigator : null)
+    const isApplePlatform = isAppleRuntimePlatform(typeof navigator === "object" ? navigator : null)
+    const overlayTextFontFamily = resolveLockScreenFontFamily(
+        isApplePlatform,
+        "en"
     )
-    const overlayTextFontFamily = englishFontFamily
+    const dateTextFontFamily = resolveLockScreenFontFamily(
+        isApplePlatform,
+        wallpaperLang
+    )
     const controlsFilterId = `lock-screen-controls-shadow-${useId().replace(/:/g, "")}`
     const actionGlassMaterial = createLockScreenActionGlassMaterial(backgroundColor)
 
@@ -385,7 +390,7 @@ function LockScreenOverlay({ backgroundColor, className, colors = {}, overlaySca
                         data-overlay-layer="date-text"
                         x="201"
                         y="21"
-                        fontFamily={overlayTextFontFamily}
+                        fontFamily={dateTextFontFamily}
                         fontSize="22"
                         fontWeight="500"
                         textAnchor="middle"
