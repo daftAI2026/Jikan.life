@@ -27,6 +27,10 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-3/-3` 收回到 `0/0`，继续要求 offset 只作用于 glass 原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：将 glass DOM 专属 offset 护栏从 `-1/-1` 调整到 `-3/-3`，继续要求偏移只作用于 glass 原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：在统一 `402x874` glass 平面的前提下，重新允许 `LockScreenOverlay.jsx` 为 DOM glass 层声明 `ACTION_GLASS_OFFSET_X/Y = -1`，并锁定偏移只作用于 glass 的原始像素坐标，不回流到底盘或 icon。
+2026-03-12: 更新 `kumo-migration.ui.behavior.test.js`：要求 `LockScreenPreviewFrame -> LockScreenOverlay` 透传 `overlayScale={LOCK_SCREEN_LAYOUT.scale}`，并锁定 `LockScreenOverlay.jsx` 删除百分比 `resolveActionGlassFrameStyle()`、新增 `402x874` glass 平面与 `transform: scale(overlayScale)`，同时禁止任何 glass offset 常量或 `calc(...)` 定位补偿。
 2026-03-11: 新增 `accent-mode.behavior.test.js`，锁定 workspace 颜色状态的 `accentMode(auto|manual)` 边界；更新 `contrast-threshold.behavior.test.js` 与 `wallpaper-core-api.behavior.test.js`，将共享自动前景决策护栏收敛到 WCAG contrast ratio，并新增 `getContrastRatio` facade 导出检查。
 2026-03-11: 更新 `lock-screen-overlay-colors.unit.test.js`：将底部 action glass 材质透明度护栏改为 `dark=0.02 / colored=0.06 / light=0.09`，继续只锁背景透明度，不改边框、高光和 inset 阴影语义。
 2026-03-11: 更新 `kumo-migration.ui.behavior.test.js`：将锁屏底部 action 阴影底盘护栏收回“保留原始底盘语义”，要求 `lock-screen-overlay.constants.js` 继续使用 `rgba(255,255,255,0.07)`，并锁定 `LockScreenOverlay.jsx` 的 `shadow svg` 层复用旧 `lock-screen-controls.svg` 的滤镜链、`mix-blend-mode: screen` 与单一过滤矩形结构，禁止再叠额外白色假底盘。

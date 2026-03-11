@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.25] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Glass Scaling**: Refactored the lock screen's bottom action glass layer to render within a unified `402x874` fixed internal coordinate plane, scaling the entire container surface universally via `transform: scale()`. This completely eliminates fractional calculation artifacts when resolving bottom action dimensions and guarantees flawless edge alignment at any preview size.
+
+### Architecture
+- **Glass Offset Constraints**: Deprecated percentage-based dimension calculations (`resolveActionGlassFrameStyle`) and `calc()` positioning for dynamic lock screen glass materials. Enforced absolute pixel boundaries using `ACTION_GLASS_OFFSET_X/Y` constants to prevent arbitrary UI shifts from bleeding into the parent container layout.
+
+### Documentation & Tests
+- **Structural Integrity Guards**: Rigidly updated `kumo-migration.ui.behavior.test.js` to assert the centralized container transform, strict `overlayScale` passthrough from `LockScreenPreviewFrame`, and zero-value offset constants, explicitly forbidding legacy `calc()` computations.
+- **Fractal Protocol**: Executed GEB architecture synchronization across `tests/CLAUDE.md`, `lock-screen-overlay/CLAUDE.md`, and `workspace/CLAUDE.md` to officially record the new universal scaling dimension and glass plane rendering boundaries.
 ## [1.8.24] - 2026-03-11
 
 ### UI & UX

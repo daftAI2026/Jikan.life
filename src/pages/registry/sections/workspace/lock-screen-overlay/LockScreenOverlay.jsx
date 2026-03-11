@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写与 bgColor
+ * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor 与 overlayScale
  * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并锁定中线居中锚点，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
- * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，日期/时间与英文字体策略由 runtime helper 收口，底部左右 action 通过 DOM glass 面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
+ * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，日期/时间与英文字体策略由 runtime helper 收口，底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useId, useState } from "react"
@@ -34,6 +34,8 @@ import {
 
 const OVERLAY_VIEWBOX_WIDTH = 402
 const OVERLAY_VIEWBOX_HEIGHT = 874
+const ACTION_GLASS_OFFSET_X = 0
+const ACTION_GLASS_OFFSET_Y = 0
 
 function joinClassName(...values) {
     return values.filter(Boolean).join(" ")
@@ -45,15 +47,6 @@ function resolveLayerColor(layerId, colors) {
 
 function resolveLayerStyle(layerId, colors, property = "fill") {
     return { [property]: resolveLayerColor(layerId, colors) }
-}
-
-function resolveActionGlassFrameStyle(actionFrame) {
-    return {
-        left: `${(actionFrame.x / OVERLAY_VIEWBOX_WIDTH) * 100}%`,
-        top: `${((STACK_FRAME.y + actionFrame.y) / OVERLAY_VIEWBOX_HEIGHT) * 100}%`,
-        width: `${(actionFrame.width / OVERLAY_VIEWBOX_WIDTH) * 100}%`,
-        height: `${(actionFrame.height / OVERLAY_VIEWBOX_HEIGHT) * 100}%`,
-    }
 }
 
 function renderControlShadow({ actionFrame, backgroundLayerId, colors, filterId, nodeName }) {
@@ -104,7 +97,10 @@ function renderActionGlassPanel({ actionFrame, actionName, material }) {
             data-overlay-glass={actionName}
             className="absolute overflow-hidden rounded-full"
             style={{
-                ...resolveActionGlassFrameStyle(actionFrame),
+                left: `${actionFrame.x + ACTION_GLASS_OFFSET_X}px`,
+                top: `${STACK_FRAME.y + actionFrame.y + ACTION_GLASS_OFFSET_Y}px`,
+                width: `${actionFrame.width}px`,
+                height: `${actionFrame.height}px`,
                 background: material.background,
                 border: `1px solid ${material.borderColor}`,
                 borderRadius: "9999px",
@@ -134,7 +130,7 @@ function renderActionGlassPanel({ actionFrame, actionName, material }) {
     )
 }
 
-function LockScreenOverlay({ backgroundColor, className, colors = {}, style }) {
+function LockScreenOverlay({ backgroundColor, className, colors = {}, overlayScale = 1, style }) {
     const [currentDate, setCurrentDate] = useState(() => new Date())
     const dateText = formatLockScreenDate(currentDate)
     const timeText = formatLockScreenTime24(currentDate)
@@ -209,7 +205,16 @@ function LockScreenOverlay({ backgroundColor, className, colors = {}, style }) {
                 </g>
             </svg>
 
-            <div data-overlay-glass-layer="lock-screen-actions" className="absolute inset-0">
+            <div
+                data-overlay-glass-layer="lock-screen-actions"
+                className="absolute left-0 top-0 overflow-hidden"
+                style={{
+                    width: `${OVERLAY_VIEWBOX_WIDTH}px`,
+                    height: `${OVERLAY_VIEWBOX_HEIGHT}px`,
+                    transform: `scale(${overlayScale})`,
+                    transformOrigin: "top left",
+                }}
+            >
                 {renderActionGlassPanel({
                     actionFrame: ACTION_LEFT_FRAME,
                     actionName: "action-left",
