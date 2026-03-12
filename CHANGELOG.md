@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2026-03-12
+
+### UI & UX
+- **Lock Screen Redundancy**: Hid the top-left status bar time within the lock screen preview overlay to prevent visual repetition with the main clock widget.
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `wrangler` to `4.72.0`.
+
 ## [1.9.0] - 2026-03-12
 
 ### Architecture

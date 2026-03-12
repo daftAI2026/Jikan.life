@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 React 的 `useEffect/useId/useState`、overlay layer 默认颜色表、lock-screen-overlay runtime helper、lock-screen-overlay.symbols / controls 几何常量、action glass 材质 helper，可接收外部 layer id -> CSS color 覆写、bgColor、overlayScale、wallpaperLang 与 showWidgets
- * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并按 Wallpaper Language 本地化，主时钟与左上角时间使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
+ * [OUTPUT]: 对外提供 LockScreenOverlay 组件，按 `402x874` 坐标系渲染锁屏 overlay；其中底部 controls 改为 `shadow svg + glass dom + chrome svg` 混合结构，date-text 使用真实日期并按 Wallpaper Language 本地化，主时钟使用真实 24 小时制文本，`widgets-complication-1/3/4` 直接内联 jikan Sketch `iwatch` / `sun.horizon.fill` / `umbrella.fill` 原始 SVG 几何
  * [POS]: workspace/lock-screen-overlay 的渲染器，保留 jikan Sketch 真几何；Widgets/Date/Status 与底部 Stack 全部 inline，仅 `date-text` 使用本地化字体策略，其余 overlay 文字继续保持既有英文文本字体策略；支持上游按 preview type 控制整组 widgets 可见性；底部左右 action 通过 `402x874` 绝对 glass 平面承载真实 `backdrop-filter`，外阴影与图标仍复用 SVG 真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -447,6 +447,10 @@ function LockScreenOverlay({
                         />
                     </g>
 
+                    {/*
+                     * [NOTE]: 状态栏左上角时间隐藏，避免与主时钟重复。
+                     */}
+                    {/*
                     <g data-overlay-layer="status-bar-leading" style={resolveLayerStyle("status-bar-leading", colors)}>
                         <g transform="translate(13.3889 2)">
                             <text x="25.0311649" y="16" fontFamily={overlayTextFontFamily} fontSize="17" fontWeight="500">
@@ -454,6 +458,7 @@ function LockScreenOverlay({
                             </text>
                         </g>
                     </g>
+                    */}
                 </g>
             </svg>
         </div>
