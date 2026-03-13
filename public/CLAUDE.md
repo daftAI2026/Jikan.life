@@ -5,6 +5,8 @@
 favicon.svg: 站点图标资源
 api/: 静态 API 资源目录，承载 SearchDialog 所需的 component registry 响应（详见 api/CLAUDE.md）
 preview/: 网页 preview 专用静态锁屏壳资源目录（详见 preview/CLAUDE.md）
+robots.txt: 搜索引擎爬虫指引，允许全部抓取并指向 Sitemap
+sitemap.xml: 站点地图，定义核心抓取路径
 
 结构
 public/ - Vite 静态资源根目录 (favicon + 静态 API 响应 + preview 壳层资源)

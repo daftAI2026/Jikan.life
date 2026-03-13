@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.2] - 2026-03-14
+
+### SEO & Metadata
+- **Sitemap & Robots**: Deployed official `sitemap.xml` and optimized `robots.txt` to enhance search engine indexing and crawler directives.
+
+### UI & UX
+- **Social Connectivity**: Refined the Xiaohongshu profile URL by stripping unnecessary tracking parameters, ensuring a cleaner link structure.
+
 ## [1.9.1] - 2026-03-12
 
 ### UI & UX

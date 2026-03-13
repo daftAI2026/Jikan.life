@@ -15,7 +15,7 @@ const SOCIAL_LINKS = [
     {
         id: "xiaohongshu",
         label: "Xiaohongshu",
-        href: "https://www.xiaohongshu.com/user/profile/5f4696c800000000010011f6?xsec_token=ABdWCr27MLyMrcQicvc41Q6L70BC6otUUSq7zILtfu1vE=&xsec_source=pc_note",
+        href: "https://www.xiaohongshu.com/user/profile/5f4696c800000000010011f6",
         className: "size-9",
     },
 ]

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://jikan.life/sitemap.xml
