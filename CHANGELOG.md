@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Segmented Layout Support**: Expanded the deterministic preview sizing engine to support the `md` layout tier, ensuring consistent mobile-style previews across all segmented workspace configurations.
+- **Preview Scaling Fluidity**: Increased the maximum target height for mobile previews to match the default lock screen height, allowing for more immersive previews on larger workspace viewports.
+
+### Documentation & Tests
+- **Preview Logic Guards**: Expanded regression tests to validate preview sizing across both `mobile` and `md` tiers under the new segmented layout contracts.
+
 ## [1.9.3] - 2026-03-14
+
 
 ### UI & UX
 - **Mobile Preview Optimization**: Refactored mobile preview sizing to use a deterministic projection engine and consistent `LOCK_SCREEN_LAYOUT` ratios, ensuring settings cards are properly visible and not truncated across different workspace heights.
