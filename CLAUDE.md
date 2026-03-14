@@ -6,6 +6,7 @@ Vite + React + Tailwind CSS v4 + Cloudflare Workers
 doc/ - 项目文档与知识库
 public/ - 前端静态资源 (Vite public)
   └── api/ - 静态接口资源 (如 component-registry)
+remotion/ - 独立 Remotion 开场动画模块 (Studio 预览入口 + 时间线/排版/字体真相源)
 dist-worker/ - Worker 构建产物 (生成)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件
@@ -37,6 +38,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 ## 常用命令
 - `npm run dev` - 启动前端开发服务器
 - `npm run build` - 构建前端静态资源
+- `npm run remotion:studio` - 启动 Remotion Studio 本地预览 (`http://localhost:3000`)
 - `npx wrangler dev` - 启动 Worker 本地开发
 - `npx wrangler deploy` - 部署到 Cloudflare
 

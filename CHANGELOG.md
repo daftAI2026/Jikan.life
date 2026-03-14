@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Animation & Motion
+- **Remotion Integration**: Introduced Remotion for high-fidelity opening animations, including specialized compositions for typography (`OpeningTextComposition`), adaptive layout (`opening-layout`), and sequenced timelines (`opening-timeline`).
+- **Animation Framework**: Configured Remotion studio and rendering pipelines, enabling programmatic video-like transitions for the onboarding experience.
+
+### Tests
+- **Motion Verification**: Added a comprehensive suite of unit tests for Remotion opening animations, covering font loading integrity (`remotion-opening-fonts`), layout constraints (`remotion-opening-layout`), and timeline precision (`remotion-opening-timeline`).
+
+### Infrastructure
+- **Dependency Upgrades**: Integrated Remotion core and CLI dependencies (`@remotion/cli`, `remotion`, `@remotion/google-fonts`) and added the `remotion:studio` development script.
+
 ## [1.9.8] - 2026-03-19
 
 ### Infrastructure
@@ -22,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Infrastructure
 - **Dependency Upgrades**: Synchronized packages to their latest versions, including `@cloudflare/kumo` to `1.13.1`, `framer-motion` to `12.38.0`, and `wrangler` to `4.75.0`.
-
 ## [1.9.5] - 2026-03-16
 
 ### UI & UX
@@ -57,7 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preview Regression**: Upgraded mobile preview regression tests to use exact `assert.equal` checks for deterministic target height resolution.
 - **Registry Shell Testing**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to assert the new fixed geometry contracts for the sidebar goal preview layout.
 - **Fractal Protocol**: Executed GEB documentation synchronization for the registry sections module to reflect the refined goal preview layout responsibilities.
-
 
 ## [1.9.2] - 2026-03-14
 
