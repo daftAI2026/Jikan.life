@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/sections/CLAUDE.md
 
 成员清单
-HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 preview chrome 独立收尾 reveal；外层桌面壳与 segmented workspace 由 helper 决定，`mobile + md drawer open` 共用 segmented 壳，mobile guide 宿主覆盖 header 以下，`md + drawer closed` 只在 pane 局部复用 mid 路径，同时在 mobile 下测量 workspace 高度并下发首屏受限的 preview target height
+HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 preview chrome 独立收尾 reveal；外层桌面壳与 segmented workspace 由 helper 决定，`mobile + md drawer open` 共用 segmented 壳，guide 宿主覆盖 header 以下，`md + drawer closed` 只在 pane 局部复用 mid 路径，同时测量 workspace 高度并下发 segmented 预览 target height
 ComponentCell.jsx: 网格单元壳，负责标题与内容排布
 ComponentGrid.jsx: 旧版组件墙网格（备用）
 ComponentData.js: 旧版网格条目数据（备用）
@@ -36,5 +36,7 @@ HomeGrid 从 vendor 薄包装切换为本地编排实现；旧网格模块继续
 2026-03-10: HomeGrid 新增 `shouldUseSegmentedWorkspace` 收口 `mobile + md drawer open`，workspace 外壳基础类移除默认纵向滚动；mobile segmented 改为 `grid-rows-[auto_minmax(0,1fr)] + overflow-y-hidden`，并新增 grid 级 mobile Guide 宿主覆盖 header 以下内容。
 2026-03-12: HomeGrid 将首次引导收尾拆为“双轨状态”：`revealStage` 继续只解锁右侧卡片，左侧锁屏 overlay 改由独立 `isPreviewChromeRevealed` 布尔控制；首次 AutoFlow 完成后额外停顿 `150ms`，再通过下一帧 `requestAnimationFrame` 显示整套 preview chrome，回访与手动 `Reveal all` 则直接显示且不闪烁。
 2026-03-14: HomeGrid 新增 mobile workspace 高度测量与 `previewTargetHeight` 下发链路；移动端继续保持“预览优先”，但不再把固定大预览压满首屏。
+2026-03-14: segmented workspace 的垂直分配回正为“preview 容器吃剩余、settings 保持基线”；`mobile + md drawer open` 统一改为 `grid-rows-[minmax(0,1fr)_auto]`，不再让 settings pane 吃满剩余高度；其中手机本体缩放继续维持断点内的视觉留白比例，不跟随剩余高度无限放大。
+2026-03-14: HomeGrid 继续复用同一条 segmented sizing 链，但 preview 最大尺度标准不再区分 mobile/md；`previewTargetHeight` 现在对 `mobile + md drawer open` 统一共用 `510` 上限，仅在短窗下按首卡预算收缩。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

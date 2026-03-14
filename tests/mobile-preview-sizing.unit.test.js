@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 workspace/mobile-preview-sizing
- * [OUTPUT]: 向 `node --test` 注册移动端预览高度约束单测，覆盖 iPhone SE / 12 / 14 Pro Max 的首屏预算
- * [POS]: tests/ 的移动端预览尺寸护栏，锁定“预览优先但首卡可见”的高度算法真相源
+ * [OUTPUT]: 向 `node --test` 注册 segmented 预览高度约束单测，覆盖 iPhone SE / 12 / 14 Pro Max 的首屏预算与共享最大尺度
+ * [POS]: tests/ 的 segmented 预览尺寸护栏，锁定“预览优先但首卡可见，mobile/md 共用同一 max 标准”的高度算法真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -14,15 +14,15 @@ import {
 
 test("keeps default lock screen target height for non-mobile layouts", () => {
     assert.equal(
-        resolvePreviewTargetHeight({ effectiveLayoutTier: "lg", workspaceHeight: 900 }),
+        resolvePreviewTargetHeight({ effectiveLayoutTier: "lg", useSegmentedWorkspaceLayout: false, workspaceHeight: 900 }),
         DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
     )
     assert.equal(
-        resolvePreviewTargetHeight({ effectiveLayoutTier: "mid", workspaceHeight: 720 }),
+        resolvePreviewTargetHeight({ effectiveLayoutTier: "mid", useSegmentedWorkspaceLayout: false, workspaceHeight: 720 }),
         DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
     )
     assert.equal(
-        resolvePreviewTargetHeight({ effectiveLayoutTier: "md", workspaceHeight: 616 }),
+        resolvePreviewTargetHeight({ effectiveLayoutTier: "md", useSegmentedWorkspaceLayout: false, workspaceHeight: 616 }),
         DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
     )
 })
@@ -49,6 +49,13 @@ test("keeps mobile preview target height monotonic across iPhone heights", () =>
     assert.ok(iphone12Height < iphone14ProMaxHeight, "iPhone 12 should use a smaller preview than 14 Pro Max")
 })
 
+test("caps segmented mobile preview at the shared desktop target height standard", () => {
+    assert.equal(
+        resolveMobilePreviewTargetHeight({ workspaceHeight: 1200 }),
+        DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
+    )
+})
+
 test("derives mobile preview budget from first-card and tabs hard constraints", () => {
     const seHeight = resolveMobilePreviewTargetHeight({ workspaceHeight: 520 })
     const iphone12Height = resolveMobilePreviewTargetHeight({ workspaceHeight: 616 })
@@ -61,7 +68,14 @@ test("derives mobile preview budget from first-card and tabs hard constraints", 
 
 test("resolvePreviewTargetHeight routes mobile through the shared sizing helper", () => {
     assert.equal(
-        resolvePreviewTargetHeight({ effectiveLayoutTier: "mobile", workspaceHeight: 520 }),
+        resolvePreviewTargetHeight({ effectiveLayoutTier: "mobile", useSegmentedWorkspaceLayout: true, workspaceHeight: 520 }),
         resolveMobilePreviewTargetHeight({ workspaceHeight: 520 })
+    )
+})
+
+test("resolvePreviewTargetHeight routes segmented md through the shared sizing helper", () => {
+    assert.equal(
+        resolvePreviewTargetHeight({ effectiveLayoutTier: "md", useSegmentedWorkspaceLayout: true, workspaceHeight: 1100 }),
+        resolveMobilePreviewTargetHeight({ workspaceHeight: 1100 })
     )
 })

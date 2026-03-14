@@ -122,8 +122,8 @@ export function HomeSettingsPaneBottomTabsLayout({
     const bottomTabsWidthVars = resolveMdBottomTabsWidthVars(distributedTabWidths)
 
     return (
-        <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
-            <div className="flex-1 min-h-0 overflow-hidden">
+        <div className="relative flex flex-col overflow-hidden">
+            <div className="overflow-hidden">
                 {currentActiveTab ? (
                     <SettingsCardShell
                         cardId={currentActiveTab}
@@ -131,7 +131,6 @@ export function HomeSettingsPaneBottomTabsLayout({
                         titleTooltip={activeTitleState.titleTooltip}
                         indexMark={slotMarks[Math.max(0, activeSlotIndex)]}
                         isIndexActive={activeTitleState.isIndexActive}
-                        className="h-full"
                         compactAtDesktop={false}
                     >
                         {isActiveTabRevealed && activeCardDefinition
@@ -144,7 +143,6 @@ export function HomeSettingsPaneBottomTabsLayout({
                         title={<SettingsCardTitleSkeleton />}
                         indexMark={slotMarks[0]}
                         isIndexActive={false}
-                        className="h-full"
                         compactAtDesktop={false}
                     >
                         <SettingsCardSkeleton />

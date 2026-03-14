@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖移动端工作区高度与锁屏基准几何常量
- * [OUTPUT]: 对外提供锁屏预览几何真相源与移动端预览高度解析函数（LOCK_SCREEN_LAYOUT、resolveLockScreenLayoutMetrics、resolveMobilePreviewTargetHeight、resolvePreviewTargetHeight）
- * [POS]: registry/sections/workspace 的移动端预览尺寸单一真相源，被 HomeGrid、HomePreviewPane 与 LockScreenPreviewFrame 共享
+ * [INPUT]: 依赖 segmented workspace 高度与锁屏基准几何常量
+ * [OUTPUT]: 对外提供锁屏预览几何真相源与 segmented/mobile 预览高度解析函数（LOCK_SCREEN_LAYOUT、resolveLockScreenLayoutMetrics、resolveMobilePreviewTargetHeight、resolvePreviewTargetHeight）
+ * [POS]: registry/sections/workspace 的 segmented 预览尺寸单一真相源，被 HomeGrid、HomePreviewPane 与 LockScreenPreviewFrame 共享；mobile 与 md segmented 共享同一手机壳最大尺度，只在短窗时按首卡预算收缩
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -15,7 +15,7 @@ const LOCK_SCREEN_LAYOUT = {
 
 const DEFAULT_LOCK_SCREEN_TARGET_HEIGHT = 510
 const MOBILE_PREVIEW_MIN_TARGET_HEIGHT = 180
-const MOBILE_PREVIEW_MAX_TARGET_HEIGHT = 380
+const MOBILE_PREVIEW_MAX_TARGET_HEIGHT = DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
 const SETTINGS_CARD_MIN_HEIGHT = 220
 const SEGMENTED_TABS_RAIL_HEIGHT = 48
 const MOBILE_PREVIEW_STACK_OVERHEAD = 60
@@ -58,8 +58,9 @@ function resolveMobilePreviewTargetHeight({ workspaceHeight }) {
     )
 }
 
-function resolvePreviewTargetHeight({ effectiveLayoutTier, workspaceHeight }) {
-    if (effectiveLayoutTier !== "mobile") return DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
+function resolvePreviewTargetHeight({ effectiveLayoutTier, useSegmentedWorkspaceLayout, workspaceHeight }) {
+    if (!useSegmentedWorkspaceLayout) return DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
+    if (!["mobile", "md"].includes(effectiveLayoutTier)) return DEFAULT_LOCK_SCREEN_TARGET_HEIGHT
     return resolveMobilePreviewTargetHeight({ workspaceHeight })
 }
 
