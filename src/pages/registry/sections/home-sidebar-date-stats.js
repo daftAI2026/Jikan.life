@@ -1,11 +1,18 @@
 /**
- * [INPUT]: 依赖 @/lib/date-utils 的本地日期/日历数学 与 shared/wallpaper-core 的 Goal 布局计算
+ * [INPUT]: 依赖 @/lib/date-utils 的本地日期/日历数学 与 shared/wallpaper-text.js 的 Goal 预览标签文案
  * [OUTPUT]: 对外提供 getYearStats、getGoalPreviewLayout
- * [POS]: registry/sections 的 HomeSidebar 日期统计层，封装年进度与 Goal 预览布局数据
+ * [POS]: registry/sections 的 HomeSidebar 日期统计层，封装年进度统计与 Goal 卡片预览专用布局真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { addDays, getDayOfYear, getDaysInYear, getLocalDateParts } from "@/lib/date-utils"
-import { computeGoalLayout } from "../../../../shared/wallpaper-core"
+import { getDayOfYear, getDaysInYear } from "@/lib/date-utils"
+import { getWallpaperText } from "../../../../shared/wallpaper-text.js"
+
+const GOAL_PREVIEW_PROGRESS = 0.69
+const GOAL_PREVIEW_DAYS_REMAINING = 69
+const GOAL_PREVIEW_RING = { centerX: 50, centerY: 50, radius: 34.5, progress: GOAL_PREVIEW_PROGRESS }
+const GOAL_PREVIEW_NUMBER_FONT_SIZE = 24
+const GOAL_PREVIEW_LABEL_FONT_SIZE = 5
+const GOAL_PREVIEW_LABEL_Y = 69
 
 function getYearStats(now = new Date()) {
     const year = now.getFullYear()
@@ -17,22 +24,14 @@ function getYearStats(now = new Date()) {
 }
 
 function getGoalPreviewLayout(lang) {
-    const todayDate = new Date()
-    const today = getLocalDateParts(todayDate)
-    const goalDate = getLocalDateParts(addDays(todayDate, 69))
-    const goalStart = getLocalDateParts(addDays(todayDate, -31))
-
-    return computeGoalLayout({
-        width: 100,
-        height: 100,
-        bgColor: "000000",
-        accentColor: "FFFFFF",
-        clockHeight: 0.22,
-        lang,
-        goalDate,
-        goalStart,
-        today,
-    })
+    return {
+        ring: { ...GOAL_PREVIEW_RING },
+        daysRemaining: GOAL_PREVIEW_DAYS_REMAINING,
+        daysLeftText: getWallpaperText(lang, "daysLeftLabel", ""),
+        numberFontSize: GOAL_PREVIEW_NUMBER_FONT_SIZE,
+        labelFontSize: GOAL_PREVIEW_LABEL_FONT_SIZE,
+        labelY: GOAL_PREVIEW_LABEL_Y,
+    }
 }
 
 export { getGoalPreviewLayout, getYearStats }

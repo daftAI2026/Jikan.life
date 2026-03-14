@@ -369,9 +369,35 @@ test("HomeSidebar goal visual text positions follow preview layout parameters", 
   const source = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
 
   assert.match(source, /const \{ ring, daysRemaining, daysLeftText, numberFontSize, labelFontSize, labelY \} = layout/)
-  assert.match(source, /y={ring\.centerY - 1}/)
-  assert.match(source, /y={labelY \+ 8}/)
+  assert.match(source, /y={ring\.centerY}/)
+  assert.doesNotMatch(source, /y={ring\.centerY - 1}/)
+  assert.match(source, /y={labelY}/)
+  assert.doesNotMatch(source, /y={labelY \+ 8}/)
   assert.doesNotMatch(source, /ring\.centerY \+ ring\.radius \* 0\.62/)
+})
+
+test("HomeSidebar goal visual recenters the preview ring geometry inside the square card", () => {
+  const source = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
+
+  assert.doesNotMatch(source, /const previewOffsetY = 50 - ring\.centerY/)
+  assert.doesNotMatch(source, /<g transform=\{`translate\(0 \$\{previewOffsetY\}\)`\}>/)
+  assert.match(source, /cx={ring\.centerX}/)
+  assert.match(source, /cy={ring\.centerY}/)
+})
+
+test("HomeSidebar goal preview fixes the ring progress to match the 69-day sample", () => {
+  const source = readSource("src/pages/registry/sections/home-sidebar-date-stats.js")
+
+  assert.match(source, /const GOAL_PREVIEW_PROGRESS = 0\.69/)
+  assert.match(source, /const GOAL_PREVIEW_DAYS_REMAINING = 69/)
+  assert.match(source, /const GOAL_PREVIEW_RING = \{ centerX: 50, centerY: 50, radius: 34\.5, progress: GOAL_PREVIEW_PROGRESS \}/)
+  assert.match(source, /const GOAL_PREVIEW_NUMBER_FONT_SIZE = 24/)
+  assert.match(source, /const GOAL_PREVIEW_LABEL_FONT_SIZE = 5/)
+  assert.match(source, /const GOAL_PREVIEW_LABEL_Y = 69/)
+  assert.match(source, /daysLeftText:\s*getWallpaperText\(lang,\s*"daysLeftLabel",\s*""\)/)
+  assert.doesNotMatch(source, /computeGoalLayout/)
+  assert.doesNotMatch(source, /clockHeight:/)
+  assert.doesNotMatch(source, /goalStart/)
 })
 
 test("HomePage keeps selectedStyle as single source of truth", () => {

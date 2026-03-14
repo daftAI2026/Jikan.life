@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### UI & UX
 - **Mobile Preview Optimization**: Refactored mobile preview sizing to use a deterministic projection engine and consistent `LOCK_SCREEN_LAYOUT` ratios, ensuring settings cards are properly visible and not truncated across different workspace heights.
+- **Goal Preview Synchronization**: Synchronized the Goal countdown ring geometry and typography between the sidebar thumbnail and the main lock screen preview by adopting fixed geometric constants, guaranteeing precise visual alignment across all dashboard elements.
 
-### Tests
+### Documentation & Tests
 - **Preview Regression**: Upgraded mobile preview regression tests to use exact `assert.equal` checks for deterministic target height resolution.
+- **Registry Shell Testing**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to assert the new fixed geometry contracts for the sidebar goal preview layout.
+- **Fractal Protocol**: Executed GEB documentation synchronization for the registry sections module to reflect the refined goal preview layout responsibilities.
 
 ## [1.9.2] - 2026-03-14
 

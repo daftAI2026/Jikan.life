@@ -103,7 +103,7 @@ function GoalVisual({ layout }) {
                     )}
                     <text
                         x={ring.centerX}
-                        y={ring.centerY - 1}
+                        y={ring.centerY}
                         textAnchor="middle"
                         dominantBaseline="middle"
                         fontSize={numberFontSize}
@@ -114,10 +114,10 @@ function GoalVisual({ layout }) {
                     </text>
                     <text
                         x={ring.centerX}
-                        y={labelY + 8}
+                        y={labelY}
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        fontSize={labelFontSize + 1}
+                        fontSize={labelFontSize}
                         fontWeight="400"
                         className="fill-current text-kumo-subtle"
                     >
