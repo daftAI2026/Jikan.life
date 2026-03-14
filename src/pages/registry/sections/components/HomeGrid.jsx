@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, effective-layout-tier 的桌面壳/segmented helper，以及 effectiveLayoutTier/sidebarOpen
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow 卡片 stage 管理 + preview chrome 独立收尾 reveal + onboarding=force 测试覆盖；mobile 与 `md + 抽屉打开` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下整块内容）
- * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路；`revealStage` 只负责右侧卡片解锁，左侧锁屏 overlay 改为独立布尔状态，并在首次引导最后一张卡后额外停顿 150ms 再于下一帧收尾 reveal（Guide 打开时锁背景滚动；segmented workspace 的壳层判定在此收口，空态也直接进入该模式）
+ * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, workspace/mobile-preview-sizing 与 effective-layout-tier 的桌面壳/segmented helper，以及 effectiveLayoutTier/sidebarOpen
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow 卡片 stage 管理 + preview chrome 独立收尾 reveal + onboarding=force 测试覆盖；mobile 与 `md + 抽屉打开` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下整块内容，并在 mobile 下向预览链路下发首屏受限 target height）
+ * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路；`revealStage` 只负责右侧卡片解锁，左侧锁屏 overlay 改为独立布尔状态，并在首次引导最后一张卡后额外停顿 150ms 再于下一帧收尾 reveal（Guide 打开时锁背景滚动；segmented workspace 的壳层判定与 mobile 预览高度预算都在此收口，空态也直接进入该模式）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -10,6 +10,7 @@ import { shouldUseDesktopWorkspaceShell, shouldUseSegmentedWorkspace } from "../
 import { useRegistryBlockingScrollLock } from "../useRegistryBlockingScrollLock"
 import { HomePreviewPane } from "../workspace/HomePreviewPane"
 import { HomeSettingsPane } from "../workspace/HomeSettingsPane"
+import { resolvePreviewTargetHeight } from "../workspace/mobile-preview-sizing"
 import { SetupGuidePanel } from "../workspace/SetupGuidePanel"
 import { useHomeWallpaperConfig } from "../workspace/useHomeWallpaperConfig"
 
@@ -35,6 +36,7 @@ function HomeGrid({
     const isDesktopShell = shouldUseDesktopWorkspaceShell({ effectiveLayoutTier, sidebarOpen })
     const useSegmentedWorkspaceLayout = shouldUseSegmentedWorkspace({ effectiveLayoutTier, sidebarOpen })
     const paneEffectiveLayoutTier = effectiveLayoutTier === "md" && !sidebarOpen ? "mid" : effectiveLayoutTier
+    const workspaceRef = useRef(null)
     const segmentedWorkspaceLayoutClassName = effectiveLayoutTier === "mobile"
         ? "h-full grid-rows-[auto_minmax(0,1fr)] overflow-y-hidden"
         : "md:h-[calc(100vh-var(--registry-topbar-height))] md:grid-rows-[auto_minmax(0,1fr)] md:overflow-hidden"
@@ -53,6 +55,7 @@ function HomeGrid({
             : "left-[var(--registry-rail-width)]",
         isDesktopShell ? "md:hidden" : "",
     ].join(" ")
+    const [workspaceHeight, setWorkspaceHeight] = useState(0)
     const [isSetupPanelOpen, setIsSetupPanelOpen] = useState(false)
     const [setupPlatform, setSetupPlatform] = useState("ios")
     const setupTriggerRef = useRef(null)
@@ -64,8 +67,37 @@ function HomeGrid({
         return window.localStorage.getItem(AUTOFLOW_STORAGE_KEY) === "1"
     })
     const showPreviewChrome = Boolean(viewModel.config.selectedType) && isPreviewChromeRevealed
+    const previewTargetHeight = resolvePreviewTargetHeight({
+        effectiveLayoutTier,
+        workspaceHeight,
+    })
 
     useRegistryBlockingScrollLock(isSetupPanelOpen)
+
+    useEffect(() => {
+        const element = workspaceRef.current
+        if (!element) return undefined
+
+        const syncWorkspaceHeight = (nextHeight) => {
+            setWorkspaceHeight((currentHeight) => {
+                const resolvedHeight = Math.max(0, Math.round(nextHeight))
+                return currentHeight === resolvedHeight ? currentHeight : resolvedHeight
+            })
+        }
+
+        syncWorkspaceHeight(element.getBoundingClientRect().height)
+
+        if (typeof ResizeObserver === "undefined") return undefined
+
+        const observer = new ResizeObserver((entries) => {
+            const entry = entries[0]
+            if (!entry) return
+            syncWorkspaceHeight(entry.contentRect.height)
+        })
+
+        observer.observe(element)
+        return () => observer.disconnect()
+    }, [])
 
     const clearAutoflowTimers = useCallback(() => {
         if (autoflowTimerRef.current.intervalId !== null) {
@@ -168,6 +200,7 @@ function HomeGrid({
 
     return (
         <div
+            ref={workspaceRef}
             data-registry-workspace
             className={[
                 "relative grid h-full min-h-0 grid-cols-1 overflow-x-hidden bg-kumo-elevated",
@@ -209,6 +242,7 @@ function HomeGrid({
             >
                 <HomePreviewPane
                     config={viewModel.config}
+                    previewTargetHeight={previewTargetHeight}
                     selectedDevice={viewModel.selectedDevice}
                     showOverlay={showPreviewChrome}
                     t={viewModel.t}

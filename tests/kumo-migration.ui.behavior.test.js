@@ -573,11 +573,14 @@ test("Registry menu accessibility labels are present in i18n", () => {
 test("HomeGrid provides split workspace layout", () => {
   const source = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
 
+  assertNamedImports(source, "../workspace/mobile-preview-sizing", ["resolvePreviewTargetHeight"])
   assert.match(source, /const AUTOFLOW_INTERVAL_MS = 500/)
   assert.match(source, /const AUTOFLOW_STORAGE_KEY = "registry\.settingsAutoflow\.v1"/)
   assert.match(source, /function HomeGrid\(\{\s*selectedStyle,\s*forceOnboarding = false,\s*effectiveLayoutTier = "lg",\s*sidebarOpen = false,?\s*\}\)/)
   assert.match(source, /const isDesktopShell = shouldUseDesktopWorkspaceShell\(\{ effectiveLayoutTier, sidebarOpen \}\)/)
   assert.match(source, /const useSegmentedWorkspaceLayout = shouldUseSegmentedWorkspace\(\{ effectiveLayoutTier, sidebarOpen \}\)/)
+  assert.match(source, /const previewTargetHeight = resolvePreviewTargetHeight\(\{/)
+  assert.match(source, /effectiveLayoutTier,\s*workspaceHeight,/)
   assert.match(source, /const paneEffectiveLayoutTier = effectiveLayoutTier === "md" && !sidebarOpen \? "mid" : effectiveLayoutTier/)
   assert.match(source, /const segmentedWorkspaceLayoutClassName = effectiveLayoutTier === "mobile"/)
   assert.match(source, /const workspaceLayoutClassName = useSegmentedWorkspaceLayout/)
@@ -615,6 +618,7 @@ test("HomeGrid provides split workspace layout", () => {
   assert.match(source, /<div\s+className=\{guideHostClassName\}>/)
   assert.match(source, /className="pointer-events-none absolute inset-0 z-40 md:hidden"/)
   assert.match(source, /const showPreviewChrome = Boolean\(viewModel\.config\.selectedType\) && isPreviewChromeRevealed/)
+  assert.match(source, /<HomePreviewPane[\s\S]*?previewTargetHeight=\{previewTargetHeight\}/)
   assert.match(source, /<HomePreviewPane[\s\S]*?showOverlay=\{showPreviewChrome\}/)
   assert.match(source, /<HomeSettingsPane[\s\S]*?revealStage=\{revealStage\}/)
   assert.match(source, /<HomeSettingsPane[\s\S]*?effectiveLayoutTier=\{paneEffectiveLayoutTier\}/)
@@ -646,7 +650,7 @@ test("HomeSettingsPane supports mid tier as desktop shell single-column equal ro
 test("HomePreviewPane keeps select-type hint before style selection", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assert.match(source, /function HomePreviewPane\(\{\s*config,\s*selectedDevice,\s*showOverlay,\s*t\s*\}\)/)
+  assert.match(source, /function HomePreviewPane\(\{\s*config,\s*previewTargetHeight,\s*selectedDevice,\s*showOverlay,\s*t\s*\}\)/)
   assert.match(source, /preview\.selectType/)
   assert.doesNotMatch(source, /SkeletonLine/)
 })
@@ -654,12 +658,9 @@ test("HomePreviewPane keeps select-type hint before style selection", () => {
 test("HomePreviewPane scales all wallpaper previews from base device coordinates", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assert.match(
-    source,
-    /const SCREEN_WIDTH = LOCK_SCREEN_LAYOUT\.wallpaper\.width \* LOCK_SCREEN_LAYOUT\.scale/
-  )
-  assert.match(source, /const SCREEN_HEIGHT = LOCK_SCREEN_LAYOUT\.targetHeight/)
-  assert.match(source, /const previewScale = Math\.max\(SCREEN_WIDTH \/ baseWidth,\s*SCREEN_HEIGHT \/ baseHeight\)/)
+  assertNamedImports(source, "./mobile-preview-sizing", ["resolveLockScreenLayoutMetrics"])
+  assert.match(source, /const layoutMetrics = resolveLockScreenLayoutMetrics\(previewTargetHeight\)/)
+  assert.match(source, /const previewScale = Math\.max\(layoutMetrics\.wallpaperWidth \/ baseWidth,\s*layoutMetrics\.wallpaperHeight \/ baseHeight\)/)
   assert.match(source, /const previewWidth = baseWidth \* previewScale/)
   assert.match(source, /const previewHeight = baseHeight \* previewScale/)
   assert.match(source, /const rendererByType = \{/)
@@ -681,35 +682,45 @@ test("HomePreviewPane scales all wallpaper previews from base device coordinates
 test("HomePreviewPane delegates lock screen chrome to LockScreenPreviewFrame", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomePreviewPane.jsx")
 
-  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame", "LOCK_SCREEN_LAYOUT"])
+  assertNamedImports(source, "./LockScreenPreviewFrame", ["LockScreenPreviewFrame"])
   assert.match(source, /const showWidgets = config\.selectedType !== "goal"/)
-  assert.match(source, /<LockScreenPreviewFrame[\s\S]*?showOverlay=\{showOverlay\}[\s\S]*?>/)
+  assert.match(source, /<LockScreenPreviewFrame[\s\S]*?targetHeight=\{previewTargetHeight\}[\s\S]*?showOverlay=\{showOverlay\}[\s\S]*?>/)
   assert.match(source, /<LockScreenPreviewFrame[\s\S]*?showWidgets=\{showWidgets\}[\s\S]*?>/)
   assert.match(source, /aria-label="Wallpaper live preview canvas"/)
   assert.doesNotMatch(source, /rounded-\[40px\]/)
   assert.doesNotMatch(source, /top-\[10px\]/)
 })
 
-test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", () => {
+test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics and target height", () => {
   const source = readSource("src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx")
+  const sizingSource = readSource("src/pages/registry/sections/workspace/mobile-preview-sizing.js")
 
-  assert.match(source, /const LOCK_SCREEN_LAYOUT =/)
   assert.match(source, /const BEZEL_INSET = 1/)
+  assert.match(sizingSource, /const LOCK_SCREEN_LAYOUT =/)
+  assert.match(sizingSource, /const DEFAULT_LOCK_SCREEN_TARGET_HEIGHT = 510/)
+  assert.match(sizingSource, /function resolveLockScreenLayoutMetrics\(targetHeight = DEFAULT_LOCK_SCREEN_TARGET_HEIGHT\)/)
   assertNamedImports(source, "./lock-screen-overlay", [
     "LockScreenOverlay",
     "LOCK_SCREEN_OVERLAY_DEFAULT_COLORS",
     "LOCK_SCREEN_OVERLAY_LAYER_IDS",
   ])
+  assertNamedImports(source, "./mobile-preview-sizing", [
+    "DEFAULT_LOCK_SCREEN_TARGET_HEIGHT",
+    "LOCK_SCREEN_LAYOUT",
+    "resolveLockScreenLayoutMetrics",
+  ])
   assert.match(source, /function LockScreenPreviewFrame\(\{/)
+  assert.match(source, /targetHeight = DEFAULT_LOCK_SCREEN_TARGET_HEIGHT/)
   assert.match(source, /showOverlay = true/)
   assert.match(source, /showWidgets = true/)
-  assert.match(source, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
-  assert.match(source, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
-  assert.match(source, /targetHeight:\s*510/)
-  assert.match(source, /scale:\s*510\s*\/\s*874/)
+  assert.match(sizingSource, /shell:\s*\{\s*width:\s*450,\s*height:\s*920\s*\}/)
+  assert.match(sizingSource, /wallpaper:\s*\{\s*width:\s*402,\s*height:\s*874,\s*left:\s*24,\s*top:\s*23\s*\}/)
+  assert.match(source, /const layoutMetrics = resolveLockScreenLayoutMetrics\(targetHeight\)/)
   assert.match(source, /width:\s*`\$\{scaledWallpaperWidth\}px`/)
   assert.match(source, /height:\s*`\$\{scaledWallpaperHeight\}px`/)
-  assert.match(source, /const bezelScale = \(scaledShellWidth - BEZEL_INSET \* 2\) \/ scaledShellWidth/)
+  assert.match(source, /const bezelScale = \(layoutMetrics\.shellWidth - BEZEL_INSET \* 2\) \/ layoutMetrics\.shellWidth/)
+  assert.match(source, /const scaledWallpaperWidth = layoutMetrics\.wallpaperWidth/)
+  assert.match(source, /const scaledWallpaperHeight = layoutMetrics\.wallpaperHeight/)
   assert.match(source, /left:\s*`\$\{scaledBezelLeft\}px`/)
   assert.match(source, /top:\s*`\$\{scaledBezelTop\}px`/)
   assert.match(source, /width:\s*`\$\{scaledBezelWidth\}px`/)
@@ -720,7 +731,7 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics", 
   assert.match(source, /<LockScreenOverlay[\s\S]*?colors=\{overlayColors\}/)
   assert.match(source, /<LockScreenOverlay[\s\S]*?backgroundColor=\{overlayBackgroundColor\}/)
   assert.match(source, /<LockScreenOverlay[\s\S]*?showWidgets=\{showWidgets\}/)
-  assert.match(source, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
+  assert.match(sizingSource, /"\/preview\/iPhone\/lock-screen-bezel\.svg"/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_DEFAULT_COLORS[\s\S]*?\}/)
   assert.match(source, /export \{[\s\S]*?LOCK_SCREEN_OVERLAY_LAYER_IDS[\s\S]*?\}/)
   assert.doesNotMatch(source, /lock-screen-dark-overlay\.svg/)
@@ -949,11 +960,12 @@ test("Home preview maps accent and background colors into lock screen overlay", 
   assert.doesNotMatch(helperSource, /"status-bar-leading":\s*accentColor/)
 
   assert.match(frameSource, /function LockScreenPreviewFrame\(\{/)
+  assert.match(frameSource, /targetHeight = DEFAULT_LOCK_SCREEN_TARGET_HEIGHT/)
   assert.match(frameSource, /showOverlay = true/)
   assert.match(frameSource, /showWidgets = true/)
   assert.match(frameSource, /colors=\{overlayColors\}/)
   assert.match(frameSource, /backgroundColor=\{overlayBackgroundColor\}/)
-  assert.match(frameSource, /overlayScale=\{LOCK_SCREEN_LAYOUT\.scale\}/)
+  assert.match(frameSource, /overlayScale=\{layoutMetrics\.scale\}/)
   assert.match(frameSource, /showWidgets=\{showWidgets\}/)
   assert.match(frameSource, /wallpaperLang=\{wallpaperLang\}/)
 })
