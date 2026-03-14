@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### UI & UX
-- **Mobile Preview Optimization**: Implemented "first fold" sizing logic for mobile previews to ensure settings cards are properly visible and not truncated across different workspace heights.
+- **Mobile Preview Optimization**: Refactored mobile preview sizing to use a deterministic projection engine and consistent `LOCK_SCREEN_LAYOUT` ratios, ensuring settings cards are properly visible and not truncated across different workspace heights.
 
 ### Tests
-- **Preview Regression**: Added regression tests for mobile preview target height resolution across different layout tiers and workspace heights.
+- **Preview Regression**: Upgraded mobile preview regression tests to use exact `assert.equal` checks for deterministic target height resolution.
 
 ## [1.9.2] - 2026-03-14
 

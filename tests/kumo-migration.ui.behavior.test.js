@@ -738,6 +738,23 @@ test("LockScreenPreviewFrame derives shell scale from Figma wallpaper metrics an
   assert.doesNotMatch(source, /<img[\s\S]*?overlay/)
 })
 
+test("mobile preview sizing derives target height from full first-card budget instead of legacy guesswork", () => {
+  const source = readSource("src/pages/registry/sections/workspace/mobile-preview-sizing.js")
+
+  assert.match(source, /const MOBILE_PREVIEW_MIN_TARGET_HEIGHT = 180/)
+  assert.match(source, /const MOBILE_PREVIEW_MAX_TARGET_HEIGHT = 380/)
+  assert.match(source, /const SETTINGS_CARD_MIN_HEIGHT = 220/)
+  assert.match(source, /const SEGMENTED_TABS_RAIL_HEIGHT = 48/)
+  assert.match(source, /const MOBILE_PREVIEW_STACK_OVERHEAD = 60/)
+  assert.match(source, /const availablePreviewBlockHeight = workspaceHeight\s*-\s*\(SETTINGS_CARD_MIN_HEIGHT \+ SEGMENTED_TABS_RAIL_HEIGHT\)/)
+  assert.match(source, /const availableWallpaperTargetHeight = Math\.floor\(\(availablePreviewBlockHeight - MOBILE_PREVIEW_STACK_OVERHEAD\) \* LOCK_SCREEN_LAYOUT\.wallpaper\.height \/ LOCK_SCREEN_LAYOUT\.shell\.height\)/)
+  assert.match(source, /clamp\(\s*availableWallpaperTargetHeight,\s*MOBILE_PREVIEW_MIN_TARGET_HEIGHT,\s*MOBILE_PREVIEW_MAX_TARGET_HEIGHT\s*\)/)
+  assert.doesNotMatch(source, /MOBILE_PREVIEW_RESERVED_SETTINGS_HEIGHT/)
+  assert.doesNotMatch(source, /MOBILE_PREVIEW_RESERVED_CHROME_HEIGHT/)
+  assert.doesNotMatch(source, /const MOBILE_PREVIEW_RESERVED_SETTINGS_HEIGHT = 192/)
+  assert.doesNotMatch(source, /const MOBILE_PREVIEW_RESERVED_CHROME_HEIGHT = 56/)
+})
+
 test("Lock screen overlay exports stable layer ids and default colors", () => {
   const source = readSource("src/pages/registry/sections/workspace/lock-screen-overlay/index.js")
   const constantsSource = readSource(

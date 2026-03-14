@@ -32,6 +32,9 @@ test("shrinks mobile preview target height below desktop default", () => {
     const iphone12Height = resolveMobilePreviewTargetHeight({ workspaceHeight: 616 })
     const iphone14ProMaxHeight = resolveMobilePreviewTargetHeight({ workspaceHeight: 692 })
 
+    assert.equal(seHeight, 182)
+    assert.equal(iphone12Height, 273)
+    assert.equal(iphone14ProMaxHeight, 345)
     assert.ok(seHeight < DEFAULT_LOCK_SCREEN_TARGET_HEIGHT)
     assert.ok(iphone12Height < DEFAULT_LOCK_SCREEN_TARGET_HEIGHT)
     assert.ok(iphone14ProMaxHeight < DEFAULT_LOCK_SCREEN_TARGET_HEIGHT)
@@ -46,11 +49,14 @@ test("keeps mobile preview target height monotonic across iPhone heights", () =>
     assert.ok(iphone12Height < iphone14ProMaxHeight, "iPhone 12 should use a smaller preview than 14 Pro Max")
 })
 
-test("reserves enough vertical space for the first settings card on iPhone SE", () => {
+test("derives mobile preview budget from first-card and tabs hard constraints", () => {
     const seHeight = resolveMobilePreviewTargetHeight({ workspaceHeight: 520 })
+    const iphone12Height = resolveMobilePreviewTargetHeight({ workspaceHeight: 616 })
+    const iphone14ProMaxHeight = resolveMobilePreviewTargetHeight({ workspaceHeight: 692 })
 
-    assert.ok(seHeight <= 300, `expected SE target height to stay compact, got ${seHeight}`)
-    assert.ok(seHeight >= 220, `expected SE target height to preserve a meaningful preview, got ${seHeight}`)
+    assert.equal(seHeight, Math.floor((520 - (220 + 48) - 60) * 874 / 920))
+    assert.equal(iphone12Height, Math.floor((616 - (220 + 48) - 60) * 874 / 920))
+    assert.equal(iphone14ProMaxHeight, Math.floor((692 - (220 + 48) - 60) * 874 / 920))
 })
 
 test("resolvePreviewTargetHeight routes mobile through the shared sizing helper", () => {

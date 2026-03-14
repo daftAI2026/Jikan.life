@@ -14,10 +14,11 @@ const LOCK_SCREEN_LAYOUT = {
 }
 
 const DEFAULT_LOCK_SCREEN_TARGET_HEIGHT = 510
-const MOBILE_PREVIEW_MIN_TARGET_HEIGHT = 220
+const MOBILE_PREVIEW_MIN_TARGET_HEIGHT = 180
 const MOBILE_PREVIEW_MAX_TARGET_HEIGHT = 380
-const MOBILE_PREVIEW_RESERVED_SETTINGS_HEIGHT = 192
-const MOBILE_PREVIEW_RESERVED_CHROME_HEIGHT = 56
+const SETTINGS_CARD_MIN_HEIGHT = 220
+const SEGMENTED_TABS_RAIL_HEIGHT = 48
+const MOBILE_PREVIEW_STACK_OVERHEAD = 60
 const LOCK_SCREEN_WALLPAPER_RADIUS = 54
 
 function clamp(value, min, max) {
@@ -47,16 +48,13 @@ function resolveMobilePreviewTargetHeight({ workspaceHeight }) {
         return MOBILE_PREVIEW_MAX_TARGET_HEIGHT
     }
 
-    const constrainedHeight = workspaceHeight
-        - MOBILE_PREVIEW_RESERVED_SETTINGS_HEIGHT
-        - MOBILE_PREVIEW_RESERVED_CHROME_HEIGHT
+    const availablePreviewBlockHeight = workspaceHeight - (SETTINGS_CARD_MIN_HEIGHT + SEGMENTED_TABS_RAIL_HEIGHT)
+    const availableWallpaperTargetHeight = Math.floor((availablePreviewBlockHeight - MOBILE_PREVIEW_STACK_OVERHEAD) * LOCK_SCREEN_LAYOUT.wallpaper.height / LOCK_SCREEN_LAYOUT.shell.height)
 
-    return Math.round(
-        clamp(
-            constrainedHeight,
-            MOBILE_PREVIEW_MIN_TARGET_HEIGHT,
-            MOBILE_PREVIEW_MAX_TARGET_HEIGHT
-        )
+    return clamp(
+        availableWallpaperTargetHeight,
+        MOBILE_PREVIEW_MIN_TARGET_HEIGHT,
+        MOBILE_PREVIEW_MAX_TARGET_HEIGHT
     )
 }
 
