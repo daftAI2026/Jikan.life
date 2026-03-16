@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.9.5] - 2026-03-16
+
+### UI & UX
+- **Segmented Mobile Style Selector**: Introduced a new segmented control for switching between wallpaper styles ("Year" vs "Goal") on mobile viewports, providing a more focused and intuitive configuration experience within the drawer.
+- **Mobile Sidebar Refinement**: Decoupled viewing and selection states on mobile. The mobile sidebar now uses a high-index immersive full-screen layout with a fixed multi-tab selector at the bottom, enhancing usability on smaller screens.
+- **Mobile Footer Versatility**: Upgraded the `MobileFooter` component with flexible positioning support (`fixed=false`), allowing it to serve as both a global page footer and a nested component within the mobile sidebar rail.
+
+### Architecture
+- **Sidebar State Orchestration**: Refactored the style sidebar to follow a "Container/Card/Visual/Stats" four-layer separation. Centralized hidden card filtering and active style fallback logic into an independent `home-sidebar-style-cards.js` module.
+- **Fractal Protocol**: Synchronized GEB documentation for the registry sections module and tests to reflect the new segmented styling components and modular sidebar architecture.
+
+### Tests
+- **UI Behavioral Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to assert the new segmented mobile selector contracts, layout modes, and state transitions.
+- **Regression Tests**: Introduced `home-sidebar-cards.unit.test.js` to rigidly validate hidden style filtering and mobile active style resolution logic.
+
+## [1.9.4] - 2026-03-15
+
 ### UI & UX
 - **Segmented Layout Support**: Expanded the deterministic preview sizing engine to support the `md` layout tier, ensuring consistent mobile-style previews across all segmented workspace configurations.
 - **Preview Scaling Fluidity**: Increased the maximum target height for mobile previews to match the default lock screen height, allowing for more immersive previews on larger workspace viewports.
@@ -15,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preview Logic Guards**: Expanded regression tests to validate preview sizing across both `mobile` and `md` tiers under the new segmented layout contracts.
 
 ## [1.9.3] - 2026-03-14
-
 
 ### UI & UX
 - **Mobile Preview Optimization**: Refactored mobile preview sizing to use a deterministic projection engine and consistent `LOCK_SCREEN_LAYOUT` ratios, ensuring settings cards are properly visible and not truncated across different workspace heights.

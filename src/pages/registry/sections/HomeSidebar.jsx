@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), @/lib/date-utils(getLocalDateKey), JikanMenuIcon, ThemeToggle, @/lib/I18nContext, useRegistryBlockingScrollLock, home-sidebar-date-stats, home-sidebar-cards
  * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
- * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新与移动抽屉滚动锁；卡片渲染细节委托 home-sidebar-cards
+ * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新、移动抽屉滚动锁与移动 segmented style selector 编排；移动端额外持有 viewingStyle 以区分“查看卡片”和“真正选中”，卡片渲染细节委托 home-sidebar-cards
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -34,6 +34,7 @@ function HomeSidebar({
         if (selectedStyle !== null) return false
         return isMobileViewport()
     })
+    const [mobileViewingStyle, setMobileViewingStyle] = useState(() => selectedStyle)
     const [todayKey, setTodayKey] = useState(() => getLocalDateKey())
     const isSidebarOpen = typeof sidebarOpen === "boolean" ? sidebarOpen : internalSidebarOpen
 
@@ -92,6 +93,10 @@ function HomeSidebar({
         setMobileMenuOpen(true)
     }, [selectedStyle])
 
+    useEffect(() => {
+        setMobileViewingStyle(selectedStyle)
+    }, [selectedStyle])
+
     const yearStats = useMemo(() => getYearStats(), [todayKey])
 
     const handleStyleSelect = (styleId) => {
@@ -99,7 +104,7 @@ function HomeSidebar({
         if (isMobileViewport()) setMobileMenuOpen(false)
     }
 
-    const navContent = (
+    const mobileNavContent = (
         <div className="flex h-full min-h-0 flex-col bg-kumo-elevated text-kumo-strong">
             <div className="flex h-5 items-center px-1">
                 <p className="text-base leading-4 font-medium text-kumo-subtle">
@@ -107,6 +112,26 @@ function HomeSidebar({
                 </p>
             </div>
             <HomeSidebarCards
+                layoutMode="mobile-segmented"
+                selectedStyle={selectedStyle}
+                viewedStyle={mobileViewingStyle}
+                onStyleSelect={handleStyleSelect}
+                onViewedStyleChange={setMobileViewingStyle}
+                yearStats={yearStats}
+                goalPreviewLayout={goalPreviewLayout}
+                t={t}
+            />
+        </div>
+    )
+    const desktopNavContent = (
+        <div className="flex h-full min-h-0 flex-col bg-kumo-elevated text-kumo-strong">
+            <div className="flex h-5 items-center px-1">
+                <p className="text-base leading-4 font-medium text-kumo-subtle">
+                    {t("types.header")}
+                </p>
+            </div>
+            <HomeSidebarCards
+                layoutMode="desktop-list"
                 selectedStyle={selectedStyle}
                 onStyleSelect={handleStyleSelect}
                 yearStats={yearStats}
@@ -149,7 +174,7 @@ function HomeSidebar({
                         <XIcon size={20} />
                     </Button>
                 </div>
-                <div className="min-h-0 grow overflow-hidden px-3 py-3 text-sm">{navContent}</div>
+                <div className="min-h-0 grow overflow-hidden px-3 pt-3 pb-0 text-sm">{mobileNavContent}</div>
             </aside>
 
             <div className="fixed inset-y-0 left-0 z-50 hidden w-[var(--registry-rail-width)] border-r border-kumo-line bg-kumo-elevated md:block">
@@ -181,7 +206,7 @@ function HomeSidebar({
                 )}
             >
                 <div className="h-[var(--registry-topbar-height)] flex-none border-b border-kumo-line" />
-                <div className="min-h-0 grow overflow-hidden px-3 py-3 text-sm">{navContent}</div>
+                <div className="min-h-0 grow overflow-hidden px-3 py-3 text-sm">{desktopNavContent}</div>
             </aside>
         </>
     )
