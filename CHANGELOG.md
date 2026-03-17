@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.9.6] - 2026-03-18
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `@cloudflare/kumo` to `1.13.1`, `framer-motion` to `12.38.0`, and `wrangler` to `4.75.0`.
+
 ## [1.9.5] - 2026-03-16
 
 ### UI & UX
