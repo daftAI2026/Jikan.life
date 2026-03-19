@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.9.7] - 2026-03-19
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `@cloudflare/kumo` to `1.14.0`, `@tailwindcss/vite` to `4.2.2`, `tailwindcss` to `4.2.2`, `@vitejs/plugin-react` to `6.0.1`, and `vite` to `8.0.1`.
+
 ## [1.9.6] - 2026-03-18
 
 ### Infrastructure
