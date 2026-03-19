@@ -17,6 +17,7 @@ goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
 helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
+worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/app` `/app/` 先走 Worker 并在边缘层 308 重定向到首页。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
 accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
@@ -29,6 +30,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-19: 新增 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/app` `/app/` 放入 `run_worker_first`，并要求 `worker/index.js` 在 `env.ASSETS.fetch` 前对两个废弃入口直接返回 `308 -> /`，防止 Search Console 再次将旧入口识别为 SPA 自动重定向页。
 2026-03-16: 新增 `home-sidebar-cards.unit.test.js`，锁定移动端 style sidebar 的隐藏卡过滤与 active style fallback；同步更新 `kumo-migration.ui.registry-shell.behavior.test.js`，要求 `HomeSidebar` 使用底部 segmented tabs 单卡布局并通过纯 helper 收口可见卡语义。
 2026-03-12: 更新 `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：Goal 圆环护栏从“剩余比例递减环”翻为“完成比例顺时针增长环”，并新增 `goal-ring-geometry.js` 正式接线断言，防止再次出现“写了真相源但未消费”的孤儿模块。
 2026-03-14: 新增 `mobile-preview-sizing.unit.test.js` 并更新 `kumo-migration.ui.behavior.test.js`：将锁屏预览从固定 `targetHeight=510` 升级为 `mobile-preview-sizing.js` 单一真相源，要求 HomeGrid 按 mobile workspace 高度下发 `previewTargetHeight`，同时锁定 HomePreviewPane/LockScreenPreviewFrame 的可变 target height 接线与首屏预算语义。

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.8] - 2026-03-19
+
+### Infrastructure
+- **Worker Routing & SEO**: Implemented a `308 Permanent Redirect` at the Cloudflare Worker edge for legacy `/app` and `/app/` entry points. This prevents Search Console from incorrectly indexing these deprecated routes as separate SPA shell pages and ensures they are correctly consolidated to the root domain.
+- **Routing Guards**: Introduced `worker-routing.behavior.test.js` to strictly enforce that redirect logic occurs before static asset fetching and that `wrangler.toml` prioritizes these routes in the `run_worker_first` configuration.
 
 ## [1.9.7] - 2026-03-19
 

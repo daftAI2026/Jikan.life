@@ -23,7 +23,7 @@ scripts/ - 开发校验脚本
 
 <config>
 vite.config.js - Vite 构建配置 (含 manualChunks 拆包策略)
-wrangler.toml - Cloudflare Workers 部署配置
+wrangler.toml - Cloudflare Workers 部署配置（含 `/app` 与 `/app/` 的边缘层 308 重定向优先路由）
 package.json - 统一依赖管理
 doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abstraction / Documentation Protocol)
 </config>
@@ -50,6 +50,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **布局一致**: ColorPicker 色域区使用 `aspect-square` 跟随弹层内容宽度，工具栏保持 `吸管:颜色空间=1:2` 并将剩余宽度留给颜色输入框
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
+- **废弃入口前移**: 历史入口 `/app` 与 `/app/` 必须在边缘层返回 HTTP 308，禁止继续依赖 SPA 壳页面 + 前端 Navigate 作为线上主重定向路径
 - **上游消费策略**: 仅通过 npm 包 `@cloudflare/kumo` + `src/components/ui/` 适配层消费上游能力，禁止页面层直引上游包
 - **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天
 - **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `Surface`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）

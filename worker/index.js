@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal}.js, ./validation.js, ../shared/wallpaper-core.js(resolveFontBufferLanguages), @resvg/resvg-wasm
  * [OUTPUT]: 对外提供 default.fetch (Cloudflare Worker Handler)
- * [POS]: worker/index.js - Worker 核心入口，负责路由分发、WASM 初始化、goalName 感知字体加载与图像生成
+ * [POS]: worker/index.js - Worker 核心入口，负责历史入口重定向、路由分发、WASM 初始化、goalName 感知字体加载与图像生成
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * 
  * Life Calendar Wallpaper - Cloudflare Worker
@@ -137,6 +137,17 @@ export default {
         if (url.pathname === '/health') {
             return new Response(JSON.stringify({ status: 'ok' }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
+
+        // 历史入口必须在边缘层直接重定向，避免返回 SPA 200 壳页面后再由前端跳转。
+        if (url.pathname === '/app' || url.pathname === '/app/') {
+            return new Response(null, {
+                status: 308,
+                headers: {
+                    ...corsHeaders,
+                    Location: '/',
+                }
             });
         }
 
