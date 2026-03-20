@@ -1,6 +1,6 @@
 # [INPUT]: 依赖 Cloudflare Workers 运行时、`worker/index.js` 入口、`dist/` 静态构建产物与 `npm install && npm run build` 构建命令
-# [OUTPUT]: 提供 Jikan 的 Worker + Assets 一体化部署配置，声明 runtime 兼容标志、静态资源绑定、SPA 回退策略与 WASM 装载规则
-# [POS]: 项目根部署契约，连接前端构建产物与 Cloudflare 边缘运行时；本地 `wrangler dev` 与线上部署都以此为单一真相源
+# [OUTPUT]: 提供 Jikan 的 Worker + Assets 一体化部署配置，声明 runtime 兼容标志、静态资源绑定、SPA 回退策略、Workers Logs 观测策略与 WASM 装载规则
+# [POS]: 项目根部署契约，连接前端构建产物与 Cloudflare 边缘运行时；本地 `wrangler dev`、线上部署与日志开关都以此为单一真相源
 # [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 #
 # ============================================================================
@@ -17,6 +17,17 @@ name = "jikan"
 main = "worker/index.js"
 compatibility_date = "2026-01-30"
 compatibility_flags = ["nodejs_compat"]
+
+# ============================================================================
+#                         Observability / Workers Logs
+# ============================================================================
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true
 
 # ============================================================================
 #                          Static Assets 配置
