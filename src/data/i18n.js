@@ -19,7 +19,7 @@ export const i18nData = {
     'types.header': 'Choose Your Style',
 
     // Year Card
-    'type.year.name': 'Year Progress',
+    'type.year.name': '{year} Year Progress',
     'type.year.description': 'Your year at a glance. Make every dot, and every moment, matter.',
     'type.year.statDay': 'Days',
     'type.year.statWeek': 'Weeks',
@@ -167,7 +167,7 @@ export const i18nData = {
     'types.header': '选择你的风格',
 
     // 年进度卡
-    'type.year.name': '年度进度',
+    'type.year.name': '{year} 年度进度',
     'type.year.description': '一眼看清你的一整年，让每一个点、每一个瞬间都更有意义。',
     'type.year.statDay': '天',
     'type.year.statWeek': '周',
@@ -315,7 +315,7 @@ export const i18nData = {
     'types.header': '選擇你的風格',
 
     // 年進度卡
-    'type.year.name': '年度進度',
+    'type.year.name': '{year} 年度進度',
     'type.year.description': '一眼看清你的一整年，讓每一個點、每一個瞬間都更有意義。',
     'type.year.statDay': '天',
     'type.year.statWeek': '週',
@@ -463,7 +463,7 @@ export const i18nData = {
     'types.header': 'スタイルを選択',
 
     // 年進度カード
-    'type.year.name': '年間進捗',
+    'type.year.name': '{year} 年度進捗',
     'type.year.description': '一年をひと目で。すべてのドットと、すべての瞬間を大切に。',
     'type.year.statDay': '日',
     'type.year.statWeek': '週',

@@ -65,7 +65,8 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
 
                 <div
                     className={cn(
-                        "mt-auto grid items-center border-y border-kumo-line py-2",
+                        "mt-auto grid items-center py-2",
+                        hasInlineStatsLayout ? "border-b border-kumo-line" : "border-y border-kumo-line",
                         hasInlineStatsLayout ? null : "divide-x divide-kumo-line"
                     )}
                     style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
@@ -138,7 +139,7 @@ function HomeSidebarCards({
         () => [
             {
                 id: "year",
-                title: t("type.year.name"),
+                title: t("type.year.name", { year: String(yearStats.year) }),
                 description: t("type.year.description"),
                 preview: (
                     <div className="origin-center scale-[1]">

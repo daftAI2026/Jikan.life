@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.12] - 2026-03-21
+
+### UI & UX
+- **Dynamic Variable Interpolation**: Refactored the sidebar card title engine to support context-aware label injection. The "Year" style card now dynamically reveals the targeted calendar year (e.g., "Year 2026") within its title, providing immediate temporal context during configuration.
+- **Visual Rhythm & Borders**: Refined the `StyleCard` stat layout to prioritize structural clarity. Implemented conditional border rendering (`border-b` vs `border-y`) based on the active layout mode, ensuring a cleaner visual separator when "inline stats" are active and preventing double-border artifacts in high-density views.
+
+### Tests
+- **UI Behavioral Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to rigidly assert the conditional border-logic branching and the presence of dynamic year interpolation within the sidebar card titles.
+
 ## [1.9.11] - 2026-03-21
 
 ### UI & UX
