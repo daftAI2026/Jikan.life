@@ -215,6 +215,16 @@ test("Registry language dropdown aligns left edge with trigger", () => {
   assert.match(source, /padding-right:\s*0/)
 })
 
+test("UI language provider syncs html lang and switches the global Japanese UI font stack", () => {
+  const i18nSource = readSource("src/lib/I18nContext.jsx")
+  const cssSource = readSource("src/index.css")
+
+  assert.match(i18nSource, /document\.documentElement\.lang = initialLang;/)
+  assert.match(i18nSource, /document\.documentElement\.lang = newLang;/)
+  assert.match(cssSource, /html\[lang="ja"\]\s*\{/)
+  assert.match(cssSource, /--font-sans:\s*"Inter", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif,/)
+})
+
 test("Registry wrappers are local and avoid vendor docs imports", () => {
   const themeToggle = readSource("src/pages/registry/sections/ThemeToggle.jsx")
   const searchDialog = readSource("src/pages/registry/sections/SearchDialog.jsx")
@@ -351,7 +361,7 @@ test("HomeSidebar uses segmented mobile style selector and hides Life style card
   assertNamedImports(cardsSource, "./home-sidebar-visuals", ["GoalVisual", "LifeVisual", "YearVisual"])
   assertNamedImports(source, "./home-sidebar-date-stats", ["getGoalPreviewLayout", "getYearStats"])
   assert.match(visualsSource, /const YEAR_GRID_COLUMNS = 10/)
-  assert.match(statsSource, /return \{ day, week, percent, totalDays \}/)
+  assert.match(statsSource, /return \{ year, day, week, percent, totalDays \}/)
   assert.match(source, /const \[todayKey, setTodayKey\] = useState\(\(\) => getLocalDateKey\(\)\)/)
   assert.match(source, /useEffect\(\(\) => \{/)
   assert.match(source, /const yearStats = useMemo\(\(\) => getYearStats\(\), \[todayKey\]\)/)
@@ -401,6 +411,9 @@ test("HomeSidebar delegates style-card rendering to HomeSidebarCards with callba
   assert.match(cardsSource, /goalPreviewLayout,/)
   assert.match(cardsSource, /t,/)
   assert.match(cardsSource, /onSelect=\{\(\) => onStyleSelect\?\.\(style\.id\)\}/)
+  assert.doesNotMatch(cardsSource, /titleTrailing:\s*String\(yearStats\.year\)/)
+  assert.doesNotMatch(cardsSource, /style\.titleTrailing/)
+  assert.match(cardsSource, /inlineDay:\s*t\("type\.year\.inlineDay",\s*\{\s*n:\s*String\(yearStats\.day\)\s*\}\)/)
 })
 
 test("HomeSidebar goal visual text positions follow preview layout parameters", () => {
@@ -480,4 +493,27 @@ test("Registry sidebar is local controlled implementation", () => {
   assert.doesNotMatch(source, /Life Calendar/)
   assert.doesNotMatch(source, /Goal Countdown/)
   assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SidebarNav/)
+})
+
+test("HomeSidebar keeps english inline year stats vertically centered inside the original two-line stat rhythm", () => {
+  const source = readSource("src/pages/registry/sections/home-sidebar-cards.jsx")
+  const statsSource = readSource("src/pages/registry/sections/home-sidebar-date-stats.js")
+
+  assert.match(source, /className="relative"/)
+  assert.match(source, /className="invisible"/)
+  assert.match(source, /"absolute inset-0 flex items-center"/)
+  assert.match(source, /const titleToneClass = isSelected \? "text-kumo-default" : "text-kumo-strong group-hover:text-kumo-default"/)
+  assert.match(source, /const hasInlineStatsLayout = stats\.every\(\(stat\) => Boolean\(stat\.inlineText\)\)/)
+  assert.match(source, /hasInlineStatsLayout \? null : "divide-x divide-kumo-line"/)
+  assert.match(source, /stat\.inlineAlign === "end" \? "text-right" : null/)
+  assert.match(source, /stat\.inlineAlign === "end" \? "justify-end" : null/)
+  assert.match(source, /"text-lg leading-none font-medium whitespace-nowrap transition-colors"/)
+  assert.match(source, /titleToneClass/)
+  assert.match(source, /stat\.inlineText \? \(/)
+  assert.match(statsSource, /inlineText: copy\.inlineDay/)
+  assert.match(statsSource, /inlineText: copy\.inlineComplete/)
+  assert.match(statsSource, /inlineText: copy\.inlineTarget/)
+  assert.match(statsSource, /inlineText: copy\.inlineTracking/)
+  assert.match(statsSource, /inlineAlign: "start"/)
+  assert.match(statsSource, /inlineAlign: "end"/)
 })

@@ -24,6 +24,8 @@ export const i18nData = {
     'type.year.statDay': 'Days',
     'type.year.statWeek': 'Weeks',
     'type.year.statComplete': 'Complete',
+    'type.year.inlineDay': 'Day {n}',
+    'type.year.inlineComplete': '{n} Complete',
 
     // Life Card
     'type.life.name': 'Life Calendar',
@@ -38,6 +40,8 @@ export const i18nData = {
     'type.goal.statTracking': 'Tracking',
     'type.goal.valueTarget': 'Target',
     'type.goal.valueDaily': 'Daily',
+    'type.goal.inlineTarget': 'Target',
+    'type.goal.inlineTracking': 'Daily tracking',
 
     // Stat Values
     'type.life.valueWeeks': '4,160',
@@ -168,6 +172,8 @@ export const i18nData = {
     'type.year.statDay': '天',
     'type.year.statWeek': '周',
     'type.year.statComplete': '完成度',
+    'type.year.inlineDay': '第 {n} 天',
+    'type.year.inlineComplete': '进度 {n}',
 
     // 生命日历卡
     'type.life.name': '生命日历',
@@ -182,6 +188,8 @@ export const i18nData = {
     'type.goal.statTracking': '追踪',
     'type.goal.valueTarget': '目标',
     'type.goal.valueDaily': '每日',
+    'type.goal.inlineTarget': '目标日期',
+    'type.goal.inlineTracking': '每日追踪',
 
     // 统计数值
     'type.life.valueWeeks': '4,160',
@@ -312,6 +320,8 @@ export const i18nData = {
     'type.year.statDay': '天',
     'type.year.statWeek': '週',
     'type.year.statComplete': '完成度',
+    'type.year.inlineDay': '第 {n} 天',
+    'type.year.inlineComplete': '進度 {n}',
 
     // 生命日曆卡
     'type.life.name': '生命日曆',
@@ -326,6 +336,8 @@ export const i18nData = {
     'type.goal.statTracking': '追蹤',
     'type.goal.valueTarget': '目標',
     'type.goal.valueDaily': '每日',
+    'type.goal.inlineTarget': '目標日期',
+    'type.goal.inlineTracking': '每日追蹤',
 
     // 統計數值
     'type.life.valueWeeks': '4,160',
@@ -456,6 +468,8 @@ export const i18nData = {
     'type.year.statDay': '日',
     'type.year.statWeek': '週',
     'type.year.statComplete': '完成度',
+    'type.year.inlineDay': '{n} 日目',
+    'type.year.inlineComplete': '{n} 経過',
 
     // 人生カレンダーカード
     'type.life.name': '人生カレンダー',
@@ -470,6 +484,8 @@ export const i18nData = {
     'type.goal.statTracking': '追跡',
     'type.goal.valueTarget': '目標',
     'type.goal.valueDaily': '毎日',
+    'type.goal.inlineTarget': 'ターゲット',
+    'type.goal.inlineTracking': 'デイリー追跡',
 
     // 統計値
     'type.life.valueWeeks': '4,160',

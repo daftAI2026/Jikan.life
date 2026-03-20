@@ -532,6 +532,19 @@ test("i18n includes iOS shortcut clipboard keys in all languages", () => {
   assert.equal(legacyStep3DescCount, 0)
 })
 
+test("i18n includes inline stat copy keys in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const yearInlineDayCount = (source.match(/'type\.year\.inlineDay':/g) || []).length
+  const yearInlineCompleteCount = (source.match(/'type\.year\.inlineComplete':/g) || []).length
+  const goalInlineTargetCount = (source.match(/'type\.goal\.inlineTarget':/g) || []).length
+  const goalInlineTrackingCount = (source.match(/'type\.goal\.inlineTracking':/g) || []).length
+
+  assert.equal(yearInlineDayCount, 4)
+  assert.equal(yearInlineCompleteCount, 4)
+  assert.equal(goalInlineTargetCount, 4)
+  assert.equal(goalInlineTrackingCount, 4)
+})
+
 test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
   const source = readSource("src/pages/registry/sections/ThemeToggle.jsx")
 

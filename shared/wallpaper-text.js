@@ -49,7 +49,7 @@ const WALLPAPER_TEXT = {
         daysLeftLabel: '残り日数',
         dayLeftLabel: '残り日数',
         goalDefault: '目標',
-        complete: '{n}% 完了',
+        complete: '{n}% 経過',
         weeksLeft: '残り {n} 週',
         weekLeft: '残り {n} 週',
         lived: '{n}% 経過',

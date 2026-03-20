@@ -70,6 +70,7 @@ test("wallpaper-core keeps key constants and text defaults", async () => {
   assert.equal(getWallpaperText("zh-CN", "goalDefault", ""), "目标")
   assert.equal(getWallpaperText("zh-TW", "goalDefault", ""), "目標")
   assert.equal(getWallpaperText("ja", "goalDefault", ""), "目標")
+  assert.equal(getWallpaperText("ja", "complete", "22"), "22% 経過")
 
   assert.equal(getWallpaperFontFamily("en"), "\"Inter\", sans-serif")
   assert.equal(getWallpaperFontFamily("zh-CN"), "\"Noto Sans SC\", \"Inter\", sans-serif")

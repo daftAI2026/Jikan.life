@@ -119,6 +119,7 @@ function HomeSidebar({
                 onViewedStyleChange={setMobileViewingStyle}
                 yearStats={yearStats}
                 goalPreviewLayout={goalPreviewLayout}
+                lang={lang}
                 t={t}
             />
         </div>
@@ -136,6 +137,7 @@ function HomeSidebar({
                 onStyleSelect={handleStyleSelect}
                 yearStats={yearStats}
                 goalPreviewLayout={goalPreviewLayout}
+                lang={lang}
                 t={t}
             />
         </div>

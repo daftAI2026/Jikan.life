@@ -1,10 +1,10 @@
 /**
- * [INPUT]: 依赖 @/lib/date-utils 的本地日期/日历数学 与 shared/wallpaper-text.js 的 Goal 预览标签文案
- * [OUTPUT]: 对外提供 getYearStats、getGoalPreviewLayout
- * [POS]: registry/sections 的 HomeSidebar 日期统计层，封装年进度统计与 Goal 卡片预览专用布局真相源
+ * [INPUT]: 依赖 src/lib/date-utils.js 的本地日期/日历数学 与 shared/wallpaper-text.js 的 Goal 预览标签文案
+ * [OUTPUT]: 对外提供 getYearStats、getGoalPreviewLayout、getYearSidebarStats、getGoalSidebarStats
+ * [POS]: registry/sections 的 HomeSidebar 日期统计层，封装年进度统计、Year/Goal 卡统计文案语义与 Goal 卡片预览专用布局真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-import { getDayOfYear, getDaysInYear } from "@/lib/date-utils"
+import { getDayOfYear, getDaysInYear } from "../../../lib/date-utils.js"
 import { getWallpaperText } from "../../../../shared/wallpaper-text.js"
 
 const GOAL_PREVIEW_PROGRESS = 0.69
@@ -20,7 +20,7 @@ function getYearStats(now = new Date()) {
     const totalDays = getDaysInYear(year)
     const week = Math.ceil(day / 7)
     const percent = Math.round((day / totalDays) * 100)
-    return { day, week, percent, totalDays }
+    return { year, day, week, percent, totalDays }
 }
 
 function getGoalPreviewLayout(lang) {
@@ -34,4 +34,38 @@ function getGoalPreviewLayout(lang) {
     }
 }
 
-export { getGoalPreviewLayout, getYearStats }
+function getYearSidebarStats({ yearStats, copy }) {
+    return [
+        {
+            label: copy.statDay,
+            value: String(yearStats.day),
+            inlineText: copy.inlineDay,
+            inlineAlign: "start",
+        },
+        {
+            label: copy.statComplete,
+            value: `${yearStats.percent}%`,
+            inlineText: copy.inlineComplete,
+            inlineAlign: "end",
+        },
+    ]
+}
+
+function getGoalSidebarStats({ copy, values }) {
+    return [
+        {
+            label: copy.statTargetDate,
+            value: values.target,
+            inlineText: copy.inlineTarget,
+            inlineAlign: "start",
+        },
+        {
+            label: copy.statTracking,
+            value: values.daily,
+            inlineText: copy.inlineTracking,
+            inlineAlign: "end",
+        },
+    ]
+}
+
+export { getGoalPreviewLayout, getGoalSidebarStats, getYearSidebarStats, getYearStats }
