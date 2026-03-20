@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Observability & Logs**: Enabled Cloudflare Workers Logs and Observability in `wrangler.toml` with a 100% sampling rate (`head_sampling_rate = 1`). This ensures that invocation logs are managed as a single source of truth in the configuration file, preventing configuration drift from manual dashboard overrides.
 - **Fractal Protocol**: Updated `CLAUDE.md` to formally document the observability configuration strategy as a core project constraint.
 
+## [1.9.8] - 2026-03-19
+
 ### Infrastructure
 - **Worker Routing & SEO**: Implemented a `308 Permanent Redirect` at the Cloudflare Worker edge for legacy `/app` and `/app/` entry points. This prevents Search Console from incorrectly indexing these deprecated routes as separate SPA shell pages and ensures they are correctly consolidated to the root domain.
 - **Routing Guards**: Introduced `worker-routing.behavior.test.js` to strictly enforce that redirect logic occurs before static asset fetching and that `wrangler.toml` prioritizes these routes in the `run_worker_first` configuration.
