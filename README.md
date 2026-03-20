@@ -10,9 +10,14 @@
 </p>
 
 <p align="center">
+  Current brand mark uses the circular favicon in <code>public/favicon.svg</code>.<br/>
+  Legacy square mark is preserved in <code>public/favicon-square-legacy.svg</code>.
+</p>
+
+<p align="center">
   <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.9.9-green" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.9.10-green" alt="Version" />
   <img src="https://img.shields.io/badge/i18n-EN%20%7C%20zh--CN%20%7C%20zh--TW%20%7C%20ja-orange" alt="i18n" />
 </p>
 

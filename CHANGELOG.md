@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.10] - 2026-03-21
+
+### Branding
+- **Favicon Evolution**: Refactored `favicon.svg` from a square boundary to a circular stroke version, aligning with the "Jikan" (Time) concept as a flowing, cyclical entity.
+- **Legacy Preservation**: Renamed the original square branding to `favicon-square-legacy.svg` to maintain a fallback entry point for legacy marketing assets.
+
+### Infrastructure
+- **Observability & Logs**: Enabled Cloudflare Workers Logs and Observability in `wrangler.toml` with a 100% sampling rate (`head_sampling_rate = 1`). This ensures that invocation logs are managed as a single source of truth in the configuration file, preventing configuration drift from manual dashboard overrides.
+- **Fractal Protocol**: Updated `CLAUDE.md` to formally document the observability configuration strategy as a core project constraint.
+
 ## [1.9.9] - 2026-03-20
 
 ### Infrastructure
