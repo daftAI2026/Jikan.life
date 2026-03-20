@@ -24,7 +24,7 @@ export function RemotionRoot() {
                 fps={OPENING_FPS}
                 width={OPENING_WIDTH}
                 height={OPENING_HEIGHT}
-                defaultProps={{ theme: "light" }}
+                defaultProps={{ theme: "light", debugLayout: true }}
                 schema={OpeningTextCompositionSchema}
             />
         </Folder>

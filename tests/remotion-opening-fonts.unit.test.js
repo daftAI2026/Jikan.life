@@ -11,24 +11,17 @@ async function loadOpeningFontsModule() {
     return import("../remotion/opening-fonts.js").catch(() => ({}))
 }
 
-test("pins intro and final lockup to Inter while preserving anchor weights", async () => {
+test("pins intro and final lockup to Inter while preserving lighter line anchor weights", async () => {
     const { resolveOpeningTypography } = await loadOpeningFontsModule()
 
     assert.equal(typeof resolveOpeningTypography, "function")
 
-    const introLeft = resolveOpeningTypography({
+    const introLine = resolveOpeningTypography({
         seed: 7,
         sceneId: "intro",
         sceneKind: "intro-typewriter",
-        column: "left",
-        text: "Time",
-    })
-    const introCenter = resolveOpeningTypography({
-        seed: 7,
-        sceneId: "intro",
-        sceneKind: "intro-typewriter",
-        column: "center",
-        text: "&",
+        column: "line",
+        text: "Time & Life",
     })
     const finalLine = resolveOpeningTypography({
         seed: 7,
@@ -38,12 +31,10 @@ test("pins intro and final lockup to Inter while preserving anchor weights", asy
         text: "jikan.life",
     })
 
-    assert.equal(introLeft.primaryFontFamily, "Inter")
-    assert.equal(introLeft.fontWeight, 600)
-    assert.equal(introCenter.primaryFontFamily, "Inter")
-    assert.equal(introCenter.fontWeight, 700)
+    assert.equal(introLine.primaryFontFamily, "Inter")
+    assert.equal(introLine.fontWeight, 500)
     assert.equal(finalLine.primaryFontFamily, "Inter")
-    assert.equal(finalLine.fontWeight, 700)
+    assert.equal(finalLine.fontWeight, 500)
 })
 
 test("routes middle latin text into a deterministic non-Inter latin pool", async () => {
@@ -67,6 +58,12 @@ test("routes middle latin text into a deterministic non-Inter latin pool", async
     assert.deepEqual(first, second)
     assert.ok(OPENING_FONT_POOL_FAMILIES.latin.includes(first.primaryFontFamily))
     assert.notEqual(first.primaryFontFamily, "Inter")
+})
+
+test("includes Gloria Hallelujah in the latin random pool", async () => {
+    const { OPENING_FONT_POOL_FAMILIES } = await loadOpeningFontsModule()
+
+    assert.ok(OPENING_FONT_POOL_FAMILIES.latin.includes("Gloria Hallelujah"))
 })
 
 test("coordinates one shared style group across a random scene instead of letting columns freestyle", async () => {
@@ -121,8 +118,8 @@ test("routes kana text to the japanese pool and han text to the shared cjk pool"
     assert.ok(OPENING_FONT_POOL_FAMILIES.cjk.includes(han.primaryFontFamily))
 })
 
-test("keeps the center column on a conservative pool even when the scene style is more expressive", async () => {
-    const { OPENING_CENTER_FONT_FAMILIES, resolveOpeningTypography } = await loadOpeningFontsModule()
+test("lets the center column share the scene style-group pool while keeping conservative styling", async () => {
+    const { OPENING_FONT_POOL_FAMILIES, resolveOpeningTypography } = await loadOpeningFontsModule()
 
     const center = resolveOpeningTypography({
         seed: 23,
@@ -132,9 +129,60 @@ test("keeps the center column on a conservative pool even when the scene style i
         text: "jiān",
     })
 
-    assert.ok(OPENING_CENTER_FONT_FAMILIES.latin.includes(center.primaryFontFamily))
+    assert.ok(OPENING_FONT_POOL_FAMILIES.latin.includes(center.primaryFontFamily))
     assert.ok(center.fontWeight <= 600)
     assert.equal(center.fontStyle, "normal")
+})
+
+test("keeps center und out of IBM Plex Sans", async () => {
+    const { resolveOpeningTypography } = await loadOpeningFontsModule()
+
+    const und = resolveOpeningTypography({
+        seed: 1,
+        sceneId: "random-und",
+        sceneKind: "random-cut",
+        column: "center",
+        text: "und",
+    })
+
+    assert.notEqual(und.primaryFontFamily, "IBM Plex Sans")
+})
+
+test("lets han text randomly reach Zhi Mang Xing across columns", async () => {
+    const { resolveOpeningTypography } = await loadOpeningFontsModule()
+
+    const variants = [
+        ...Array.from({ length: 24 }, (_, index) =>
+            resolveOpeningTypography({
+                seed: index + 1,
+                sceneId: "random-left-han",
+                sceneKind: "random-cut",
+                column: "left",
+                text: "時間",
+            })
+        ),
+        ...Array.from({ length: 24 }, (_, index) =>
+            resolveOpeningTypography({
+                seed: index + 1,
+                sceneId: "random-center-han",
+                sceneKind: "random-cut",
+                column: "center",
+                text: "和",
+            })
+        ),
+        ...Array.from({ length: 24 }, (_, index) =>
+            resolveOpeningTypography({
+                seed: index + 1,
+                sceneId: "random-right-han",
+                sceneKind: "random-cut",
+                column: "right",
+                text: "人生",
+            })
+        ),
+    ]
+
+    assert.ok(variants.some((variant) => variant.primaryFontFamily === "Zhi Mang Xing"))
+    assert.ok(variants.some((variant) => variant.primaryFontFamily !== "Zhi Mang Xing"))
 })
 
 test("downgrades high-risk latin text with diacritics to the safe pool", async () => {

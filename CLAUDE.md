@@ -6,7 +6,7 @@ Vite + React + Tailwind CSS v4 + Cloudflare Workers
 doc/ - 项目文档与知识库
 public/ - 前端静态资源 (Vite public)
   └── api/ - 静态接口资源 (如 component-registry)
-remotion/ - 独立 Remotion 开场动画模块 (Studio 预览入口 + 时间线/排版/字体真相源)
+remotion/ - Remotion 开场动画模块 (Studio 预览入口 + 首页片头复用的时间线/排版/字体真相源)
 dist-worker/ - Worker 构建产物 (生成)
 src/ - React 前端源代码 (Vite 驱动)
   ├── components/ - UI 组件

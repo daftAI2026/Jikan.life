@@ -10,12 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Animation & Motion
 - **Remotion Integration**: Introduced Remotion for high-fidelity opening animations, including specialized compositions for typography (`OpeningTextComposition`), adaptive layout (`opening-layout`), and sequenced timelines (`opening-timeline`).
 - **Animation Framework**: Configured Remotion studio and rendering pipelines, enabling programmatic video-like transitions for the onboarding experience.
+- **Intro Overlay**: Developed `OpeningIntroOverlay.jsx` for the browser environment, bridging the Remotion-based animation aesthetic into the live React application with smooth state transitions.
 
 ### Tests
 - **Motion Verification**: Added a comprehensive suite of unit tests for Remotion opening animations, covering font loading integrity (`remotion-opening-fonts`), layout constraints (`remotion-opening-layout`), and timeline precision (`remotion-opening-timeline`).
+- **Behavioral Guards**: Introduced `opening-intro-overlay.behavior.test.js` to ensure reliable mounting and dismissal of the opening animation shell.
 
 ### Infrastructure
 - **Dependency Upgrades**: Integrated Remotion core and CLI dependencies (`@remotion/cli`, `remotion`, `@remotion/google-fonts`) and added the `remotion:studio` development script.
+- **Fractal Protocol**: Synchronized GEB documentation across `remotion/`, `src/components/`, and `tests/` to track the new animation architecture.
 
 ## [1.9.8] - 2026-03-19
 

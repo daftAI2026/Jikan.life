@@ -34,19 +34,37 @@ test("holds on Time & Life after the typewriter finishes", async () => {
 
     const sequence = createOpeningPhraseSequence(7)
 
-    assert.equal(INTRO_DURATION_IN_FRAMES, 48)
-    assert.equal(INTRO_HOLD_DURATION_IN_FRAMES, 12)
+    assert.equal(INTRO_DURATION_IN_FRAMES, 32)
+    assert.equal(INTRO_HOLD_DURATION_IN_FRAMES, 8)
     assert.deepEqual(
         sequence.slice(0, 2).map((scene) => ({
             kind: scene.kind,
             durationInFrames: scene.durationInFrames,
-            text: `${scene.left} ${scene.center} ${scene.right}`.trim().replace(/\s+/g, " "),
+            text: scene.lineText,
+            ...(scene.singleLine ? { singleLine: true } : {}),
         })),
         [
-            { kind: "intro-typewriter", durationInFrames: 48, text: "Time & Life" },
-            { kind: "intro-hold", durationInFrames: 12, text: "Time & Life" },
+            { kind: "intro-typewriter", durationInFrames: 32, text: "Time & Life", singleLine: true },
+            { kind: "intro-hold", durationInFrames: 8, text: "Time & Life", singleLine: true },
         ]
     )
+})
+
+test("renders the intro phrase as one typed line instead of three split columns", async () => {
+    const {
+        INTRO_DURATION_IN_FRAMES,
+        resolveOpeningFrameState,
+    } = await loadOpeningTimelineModule()
+
+    const firstFrame = resolveOpeningFrameState(0, 7)
+    const lastIntroFrame = resolveOpeningFrameState(INTRO_DURATION_IN_FRAMES - 1, 7)
+
+    assert.equal(firstFrame.scene.singleLine, true)
+    assert.equal(firstFrame.renderedPhrase.left, "")
+    assert.equal(firstFrame.renderedPhrase.center, "")
+    assert.equal(firstFrame.renderedPhrase.right, "")
+    assert.match(firstFrame.renderedPhrase.lineText, /^T/)
+    assert.equal(lastIntroFrame.renderedPhrase.lineText, "Time & Life")
 })
 
 test("fades the typewriter cursor gently only during the intro typing and hold scenes", async () => {
@@ -77,7 +95,7 @@ test("fades the typewriter cursor gently only during the intro typing and hold s
     })
 })
 
-test("keeps the full opening timeline at 309 frames with a 24 frame fade", async () => {
+test("keeps the full opening timeline at 206 frames with a 16 frame fade", async () => {
     const {
         OPENING_CONTENT_DURATION_IN_FRAMES,
         OPENING_DURATION_IN_FRAMES,
@@ -85,9 +103,9 @@ test("keeps the full opening timeline at 309 frames with a 24 frame fade", async
         createOpeningPhraseSequence,
     } = await loadOpeningTimelineModule()
 
-    assert.equal(OPENING_CONTENT_DURATION_IN_FRAMES, 285)
-    assert.equal(OPENING_FADE_DURATION_IN_FRAMES, 24)
-    assert.equal(OPENING_DURATION_IN_FRAMES, 309)
+    assert.equal(OPENING_CONTENT_DURATION_IN_FRAMES, 190)
+    assert.equal(OPENING_FADE_DURATION_IN_FRAMES, 16)
+    assert.equal(OPENING_DURATION_IN_FRAMES, 206)
 
     const totalSceneFrames = createOpeningPhraseSequence(7).reduce(
         (sum, scene) => sum + scene.durationInFrames,
@@ -113,19 +131,23 @@ test("randomized scenes mix left center and right columns independently", async 
 })
 
 test("shapes randomized column cadence as slow-fast-slow", async () => {
-    const { RANDOMIZED_LANGUAGE_ROWS, buildSlowFastSlowDurations } = await loadOpeningTimelineModule()
+    const { HARD_CUT_DURATION_IN_FRAMES, RANDOMIZED_LANGUAGE_ROWS, buildSlowFastSlowDurations } =
+        await loadOpeningTimelineModule()
 
     assert.equal(typeof buildSlowFastSlowDurations, "function")
 
     const durations = buildSlowFastSlowDurations(
         RANDOMIZED_LANGUAGE_ROWS.length,
-        RANDOMIZED_LANGUAGE_ROWS.length * 15
+        RANDOMIZED_LANGUAGE_ROWS.length * HARD_CUT_DURATION_IN_FRAMES
     )
 
     assert.equal(durations.length, RANDOMIZED_LANGUAGE_ROWS.length)
-    assert.equal(durations.reduce((sum, duration) => sum + duration, 0), RANDOMIZED_LANGUAGE_ROWS.length * 15)
-    assert.ok(Math.max(...durations) >= 24)
-    assert.ok(Math.min(...durations) <= 5)
+    assert.equal(
+        durations.reduce((sum, duration) => sum + duration, 0),
+        RANDOMIZED_LANGUAGE_ROWS.length * HARD_CUT_DURATION_IN_FRAMES
+    )
+    assert.ok(Math.max(...durations) >= 16)
+    assert.ok(Math.min(...durations) <= 4)
     assert.ok(durations[0] > durations[Math.floor(durations.length / 2)])
     assert.ok(durations[durations.length - 1] > durations[Math.floor(durations.length / 2)])
 })
@@ -152,12 +174,22 @@ test("starts offset beats early in the random section instead of waiting for the
 })
 
 test("creates extra left-side randomness inside at least one single center-cut window", async () => {
-    const { RANDOM_SECTION_START_IN_FRAMES, RANDOMIZED_LANGUAGE_ROWS, resolveOpeningFrameState } =
+    const {
+        HARD_CUT_DURATION_IN_FRAMES,
+        RANDOM_SECTION_START_IN_FRAMES,
+        RANDOMIZED_LANGUAGE_ROWS,
+        resolveOpeningFrameState,
+    } =
         await loadOpeningTimelineModule()
 
     const foundWindow = Array.from({ length: RANDOMIZED_LANGUAGE_ROWS.length }, (_, index) => {
-        const startFrame = RANDOM_SECTION_START_IN_FRAMES + index * 15
-        const sampled = [0, 5, 10, 14].map((offset) => resolveOpeningFrameState(startFrame + offset, 1))
+        const startFrame = RANDOM_SECTION_START_IN_FRAMES + index * HARD_CUT_DURATION_IN_FRAMES
+        const sampled = [
+            0,
+            Math.floor(HARD_CUT_DURATION_IN_FRAMES / 2) - 1,
+            HARD_CUT_DURATION_IN_FRAMES - 2,
+            HARD_CUT_DURATION_IN_FRAMES - 1,
+        ].map((offset) => resolveOpeningFrameState(startFrame + offset, 1))
         const centerValues = new Set(sampled.map((state) => state.renderedPhrase.center))
         const leftValues = new Set(sampled.map((state) => state.renderedPhrase.left))
         return centerValues.size === 1 && leftValues.size > 1
@@ -199,7 +231,7 @@ test("staggered cadence lets left center and right each lead on their own beat",
 })
 
 test("pins the ending lines and collapses the final beat into one centered jikan.life line", async () => {
-    const { createOpeningPhraseSequence } = await loadOpeningTimelineModule()
+    const { HARD_CUT_DURATION_IN_FRAMES, createOpeningPhraseSequence } = await loadOpeningTimelineModule()
 
     assert.equal(typeof createOpeningPhraseSequence, "function")
 
@@ -211,14 +243,13 @@ test("pins the ending lines and collapses the final beat into one centered jikan
             kind: scene.kind,
             text: scene.lineText ?? `${scene.left} ${scene.center} ${scene.right}`.trim().replace(/\s+/g, " "),
             durationInFrames: scene.durationInFrames,
-            compact: scene.compact ?? false,
             ...(scene.singleLine ? { singleLine: true } : {}),
         })),
         [
-            { kind: "ending-cut", text: "時間 与 人生", durationInFrames: 15, compact: false },
-            { kind: "ending-cut", text: "時間 と 人生", durationInFrames: 15, compact: false },
-            { kind: "ending-cut", text: "jikan と life", durationInFrames: 15, compact: false },
-            { kind: "domain-lockup", text: "jikan.life", durationInFrames: 15, compact: false, singleLine: true },
+            { kind: "ending-cut", text: "時間 与 人生", durationInFrames: HARD_CUT_DURATION_IN_FRAMES },
+            { kind: "ending-cut", text: "時間 と 人生", durationInFrames: HARD_CUT_DURATION_IN_FRAMES },
+            { kind: "ending-cut", text: "jikan と life", durationInFrames: HARD_CUT_DURATION_IN_FRAMES },
+            { kind: "domain-lockup", text: "jikan.life", durationInFrames: HARD_CUT_DURATION_IN_FRAMES, singleLine: true },
         ]
     )
 })

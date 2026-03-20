@@ -6,6 +6,7 @@
  */
 import { loadFont as loadArchivo } from "@remotion/google-fonts/Archivo"
 import { loadFont as loadDotGothic16 } from "@remotion/google-fonts/DotGothic16"
+import { loadFont as loadGloriaHallelujah } from "@remotion/google-fonts/GloriaHallelujah"
 import { loadFont as loadIBMPlexSans } from "@remotion/google-fonts/IBMPlexSans"
 import { loadFont as loadInter } from "@remotion/google-fonts/Inter"
 import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono"
@@ -17,11 +18,10 @@ import { loadFont as loadNotoSerifSC } from "@remotion/google-fonts/NotoSerifSC"
 import { loadFont as loadPlayfairDisplay } from "@remotion/google-fonts/PlayfairDisplay"
 import { loadFont as loadSourceSerif4 } from "@remotion/google-fonts/SourceSerif4"
 import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk"
-import { loadFont as loadWdxlLubrifontSC } from "@remotion/google-fonts/WDXLLubrifontSC"
-import { loadFont as loadWdxlLubrifontTC } from "@remotion/google-fonts/WDXLLubrifontTC"
 import { loadFont as loadYujiBoku } from "@remotion/google-fonts/YujiBoku"
 import { loadFont as loadZenKakuGothicNew } from "@remotion/google-fonts/ZenKakuGothicNew"
 import { loadFont as loadZenOldMincho } from "@remotion/google-fonts/ZenOldMincho"
+import { loadFont as loadZhiMangXing } from "@remotion/google-fonts/ZhiMangXing"
 
 const GOOGLE_FONT_OPTIONS = {
     ignoreTooManyRequestsWarning: true,
@@ -55,6 +55,7 @@ function loadCjkFont(loadFont, weights) {
 
 const interFamily = loadLatinFont(loadInter, [600, 700], [])
 const archivoFamily = loadLatinFont(loadArchivo, [500, 600, 700])
+const gloriaHallelujahFamily = loadLatinFont(loadGloriaHallelujah, [400], [])
 const ibmPlexSansFamily = loadLatinFont(loadIBMPlexSans, [400, 500, 700])
 const jetBrainsMonoFamily = loadLatinFont(loadJetBrainsMono, [500, 700, 800])
 const playfairDisplayFamily = loadLatinFont(loadPlayfairDisplay, [400, 500, 600, 700])
@@ -70,8 +71,7 @@ const zenKakuGothicNewFamily = loadCjkFont(loadZenKakuGothicNew, [400, 500, 700]
 const zenOldMinchoFamily = loadCjkFont(loadZenOldMincho, [400, 700])
 const dotGothic16Family = loadCjkFont(loadDotGothic16, [400])
 const yujiBokuFamily = loadCjkFont(loadYujiBoku, [400])
-const wdxlLubrifontScFamily = loadCjkFont(loadWdxlLubrifontSC, [400])
-const wdxlLubrifontTcFamily = loadCjkFont(loadWdxlLubrifontTC, [400])
+const zhiMangXingFamily = loadCjkFont(loadZhiMangXing, [400])
 
 function createVariant(family, weights, allowItalic = false) {
     return { family, weights, allowItalic }
@@ -79,6 +79,7 @@ function createVariant(family, weights, allowItalic = false) {
 
 const FONT_LIBRARY = {
     archivo: createVariant(archivoFamily, [500, 600, 700], true),
+    gloriaHallelujah: createVariant(gloriaHallelujahFamily, [400], false),
     ibmPlexSans: createVariant(ibmPlexSansFamily, [400, 500, 700], true),
     jetBrainsMono: createVariant(jetBrainsMonoFamily, [500, 700, 800], true),
     playfairDisplay: createVariant(playfairDisplayFamily, [400, 500, 600, 700], true),
@@ -93,8 +94,7 @@ const FONT_LIBRARY = {
     zenOldMincho: createVariant(zenOldMinchoFamily, [400, 700]),
     dotGothic16: createVariant(dotGothic16Family, [400]),
     yujiBoku: createVariant(yujiBokuFamily, [400]),
-    wdxlLubrifontSC: createVariant(wdxlLubrifontScFamily, [400]),
-    wdxlLubrifontTC: createVariant(wdxlLubrifontTcFamily, [400]),
+    zhiMangXing: createVariant(zhiMangXingFamily, [400]),
 }
 
 export const OPENING_STYLE_GROUPS = ["clean", "editorial", "signal"]
@@ -102,25 +102,19 @@ export const OPENING_STYLE_GROUPS = ["clean", "editorial", "signal"]
 const STYLE_GROUP_VARIANTS = {
     clean: {
         latin: [FONT_LIBRARY.archivo, FONT_LIBRARY.ibmPlexSans, FONT_LIBRARY.spaceGrotesk],
-        cjk: [FONT_LIBRARY.notoSansSC, FONT_LIBRARY.notoSansTC, FONT_LIBRARY.notoSansJP, FONT_LIBRARY.zenKakuGothicNew],
+        cjk: [FONT_LIBRARY.notoSansSC, FONT_LIBRARY.notoSansTC, FONT_LIBRARY.notoSansJP, FONT_LIBRARY.zenKakuGothicNew, FONT_LIBRARY.zhiMangXing],
         japanese: [FONT_LIBRARY.notoSansJP, FONT_LIBRARY.zenKakuGothicNew],
     },
     editorial: {
-        latin: [FONT_LIBRARY.playfairDisplay, FONT_LIBRARY.sourceSerif4, FONT_LIBRARY.archivo],
-        cjk: [FONT_LIBRARY.notoSerifSC, FONT_LIBRARY.notoSerifJP, FONT_LIBRARY.zenOldMincho],
+        latin: [FONT_LIBRARY.playfairDisplay, FONT_LIBRARY.sourceSerif4, FONT_LIBRARY.archivo, FONT_LIBRARY.gloriaHallelujah],
+        cjk: [FONT_LIBRARY.notoSerifSC, FONT_LIBRARY.notoSerifJP, FONT_LIBRARY.zenOldMincho, FONT_LIBRARY.zhiMangXing],
         japanese: [FONT_LIBRARY.notoSerifJP, FONT_LIBRARY.zenOldMincho, FONT_LIBRARY.yujiBoku],
     },
     signal: {
         latin: [FONT_LIBRARY.jetBrainsMono, FONT_LIBRARY.ibmPlexSans, FONT_LIBRARY.spaceGrotesk],
-        cjk: [FONT_LIBRARY.wdxlLubrifontSC, FONT_LIBRARY.wdxlLubrifontTC, FONT_LIBRARY.notoSansSC],
+        cjk: [FONT_LIBRARY.zhiMangXing, FONT_LIBRARY.notoSansSC, FONT_LIBRARY.zenKakuGothicNew],
         japanese: [FONT_LIBRARY.dotGothic16, FONT_LIBRARY.zenKakuGothicNew, FONT_LIBRARY.notoSansJP],
     },
-}
-
-const CENTER_SAFE_VARIANTS = {
-    latin: [FONT_LIBRARY.archivo, FONT_LIBRARY.ibmPlexSans, FONT_LIBRARY.spaceGrotesk],
-    cjk: [FONT_LIBRARY.notoSansSC, FONT_LIBRARY.notoSansTC, FONT_LIBRARY.notoSansJP, FONT_LIBRARY.zenKakuGothicNew],
-    japanese: [FONT_LIBRARY.notoSansJP, FONT_LIBRARY.zenKakuGothicNew],
 }
 
 const SAFE_LATIN_VARIANTS = [FONT_LIBRARY.archivo, FONT_LIBRARY.ibmPlexSans, FONT_LIBRARY.spaceGrotesk]
@@ -135,16 +129,11 @@ const ANCHOR_WEIGHTS = {
     left: 600,
     center: 700,
     right: 600,
-    line: 700,
+    line: 500,
 }
 
 export const OPENING_ANCHOR_FONT_FAMILY = interFamily
 export const OPENING_SAFE_LATIN_FONT_FAMILIES = SAFE_LATIN_VARIANTS.map((variant) => variant.family)
-export const OPENING_CENTER_FONT_FAMILIES = {
-    latin: CENTER_SAFE_VARIANTS.latin.map((variant) => variant.family),
-    cjk: CENTER_SAFE_VARIANTS.cjk.map((variant) => variant.family),
-    japanese: CENTER_SAFE_VARIANTS.japanese.map((variant) => variant.family),
-}
 export const OPENING_FONT_POOL_FAMILIES = {
     latin: Array.from(new Set(OPENING_STYLE_GROUPS.flatMap((group) => STYLE_GROUP_VARIANTS[group].latin.map((variant) => variant.family)))),
     cjk: Array.from(new Set(OPENING_STYLE_GROUPS.flatMap((group) => STYLE_GROUP_VARIANTS[group].cjk.map((variant) => variant.family)))),
@@ -207,10 +196,21 @@ function filterWeights(weights, maxWeight) {
     return filtered.length > 0 ? filtered : [Math.min(...weights)]
 }
 
+function resolveCenterSafeVariants(poolName, text) {
+    const styleGroupVariants = OPENING_STYLE_GROUPS.flatMap((group) => STYLE_GROUP_VARIANTS[group][poolName])
+    const dedupedVariants = Array.from(new Map(styleGroupVariants.map((variant) => [variant.family, variant])).values())
+
+    if (poolName === "latin" && text === "und") {
+        return dedupedVariants.filter((variant) => variant.family !== ibmPlexSansFamily)
+    }
+
+    return dedupedVariants
+}
+
 function resolveRandomVariant({ sceneStyleGroup, column, poolName, text }) {
     if (column === "center") {
         return {
-            variants: CENTER_SAFE_VARIANTS[poolName],
+            variants: resolveCenterSafeVariants(poolName, text),
             safetyTier: "center-safe",
         }
     }

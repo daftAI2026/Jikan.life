@@ -6,18 +6,24 @@
  */
 
 export const OPENING_FPS = 30
-export const OPENING_WIDTH = 1920
+export const OPENING_WIDTH = 1080
 export const OPENING_HEIGHT = 1080
-export const INTRO_DURATION_IN_FRAMES = 48
-export const INTRO_HOLD_DURATION_IN_FRAMES = 12
-export const HARD_CUT_DURATION_IN_FRAMES = 15
-export const OPENING_FADE_DURATION_IN_FRAMES = 24
+export const OPENING_SPEED_MULTIPLIER = 1.5
+
+function scaleDurationInFrames(durationInFrames) {
+    return Math.max(1, Math.round(durationInFrames / OPENING_SPEED_MULTIPLIER))
+}
+
+export const INTRO_DURATION_IN_FRAMES = scaleDurationInFrames(48)
+export const INTRO_HOLD_DURATION_IN_FRAMES = scaleDurationInFrames(12)
+export const HARD_CUT_DURATION_IN_FRAMES = scaleDurationInFrames(15)
+export const OPENING_FADE_DURATION_IN_FRAMES = scaleDurationInFrames(24)
 export const TYPEWRITER_CURSOR_CHARACTER = "|"
 
 const TYPEWRITER_CURSOR_BLINK_CYCLE_IN_FRAMES = 12
 
-const INTRO_PHRASE = { left: "Time", center: "&", right: "Life" }
-const INTRO_TOTAL_CHARACTERS = "Time & Life".length
+const INTRO_LINE_TEXT = "Time & Life"
+const INTRO_TOTAL_CHARACTERS = INTRO_LINE_TEXT.length
 
 const RAW_LANGUAGE_ROWS = [
     { label: "简体中文", left: "时间", center: "和", right: "人生" },
@@ -142,21 +148,8 @@ function resolvePlanValueAtFrame(plan, frame, offsetInFrames = 0) {
     return plan[plan.length - 1]?.value
 }
 
-function resolveTypedPhrase(phrase, typedCharacters) {
-    const leftCharacters = Math.min(typedCharacters, phrase.left.length)
-    const remainingAfterLeft = Math.max(typedCharacters - phrase.left.length - 1, 0)
-    const centerCharacters = Math.min(remainingAfterLeft, phrase.center.length)
-    const remainingAfterCenter = Math.max(
-        typedCharacters - phrase.left.length - 1 - phrase.center.length - 1,
-        0
-    )
-    const rightCharacters = Math.min(remainingAfterCenter, phrase.right.length)
-
-    return {
-        left: phrase.left.slice(0, leftCharacters),
-        center: phrase.center.slice(0, centerCharacters),
-        right: phrase.right.slice(0, rightCharacters),
-    }
+function resolveTypedLineText(text, typedCharacters) {
+    return text.slice(0, Math.min(typedCharacters, text.length))
 }
 
 export function resolveTypewriterCursorState(sceneKind, localFrame) {
@@ -213,15 +206,17 @@ export function createOpeningPhraseSequence(seed) {
 
     return [
         {
-            ...INTRO_PHRASE,
             id: "intro",
             kind: "intro-typewriter",
+            lineText: INTRO_LINE_TEXT,
+            singleLine: true,
             durationInFrames: INTRO_DURATION_IN_FRAMES,
         },
         {
-            ...INTRO_PHRASE,
             id: "intro-hold",
             kind: "intro-hold",
+            lineText: INTRO_LINE_TEXT,
+            singleLine: true,
             durationInFrames: INTRO_HOLD_DURATION_IN_FRAMES,
         },
         ...randomizedScenes,
@@ -265,10 +260,15 @@ export function resolveOpeningFrameState(frame, seed) {
             const randomSectionFrame = contentFrame - RANDOM_SECTION_START_IN_FRAMES
             const renderedPhrase =
                 scene.kind === "intro-typewriter"
-                    ? resolveTypedPhrase(
-                          scene,
-                          Math.ceil(((localFrame + 1) / scene.durationInFrames) * INTRO_TOTAL_CHARACTERS)
-                      )
+                    ? {
+                          left: "",
+                          center: "",
+                          right: "",
+                          lineText: resolveTypedLineText(
+                              scene.lineText,
+                              Math.ceil(((localFrame + 1) / scene.durationInFrames) * INTRO_TOTAL_CHARACTERS)
+                          ),
+                      }
                     : scene.kind === "random-cut"
                       ? {
                             left: resolvePlanValueAtFrame(
