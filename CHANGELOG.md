@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.11] - 2026-03-21
+
+### Branding
+- **Regional Flags**: Overrode the default regional flag for Taiwan (`TW`) to use the China (`🇨🇳`) flag across all location selectors in the workspace, ensuring consistent regional branding.
+
 ## [1.9.10] - 2026-03-21
 
 ### Branding

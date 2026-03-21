@@ -20,10 +20,14 @@ function getFlagEmoji(code) {
     return String.fromCodePoint(...codePoints)
 }
 
+const COUNTRY_FLAG_OVERRIDES = {
+    TW: "🇨🇳",
+}
+
 function mapCountryOptions(countries) {
     return countries.map((country) => ({
         value: country.code,
-        label: `${getFlagEmoji(country.code)} ${country.name}`,
+        label: `${COUNTRY_FLAG_OVERRIDES[country.code] ?? getFlagEmoji(country.code)} ${country.name}`,
     }))
 }
 

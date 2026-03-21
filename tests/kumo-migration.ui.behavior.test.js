@@ -41,6 +41,23 @@ test("Registry settings wallpaper language uses flag + name rendering", () => {
   assert.match(source, /option\.name/)
 })
 
+test("Registry location options render TW with China flag", async () => {
+  const moduleUrl = pathToFileURL(
+    path.join(process.cwd(), "src/pages/registry/sections/workspace/view-model-mappers.js")
+  ).href
+  const { mapCountryOptions } = await import(`${moduleUrl}?v=${Date.now()}`)
+
+  const options = mapCountryOptions([
+    { code: "TW", name: "Taiwan" },
+    { code: "CN", name: "China" },
+  ])
+
+  assert.deepEqual(options, [
+    { value: "TW", label: "🇨🇳 Taiwan" },
+    { value: "CN", label: "🇨🇳 China" },
+  ])
+})
+
 test("Registry settings does not render selected type badge", () => {
   const source = readSource("src/pages/registry/sections/workspace/HomeSettingsPane.jsx")
   const homeGridSource = readSource("src/pages/registry/sections/components/HomeGrid.jsx")
