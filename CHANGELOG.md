@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.15] - 2026-03-21
+
 ### UI & UX
 - **Preview Modularization**: Refactored the monolithic `HomePreviewPane` by extracting the Year and Goal progress renderings into independent, specialized SVG components (`YearPreviewSvg`, `GoalPreviewSvg`). This structural decoupling eliminates complex inline conditional rendering and establishes a clean modular boundary for preview graphics.
 - **Preview Chrome Refinement**: Simplified the preview shell by removing the legacy Canvas-based `renderer.js`. This transition moves the entire preview layer to a pure React/SVG architecture, drastically reducing rendering complexity and ensuring perfect visual parity with the Worker-based wallpaper generators.
