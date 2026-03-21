@@ -51,7 +51,7 @@ function YearPreviewSvg({ config, selectedDevice }) {
                     cy={dot.cy}
                     r={dot.radius}
                     fill={dot.isToday ? layout.safeAccent : dot.isCompleted ? layout.safeAccent : pendingFill}
-                    fillOpacity={dot.isCompleted ? 0.75 : undefined}
+                    fillOpacity={!dot.isToday && dot.isCompleted ? 0.75 : undefined}
                 />
             ))}
             <text
