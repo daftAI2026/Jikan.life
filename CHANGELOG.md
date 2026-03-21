@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.14] - 2026-03-21
+
+### UI & UX
+- **Sidebar Stat Mid-centering**: Refactored the English "inline stats" layout to utilize a hidden redundant-layout strategy. The original dual-line stat structure is now rendered as an invisible accessibility anchor, while the high-contrast single-line stat is layered as an absolute-centered element within that same visual rhythm. This ensures that the single-line text (e.g., "Day 82") remains vertically centered between the card borders, maintaining rhythmic consistency without collapsing the original row height.
+- **Japanese Mixed-Text Handling**: Introduced a localized `MixedText` run-splitting engine for Year progress cards. Japanese strings (e.g., `82 日目`) are now programmatically decomposed into discrete ASCII and CJK runs, allowing the native JP font stack (`Noto Sans JP`) to be surgicaly applied only to Japanese glyphs while preserving standard typography for numbers.
+
+### Architecture
+- **Sidebar Logic Decoupling**: Extracted the localized Japanese text splitting logic into an independent `home-sidebar-mixed-text.js` helper. This shields the core sidebar rendering loop from script-specific parsing logic and ensures that font-family overrides are strictly contained within the sidebar card domain.
+
+### Tests
+- **UI Architecture Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` and introduced `home-sidebar-cards.unit.test.js` to strictly assert the presence of the hidden-redundant layout, the absolute-centered stat grouping, and the deterministic run-splitting of CJK text tokens.
+
+
+
 ## [1.9.13] - 2026-03-21
 
 ### Branding

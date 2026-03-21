@@ -11,6 +11,7 @@ import {
   resolveVisibleStyleCards,
 } from "../src/pages/registry/sections/home-sidebar-style-cards.js"
 import { getGoalSidebarStats, getYearSidebarStats, getYearStats } from "../src/pages/registry/sections/home-sidebar-date-stats.js"
+import { splitSidebarMixedTextRuns } from "../src/pages/registry/sections/home-sidebar-mixed-text.js"
 
 const SAMPLE_STYLE_CARDS = [
   { id: "year", title: "Year" },
@@ -85,6 +86,37 @@ test("home sidebar localizes japanese year stats without the year prefix inside 
   assert.equal(stats[0].inlineAlign, "start")
   assert.equal(stats[1].inlineText, "22% 経過")
   assert.equal(stats[1].inlineAlign, "end")
+})
+
+test("home sidebar splits japanese mixed year title into latin and japanese runs", () => {
+  const runs = splitSidebarMixedTextRuns("2026 年度進捗", "ja")
+
+  assert.deepEqual(runs, [
+    { kind: "latin", text: "2026 " },
+    { kind: "ja", text: "年度進捗" },
+  ])
+})
+
+test("home sidebar splits japanese mixed year stats into latin and japanese runs", () => {
+  assert.deepEqual(splitSidebarMixedTextRuns("80 日目", "ja"), [
+    { kind: "latin", text: "80 " },
+    { kind: "ja", text: "日目" },
+  ])
+
+  assert.deepEqual(splitSidebarMixedTextRuns("22% 経過", "ja"), [
+    { kind: "latin", text: "22% " },
+    { kind: "ja", text: "経過" },
+  ])
+})
+
+test("home sidebar keeps english and chinese year copy as single runs", () => {
+  assert.deepEqual(splitSidebarMixedTextRuns("2026 Year Progress", "en"), [
+    { kind: "latin", text: "2026 Year Progress" },
+  ])
+
+  assert.deepEqual(splitSidebarMixedTextRuns("第 80 天", "zh-CN"), [
+    { kind: "latin", text: "第 80 天" },
+  ])
 })
 
 test("home sidebar collapses english goal stats into the shared inline two-column layout", () => {

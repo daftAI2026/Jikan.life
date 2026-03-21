@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useMemo), @/components/ui/kumo(Tabs), @/lib/utils(cn), MobileFooter, home-sidebar-visuals 预览组件、home-sidebar-style-cards 纯 helper、home-sidebar-date-stats 的 Year 统计文案 helper 与 i18n/date 视图数据
+ * [INPUT]: 依赖 react(useMemo), @/components/ui/kumo(Tabs), @/lib/utils(cn), MobileFooter, home-sidebar-visuals 预览组件、home-sidebar-style-cards 纯 helper、home-sidebar-date-stats 的 Year 统计文案 helper、home-sidebar-mixed-text 的日文混排分段 helper 与 i18n/date 视图数据
  * [OUTPUT]: 对外提供 HomeSidebarCards（桌面多卡列表 + 移动 segmented 单卡查看器）
  * [POS]: registry/sections 的 HomeSidebar 卡片层，封装 year/life/goal 卡片字典、可见卡过滤与移动/桌面双布局渲染细节；移动端 tabs 只负责查看卡片，不直接提交 selectedStyle
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -10,7 +10,25 @@ import { cn } from "@/lib/utils"
 import { GoalVisual, LifeVisual, YearVisual } from "./home-sidebar-visuals"
 import { resolveSidebarActiveStyleId, resolveVisibleStyleCards } from "./home-sidebar-style-cards"
 import { getGoalSidebarStats, getYearSidebarStats } from "./home-sidebar-date-stats"
+import { splitSidebarMixedTextRuns } from "./home-sidebar-mixed-text"
 import { MobileFooter } from "./MobileFooter"
+
+const JAPANESE_MIXED_TEXT_FONT_FAMILY = '"Noto Sans JP", "Inter", ui-sans-serif, system-ui, sans-serif'
+
+function renderMixedSidebarText(text, lang) {
+    const runs = splitSidebarMixedTextRuns(text, lang)
+
+    if (runs.length <= 1) return text
+
+    return runs.map((run, index) => (
+        <span
+            key={`${run.kind}-${index}-${run.text}`}
+            style={run.kind === "ja" ? { fontFamily: JAPANESE_MIXED_TEXT_FONT_FAMILY } : undefined}
+        >
+            {run.text}
+        </span>
+    ))
+}
 
 function StyleCard({ isSelected, layoutMode, onSelect, style }) {
     const stats = style.stats
@@ -102,7 +120,7 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
                                                 titleToneClass
                                             )}
                                         >
-                                            <span>{stat.inlineText}</span>
+                                            {stat.inlineText}
                                         </p>
                                     </div>
                                 </div>
@@ -139,7 +157,7 @@ function HomeSidebarCards({
         () => [
             {
                 id: "year",
-                title: t("type.year.name", { year: String(yearStats.year) }),
+                title: renderMixedSidebarText(t("type.year.name", { year: String(yearStats.year) }), lang),
                 description: t("type.year.description"),
                 preview: (
                     <div className="origin-center scale-[1]">
@@ -151,8 +169,8 @@ function HomeSidebarCards({
                     copy: {
                         statDay: t("type.year.statDay"),
                         statComplete: t("type.year.statComplete"),
-                        inlineDay: t("type.year.inlineDay", { n: String(yearStats.day) }),
-                        inlineComplete: t("type.year.inlineComplete", { n: `${yearStats.percent}%` }),
+                        inlineDay: renderMixedSidebarText(t("type.year.inlineDay", { n: String(yearStats.day) }), lang),
+                        inlineComplete: renderMixedSidebarText(t("type.year.inlineComplete", { n: `${yearStats.percent}%` }), lang),
                     },
                 }),
             },
