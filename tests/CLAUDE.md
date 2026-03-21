@@ -2,7 +2,7 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
-home-sidebar-cards.unit.test.js: HomeSidebarCards 单测，锁定隐藏卡过滤与移动端 active style 回退语义。
+home-sidebar-cards.unit.test.js: HomeSidebarCards 单测，锁定隐藏卡过滤、移动端 active style 回退与英文 Year/Goal 统计单行语义。
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
 lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
 lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
@@ -31,6 +31,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 
 变更日志
 2026-03-19: 新增 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/app` `/app/` 放入 `run_worker_first`，并要求 `worker/index.js` 在 `env.ASSETS.fetch` 前对两个废弃入口直接返回 `308 -> /`，防止 Search Console 再次将旧入口识别为 SPA 自动重定向页。
+2026-03-21: 更新 `home-sidebar-cards.unit.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，新增 Year/Goal 卡统计文案与布局护栏：英文 Year 收口为两列单行 `Day 80` / `22% Complete`，英文 Goal 收口为两列单行 `Target` / `Daily tracking`；两者都通过“不可见双行占位 + 绝对定位居中层”保持原双行 stat 的两横线间距与垂直居中，并强制两列模式移除中间竖线、左列左对齐、右列整体右对齐；非英文继续保持默认双行语义。
 2026-03-16: 新增 `home-sidebar-cards.unit.test.js`，锁定移动端 style sidebar 的隐藏卡过滤与 active style fallback；同步更新 `kumo-migration.ui.registry-shell.behavior.test.js`，要求 `HomeSidebar` 使用底部 segmented tabs 单卡布局并通过纯 helper 收口可见卡语义。
 2026-03-12: 更新 `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：Goal 圆环护栏从“剩余比例递减环”翻为“完成比例顺时针增长环”，并新增 `goal-ring-geometry.js` 正式接线断言，防止再次出现“写了真相源但未消费”的孤儿模块。
 2026-03-14: 新增 `mobile-preview-sizing.unit.test.js` 并更新 `kumo-migration.ui.behavior.test.js`：将锁屏预览从固定 `targetHeight=510` 升级为 `mobile-preview-sizing.js` 单一真相源，要求 HomeGrid 按 mobile workspace 高度下发 `previewTargetHeight`，同时锁定 HomePreviewPane/LockScreenPreviewFrame 的可变 target height 接线与首屏预算语义。

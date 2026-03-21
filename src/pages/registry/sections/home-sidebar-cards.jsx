@@ -1,5 +1,5 @@
 /**
- * [INPUT]: 依赖 react(useMemo), @/components/ui/kumo(Tabs), @/lib/utils(cn), MobileFooter, home-sidebar-visuals 预览组件、home-sidebar-style-cards 纯 helper 与 i18n/date 视图数据
+ * [INPUT]: 依赖 react(useMemo), @/components/ui/kumo(Tabs), @/lib/utils(cn), MobileFooter, home-sidebar-visuals 预览组件、home-sidebar-style-cards 纯 helper、home-sidebar-date-stats 的 Year 统计文案 helper 与 i18n/date 视图数据
  * [OUTPUT]: 对外提供 HomeSidebarCards（桌面多卡列表 + 移动 segmented 单卡查看器）
  * [POS]: registry/sections 的 HomeSidebar 卡片层，封装 year/life/goal 卡片字典、可见卡过滤与移动/桌面双布局渲染细节；移动端 tabs 只负责查看卡片，不直接提交 selectedStyle
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -9,11 +9,14 @@ import { Tabs } from "@/components/ui/kumo"
 import { cn } from "@/lib/utils"
 import { GoalVisual, LifeVisual, YearVisual } from "./home-sidebar-visuals"
 import { resolveSidebarActiveStyleId, resolveVisibleStyleCards } from "./home-sidebar-style-cards"
+import { getGoalSidebarStats, getYearSidebarStats } from "./home-sidebar-date-stats"
 import { MobileFooter } from "./MobileFooter"
 
 function StyleCard({ isSelected, layoutMode, onSelect, style }) {
     const stats = style.stats
     const isMobileSegmented = layoutMode === "mobile-segmented"
+    const hasInlineStatsLayout = stats.every((stat) => Boolean(stat.inlineText))
+    const titleToneClass = isSelected ? "text-kumo-default" : "text-kumo-strong group-hover:text-kumo-default"
 
     return (
         <article
@@ -40,11 +43,11 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
                     {style.preview}
                 </div>
 
-                <div className="mb-0 min-h-[28px]">
+                <div className="mb-0 flex min-h-[28px] items-start justify-between gap-3">
                     <h3
                         className={cn(
-                            "text-lg leading-tight font-semibold transition-colors",
-                            isSelected ? "text-kumo-default" : "text-kumo-strong group-hover:text-kumo-default"
+                            "min-w-0 text-lg leading-tight font-semibold transition-colors",
+                            titleToneClass
                         )}
                     >
                         {style.title}
@@ -61,7 +64,11 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
                 </p>
 
                 <div
-                    className="mt-auto grid items-center divide-x divide-kumo-line border-y border-kumo-line py-2"
+                    className={cn(
+                        "mt-auto grid items-center py-2",
+                        hasInlineStatsLayout ? "border-b border-kumo-line" : "border-y border-kumo-line",
+                        hasInlineStatsLayout ? null : "divide-x divide-kumo-line"
+                    )}
                     style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
                 >
                     {stats.map((stat, statIndex) => (
@@ -69,15 +76,46 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
                             key={`${style.id}-stat-${stat.label}`}
                             className={cn(
                                 "min-w-0",
-                                statIndex === 0 ? "pr-2" : statIndex === stats.length - 1 ? "pl-2" : "px-2"
+                                statIndex === 0 ? "pr-2" : statIndex === stats.length - 1 ? "pl-2" : "px-2",
+                                stat.inlineAlign === "end" ? "text-right" : null
                             )}
                         >
-                            <p className="text-lg leading-none font-medium text-kumo-default">
-                                <span>{stat.value}</span>
-                            </p>
-                            <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
-                                {stat.label}
-                            </p>
+                            {stat.inlineText ? (
+                                <div className="relative">
+                                    <div aria-hidden="true" className="invisible">
+                                        <p className="text-lg leading-none font-medium text-kumo-default">
+                                            <span>{stat.value}</span>
+                                        </p>
+                                        <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
+                                            {stat.label}
+                                        </p>
+                                    </div>
+                                    <div
+                                            className={cn(
+                                                "absolute inset-0 flex items-center",
+                                                stat.inlineAlign === "end" ? "justify-end" : null
+                                            )}
+                                        >
+                                        <p
+                                            className={cn(
+                                                "text-lg leading-none font-medium whitespace-nowrap transition-colors",
+                                                titleToneClass
+                                            )}
+                                        >
+                                            <span>{stat.inlineText}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="text-lg leading-none font-medium text-kumo-default">
+                                        <span>{stat.value}</span>
+                                    </p>
+                                    <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-kumo-subtle">
+                                        {stat.label}
+                                    </p>
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -94,24 +132,29 @@ function HomeSidebarCards({
     onViewedStyleChange,
     yearStats,
     goalPreviewLayout,
+    lang,
     t,
 }) {
     const styleCards = useMemo(
         () => [
             {
                 id: "year",
-                title: t("type.year.name"),
+                title: t("type.year.name", { year: String(yearStats.year) }),
                 description: t("type.year.description"),
                 preview: (
                     <div className="origin-center scale-[1]">
                         <YearVisual percent={yearStats.percent} />
                     </div>
                 ),
-                stats: [
-                    { label: t("type.year.statDay"), value: String(yearStats.day) },
-                    { label: t("type.year.statWeek"), value: String(yearStats.week) },
-                    { label: t("type.year.statComplete"), value: `${yearStats.percent}%` },
-                ],
+                stats: getYearSidebarStats({
+                    yearStats,
+                    copy: {
+                        statDay: t("type.year.statDay"),
+                        statComplete: t("type.year.statComplete"),
+                        inlineDay: t("type.year.inlineDay", { n: String(yearStats.day) }),
+                        inlineComplete: t("type.year.inlineComplete", { n: `${yearStats.percent}%` }),
+                    },
+                }),
             },
             {
                 id: "life",
@@ -136,13 +179,21 @@ function HomeSidebarCards({
                         <GoalVisual layout={goalPreviewLayout} />
                     </div>
                 ),
-                stats: [
-                    { label: t("type.goal.statTargetDate"), value: t("type.goal.valueTarget") },
-                    { label: t("type.goal.statTracking"), value: t("type.goal.valueDaily") },
-                ],
+                stats: getGoalSidebarStats({
+                    copy: {
+                        statTargetDate: t("type.goal.statTargetDate"),
+                        statTracking: t("type.goal.statTracking"),
+                        inlineTarget: t("type.goal.inlineTarget"),
+                        inlineTracking: t("type.goal.inlineTracking"),
+                    },
+                    values: {
+                        target: t("type.goal.valueTarget"),
+                        daily: t("type.goal.valueDaily"),
+                    },
+                }),
             },
         ],
-        [t, yearStats.day, yearStats.week, yearStats.percent, goalPreviewLayout]
+        [goalPreviewLayout, lang, t, yearStats]
     )
 
     const visibleStyleCards = useMemo(() => resolveVisibleStyleCards(styleCards), [styleCards])

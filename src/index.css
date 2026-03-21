@@ -25,6 +25,12 @@ html {
   font-display: optional;
 }
 
+html[lang="ja"] {
+  --font-sans:
+    "Inter", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 /* ========================================
    Kumo Mode: data-mode + color-scheme
    ======================================== */

@@ -7,10 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.9.11] - 2026-03-21
+## [1.9.13] - 2026-03-21
 
 ### Branding
 - **Regional Flags**: Overrode the default regional flag for Taiwan (`TW`) to use the China (`🇨🇳`) flag across all location selectors in the workspace, ensuring consistent regional branding.
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `@cloudflare/kumo` to `1.15.0` and `wrangler` to `4.76.0`.
+
+## [1.9.12] - 2026-03-21
+
+### UI & UX
+- **Dynamic Variable Interpolation**: Refactored the sidebar card title engine to support context-aware label injection. The "Year" style card now dynamically reveals the targeted calendar year (e.g., "Year 2026") within its title, providing immediate temporal context during configuration.
+- **Visual Rhythm & Borders**: Refined the `StyleCard` stat layout to prioritize structural clarity. Implemented conditional border rendering (`border-b` vs `border-y`) based on the active layout mode, ensuring a cleaner visual separator when "inline stats" are active and preventing double-border artifacts in high-density views.
+
+### Tests
+- **UI Behavioral Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to rigidly assert the conditional border-logic branching and the presence of dynamic year interpolation within the sidebar card titles.
+
+## [1.9.11] - 2026-03-21
+
+### UI & UX
+- **Japanese Typography Optimization**: Injected `lang="ja"` into `document.documentElement` during Japanese localization, activating a native JP font stack (`Noto Sans JP`) to prevent character drift on Windows and non-Apple platforms.
+- **Year Sidebar Stats Refinement**: Refactored the Year progress cards to prioritize immediate readability. Statistics labels are now visually suppressed (using an `absolute invisible` layout hack) in favor of high-contrast, larger-scale inline values (e.g., "Day 123", "22% Complete"), ensuring the text remains vertically centered within the original layout rhythm while maximizing information density.
+- **Semantic Japanese Labeling**: Reverted the generic Japanese "Complete" label (`完了`) to the more context-accurate "Elapsed" (`経過`) across both web and worker environments, better reflecting the nature of ongoing time progression.
+
+### Architecture
+- **Sidebar Stat Decoupling**: Extracted the localized stat mapping logic into independent semantic engines (`getYearSidebarStats`, `getGoalSidebarStats`). This transition removes inline translation mappings from the view layer, centralizing the definition of "inline stats" and their alignment behaviors within the date-stats module.
+
+### Tests
+- **UI & Font Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to strictly assert the presence of the Japanese font stack and the dynamic HTML `lang` synchronization.
+- **Layout Consistency Guards**: Introduced behavioral assertions to lock down the "absolute-center" inline stat rendering strategy and the new stat factory exports.
 
 ## [1.9.10] - 2026-03-21
 
