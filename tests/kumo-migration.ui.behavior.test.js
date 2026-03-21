@@ -709,7 +709,7 @@ test("HomePreviewPane renders year and goal as inline SVG without the canvas ren
   assert.match(yearSource, /<rect x=\{0\} y=\{0\} width=\{baseWidth\} height=\{baseHeight\} fill=\{layout\.bgColor\} \/>/)
   assert.match(yearSource, /layout\.dots\.map/)
   assert.match(yearSource, /fill=\{dot\.isToday \? layout\.safeAccent : dot\.isCompleted \? layout\.safeAccent : pendingFill\}/)
-  assert.match(yearSource, /fillOpacity=\{dot\.isCompleted \? 0\.75 : undefined\}/)
+  assert.match(yearSource, /fillOpacity=\{!dot\.isToday && dot\.isCompleted \? 0\.75 : undefined\}/)
   assert.match(yearSource, /contrastAlpha\(layout\.bgColor,\s*0\.12,\s*config\.foregroundOverride\)/)
   assert.match(yearSource, /<tspan[^>]*>\{layout\.stats\.daysText\}<\/tspan>/)
   assert.match(yearSource, /<tspan[^>]*> · \{layout\.stats\.completeText\}<\/tspan>/)

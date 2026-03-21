@@ -30,6 +30,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-21: 修正 `kumo-migration.ui.behavior.test.js` 的 YearPreviewSvg 源码断言，完成态 dot 的 `fillOpacity` 现在只作用于 `!today && completed`，与 `src/pages/registry/sections/workspace/YearPreviewSvg.jsx` 的现实现一致，避免把 today 高亮误判为回退。
 2026-03-21: 更新 `kumo-migration.ui.behavior.test.js` / `kumo-migration.core.behavior.test.js`：前端 live preview 从 Canvas 一次性迁移到 inline SVG，新增 `YearPreviewSvg.jsx` / `GoalPreviewSvg.jsx` 源码护栏与 365 dots、dashoffset、字体链路断言，`src/lib/renderer.js` 同步退场。
 2026-03-19: 新增 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/app` `/app/` 放入 `run_worker_first`，并要求 `worker/index.js` 在 `env.ASSETS.fetch` 前对两个废弃入口直接返回 `308 -> /`，防止 Search Console 再次将旧入口识别为 SPA 自动重定向页。
 2026-03-21: 更新 `home-sidebar-cards.unit.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，新增 Year/Goal 卡统计文案与布局护栏：英文 Year 收口为两列单行 `Day 80` / `22% Complete`，英文 Goal 收口为两列单行 `Target` / `Daily tracking`；两者都通过“不可见双行占位 + 绝对定位居中层”保持原双行 stat 的两横线间距与垂直居中，并强制两列模式移除中间竖线、左列左对齐、右列整体右对齐；非英文继续保持默认双行语义。
