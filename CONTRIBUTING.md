@@ -8,14 +8,14 @@ Thanks for your interest in contributing to **JIKAN**! This project is a modern 
   - `components/ui/`: Kumo UI adapter layer (Base UI primitives).
   - `components/icons/`: Brand icon components.
   - `data/`: Static data (i18n, countries, devices).
-  - `lib/`: Utilities (renderer, motion, i18n context).
+  - `lib/`: Utilities (motion, i18n context, date-utils).
   - `pages/`: Registry workspace (Home).
 - **`worker/`**: Cloudflare Workers backend.
   - `index.js`: Worker entry, route handling, and WASM/font initialization.
   - `generators/`: SVG rendering adapters.
   - `validation.js`: URL parameter validation.
   - `timezone.js`: Timezone resolution.
-- **`shared/`**: Core logic shared between Browser (Canvas) and Worker (SVG).
+- **`shared/`**: Core logic shared between Browser inline SVG preview and Worker SVG.
 - **`tests/`**: Node.js behavioral regression tests.
 
 ## 🚀 Quick Start
@@ -71,7 +71,7 @@ curl "http://localhost:8787/generate?type=year&country=CN" -o test.png
 ## 📋 Pull Request Checklist
 
 - [ ] **Architecture**: Does your change follow the `CLAUDE.md` structure?
-- [ ] **Rendering Unity**: If you changed layout, text, date math, or validation rules, did you update `shared/wallpaper-core.js` first and then verify the affected adapters (`src/lib/renderer.js`, `worker/generators/*.js`) still match?
+- [ ] **Rendering Unity**: If you changed layout, text, date math, or validation rules, did you update `shared/wallpaper-core.js` first and then verify the affected adapters (`src/pages/registry/sections/workspace/*PreviewSvg.jsx`, `worker/generators/*.js`) still match?
 - [ ] **i18n**: Did you extract new text strings to `src/data/i18n.js`?
 - [ ] **Design Tokens**: Are you using Kumo tokens and CSS variables (no hardcoded colors)?
 - [ ] **GEB Protocol**: Did you update L3 headers and relevant `CLAUDE.md` maps?

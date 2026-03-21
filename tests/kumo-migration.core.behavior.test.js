@@ -34,11 +34,12 @@ function withFixedDate(run) {
   }
 }
 
-test("Wallpaper preview shares one language font strategy from shared core", async () => {
+test("Inline preview SVGs share one language font strategy from shared core", async () => {
   const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
   const { getWallpaperFontFamily, resolveTextFontFamily } = await import(`file://${corePath}`)
-  const rendererSource = readSource("src/lib/renderer.js")
-  const yearSource = readSource("worker/generators/year.js")
+  const yearSource = readSource("src/pages/registry/sections/workspace/YearPreviewSvg.jsx")
+  const goalSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
+  const workerYearSource = readSource("worker/generators/year.js")
   const lifeSource = readSource("worker/generators/life.js")
   const indexSource = readSource("index.html")
 
@@ -50,10 +51,13 @@ test("Wallpaper preview shares one language font strategy from shared core", asy
   assert.equal(resolveTextFontFamily("en", "没什么"), '"Noto Sans SC", "Inter", sans-serif')
   assert.equal(resolveTextFontFamily("en", "Launch カタカナ"), '"Noto Sans JP", "Inter", sans-serif')
 
-  assert.match(rendererSource, /getWallpaperFontFamily/)
-  assert.match(rendererSource, /resolveTextFontFamily/)
-  assert.doesNotMatch(rendererSource, /"SF Mono"|"Menlo"|"Courier New"/)
+  assert.match(yearSource, /getWallpaperFontFamily/)
+  assert.doesNotMatch(yearSource, /"SF Mono"|"Menlo"|"Courier New"/)
+  assert.match(goalSource, /getWallpaperFontFamily/)
+  assert.match(goalSource, /resolveTextFontFamily/)
+  assert.doesNotMatch(goalSource, /"SF Mono"|"Menlo"|"Courier New"/)
   assert.doesNotMatch(yearSource, /font-family="Inter"/)
+  assert.doesNotMatch(workerYearSource, /font-family="Inter"/)
   assert.doesNotMatch(lifeSource, /font-family="Inter"/)
 
   assert.match(indexSource, /Noto\+Sans\+SC/)
@@ -196,27 +200,52 @@ test("Home settings goal config uses date range label and unified goal-range act
   assert.match(source, /t\(config\.goalStartError \|\| config\.goalDateError\)/)
 })
 
-test("Renderer and worker pass goalStart into shared goal layout", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
+test("Inline goal preview and worker pass goalStart into shared goal layout", () => {
+  const previewSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
   const workerIndexSource = readSource("worker/index.js")
   const goalGeneratorSource = readSource("worker/generators/goal.js")
 
-  assert.match(rendererSource, /goalStart:\s*config\.goalStart/)
+  assert.match(previewSource, /goalStart:\s*config\.goalStart/)
   assert.match(workerIndexSource, /goalStart:\s*validated\.goalStart/)
   assert.match(goalGeneratorSource, /goalStart,/)
   assert.match(goalGeneratorSource, /goalStart,\s*goalName: resolvedGoalName/)
 })
 
-test("Renderer uses shared timezone date parts instead of browser-local now for preview layouts", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
+test("Inline preview SVGs use shared timezone date parts instead of browser-local now", () => {
+  const yearSource = readSource("src/pages/registry/sections/workspace/YearPreviewSvg.jsx")
+  const goalSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
 
-  assert.match(rendererSource, /getDatePartsInTimezone/)
-  assert.doesNotMatch(rendererSource, /function getLocalToday\(/)
-  assert.doesNotMatch(rendererSource, /const now = new Date\(\);/)
+  assert.match(yearSource, /getDatePartsInTimezone\(config\.timezone\)/)
+  assert.match(goalSource, /getDatePartsInTimezone\(config\.timezone\)/)
+  assert.doesNotMatch(yearSource, /function getLocalToday\(/)
+  assert.doesNotMatch(goalSource, /function getLocalToday\(/)
+  assert.doesNotMatch(yearSource, /const now = new Date\(\);/)
+  assert.doesNotMatch(goalSource, /const now = new Date\(\);/)
+})
+
+test("Inline year preview SVG keeps a 365-dot layout on non-leap years", async () => {
+  const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
+  const { computeYearLayout } = await import(`file://${corePath}`)
+
+  const layout = computeYearLayout({
+    width: 1179,
+    height: 2556,
+    bgColor: "#0B1020",
+    accentColor: "#F59E0B",
+    clockHeight: 0.18,
+    lang: "en",
+    year: 2026,
+    month: 3,
+    day: 10,
+    cols: 15,
+    padding: 0.2,
+  })
+
+  assert.equal(layout.dots.length, 365)
 })
 
 test("Goal default label follows wallpaper language when goalName is empty", async () => {
-  const rendererSource = readSource("src/lib/renderer.js")
+  const goalSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
   const goalGeneratorSource = readSource("worker/generators/goal.js")
   const corePath = path.join(process.cwd(), "shared/wallpaper-core.js")
   const { getWallpaperText } = await import(`file://${corePath}`)
@@ -226,18 +255,19 @@ test("Goal default label follows wallpaper language when goalName is empty", asy
   assert.equal(getWallpaperText("zh-CN", "goalDefault", ""), "目标")
   assert.equal(getWallpaperText("zh-TW", "goalDefault", ""), "目標")
   assert.equal(getWallpaperText("ja", "goalDefault", ""), "目標")
-  assert.match(rendererSource, /goalName:\s*config\.goalName\?\.trim\(\)\s*\|\|\s*getWallpaperText\(config\.wallpaperLang,\s*'goalDefault',\s*''\)/)
+  assert.match(goalSource, /const resolvedGoalName = config\.goalName\?\.trim\(\) \|\| getWallpaperText\(config\.wallpaperLang,\s*"goalDefault",\s*""\)/)
   assert.match(goalGeneratorSource, /const resolvedGoalName = goalName\?\.trim\(\) \|\| getWallpaperText\(lang,\s*'goalDefault',\s*''\)/)
   assert.match(validationSource, /goalName:\s*z\.string\(\)\.max\(100,\s*"Goal name too long"\)\.default\(''\)/)
 })
 
 test("Goal preview and worker render goalName with foreground accent, not background contrast", () => {
-  const rendererSource = readSource("src/lib/renderer.js")
+  const goalSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
   const goalGeneratorSource = readSource("worker/generators/goal.js")
 
-  assert.match(rendererSource, /if \(layout\.goalName\) \{[\s\S]*ctx\.fillStyle = safeAccent;/)
-  assert.match(rendererSource, /const goalNameFontFamily = resolveTextFontFamily\(config\.wallpaperLang,\s*layout\.goalName\)/)
-  assert.doesNotMatch(rendererSource, /ctx\.fillStyle = contrastAlpha\(bgColor, 0\.9\);/)
+  assert.match(goalSource, /layout\.goalName \? \(/)
+  assert.match(goalSource, /fill=\{layout\.safeAccent\}/)
+  assert.match(goalSource, /const goalNameFontFamily = resolveTextFontFamily\(config\.wallpaperLang,\s*layout\.goalName\)/)
+  assert.doesNotMatch(goalSource, /contrastAlpha\(bgColor, 0\.9\)/)
 
   assert.match(goalGeneratorSource, /const goalNameFontFamily = resolveTextFontFamily\(lang,\s*layout\.goalName\)/)
   assert.match(goalGeneratorSource, /if \(layout\.goalName\) \{[\s\S]*fill: accentFill,[\s\S]*fontFamily: goalNameFontFamily,/)
@@ -380,18 +410,18 @@ test("Goal completion ring uses completed progress semantics from shared layout"
 
 test("Goal renderers consume shared goal ring geometry instead of inline math", () => {
   const sidebarVisualsSource = readSource("src/pages/registry/sections/home-sidebar-visuals.jsx")
-  const rendererSource = readSource("src/lib/renderer.js")
+  const previewSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
   const goalWorkerSource = readSource("worker/generators/goal.js")
 
   assert.match(sidebarVisualsSource, /getGoalRingGeometry/)
-  assert.match(rendererSource, /getGoalRingGeometry/)
+  assert.match(previewSource, /getGoalRingGeometry/)
   assert.match(goalWorkerSource, /getGoalRingGeometry/)
 })
 
 test("Shared goal layout keeps goal name at 73% height for preview and worker consumers", async () => {
   const corePath = pathToFileURL(path.join(process.cwd(), "shared/wallpaper-core.js")).href
   const { computeGoalLayout } = await import(corePath)
-  const rendererSource = readSource("src/lib/renderer.js")
+  const previewSource = readSource("src/pages/registry/sections/workspace/GoalPreviewSvg.jsx")
   const goalWorkerSource = readSource("worker/generators/goal.js")
 
   const width = 1179
@@ -410,7 +440,7 @@ test("Shared goal layout keeps goal name at 73% height for preview and worker co
   })
 
   assert.equal(layout.goalNameY, height * 0.73)
-  assert.match(rendererSource, /fillText\(layout\.goalName,\s*ring\.centerX,\s*layout\.goalNameY\)/)
+  assert.match(previewSource, /y=\{layout\.goalNameY\}/)
   assert.match(goalWorkerSource, /text\(ring\.centerX,\s*layout\.goalNameY,\s*layout\.goalName/)
 })
 

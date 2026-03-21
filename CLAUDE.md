@@ -12,7 +12,7 @@ src/ - React 前端源代码 (Vite 驱动)
   │   ├── icons/ - 品牌图标组件
   │   └── ui/ - Kumo UI 适配层 (Base UI)
   ├── data/ - 静态数据 (i18n, countries, devices)
-  ├── lib/ - 工具库 (renderer, motion, utils)
+  ├── lib/ - 工具库 (motion, utils, i18n context, date-utils)
   └── pages/ - 页面模块 (registry/ Home 工作台)
 tests/ - Node 原生行为回归测试 (UI 迁移护栏分层 + 核心渲染/对比度/Worker 护栏)
 worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
@@ -31,7 +31,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 ## 技术栈
 - **Frontend**: React 19 + Vite 7 + Tailwind CSS v4 + Kumo UI (Base UI)
 - **Backend**: Cloudflare Workers + Resvg WASM
-- **Core**: Shared Rendering Logic (Canvas/SVG unified)
+- **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
 
 ## 常用命令
@@ -42,7 +42,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 
 ## 架构法则
 - **分形同构**: 代码与文档必须保持一致 (GEB Protocol)
-- **渲染统一**: 前端 (Canvas) 与 后端 (SVG) 必须共享同一渲染真相源（模块化核心通过 `shared/wallpaper-core.js` facade 暴露）
+- **渲染统一**: 前端浏览器原生 inline SVG 预览与后端 SVG 生成必须共享同一渲染真相源（模块化核心通过 `shared/wallpaper-core.js` facade 暴露）
 - **设计规范**: 一切 UI 必须基于 Kumo UI 组件与 CSS 变量
 - **弹层同构**: ColorPicker 链路统一使用 Kumo Popover + Kumo Select，禁止跨体系混搭导致 z-index 竞争
 - **颜色桥接**: ColorPicker 对外仅传 `hex`，内部必须维持 Color 对象状态桥，避免触底拖拽时 HSB 通道被回流重置

@@ -22,7 +22,7 @@ Worker Request → generators/*.js → shared/wallpaper-core.js (compute*Layout)
 ```
 
 **同构保证**：
-- 前端 Canvas 渲染 (src/lib/renderer.js) 与后端 SVG 生成必须使用相同的 `compute*Layout` 函数
+- 前端 Browser inline SVG 预览 (src/pages/registry/sections/workspace/{HomePreviewPane,YearPreviewSvg,GoalPreviewSvg}.jsx) 与后端 SVG 生成必须使用相同的 `compute*Layout` 函数
 - 任何布局逻辑变更必须在 shared/wallpaper-core.js 中进行
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
