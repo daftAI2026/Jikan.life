@@ -1,21 +1,23 @@
 /**
- * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal}.js, ./validation.js, ../shared/wallpaper-core.js(resolveFontBufferLanguages), @resvg/resvg-wasm
+ * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal,og}.js, ./validation.js, ../shared/wallpaper-core.js(resolveFontBufferLanguages), @resvg/resvg-wasm
  * [OUTPUT]: 对外提供 default.fetch (Cloudflare Worker Handler)
- * [POS]: worker/index.js - Worker 核心入口，负责历史入口重定向、路由分发、WASM 初始化、goalName 感知字体加载与图像生成
+ * [POS]: worker/index.js - Worker 核心入口，负责历史入口重定向、路由分发、WASM 初始化、goalName 感知字体加载、OG 分享卡与壁纸图像生成
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * 
  * Life Calendar Wallpaper - Cloudflare Worker
  * 
- * Generates dynamic wallpaper images based on:
+ * Generates dynamic image assets based on:
  * - Year progress (days/weeks of the year)
  * - Life calendar (weeks of life)
  * - Goal countdown (days until target)
+ * - OG share card (annual progress snapshot)
  */
 
 import { getTimezone, getDateInTimezone, normalizeTimezone } from './timezone.js';
 import { generateYearCalendar } from './generators/year.js';
 import { generateLifeCalendar } from './generators/life.js';
 import { generateGoalCountdown } from './generators/goal.js';
+import { generateOgShareSvg } from './generators/og.js';
 import { validateParams } from './validation.js';
 import { resolveFontBufferLanguages } from '../shared/wallpaper-core.js';
 
@@ -138,6 +140,10 @@ export default {
             return new Response(JSON.stringify({ status: 'ok' }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
             });
+        }
+
+        if (url.pathname === '/og-image.png') {
+            return await handleOgImage(request, corsHeaders);
         }
 
         // 历史入口必须在边缘层直接重定向，避免返回 SPA 200 壳页面后再由前端跳转。
@@ -325,6 +331,74 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         }
 
         console.error('Worker Error:', e);
+        return new Response('Internal Server Error', { status: 500, headers: corsHeaders });
+    }
+}
+
+async function handleOgImage(request, corsHeaders) {
+    try {
+        const today = getDateInTimezone();
+        const cacheDay = `${today.year}-${String(today.month).padStart(2, '0')}-${String(today.day).padStart(2, '0')}`;
+        const cacheKey = `og-image-${cacheDay}`;
+
+        let cacheRequest = null;
+        if (typeof caches !== 'undefined' && caches && caches.default) {
+            try {
+                const cacheUrl = new URL(request.url);
+                cacheUrl.pathname = `/__cache__/${cacheKey}`;
+                cacheUrl.search = '';
+                cacheUrl.hash = '';
+                cacheRequest = new Request(cacheUrl.toString(), { method: 'GET' });
+                const cached = await caches.default.match(cacheRequest).catch(() => null);
+                if (cached) {
+                    const buf = await cached.arrayBuffer();
+                    const headers = new Headers(cached.headers);
+                    Object.entries(corsHeaders).forEach(([k, v]) => headers.set(k, v));
+                    headers.set('X-Cache-Status', 'HIT');
+                    headers.set('X-Cache-Key', cacheKey);
+                    return new Response(buf, { status: cached.status, statusText: cached.statusText, headers });
+                }
+            } catch (e) {
+                console.error('OG cache lookup failed:', e);
+                cacheRequest = null;
+            }
+        }
+
+        const svg = generateOgShareSvg({ today });
+        await initializeWasm();
+        await loadInterFonts();
+
+        const resvg = new Resvg(svg, {
+            fitTo: { mode: 'original' },
+            font: {
+                loadSystemFonts: false,
+                defaultFontFamily: 'Inter',
+                fontBuffers: interFontBuffers
+            }
+        });
+
+        const pngBuffer = resvg.render().asPng();
+        const response = new Response(pngBuffer, {
+            headers: {
+                ...corsHeaders,
+                'Content-Type': 'image/png',
+                'Cache-Control': 'public, max-age=86400',
+                'X-Cache-Key': cacheKey,
+                'X-Cache-Status': 'MISS'
+            }
+        });
+
+        if (cacheRequest) {
+            try {
+                await caches.default.put(cacheRequest, response.clone());
+            } catch (e) {
+                console.error('OG cache put failed:', e);
+            }
+        }
+
+        return response;
+    } catch (e) {
+        console.error('OG image worker error:', e);
         return new Response('Internal Server Error', { status: 500, headers: corsHeaders });
     }
 }

@@ -14,8 +14,8 @@ src/ - React 前端源代码 (Vite 驱动)
   ├── data/ - 静态数据 (i18n, countries, devices)
   ├── lib/ - 工具库 (motion, utils, i18n context, date-utils)
   └── pages/ - 页面模块 (registry/ Home 工作台)
-tests/ - Node 原生行为回归测试 (UI 迁移护栏分层 + 核心渲染/对比度/Worker 护栏)
-worker/ - Cloudflare Workers 核心后端 (Node.js/SVG 生成)
+tests/ - Node 原生行为回归测试 (UI 迁移护栏分层 + 核心渲染/对比度/Worker/OG 护栏)
+worker/ - Cloudflare Workers 核心后端 (Node.js/SVG/OG 生成)
   └── generators/ - SVG 生成逻辑 adapters
 shared/ - 前后端共享核心逻辑（按 color/validation/text/layout 模块拆分，`wallpaper-core.js` 为稳定 facade）
 scripts/ - 开发校验脚本
@@ -24,7 +24,7 @@ scripts/ - 开发校验脚本
 <config>
 index.html - SPA 入口模板，同时承载首页最小离屏 SEO 语义、结构化数据、主题引导与统计脚本
 vite.config.js - Vite 构建配置 (含 manualChunks 拆包策略)
-wrangler.toml - Cloudflare Workers 部署与观测配置（含 `/app` 与 `/app/` 的边缘层 308 重定向优先路由、Workers Logs 开关与采样率）
+wrangler.toml - Cloudflare Workers 部署与观测配置（含 `/app`、`/app/` 与 `/og-image.png` 的边缘层优先路由、Workers Logs 开关与采样率）
 package.json - 统一依赖管理
 doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abstraction / Documentation Protocol)
 </config>

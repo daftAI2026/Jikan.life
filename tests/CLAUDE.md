@@ -19,6 +19,7 @@ date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数
 helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
 worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/app` `/app/` 先走 Worker 并在边缘层 308 重定向到首页。
+og-image.behavior.test.js: OG 分享卡护栏，锁定 `/og-image.png` 的动态渲染入口、`?yes=1` 语义、参考图构图与白底点阵布局。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
 accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
@@ -32,6 +33,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 
 变更日志
 2026-03-26: 新增 `seo-homepage.behavior.test.js`，锁定首页 `index.html` 的 `canonical`、`WebSite/WebApplication` 两段 JSON-LD、`#root` 内最小离屏 SEO 语义、字体 preload + noscript fallback、`public/sitemap.xml` 单 URL 策略，以及设备支持/语言能力与真相源一致；`kumo-migration.ui.registry-shell.behavior.test.js` 同步新增 `HomeSidebar` 不再输出 `h1` 与 `HomePage` 运行时离屏 H1 的语义护栏。
+2026-03-26: 新增 `og-image.behavior.test.js`，锁定 OG 分享卡的动态 `/og-image.png?yes=1` 入口、`1200x630` 分享尺寸、参考图式左上 wordmark + 下半点阵构图，以及白底黑字的极简视觉语义。
 2026-03-21: 修正 `kumo-migration.ui.behavior.test.js` 的 YearPreviewSvg 源码断言，完成态 dot 的 `fillOpacity` 现在只作用于 `!today && completed`，与 `src/pages/registry/sections/workspace/YearPreviewSvg.jsx` 的现实现一致，避免把 today 高亮误判为回退。
 2026-03-21: 更新 `kumo-migration.ui.behavior.test.js` / `kumo-migration.core.behavior.test.js`：前端 live preview 从 Canvas 一次性迁移到 inline SVG，新增 `YearPreviewSvg.jsx` / `GoalPreviewSvg.jsx` 源码护栏与 365 dots、dashoffset、字体链路断言，`src/lib/renderer.js` 同步退场。
 2026-03-19: 新增 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/app` `/app/` 放入 `run_worker_first`，并要求 `worker/index.js` 在 `env.ASSETS.fetch` 前对两个废弃入口直接返回 `308 -> /`，防止 Search Console 再次将旧入口识别为 SPA 自动重定向页。
