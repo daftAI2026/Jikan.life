@@ -3,6 +3,7 @@
 
 成员清单
 home-sidebar-cards.unit.test.js: HomeSidebarCards 单测，锁定隐藏卡过滤、移动端 active style 回退与英文 Year/Goal 统计单行语义。
+seo-homepage.behavior.test.js: 首页 SEO 护栏，锁定 index.html 的最小离屏语义、`WebSite/WebApplication` JSON-LD、非阻塞字体加载、单 URL sitemap 与真相源一致性。
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
 lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
 lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
@@ -30,6 +31,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-26: 新增 `seo-homepage.behavior.test.js`，锁定首页 `index.html` 的 `canonical`、`WebSite/WebApplication` 两段 JSON-LD、`#root` 内最小离屏 SEO 语义、字体 preload + noscript fallback、`public/sitemap.xml` 单 URL 策略，以及设备支持/语言能力与真相源一致；`kumo-migration.ui.registry-shell.behavior.test.js` 同步新增 `HomeSidebar` 不再输出 `h1` 与 `HomePage` 运行时离屏 H1 的语义护栏。
 2026-03-21: 修正 `kumo-migration.ui.behavior.test.js` 的 YearPreviewSvg 源码断言，完成态 dot 的 `fillOpacity` 现在只作用于 `!today && completed`，与 `src/pages/registry/sections/workspace/YearPreviewSvg.jsx` 的现实现一致，避免把 today 高亮误判为回退。
 2026-03-21: 更新 `kumo-migration.ui.behavior.test.js` / `kumo-migration.core.behavior.test.js`：前端 live preview 从 Canvas 一次性迁移到 inline SVG，新增 `YearPreviewSvg.jsx` / `GoalPreviewSvg.jsx` 源码护栏与 365 dots、dashoffset、字体链路断言，`src/lib/renderer.js` 同步退场。
 2026-03-19: 新增 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/app` `/app/` 放入 `run_worker_first`，并要求 `worker/index.js` 在 `env.ASSETS.fetch` 前对两个废弃入口直接返回 `308 -> /`，防止 Search Console 再次将旧入口识别为 SPA 自动重定向页。

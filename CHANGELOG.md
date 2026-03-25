@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.16] - 2026-03-26
+
+### SEO & Accessibility
+- **Homepage SEO Strategy**: Implemented a comprehensive minimum-offscreen SEO strategy for the root `index.html`. Injected a visually hidden `<main>` container within the `#root` entry point, ensuring search engine crawlers can immediately index the primary product identity ("Jikan Dynamic Wallpaper Generator") before hydration without impacting visual performance.
+- **Structural Semantics Refinement**: Refactored the `HomeSidebar` branding marks to utilize non-heading elements (`<p>`), while introducing a dedicated, hidden `<h1>` within the `HomePage` runtime layer. This ensures that the application maintains a strict single-H1 hierarchy at the document level, optimizing semantic clarity for accessibility and SEO.
+- **Metadata & Structured Data**: Enhanced `index.html` with explicit `canonical` linking, standard Open Graph/Twitter card metadata, and dual JSON-LD blocks (`WebSite` and `WebApplication`). This provides search engines with crystalline structural data regarding the application's category, features, supported devices (iPhone), and multi-language capabilities (EN, CN, TW, JA).
+- **Non-blocking Typography**: Migrated the Google Fonts delivery in `index.html` to a high-performance non-blocking strategy using `preload`, `onload` swapping, and a `<noscript>` fallback. This eliminates font-loading render-blocking while guaranteeing font availability across all browsers.
+
+### Tests
+- **SEO & Semantic Guards**: Introduced `seo-homepage.behavior.test.js` to strictly assert the presence of structural metadata, structured data, and the offscreen SEO containers.
+- **UI Architecture Guards**: Expanded `kumo-migration.ui.registry-shell.behavior.test.js` to rigidly enforce the single-H1 semantic constraint across the sidebar and homepage runtime layers.
+
 ## [1.9.15] - 2026-03-21
 
 ### UI & UX

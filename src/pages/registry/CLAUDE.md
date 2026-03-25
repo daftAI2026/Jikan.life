@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/CLAUDE.md
 
 成员清单
-HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算真实 `effectiveLayoutTier + isDesktopShell` 并向工作区透传（顶层 header/main-content 保持真实 tier 语义）
+HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算真实 `effectiveLayoutTier + isDesktopShell` 并向工作区透传（顶层 header/main-content 保持真实 tier 语义，运行时额外保留离屏首页 H1）
 effective-layout-tier.js: 布局判定单一真相源，封装 `768/1024/1314` 阈值，并导出真实 tier、desktop shell 与 segmented workspace helper
 registry-data.js: Registry 旧版导航与示例数据（备用）
 sections/: Registry 页面子模块目录，承载页面壳层、Sidebar/Topbar、工作区编排与旧版备用区块（详见 sections/CLAUDE.md）
@@ -18,6 +18,7 @@ ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 Ho
 只使用 `@/components/ui/*` 统一入口组件与 Kumo token，禁止引入其他设计系统组件。
 
 变更日志
+2026-03-26: `HomePage.jsx` 在运行时 `main` 内补入显式离屏样式的首页 H1，确保离屏 SEO 骨架被 React 挂载替换后，DOM 仍保留唯一标题语义且不影响现有 UI。
 2026-02-10: 新增 Kumo 首页复刻组件与布局模块。
 2026-02-11: 曾改为上游组件同源挂载路径，移除手写实现偏差（历史记录）。
 2026-02-11: 首页改造为 preview|settings 双栏，新增 workspace 子模块并实现 style cards 联动。
