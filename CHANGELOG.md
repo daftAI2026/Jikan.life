@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Infrastructure
 - **Dynamic OG Image Engine**: Implemented a standalone OG share card generator (`worker/generators/og.js`) that renders a 1200x630 dynamic snapshot of the current annual progress. The engine maps the year progress onto a 6x28 dot matrix, providing a visually consistent and premium sharing experience across social platforms via the `/og-image.png` endpoint.
 - **Edge-side Image Caching**: Integrated Cloudflare's Cache API for the dynamic OG image route. Images are now cached at the edge for 24 hours based on the current date, significantly reducing cold-start WASM initialization overhead and font loading latency.
-- **Edge Routing Strategy**: Expanded `wrangler.toml` and Worker route dispatching to prioritize `/og-image.png` at the edge layer, ensuring high-performance asset delivery before falling back to the SPA static assets.
+- **Edge Routing Strategy**: Expanded `wrangler.toml` and Worker route dispatching to prioritize `/` and `/og-image.png` at the edge layer. This ensures that the root `index.html` is always processed by the Worker before delivery, enabling real-time metadata injection while maintaining high-performance asset delivery.
 
 ### SEO & Metadata
 - **Dynamic Meta Tags**: Injected `og:image` and `twitter:image` tags into the root `index.html` pointing to the new dynamic `/og-image.png` endpoint. This guarantees that every shared link displays the live, real-time progress of the year.

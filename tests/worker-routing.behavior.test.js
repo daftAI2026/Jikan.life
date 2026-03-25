@@ -8,10 +8,10 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { readSource } from "./helpers/source-test-helpers.js"
 
-test("Wrangler routes /app and /app/ through worker before SPA assets fallback", () => {
+test("Wrangler routes / and /app through worker before SPA assets fallback", () => {
   const source = readSource("wrangler.toml")
 
-  assert.match(source, /run_worker_first\s*=\s*\[[^\]]*"\/generate"[^\]]*"\/health"[^\]]*"\/app"[^\]]*"\/app\/"[^\]]*\]/s)
+  assert.match(source, /run_worker_first\s*=\s*\[[^\]]*"\/"[^\]]*"\/generate"[^\]]*"\/health"[^\]]*"\/app"[^\]]*"\/app\/"[^\]]*\]/s)
   assert.match(source, /not_found_handling\s*=\s*"single-page-application"/)
 })
 
