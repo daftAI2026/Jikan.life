@@ -478,6 +478,15 @@ test("HomePage keeps selectedStyle as single source of truth", () => {
   assert.match(source, /forceOnboarding={forceOnboarding}/)
 })
 
+test("HomePage keeps a runtime-only visually hidden h1 for homepage semantics", () => {
+  const source = readSource("src/pages/registry/HomePage.jsx")
+
+  assert.match(source, /const SEO_H1_VISUALLY_HIDDEN_STYLE = \{/)
+  assert.match(source, /clip: "rect\(0, 0, 0, 0\)"/)
+  assert.match(source, /whiteSpace: "nowrap"/)
+  assert.match(source, /<h1 style=\{SEO_H1_VISUALLY_HIDDEN_STYLE\}>Jikan Dynamic Wallpaper Generator for Year Progress and Goal Countdown<\/h1>/)
+})
+
 test("Registry sidebar is local controlled implementation", () => {
   const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
   const cardsSource = readSource("src/pages/registry/sections/home-sidebar-cards.jsx")
@@ -499,6 +508,13 @@ test("Registry sidebar is local controlled implementation", () => {
   assert.doesNotMatch(source, /Life Calendar/)
   assert.doesNotMatch(source, /Goal Countdown/)
   assert.doesNotMatch(source, /vendor\/kumo\/packages\/kumo-docs-astro\/src\/components\/SidebarNav/)
+})
+
+test("HomeSidebar brand marks no longer emit h1 tags", () => {
+  const source = readSource("src/pages/registry/sections/HomeSidebar.jsx")
+
+  assert.doesNotMatch(source, /<h1\b/)
+  assert.match(source, />Jikan<\/p>/)
 })
 
 test("HomeSidebar keeps english inline year stats vertically centered inside the original two-line stat rhythm", () => {

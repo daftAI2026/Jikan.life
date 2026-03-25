@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState) 与浏览器定时器(setTimeout), @/components/ui/kumo(Button), @phosphor-icons/react(XIcon), @/lib/utils(cn), @/lib/date-utils(getLocalDateKey), JikanMenuIcon, ThemeToggle, @/lib/I18nContext, useRegistryBlockingScrollLock, home-sidebar-date-stats, home-sidebar-cards
- * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新
- * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新、移动抽屉滚动锁与移动 segmented style selector 编排；移动端额外持有 viewingStyle 以区分“查看卡片”和“真正选中”，卡片渲染细节委托 home-sidebar-cards
+ * [OUTPUT]: 对外提供 HomeSidebar 侧边栏组件（支持 selectedStyle/onStyleChange 与 sidebarOpen/onSidebarOpenChange），Year 预览输出 10x10 点阵并在本地午夜自动刷新，品牌文字保持非标题语义
+ * [POS]: pages/registry/sections 的侧栏布局容器层，保留云 logo 交互动效与 data-sidebar-open 语义，承载 Year 预览日切刷新、移动抽屉滚动锁与移动 segmented style selector 编排；移动端额外持有 viewingStyle 以区分“查看卡片”和“真正选中”，卡片渲染细节委托 home-sidebar-cards，并避免品牌字样占用页面 H1
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -154,7 +154,7 @@ function HomeSidebar({
                 >
                     <JikanMenuIcon />
                 </Button>
-                <h1 className="text-base font-medium">Jikan</h1>
+                <p className="text-base font-medium">Jikan</p>
                 <ThemeToggle />
             </div>
 
@@ -166,7 +166,7 @@ function HomeSidebar({
                 )}
             >
                 <div className="flex h-[var(--registry-topbar-height)] flex-none items-center justify-between border-b border-kumo-line px-3 text-kumo-default">
-                    <h1 className="text-base font-medium">Jikan</h1>
+                    <p className="text-base font-medium">Jikan</p>
                     <Button
                         variant="ghost"
                         shape="square"
@@ -196,7 +196,7 @@ function HomeSidebar({
             </div>
 
             <div className="pointer-events-none fixed top-0 left-[var(--registry-rail-width)] z-50 hidden h-[var(--registry-topbar-height)] items-center px-3 font-medium text-kumo-default select-none md:flex">
-                <h1 className="text-base">Jikan</h1>
+                <p className="text-base">Jikan</p>
             </div>
 
             <aside

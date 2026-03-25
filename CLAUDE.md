@@ -22,6 +22,7 @@ scripts/ - 开发校验脚本
 </directory>
 
 <config>
+index.html - SPA 入口模板，同时承载首页最小离屏 SEO 语义、结构化数据、主题引导与统计脚本
 vite.config.js - Vite 构建配置 (含 manualChunks 拆包策略)
 wrangler.toml - Cloudflare Workers 部署与观测配置（含 `/app` 与 `/app/` 的边缘层 308 重定向优先路由、Workers Logs 开关与采样率）
 package.json - 统一依赖管理
@@ -50,6 +51,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **布局一致**: ColorPicker 色域区使用 `aspect-square` 跟随弹层内容宽度，工具栏保持 `吸管:颜色空间=1:2` 并将剩余宽度留给颜色输入框
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
+- **首页双相职责**: `index.html` 同时承担 React SPA 挂载入口与首页最小离屏 SEO 语义；离屏语义中的产品事实必须与 `src/data/*` 和设备可见性真相源保持一致，且不得凭空扩写 FAQ/说明页内容或打断用户首屏
 - **废弃入口前移**: 历史入口 `/app` 与 `/app/` 必须在边缘层返回 HTTP 308，禁止继续依赖 SPA 壳页面 + 前端 Navigate 作为线上主重定向路径
 - **观测配置收口**: Workers Logs 开关、调用日志与采样率统一收口在 `wrangler.toml`，禁止面板手改后让本地配置失真
 - **上游消费策略**: 仅通过 npm 包 `@cloudflare/kumo` + `src/components/ui/` 适配层消费上游能力，禁止页面层直引上游包

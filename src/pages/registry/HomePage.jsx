@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useEffect/useMemo/useState), react-router-dom, registry/sections (HomeTopbar/HomeSidebar/ThemeToggle/MobileFooter/HomeGrid), localStorage(registry.settingsAutoflow.v1)，以及 effective-layout-tier 的真实 viewport tier 判定
- * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier 与 sidebarOpen）
- * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（顶层 header 保持真实 tier 语义，工作区容器仅在 `md + 抽屉关闭` 时同步启用桌面壳高度链）
+ * [OUTPUT]: 对外提供 HomePage 页面组件（向工作区透传 effectiveLayoutTier 与 sidebarOpen），并保留运行时首页唯一 H1 语义
+ * [POS]: pages/registry 的路由入口，维护 selectedStyle（首访空态/回访默认 year）与 sidebarOpen 状态，挂载 Registry 页面级滚动治理标记并编排双栏工作区与全局工具入口（顶层 header 保持真实 tier 语义，工作区容器仅在 `md + 抽屉关闭` 时同步启用桌面壳高度链；main 内补充离屏 H1 以延续首页 SEO 语义且不影响视觉）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useMemo, useState } from "react"
@@ -16,6 +16,17 @@ import { resolveEffectiveLayoutTier } from "./effective-layout-tier"
 const AUTOFLOW_STORAGE_KEY = "registry.settingsAutoflow.v1"
 const ONBOARDING_FORCE_QUERY_VALUE = "force"
 const SHOW_MOBILE_FOOTER = false
+const SEO_H1_VISUALLY_HIDDEN_STYLE = {
+    position: "absolute",
+    width: "1px",
+    height: "1px",
+    padding: 0,
+    margin: "-1px",
+    overflow: "hidden",
+    clip: "rect(0, 0, 0, 0)",
+    whiteSpace: "nowrap",
+    border: 0,
+}
 
 function isForceOnboardingEnabled(search) {
     const params = new URLSearchParams(search)
@@ -112,6 +123,7 @@ function HomePage() {
                 >
                     <HomeTopbar hideLanguage={!sidebarOpen} />
                     <main className="flex min-h-0 grow flex-col md:bg-kumo-elevated md:pr-12">
+                        <h1 style={SEO_H1_VISUALLY_HIDDEN_STYLE}>Jikan Dynamic Wallpaper Generator for Year Progress and Goal Countdown</h1>
                         <div
                             className={[
                                 "mx-auto h-full w-full grow overflow-hidden border-r border-kumo-line",
