@@ -46,6 +46,8 @@ test("wrangler and worker route the OG image path through the worker before asse
 
   assert.match(wranglerSource, /run_worker_first\s*=\s*\[[^\]]*"\/generate"[^\]]*"\/og-image\.png"[^\]]*"\/health"[^\]]*"\/app"[^\]]*"\/app\/"[^\]]*\]/s)
   assert.match(workerSource, /url\.pathname === ['"]\/og-image\.png['"]/)
+  assert.match(workerSource, /const origin = url\.origin/)
+  assert.match(workerSource, /replaceAll\(\s*['"]https:\/\/jikan\.life\/og-image\.png\?yes=1['"],\s*`\$\{origin\}\/og-image\.png\?yes=1`\s*\)/)
   assert.ok(ogRouteIndex !== -1, "worker should match /og-image.png")
   assert.ok(ogRouteIndex < assetsFetchIndex, "OG route must run before static asset fallback")
 })

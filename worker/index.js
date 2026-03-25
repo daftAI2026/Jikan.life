@@ -168,10 +168,15 @@ export default {
         const contentType = response.headers.get('content-type') || '';
         if (contentType.includes('text/html')) {
             const country = request.headers.get('CF-IPCountry') || 'US';
+            const origin = url.origin;
             let html = await response.text();
 
             // 注入 data-country 到 html 标签
             html = html.replace(/<html[^>]*>/, `<html lang="en" data-country="${country}">`);
+            html = html.replaceAll(
+                'https://jikan.life/og-image.png?yes=1',
+                `${origin}/og-image.png?yes=1`
+            );
 
             return new Response(html, {
                 status: response.status,

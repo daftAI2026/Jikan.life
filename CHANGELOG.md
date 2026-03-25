@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### SEO & Metadata
 - **Dynamic Meta Tags**: Injected `og:image` and `twitter:image` tags into the root `index.html` pointing to the new dynamic `/og-image.png` endpoint. This guarantees that every shared link displays the live, real-time progress of the year.
+- **Dynamic Origin Resolution**: Upgraded the Worker edge layer to programmatically resolve the OG image URL based on the incoming `url.origin`. This ensures that staging and preview deployments correctly point to their respective environment-specific OG endpoints rather than hardcoded production URLs.
 
 ### Tests
 - **OG Rendering Guards**: Introduced `og-image.behavior.test.js` to strictly assert the SVG structural integrity, dot grid calculation (filled vs pending), and memory-efficient caching headers for the dynamic image generator.
