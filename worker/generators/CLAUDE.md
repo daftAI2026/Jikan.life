@@ -5,7 +5,7 @@
 year.js: 年度进度 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeYearLayout，输出点阵日历（默认 15 列，支持自定义），支持 foregroundOverride
 life.js: 生命周历 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeLifeLayout，输出 52 列周历网格，并保持当前周圆点半径与前端 Preview 同步，支持 foregroundOverride
 goal.js: 目标倒计时 SVG 生成器，依赖 shared/wallpaper-core.js 的 computeGoalLayout/getWallpaperText/resolveTextFontFamily，输出环形进度条，并复用共享 Goal 渲染指标、本地化 goalDefault 与 goalName 多语言字体策略，支持 foregroundOverride
-og.js: OG 分享卡 SVG 生成器，复刻参考图的左上 wordmark + 下半点阵构图，并把年度进度映射到 6x28 网格，作为 `/og-image.png?yes=1` 的专用渲染源
+og.js: OG 分享卡 SVG 生成器，复刻参考图的左上 wordmark / 右上 favicon / 年份与完成度文案，并把年度进度映射到 25x5 网格，作为 `/og-image.png?yes=1` 的专用渲染源
 
 ## 架构原则
 

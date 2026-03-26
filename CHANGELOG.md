@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.9.17] - 2026-03-26
+
 ### Infrastructure
 - **Dynamic OG Image Engine**: Implemented a standalone OG share card generator (`worker/generators/og.js`) that renders a 1200x630 dynamic snapshot of the current annual progress. The engine maps the year progress onto a 6x28 dot matrix, providing a visually consistent and premium sharing experience across social platforms via the `/og-image.png` endpoint.
 - **Edge-side Image Caching**: Integrated Cloudflare's Cache API for the dynamic OG image route. Images are now cached at the edge for 24 hours based on the current date, significantly reducing cold-start WASM initialization overhead and font loading latency.

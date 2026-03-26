@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert、tests/helpers/source-test-helpers，以及 worker/generators/og.js
  * [OUTPUT]: 向 `node --test` 注册 OG 分享卡护栏用例，锁定 `/og-image.png` 动态入口、`?yes=1` 语义与参考图构图
- * [POS]: tests/ 的 OG 分享卡回归护栏，防止白底点阵版式、尺寸与 worker 路由契约漂移
+ * [POS]: tests/ 的 OG 分享卡回归护栏，防止白底 25 列点阵版式、尺寸与 worker 路由契约漂移
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -64,23 +64,39 @@ test("index.html points social cards at the dynamic OG route and declares share 
   assert.match(html, /<meta property="twitter:image:alt" content="Jikan annual progress share card" \/>/)
 })
 
-test("OG share SVG reproduces the reference layout as a white card with a 6x28 dot field", async () => {
+test("OG share SVG reproduces the reference layout as a white card with a 25x5 dot field", async () => {
   const ogPath = path.join(process.cwd(), "worker/generators/og.js")
-  const { OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT, generateOgShareSvg } = await import(pathToFileURL(ogPath).href)
+  const {
+    OG_GRID_COLUMNS,
+    OG_GRID_ROWS,
+    OG_IMAGE_HEIGHT,
+    OG_IMAGE_WIDTH,
+    generateOgShareSvg,
+    resolveOgFilledColumns,
+  } = await import(pathToFileURL(ogPath).href)
 
   const svg = withFixedDate(() => generateOgShareSvg())
-  const totalDots = 28 * 6
-  const filledDots = Math.ceil((85 / 365) * totalDots)
+  const totalDots = OG_GRID_COLUMNS * OG_GRID_ROWS
+  const filledColumns = resolveOgFilledColumns(23)
+  const filledDots = filledColumns * OG_GRID_ROWS
 
   assert.equal(OG_IMAGE_WIDTH, 1200)
   assert.equal(OG_IMAGE_HEIGHT, 630)
+  assert.equal(OG_GRID_COLUMNS, 25)
+  assert.equal(OG_GRID_ROWS, 5)
+  assert.equal(resolveOgFilledColumns(0), 0)
+  assert.equal(resolveOgFilledColumns(1), 1)
+  assert.equal(resolveOgFilledColumns(4), 1)
+  assert.equal(resolveOgFilledColumns(5), 2)
+  assert.equal(resolveOgFilledColumns(23), 6)
+  assert.equal(resolveOgFilledColumns(100), 25)
   assert.match(svg, /<svg[^>]*width="1200"[^>]*height="630"/)
   assert.match(svg, /<rect x="0" y="0" width="1200" height="630" fill="#FFFFFF" rx="0" \/>/)
-  assert.match(svg, /<text x="54" y="54"[^>]*>JIKAN<\/text>/)
-  assert.match(svg, /<text x="54" y="114"[^>]*>&amp;CO<\/text>/)
+  assert.match(svg, /<text x="50" y="355"[^>]*font-size="44"[^>]*font-weight="600"[^>]*text-anchor="start"[^>]*>2026<\/text>/)
+  assert.match(svg, /<text x="863\.07" y="354"[^>]*font-size="40"[^>]*font-weight="600"[^>]*text-anchor="start"[^>]*>23% Complete<\/text>/)
   assert.equal(countMatches(svg, /<circle\b/g), totalDots)
-  assert.equal(countMatches(svg, /<circle[^>]*fill="#111111"/g), filledDots)
-  assert.equal(countMatches(svg, /<circle[^>]*fill="#D9D9D9"/g), totalDots - filledDots)
-  assert.match(svg, /<circle cx="64" cy="354" r="10.5" fill="#111111" \/>/)
-  assert.match(svg, /<circle cx="1136" cy="562" r="10.5" fill="#D9D9D9" \/>/)
+  assert.equal(countMatches(svg, /<circle[^>]*fill="rgba\(0,0,0, 1\)"/g), filledDots)
+  assert.equal(countMatches(svg, /<circle[^>]*fill="rgba\(0,0,0, 0\.15\)"/g), totalDots - filledDots)
+  assert.match(svg, /<circle cx="60\.8027" cy="402\.619" r="10\.8027" fill="rgba\(0,0,0, 1\)" \/>/)
+  assert.match(svg, /<circle cx="1139\.2" cy="569\.197" r="10\.8027" fill="rgba\(0,0,0, 0\.15\)" \/>/)
 })
