@@ -4,20 +4,20 @@
 成员清单
 HomePage.jsx: Home 根页面，维护 selectedStyle（初始空态）+ sidebarOpen + viewportWidth 状态，计算真实 `effectiveLayoutTier + isDesktopShell` 并向工作区透传（顶层 header/main-content 保持真实 tier 语义，运行时额外保留离屏首页 H1）
 effective-layout-tier.js: 布局判定单一真相源，封装 `768/1024/1314` 阈值，并导出真实 tier、desktop shell 与 segmented workspace helper
-registry-data.js: Registry 旧版导航与示例数据（备用）
-sections/: Registry 页面子模块目录，承载页面壳层、Sidebar/Topbar、工作区编排与旧版备用区块（详见 sections/CLAUDE.md）
+sections/: Registry 页面子模块目录，承载页面壳层、Sidebar/Topbar、工作区编排与局部兼容占位（详见 sections/CLAUDE.md）
 
 结构
-registry/ - Kumo UI 单页模块 (sections + HomePage + effective-layout-tier + registry-data)
+registry/ - Kumo UI 单页模块 (sections + HomePage + effective-layout-tier)
 
 架构决策
-ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 HomeGrid 维持本地受控实现，彻底切断对上游 docs 源码的构建期耦合。
+ThemeToggle/SearchDialog/JikanMenuIcon 全部改为本地实现；Sidebar 与 HomeGrid 维持本地受控实现，彻底切断对上游 docs 源码的构建期耦合。2026-03-27 起，旧 Registry demo 数据与示例区块链路（`registry-data + Registry* + Component*`）正式移除，页面层不再保留“备用组件墙”平行结构。
 页面层统一通过 `@/components/ui/*` 引用 Kumo 组件；禁止 `src/pages/registry/**` 直接 import `@cloudflare/kumo`。
 
 开发规范
 只使用 `@/components/ui/*` 统一入口组件与 Kumo token，禁止引入其他设计系统组件。
 
 变更日志
+2026-03-27: 删除 `registry-data.js` 与旧 Registry demo 区块链路；页面入口现只保留 Home 运行链、布局判定与 sections 子模块，不再维护备用导航/示例数据平行宇宙。
 2026-03-26: `HomePage.jsx` 在运行时 `main` 内补入显式离屏样式的首页 H1，确保离屏 SEO 骨架被 React 挂载替换后，DOM 仍保留唯一标题语义且不影响现有 UI。
 2026-02-10: 新增 Kumo 首页复刻组件与布局模块。
 2026-02-11: 曾改为上游组件同源挂载路径，移除手写实现偏差（历史记录）。

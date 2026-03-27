@@ -1,1 +1,1 @@
-This folder contains the built output assets for the worker "lifegrid" generated at 2026-02-02T07:46:53.514Z.
+This directory contains generated Worker build output. Treat it as build artifact output and avoid manual edits.

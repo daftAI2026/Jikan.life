@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.9.17-green" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.9.18-green" alt="Version" />
   <img src="https://img.shields.io/badge/i18n-EN%20%7C%20zh--CN%20%7C%20zh--TW%20%7C%20ja-orange" alt="i18n" />
 </p>
 
@@ -35,7 +35,7 @@
 ```
 Browser (React)                     Cloudflare Worker
 ┌──────────────────┐                ┌──────────────────┐
-│  Canvas Preview   │◄── shared ──►│  SVG Generator    │
+│ Inline SVG Preview│◄── shared ──►│  SVG Generator    │
 │  (Live editing)   │   core logic  │  (Resvg WASM→PNG) │
 └──────────────────┘                └──────────────────┘
          ▲                                   ▲
@@ -44,17 +44,17 @@ Browser (React)                     Cloudflare Worker
 ```
 
 - **Stateless**: All configuration lives in the URL. No database, no tracking, no accounts.
-- **Rendering Unity**: Browser preview (Canvas) and server export (SVG) share the same core calculation logic via `shared/wallpaper-core.js`.
+- **Rendering Unity**: Browser inline SVG preview and server SVG export share the same core calculation logic via `shared/wallpaper-core.js`.
 - **Privacy First**: Zero server-side storage. Your data never leaves the URL.
 
 ## 🛠 Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 19 · Vite 7 · Tailwind CSS v4 |
+| **Frontend** | React 19 · Vite 8 · Tailwind CSS v4 |
 | **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) (`@cloudflare/kumo`) · Base UI |
 | **Backend** | Cloudflare Workers · Resvg WASM (SVG → PNG) |
-| **Shared** | Unified wallpaper-core (Canvas + SVG) |
+| **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
 | **CI/CD** | GitHub Actions · Cloudflare Static Assets |
 
@@ -68,14 +68,14 @@ npm install
 npm run dev
 
 # Worker dev server (API / image generation)
-npx wrangler dev
+npm run worker:dev
 ```
 
 ### Deploy
 
 ```bash
-# Build frontend + deploy worker (single command)
-npx wrangler deploy
+# Deploy worker
+npm run worker:deploy
 ```
 
 ## 📂 Project Structure
@@ -84,7 +84,7 @@ npx wrangler deploy
 src/                  React frontend
   ├── components/ui/  Kumo UI adapter layer
   ├── data/           i18n, countries, devices
-  ├── lib/            Renderer, motion, utilities
+  ├── lib/            i18n, date utilities, motion, shared helpers
   └── pages/          Registry workspace (Home)
 shared/               Shared rendering logic (browser + worker)
 worker/               Cloudflare Worker backend

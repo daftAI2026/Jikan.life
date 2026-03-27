@@ -30,7 +30,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 </config>
 
 ## 技术栈
-- **Frontend**: React 19 + Vite 7 + Tailwind CSS v4 + Kumo UI (Base UI)
+- **Frontend**: React 19 + Vite 8 + Tailwind CSS v4 + Kumo UI (Base UI)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
@@ -55,6 +55,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **首页 OG 可改写**: 首页 HTML 必须先经过 Worker 再回源静态资源，确保 `og:image` 能按当前请求 origin 动态改写，禁止直接从静态资产绕过 Worker 输出首页元数据
 - **废弃入口前移**: 历史入口 `/app` 与 `/app/` 必须在边缘层返回 HTTP 308，禁止继续依赖 SPA 壳页面 + 前端 Navigate 作为线上主重定向路径
 - **观测配置收口**: Workers Logs 开关、调用日志与采样率统一收口在 `wrangler.toml`，禁止面板手改后让本地配置失真
+- **文档真相源收口**: 根目录不再保留独立 `CONTRIBUTING.md` / `MULTILINGUAL.md`；贡献约束统一看本文件，i18n 真相源统一看 `src/data/i18n.js` 与 `src/lib/I18nContext.jsx`
 - **上游消费策略**: 仅通过 npm 包 `@cloudflare/kumo` + `src/components/ui/` 适配层消费上游能力，禁止页面层直引上游包
 - **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天
 - **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `Surface`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）

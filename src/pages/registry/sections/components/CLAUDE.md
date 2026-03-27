@@ -3,20 +3,18 @@
 
 成员清单
 HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 preview chrome 独立收尾 reveal；外层桌面壳与 segmented workspace 由 helper 决定，`mobile + md drawer open` 共用 segmented 壳，guide 宿主覆盖 header 以下，`md + drawer closed` 只在 pane 局部复用 mid 路径，同时测量 workspace 高度并下发 segmented 预览 target height
-ComponentCell.jsx: 网格单元壳，负责标题与内容排布
-ComponentGrid.jsx: 旧版组件墙网格（备用）
-ComponentData.js: 旧版网格条目数据（备用）
 
 结构
-components/ - 组件墙子模块 (4 files)
+components/ - 工作区编排子模块 (1 file)
 
 架构决策
-HomeGrid 从 vendor 薄包装切换为本地编排实现；旧网格模块继续保留备用，不参与当前页面渲染。
+HomeGrid 从 vendor 薄包装切换为本地编排实现；2026-03-27 起，旧组件墙网格链路（`ComponentCell/Grid/Data`）正式删除，components/ 子目录只保留当前工作区编排入口。
 
 开发规范
 只使用 `@/components/ui/*` 统一入口组件与 Kumo token，禁止引入 shadcn 子组件或自定义颜色。
 
 变更日志
+2026-03-27: 删除 `ComponentCell.jsx`、`ComponentGrid.jsx` 与 `ComponentData.js`；components/ 从“工作区 + 旧组件墙”收口为纯 `HomeGrid.jsx` 单文件子模块。
 2026-02-10: 新增 HomeGrid 复刻 Kumo 首页组件墙。
 2026-02-11: HomeGrid 曾改为上游组件薄包装挂载（历史）。
 2026-02-11: HomeGrid 改为本地双栏工作区编排，接入 workspace 子模块。
