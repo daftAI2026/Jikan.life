@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [1.9.18] - 2026-03-27
 
 ### Documentation
@@ -14,8 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Unused Search Shim Removal**: Deleted `src/lib/match-sorter-shim.js`, an unreferenced historical compatibility shim for lightweight array search ranking. `src/lib/CLAUDE.md` now reflects the live lib surface only.
 - **Legacy Registry Demo Removal**: Deleted the unused Registry demo chain (`src/pages/registry/registry-data.js`, `RegistryHeader/Overview/Blocks/Components/Section.jsx`, and `sections/components/ComponentCell/Grid/Data.js`). The live app now keeps only the Home runtime path; `SearchDialog.jsx` stays as a tested compatibility placeholder.
 - **Fractal Protocol Sync**: Updated `CLAUDE.md` across `src/lib`, `src/pages/registry`, and its subdirectories to reflect the removal of stale registry demo components and architectural cleanup.
-
-## [Unreleased]
 
 ## [1.9.17] - 2026-03-26
 
