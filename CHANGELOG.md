@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.20] - 2026-03-28
+
+### UI & UX
+- **Shuffle Icon Refinement**: Transitioned the "Random" preset icon weight from `light` to `duotone` in the color configuration card. This enhancement provides better visual depth and consistency with the premium aesthetic of the workspace.
+
 ## [1.9.19] - 2026-03-28
 
 ### UI & UX

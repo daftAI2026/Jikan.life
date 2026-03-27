@@ -11,7 +11,7 @@ import { CardField, CardFieldsStack } from "./CardField"
 
 function RandomPresetIcon() {
     return (
-        <Shuffle aria-hidden="true" color="var(--color-black)" size={20} weight="light" />
+        <Shuffle aria-hidden="true" color="var(--color-black)" size={20} weight="duotone" />
     )
 }
 
