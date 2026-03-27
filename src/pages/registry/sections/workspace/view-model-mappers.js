@@ -1,14 +1,20 @@
 /**
- * [INPUT]: 依赖 countries、i18n meta、palettes 与设备可见性策略
+ * [INPUT]: 依赖 countries、i18n meta、palettes/random candidate 与设备可见性策略
  * [OUTPUT]: 对外提供 mapPalettePresets、mapCountryOptions、mapLanguageOptions、mapVisibleDevices
- * [POS]: workspace 视图模型映射层，封装 UI option/preset 组装细节
+ * [POS]: workspace 视图模型映射层，封装 UI option/preset 组装细节，并把随机 preset 候选色投影到按钮视图模型
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
-function mapPalettePresets(presets, normalizeHexColor) {
+function mapPalettePresets(presets, normalizeHexColor, randomPaletteCandidate) {
     return presets.map((preset) => ({
         ...preset,
-        bg: normalizeHexColor(preset.bg, "#000000"),
-        accent: normalizeHexColor(preset.accent, "#FFFFFF"),
+        bg: normalizeHexColor(
+            preset.kind === "random" ? randomPaletteCandidate?.bg : preset.bg,
+            "#000000"
+        ),
+        accent: normalizeHexColor(
+            preset.kind === "random" ? randomPaletteCandidate?.accent : preset.accent,
+            "#FFFFFF"
+        ),
     }))
 }
 

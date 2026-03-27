@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 react hooks, @/lib/I18nContext, @/lib/date-utils, @/data/{countries,devices,i18n}, shared/palettes, workspace/{config-init,config-actions,goal-date-updater,url-builder,view-model-mappers,device-visibility}
+ * [INPUT]: 依赖 react hooks, @/lib/I18nContext, @/lib/date-utils, @/data/{countries,devices,i18n}, shared/{palettes,random-palette}, workspace/{config-init,config-actions,goal-date-updater,url-builder,view-model-mappers,device-visibility}
  * [OUTPUT]: 对外提供 useHomeWallpaperConfig hook（统一管理 preview|settings 的配置状态与动作）
- * [POS]: registry/sections/workspace 的状态编排核心，管理生命周期/设备/URL 桥接并委托 config-actions 产出动作层（支持未选风格空态）
+ * [POS]: registry/sections/workspace 的状态编排核心，管理生命周期/设备/URL/random-preset 桥接并委托 config-actions 产出动作层（支持未选风格空态）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -11,6 +11,7 @@ import { LANGUAGE_META } from "@/data/i18n"
 import { getLocalTodayISO } from "@/lib/date-utils"
 import { useI18n } from "@/lib/I18nContext"
 import { PALETTE_PRESETS } from "../../../../../shared/palettes"
+import { generateRandomPalette } from "../../../../../shared/random-palette"
 import { PRIMARY_VISIBLE_DEVICE_CATEGORY, isVisibleDeviceCategory } from "./device-visibility"
 import {
     clampLifespan,
@@ -28,6 +29,7 @@ function useHomeWallpaperConfig({ selectedStyle }) {
     const { t } = useI18n()
     const selectedType = resolveSelectedType(selectedStyle)
     const [config, setConfig] = useState(() => getInitialConfig(selectedType))
+    const [randomPaletteCandidate, setRandomPaletteCandidate] = useState(() => generateRandomPalette())
 
     useEffect(() => {
         setConfig((prev) => ({ ...prev, selectedType }))
@@ -74,7 +76,7 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         )
     }, [config.device])
 
-    const palettePresets = useMemo(() => mapPalettePresets(PALETTE_PRESETS, normalizeHexColor), [])
+    const palettePresets = useMemo(() => mapPalettePresets(PALETTE_PRESETS, normalizeHexColor, randomPaletteCandidate), [randomPaletteCandidate])
     const countryOptions = useMemo(() => mapCountryOptions(countries), [])
     const languageOptions = useMemo(() => mapLanguageOptions(LANGUAGE_META, t), [t])
     const todayISO = getLocalTodayISO()
@@ -95,21 +97,34 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         })
     }, [])
 
-    const actions = useMemo(() => createConfigActions({
-        updateConfig,
-        generateUrl,
-        todayISO,
-        deps: {
-            getTimezone,
-            normalizeDeviceName,
-            clampLifespan,
-            goalUpdateFns: {
-                applyGoalRangeUpdate,
-                applyGoalStartUpdate,
-                applyGoalDateUpdate,
+    const actions = useMemo(() => {
+        const actions = createConfigActions({
+            updateConfig,
+            generateUrl,
+            todayISO,
+            deps: {
+                getTimezone,
+                normalizeDeviceName,
+                clampLifespan,
+                goalUpdateFns: {
+                    applyGoalRangeUpdate,
+                    applyGoalStartUpdate,
+                    applyGoalDateUpdate,
+                },
             },
-        },
-    }), [generateUrl, todayISO, updateConfig])
+        })
+
+        function applyRandomPalette() {
+            const nextPalette = generateRandomPalette()
+            setRandomPaletteCandidate(nextPalette)
+            actions.applyPalette(nextPalette.bg, nextPalette.accent)
+        }
+
+        return {
+            ...actions,
+            applyRandomPalette,
+        }
+    }, [generateUrl, todayISO, updateConfig])
 
     return {
         t,
@@ -118,6 +133,7 @@ function useHomeWallpaperConfig({ selectedStyle }) {
         palettePresets,
         countryOptions,
         languageOptions,
+        randomPaletteCandidate,
         url: generateUrl(),
         actions,
     }

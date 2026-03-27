@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.19] - 2026-03-28
+
+### UI & UX
+- **Random Palette Preset**: Introduced a "Random" preset in the color configuration card, identified by a Shuffle icon. This feature allows users to instantly generate and apply a random background and accent color pair that satisfies WCAG 4.5:1 contrast accessibility standards.
+- **Randomized UI Onboarding**: The workspace now generates a candidate random palette during the initial hydration, allowing the Random preset to serve as a high-intent discovery tool for color schemes.
+
+### Architecture
+- **Shared Random Palette Engine**: Extracted the random palette generation logic into `shared/random-palette.js`, leveraging the core WCAG contrast math to ensure generated presets remain legible.
+- **Preset Meta-Programming**: Refactored the internal palette mapping to support `kind="random"` metadata, enabling the UI to distinguish between static color pairs and dynamic generation logic while maintaining a clean view-model contract.
+
+### Documentation & Tests
+- **Random Preset Behavioral Guards**: Introduced `random-preset.behavior.test.js` to rigidly assert the random palette candidacy state, accessibility label localizations (EN/CN/TW/JA), and the Shuffle icon's presence in the color card.
+- **Fractal Protocol Sync**: Synchronized `CLAUDE.md` documents across `shared/`, `sections/workspace/`, and `tests/` to formally record the new random preset domain and its architectural bridge.
+
 ## [1.9.18] - 2026-03-27
 
 ### Documentation
