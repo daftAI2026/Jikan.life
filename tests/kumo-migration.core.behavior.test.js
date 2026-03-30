@@ -543,6 +543,13 @@ test("i18n includes device tooltip key in all languages", () => {
   assert.equal(deviceTooltipCount, 4)
 })
 
+test("i18n includes accent tooltip key in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const accentTooltipCount = (source.match(/'config\.accentTooltip':/g) || []).length
+
+  assert.equal(accentTooltipCount, 4)
+})
+
 test("i18n includes iOS shortcut clipboard keys in all languages", () => {
   const source = readSource("src/data/i18n.js")
   const action1Count = (source.match(/'setup\.ios\.step3\.action1':/g) || []).length

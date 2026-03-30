@@ -299,8 +299,8 @@ test("Workspace field shells avoid space-y layouts that shift popover triggers w
     /min-w-0 space-y-1\.5/,
     "ColorPicker wrappers should not use space-y because Popover injects hidden siblings around triggers"
   )
-  assert.match(colorsCard, /min-w-0/)
-  assert.match(colorsCard, /mb-1\.5/)
+  assert.match(colorsCard, /min-w-0 w-full/)
+  assert.match(cardField, /mb-1\.5/)
 })
 
 test("No shadcn Select subcomponents remain in src", () => {

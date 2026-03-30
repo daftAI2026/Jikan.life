@@ -53,7 +53,7 @@ export const i18nData = {
 
     // Config Groups
     'config.location': 'Region',
-    'config.locationTooltip': 'Use your region\'s timezone to keep wallpaper progress aligned with your local date.',
+    'config.locationTooltip': 'Sync wallpaper progress with your current time zone',
     'config.wallpaperLang': 'Wallpaper Language',
     'config.life': 'Life',
     'config.goal': 'Goal',
@@ -66,10 +66,11 @@ export const i18nData = {
     'config.colors': 'Colors',
     'config.background': 'Background',
     'config.accent': 'Accent',
+    'config.accentTooltip': 'Set lock screen time to this color for the best look',
     'config.colorPresets': 'Presets',
     'config.randomPreset': 'Random preset',
     'config.device': 'Device',
-    'config.deviceTooltip': 'iPhone is currently supported. Android support is coming in a future release.',
+    'config.deviceTooltip': 'iPhone only. Android support is planned.',
     'config.deviceResolution': 'Resolution',
 
     // Wallpaper Text (壁纸内部文字)
@@ -202,7 +203,7 @@ export const i18nData = {
 
     // 配置组
     'config.location': '地区',
-    'config.locationTooltip': '根据你所在地区的时区，确保壁纸进度与本地日期同步。',
+    'config.locationTooltip': '根据你所在时区，同步壁纸进度与当前日期',
     'config.wallpaperLang': '壁纸语言',
     'config.life': '生命',
     'config.goal': '目标',
@@ -215,10 +216,11 @@ export const i18nData = {
     'config.colors': '颜色',
     'config.background': '背景',
     'config.accent': '强调色',
+    'config.accentTooltip': '建议将锁屏时间设为此色，效果更佳',
     'config.colorPresets': '预设',
     'config.randomPreset': '随机预设',
     'config.device': '设备',
-    'config.deviceTooltip': '目前仅支持 iPhone，Android 将在后续版本开放。',
+    'config.deviceTooltip': '目前仅支持 iPhone，Android 支持规划中',
     'config.deviceResolution': '分辨率',
 
     // 壁纸内部文字
@@ -351,7 +353,7 @@ export const i18nData = {
 
     // 配置組
     'config.location': '地區',
-    'config.locationTooltip': '根據你所在地區的時區，確保桌布進度與本地日期同步。',
+    'config.locationTooltip': '根據你所在時區，同步桌布進度與當前日期',
     'config.wallpaperLang': '桌布語言',
     'config.life': '生命',
     'config.goal': '目標',
@@ -364,10 +366,11 @@ export const i18nData = {
     'config.colors': '顏色',
     'config.background': '背景',
     'config.accent': '強調色',
+    'config.accentTooltip': '建議將鎖定畫面時間設為此色，效果更佳',
     'config.colorPresets': '預設',
     'config.randomPreset': '隨機預設',
     'config.device': '裝置',
-    'config.deviceTooltip': '目前僅支援 iPhone，Android 將在後續版本開放。',
+    'config.deviceTooltip': '目前僅支援 iPhone，Android 支援規劃中',
     'config.deviceResolution': '解析度',
 
     // 桌布內部文字
@@ -500,7 +503,7 @@ export const i18nData = {
 
     // 設定グループ
     'config.location': '地域',
-    'config.locationTooltip': 'お住まいの地域のタイムゾーンを使って、壁紙の進捗を現地の日付に同期します。',
+    'config.locationTooltip': '現在のタイムゾーンに基づき、壁紙を現地の日付に同期',
     'config.wallpaperLang': '壁紙言語',
     'config.life': '人生',
     'config.goal': '目標',
@@ -513,10 +516,11 @@ export const i18nData = {
     'config.colors': '色',
     'config.background': '背景',
     'config.accent': 'アクセント',
+    'config.accentTooltip': 'ロック画面の時刻をこの色に設定して、最高の視認性を',
     'config.colorPresets': 'プリセット',
     'config.randomPreset': 'ランダムプリセット',
     'config.device': 'デバイス',
-    'config.deviceTooltip': '現在は iPhone のみ対応しています。Android は今後のバージョンで対応予定です。',
+    'config.deviceTooltip': '現在は iPhone のみ対応。Android 版は開発検討中です。',
     'config.deviceResolution': '解像度',
 
     // 壁紙内部文字

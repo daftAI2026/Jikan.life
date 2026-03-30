@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.9.21] - 2026-03-30
+
+### UI & UX
+- **Accent Field Tooltip**: Added a field-level info tooltip beside the Accent label in the Colors card, clarifying that matching the lock screen time color yields the best visual result.
+- **Tooltip Copy Refinement**: Rewrote the Region, Device, and Accent tooltip copy across EN/CN/TW/JA to use shorter, more modern caption-style guidance.
+
+### Documentation & Tests
+- **Tooltip Behavioral Guards**: Expanded workspace and i18n behavioral tests to lock the new Accent field tooltip wiring and multilingual copy keys.
+- **Fractal Protocol Sync**: Updated the relevant `CLAUDE.md` mirrors so the tooltip boundary and test coverage stay aligned with the live codebase.
+
 ## [1.9.20] - 2026-03-28
 
 ### UI & UX

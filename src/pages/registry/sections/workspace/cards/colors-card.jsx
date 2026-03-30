@@ -1,7 +1,7 @@
 /**
- * [INPUT]: 依赖 Kumo Button、ColorPicker、@phosphor-icons/react(Shuffle)、palettePresets 与颜色 actions/config/effectiveLayoutTier 链路
+ * [INPUT]: 依赖 Kumo Button、ColorPicker、CardField、@phosphor-icons/react(Shuffle)、palettePresets 与颜色 actions/config/effectiveLayoutTier/i18n 链路
  * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡）
- * [POS]: workspace/cards 的颜色配置卡，承接 background/accent 与 presets 应用；preset-8 额外收口为黑色 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
+ * [POS]: workspace/cards 的颜色配置卡，承接 background/accent、Accent 字段 tooltip 与 presets 应用；preset-8 额外收口为黑色 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Shuffle } from "@phosphor-icons/react"
@@ -53,24 +53,22 @@ function renderPresetButtons({ actions, palettePresets, className, t }) {
 function renderColorPickers({ actions, className, config, t }) {
     return (
         <div className={className}>
-            <div className="min-w-0">
-                <p className="mb-1.5 text-xs text-kumo-subtle">{t("config.background")}</p>
+            <CardField label={t("config.background")} className="min-w-0 w-full">
                 <ColorPicker
                     className="w-full"
                     value={config.bgColor}
                     showValue={false}
                     onChange={(value) => actions.setBackgroundColor(value)}
                 />
-            </div>
-            <div className="min-w-0">
-                <p className="mb-1.5 text-xs text-kumo-subtle">{t("config.accent")}</p>
+            </CardField>
+            <CardField label={t("config.accent")} tooltip={t("config.accentTooltip")} className="min-w-0 w-full">
                 <ColorPicker
                     className="w-full"
                     value={config.accentColor}
                     showValue={false}
                     onChange={(value) => actions.setAccentColor(value)}
                 />
-            </div>
+            </CardField>
         </div>
     )
 }

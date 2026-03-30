@@ -33,6 +33,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-03-28: 更新 `kumo-migration.ui.behavior.test.js` 与 `kumo-migration.core.behavior.test.js`，新增 Accent 字段级 tooltip 护栏：要求 `CardField` 支持通用字段 tooltip、`colors-card.jsx` 将 `config.accentTooltip` 接到 Accent 标签右侧 info 图标，并锁定 `i18n.js` 四语词条齐全。
 2026-03-27: 新增 `random-preset.behavior.test.js`，锁定 `shared/palettes.js` 的 `preset-8 kind="random"` 元数据、`useHomeWallpaperConfig` 的随机候选色状态与 `applyRandomPalette()` 接线、`colors-card.jsx` 的黑色 `Shuffle` 入口，以及 `config.randomPreset` 四语无障碍文案。
 2026-03-26: 新增 `seo-homepage.behavior.test.js`，锁定首页 `index.html` 的 `canonical`、`WebSite/WebApplication` 两段 JSON-LD、`#root` 内最小离屏 SEO 语义、字体 preload + noscript fallback、`public/sitemap.xml` 单 URL 策略，以及设备支持/语言能力与真相源一致；`kumo-migration.ui.registry-shell.behavior.test.js` 同步新增 `HomeSidebar` 不再输出 `h1` 与 `HomePage` 运行时离屏 H1 的语义护栏。
 2026-03-26: 新增 `og-image.behavior.test.js`，锁定 OG 分享卡的动态 `/og-image.png?yes=1` 入口、`1200x630` 分享尺寸、参考图式左上 wordmark / 右上 favicon / 25x5 点阵构图，以及白底黑字的极简视觉语义。
