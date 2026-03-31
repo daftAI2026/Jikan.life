@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.9.22] - 2026-04-01
+
+### Infrastructure
+- **Dependency Upgrades**: Synchronized packages to their latest versions, including `wrangler` to `4.79.0`.
+
+
 ## [1.9.21] - 2026-03-30
 
 ### UI & UX
