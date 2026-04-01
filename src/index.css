@@ -103,6 +103,14 @@ html[data-registry-page="true"][data-registry-blocking="true"] #main-content {
   }
 }
 
+/* Fix: Kumo Select popup touch-open scrolling.
+   Base UI only injects overflowY:auto when alignItemWithTrigger is active (mouse),
+   but skips it on touch. Kumo's popup has overflow-hidden, blocking scroll. */
+[role="listbox"][data-open] {
+  overflow-y: auto;
+  max-height: var(--available-height, 80vh);
+}
+
 /* Registry language dropdown: align popup's left edge with trigger */
 .registry-language-select-open [data-side][data-align] > .p-1\.5 {
   padding-left: 0;

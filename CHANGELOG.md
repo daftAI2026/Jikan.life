@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
-## [1.9.22] - 2026-04-01
+## [1.9.23] - 2026-04-01
+
+### Fixes
+- **Select Scrolling**: Resolved a UI bug in Kumo `Select` components where popups became unscrollable on touch devices due to missing `overflow-y: auto`. The popup now correctly delegates scroll responsibilities and respects maximum viewport height.
+
 
 ### Infrastructure
 - **Dependency Upgrades**: Synchronized packages to their latest versions, including `wrangler` to `4.79.0`.
