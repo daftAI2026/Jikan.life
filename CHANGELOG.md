@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.9.24] - 2026-04-02
+
+### Security & Privacy
+- **Source Leak Prevention**: Implemented a Worker-side HTML streaming filter that programmatically strips non-standard pre-processing comments (e.g., local build paths) from the beginning of the `index.html` payload. This ensures that internal development environment metadata is never exposed to the public web.
+- **Sensitive Path Guard**: Hardened the edge router to strictly block public access to internal architectural documentation (`/CLAUDE.md`) and diagnostic endpoints (`/api/component-registry`). These routes now correctly return a `404 Not Found` response with appropriate CORS headers.
+
+### Infrastructure
+- **Routing Reliability**: Expanded the enterprise-grade Edge Routing test suite (`worker-routing.behavior.test.js`) to rigidly assert the new security boundaries and asset filtering logic, preventing regressions in future deployments.
+
+
 ## [1.9.23] - 2026-04-01
 
 ### Fixes

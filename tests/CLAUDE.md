@@ -18,7 +18,7 @@ goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
 helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
-worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/` `/app` `/app/` 先走 Worker，并在边缘层 308 重定向废弃入口到首页。
+worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/` `/app` `/app/` 先走 Worker、内部 `CLAUDE.md` / `component-registry` 不得公网直出，并约束首页 HTML 只剥离 `<!doctype>` 之前的前导构建注释。
 og-image.behavior.test.js: OG 分享卡护栏，锁定 `/og-image.png` 的动态渲染入口、`?yes=1` 语义、参考图构图与白底 25x5 点阵布局。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
 accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
@@ -40,6 +40,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 2026-03-21: 修正 `kumo-migration.ui.behavior.test.js` 的 YearPreviewSvg 源码断言，完成态 dot 的 `fillOpacity` 现在只作用于 `!today && completed`，与 `src/pages/registry/sections/workspace/YearPreviewSvg.jsx` 的现实现一致，避免把 today 高亮误判为回退。
 2026-03-21: 更新 `kumo-migration.ui.behavior.test.js` / `kumo-migration.core.behavior.test.js`：前端 live preview 从 Canvas 一次性迁移到 inline SVG，新增 `YearPreviewSvg.jsx` / `GoalPreviewSvg.jsx` 源码护栏与 365 dots、dashoffset、字体链路断言，`src/lib/renderer.js` 同步退场。
 2026-03-26: 更新 `worker-routing.behavior.test.js`，锁定 `wrangler.toml` 必须将 `/` `/app` `/app/` 放入 `run_worker_first`，确保首页 HTML 先经 Worker 再回源静态资源，从而让 `og:image` 能按当前 origin 动态改写；同时保留废弃入口 `/app` `/app/` 的边缘层 `308 -> /` 约束。
+2026-04-03: 更新 `worker-routing.behavior.test.js`，新增内部资源边界护栏：要求 `worker/index.js` 在 `env.ASSETS.fetch` 之前拦截 `*/CLAUDE.md` 与 `/api/component-registry`，并锁定首页 HTML 注释清理只能剥离 `<!doctype>` 之前的前导构建注释，禁止回退为全局删除所有 `<!-- -->`。
 2026-03-21: 更新 `home-sidebar-cards.unit.test.js` 与 `kumo-migration.ui.registry-shell.behavior.test.js`，新增 Year/Goal 卡统计文案与布局护栏：英文 Year 收口为两列单行 `Day 80` / `22% Complete`，英文 Goal 收口为两列单行 `Target` / `Daily tracking`；两者都通过“不可见双行占位 + 绝对定位居中层”保持原双行 stat 的两横线间距与垂直居中，并强制两列模式移除中间竖线、左列左对齐、右列整体右对齐；非英文继续保持默认双行语义。
 2026-03-16: 新增 `home-sidebar-cards.unit.test.js`，锁定移动端 style sidebar 的隐藏卡过滤与 active style fallback；同步更新 `kumo-migration.ui.registry-shell.behavior.test.js`，要求 `HomeSidebar` 使用底部 segmented tabs 单卡布局并通过纯 helper 收口可见卡语义。
 2026-03-12: 更新 `kumo-migration.core.behavior.test.js` / `wallpaper-visual-snapshots.behavior.test.js`：Goal 圆环护栏从“剩余比例递减环”翻为“完成比例顺时针增长环”，并新增 `goal-ring-geometry.js` 正式接线断言，防止再次出现“写了真相源但未消费”的孤儿模块。

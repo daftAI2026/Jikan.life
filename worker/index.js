@@ -158,7 +158,14 @@ export default {
         }
 
         // ====================================================================
-        // 2. 静态资源转发 + 首页国家信息注入
+        // 2. 内部资源拦截 — 禁止公网直出开发文档与辅助数据
+        // ====================================================================
+        if (url.pathname.endsWith('/CLAUDE.md') || url.pathname === '/api/component-registry') {
+            return new Response('Not Found', { status: 404, headers: corsHeaders });
+        }
+
+        // ====================================================================
+        // 3. 静态资源转发 + 首页国家信息注入
         // ====================================================================
 
         // 我们利用 env.ASSETS.fetch 获取原始资源
@@ -171,6 +178,8 @@ export default {
             const origin = url.origin;
             let html = await response.text();
 
+            // 剥离 <html> 之前的前导构建注释（含本机绝对路径），避免内部语义泄露
+            html = html.replace(/^[\s\S]*?(<!doctype)/i, '$1');
             // 注入 data-country 到 html 标签
             html = html.replace(/<html[^>]*>/, `<html lang="en" data-country="${country}">`);
             html = html.replaceAll(
