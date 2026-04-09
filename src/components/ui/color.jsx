@@ -42,7 +42,7 @@ const COLOR_THUMB_CENTER_DOT_CLASS =
   "after:pointer-events-none after:absolute after:top-1/2 after:left-1/2 after:size-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-[50%] after:bg-[inherit] after:content-['']"
 
 const COLOR_THUMB_FOCUS_CLASS =
-  "data-[focus-visible]:size-6 data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-ring"
+  "data-[focus-visible]:size-6 data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-hairline"
 
 function ColorWheel({
   className,
@@ -130,7 +130,7 @@ function ColorSwatchPickerItem({
           /* Disabled */
           "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
           /* Focus Visible */
-          "data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-ring",
+          "data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-kumo-hairline",
           className
         ))}
       {...props} />

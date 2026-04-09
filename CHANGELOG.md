@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.9.25] - 2026-04-10
+
+### UI & UX
+- **Refined Selection Anatomy**: Refactored the `device-card` to utilize the unified `Select` bridge for all sub-components (`Select.Group`, `Select.GroupLabel`), ensuring consistent styling and accessibility behavior across model categories.
+- **Focus Ring Evolution**: Transitioned global and component-specific focus rings from `kumo-ring` to the more subtle `kumo-hairline` token, providing a cleaner, more premium interactive boundary across the workspace.
+- **Legacy Cleanup**: Removed the experimental mobile-touch scroll fix for Select popups, as recent Base UI and Kumo bridge updates now natively handle viewport-aware overflow.
+
+### Infrastructure
+- **Dependency Upgrades**: Upgraded the core engine and tools, including `vite` to `8.0.8`, `wrangler` to `4.81.1`, and `@cloudflare/kumo` to `1.18.0`. Also synchronized Canary versions for `react`, `framer-motion`, and `zod` to leverage the latest SSR and performance optimizations.
+
+
 ## [1.9.24] - 2026-04-02
 
 ### Security & Privacy

@@ -28,7 +28,7 @@ import {
 } from "react-aria-components"
 
 const COLOR_CHANNEL_INPUT_CLASS =
-    "flex h-9 w-full rounded-lg bg-kumo-control px-2 py-1 text-center text-xs font-mono text-kumo-default ring ring-kumo-line placeholder:text-kumo-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kumo-ring disabled:cursor-not-allowed disabled:opacity-50"
+    "flex h-9 w-full rounded-lg bg-kumo-control px-2 py-1 text-center text-xs font-mono text-kumo-default ring ring-kumo-line placeholder:text-kumo-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kumo-hairline disabled:cursor-not-allowed disabled:opacity-50"
 
 const COLOR_SPACE_CHANNELS = {
     rgb: ["red", "green", "blue"],

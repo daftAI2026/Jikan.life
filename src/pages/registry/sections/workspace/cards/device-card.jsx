@@ -5,7 +5,6 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Select } from "@/components/ui/kumo"
-import { Select as SelectBase } from "@base-ui/react/select"
 import { devices } from "@/data/devices"
 import { VISIBLE_DEVICE_CATEGORIES } from "../device-visibility"
 
@@ -32,18 +31,18 @@ const deviceCard = {
                 renderValue={(value) => value || config.device}
             >
                 {visibleDeviceGroups.map((group) => (
-                    <SelectBase.Group key={group.category}>
+                    <Select.Group key={group.category}>
                         {shouldShowGroupLabel && (
-                            <SelectBase.GroupLabel className="px-2 py-1.5 text-base font-medium text-kumo-subtle select-none">
+                            <Select.GroupLabel>
                                 {group.category}
-                            </SelectBase.GroupLabel>
+                            </Select.GroupLabel>
                         )}
                         {group.items.map((device) => (
                             <Select.Option key={device.name} value={device.name}>
                                 {device.name}
                             </Select.Option>
                         ))}
-                    </SelectBase.Group>
+                    </Select.Group>
                 ))}
             </Select>
         </div>
