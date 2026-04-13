@@ -56,7 +56,7 @@ Browser (React)                     Cloudflare Worker
 | **Backend** | Cloudflare Workers · Wrangler 4.82.2 · Resvg WASM |
 | **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
-| **CI/CD** | GitHub Actions · npm ci · Cloudflare Static Assets |
+| **CI/CD** | GitHub Actions · Cloudflare Static Assets |
 
 ## 🚀 Getting Started
 
@@ -102,19 +102,6 @@ worker/               Cloudflare Worker backend
 tests/                Node.js behavioral regression tests
 scripts/              Dev validation scripts
 ```
-
-## ✅ CI Contract
-
-GitHub Actions runs the same gate locally expected before release:
-
-```bash
-npm ci
-npm run check:version-metadata
-npm run test
-npm run build
-```
-
-React and React DOM stay pinned to the stable `19.2.5` pair. Canary React builds do not satisfy Base UI's stable peer range and will fail `npm ci` on CI.
 
 ## 🌍 Internationalization
 

@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dependency Refresh**: Upgraded `@base-ui/react` to `1.4.0`, `react-router-dom` to `7.14.1`, `playwright` to `1.60.0-alpha-2026-04-13`, and `wrangler` to `4.82.2`, including the matching lockfile graph for `workerd`, `miniflare`, and `playwright-core`.
 
 ### Documentation
-- **README Runtime Contract**: Updated the README with exact runtime/tool versions, `npm ci`-first setup, local validation commands, and the CI dependency contract that prevents React canary peer conflicts.
+- **README Runtime Contract**: Updated the README with current runtime/tool versions, `npm ci`-first setup, and local validation commands while keeping CI root-cause details in maintenance docs.
 
 
 ## [1.9.25] - 2026-04-10
