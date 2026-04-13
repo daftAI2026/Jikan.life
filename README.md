@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  Current brand mark uses the circular favicon in <code>public/favicon.svg</code>.<br/>
-  Legacy square mark is preserved in <code>public/favicon-square-legacy.svg</code>.
+  Circular brand mark: <code>public/favicon.svg</code><br/>
+  Legacy square mark: <code>public/favicon-square-legacy.svg</code>
 </p>
 
 <p align="center">
@@ -51,24 +51,32 @@ Browser (React)                     Cloudflare Worker
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 19 · Vite 8 · Tailwind CSS v4 |
-| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) (`@cloudflare/kumo`) · Base UI |
-| **Backend** | Cloudflare Workers · Resvg WASM (SVG → PNG) |
+| **Frontend** | React 19.2.5 · Vite 8.0.8 · Tailwind CSS 4.2.2 |
+| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 1.18.0 · Base UI 1.4.0 |
+| **Backend** | Cloudflare Workers · Wrangler 4.82.2 · Resvg WASM |
 | **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
-| **CI/CD** | GitHub Actions · Cloudflare Static Assets |
+| **CI/CD** | GitHub Actions · npm ci · Cloudflare Static Assets |
 
 ## 🚀 Getting Started
 
 ```bash
 # Install
-npm install
+npm ci
 
 # Frontend dev server
 npm run dev
 
 # Worker dev server (API / image generation)
 npm run worker:dev
+```
+
+### Validate
+
+```bash
+npm run check:version-metadata
+npm run test
+npm run build
 ```
 
 ### Deploy
@@ -81,6 +89,8 @@ npm run worker:deploy
 ## 📂 Project Structure
 
 ```
+package.json          Dependency truth source
+package-lock.json     Reproducible npm install graph
 src/                  React frontend
   ├── components/ui/  Kumo UI adapter layer
   ├── data/           i18n, countries, devices
@@ -92,6 +102,19 @@ worker/               Cloudflare Worker backend
 tests/                Node.js behavioral regression tests
 scripts/              Dev validation scripts
 ```
+
+## ✅ CI Contract
+
+GitHub Actions runs the same gate locally expected before release:
+
+```bash
+npm ci
+npm run check:version-metadata
+npm run test
+npm run build
+```
+
+React and React DOM stay pinned to the stable `19.2.5` pair. Canary React builds do not satisfy Base UI's stable peer range and will fail `npm ci` on CI.
 
 ## 🌍 Internationalization
 

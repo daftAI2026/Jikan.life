@@ -119,7 +119,7 @@ test("Registry settings device card uses grouped Select without resolution hint"
   assert.match(source, /className="w-\[200px\] max-w-full"/)
   assertNamedImports(source, "../device-visibility", ["VISIBLE_DEVICE_CATEGORIES"])
   assert.match(source, /VISIBLE_DEVICE_CATEGORIES\.map/)
-  assert.match(source, /SelectBase\.Group/)
+  assert.match(source, /Select\.Group/)
   assert.match(source, /const shouldShowGroupLabel = VISIBLE_DEVICE_CATEGORIES\.length > 1/)
   assert.match(source, /shouldShowGroupLabel && \(/)
   assert.match(source, /label=\{t\("config\.device"\)\}/)

@@ -128,7 +128,7 @@ test("index.css imports Kumo styles and removes dark variant", () => {
 test("index.css base layer uses Kumo native tokens instead of legacy semantic classes", () => {
   const source = readSource("src/index.css")
 
-  assert.match(source, /@apply border-kumo-line outline-kumo-ring\/50;/)
+  assert.match(source, /@apply border-kumo-line outline-kumo-hairline\/50;/)
   assert.match(source, /@apply bg-kumo-base text-kumo-default;/)
   assert.doesNotMatch(source, /@apply border-border outline-ring\/50;/)
   assert.doesNotMatch(source, /@apply bg-background text-foreground;/)
@@ -233,7 +233,7 @@ test("ColorPicker uses KUMO visual tokens without changing state bridge behavior
   assert.match(source, /className="flex min-w-0 items-center gap-2"/)
   assert.match(source, /bg-kumo-control/)
   assert.match(source, /ring-kumo-line/)
-  assert.match(source, /focus-visible:ring-kumo-ring/)
+  assert.match(source, /focus-visible:ring-kumo-hairline/)
   assert.match(source, /const COLOR_SPACE_CHANNELS = \{/)
   assert.match(source, /rgb:\s*\["red", "green", "blue"\]/)
   assert.match(source, /hsl:\s*\["hue", "saturation", "lightness"\]/)
@@ -277,7 +277,7 @@ test("Color primitives avoid overflow clipping so thumbs stay visible", () => {
   assert.match(source, /z-20 box-border size-5 rounded-\[50%\] overflow-hidden shadow-md/)
   assert.match(source, /before:bg-\[var\(--color-white\)\]/)
   assert.match(source, /after:bg-\[inherit\]/)
-  assert.match(source, /data-\[focus-visible\]:ring-kumo-ring/)
+  assert.match(source, /data-\[focus-visible\]:ring-kumo-hairline/)
   assert.doesNotMatch(source, /size-\[192px\] shrink-0 overflow-hidden/)
   assert.doesNotMatch(source, /h-7 w-\[192px\] overflow-hidden/)
 })
