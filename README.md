@@ -46,9 +46,9 @@ Browser (React)                     Cloudflare Worker
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 19.2.5 · Vite 8.0.8 · Tailwind CSS 4.2.2 |
-| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 1.18.0 · Base UI 1.4.0 |
-| **Backend** | Cloudflare Workers · Wrangler 4.82.2 · Resvg WASM |
+| **Frontend** | React 19.2.5 · Vite 8.0.10 · Tailwind CSS 4.2.4 |
+| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 1.19.0 · Base UI 1.4.1 |
+| **Backend** | Cloudflare Workers · Wrangler 4.84.1 · Resvg WASM |
 | **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
 | **CI/CD** | GitHub Actions · Cloudflare Static Assets |
@@ -73,6 +73,13 @@ npm run check:version-metadata
 npm run test
 npm run build
 ```
+
+Current maintenance baseline:
+
+- `@cloudflare/kumo` `1.19.0`
+- `@base-ui/react` `1.4.1`
+- `react-router-dom` `7.14.2`
+- `playwright` `1.60.0-alpha-2026-04-23`
 
 ### Deploy
 

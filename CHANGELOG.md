@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Infrastructure
 - **CI Install Recovery**: Fixed the GitHub Actions install failure by moving React and React DOM back to the stable `19.2.5` pair, satisfying Base UI's stable peer range and restoring `npm ci` on the hosted runner.
-- **Dependency Refresh**: Upgraded `@base-ui/react` to `1.4.0`, `react-router-dom` to `7.14.1`, `playwright` to `1.60.0-alpha-2026-04-13`, and `wrangler` to `4.82.2`, including the matching lockfile graph for `workerd`, `miniflare`, and `playwright-core`.
+- **Dependency Refresh**: Upgraded `@base-ui/react` to `1.4.1`, `@cloudflare/kumo` to `1.19.0`, `@tailwindcss/vite` and `tailwindcss` to `4.2.4`, `react-router-dom` to `7.14.2`, `playwright` to `1.60.0-alpha-2026-04-23`, `vite` to `8.0.10`, and `wrangler` to `4.84.1`, including the matching lockfile graph refresh for `playwright-core`, `workerd`, `miniflare`, and Rolldown.
 
 ### Documentation
-- **README Runtime Contract**: Updated the README with current runtime/tool versions, `npm ci`-first setup, and local validation commands while keeping CI root-cause details in maintenance docs.
+- **Runtime Truth Sync**: Updated `README.md` and root `CLAUDE.md` so the documented frontend/UI/backend version matrix matches the live dependency graph and maintenance baseline.
 
 
 ## [1.9.25] - 2026-04-10

@@ -1,5 +1,5 @@
 # JIKAN - 动态人生进度墙纸生成器
-React 19.2.5 + Vite 8.0.8 + Tailwind CSS 4.2.2 + Cloudflare Workers
+React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
@@ -31,7 +31,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 </config>
 
 ## 技术栈
-- **Frontend**: React 19.2.5 + Vite 8.0.8 + Tailwind CSS 4.2.2 + Kumo UI 1.18.0 (Base UI 1.4.0)
+- **Frontend**: React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 1.19.0 (Base UI 1.4.1)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
