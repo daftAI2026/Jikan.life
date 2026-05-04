@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.26] - 2026-05-05
+
+### UI & UX
+- **Kumo 2 Shell Alignment**: Migrated the Setup guide step cards from deprecated Kumo `Surface` to `LayerCard`, preserving the existing class-token styling and right-slide setup flow while aligning with Kumo 2's supported component surface.
+- **DatePicker Bridge Preservation**: Kept the local vendored Kumo `DatePicker` bridge in place because upstream `@cloudflare/kumo@2.0.2` still does not expose the required `rangeSelectionBehavior` and `onRangeComplete` hooks used by the Goal range workflow.
+
 ### Infrastructure
 - **CI Install Recovery**: Fixed the GitHub Actions install failure by moving React and React DOM back to the stable `19.2.5` pair, satisfying Base UI's stable peer range and restoring `npm ci` on the hosted runner.
-- **Dependency Refresh**: Upgraded `@base-ui/react` to `1.4.1`, `@cloudflare/kumo` to `1.19.0`, `@tailwindcss/vite` and `tailwindcss` to `4.2.4`, `react-router-dom` to `7.14.2`, `playwright` to `1.60.0-alpha-2026-04-23`, `vite` to `8.0.10`, and `wrangler` to `4.84.1`, including the matching lockfile graph refresh for `playwright-core`, `workerd`, `miniflare`, and Rolldown.
+- **Dependency Refresh**: Upgraded `@base-ui/react` to `1.4.1`, `@cloudflare/kumo` to `2.0.2`, `@tailwindcss/vite` and `tailwindcss` to `4.2.4`, `react-router-dom` to `7.14.2`, `playwright` to `1.60.0-alpha-2026-05-04`, `vite` to `8.0.10`, `wrangler` to `4.87.0`, and `zod` to `4.4.3`, including the matching lockfile graph refresh for `playwright-core`, `workerd`, `miniflare`, and Rolldown.
 
 ### Documentation
 - **Runtime Truth Sync**: Updated `README.md` and root `CLAUDE.md` so the documented frontend/UI/backend version matrix matches the live dependency graph and maintenance baseline.
-
 
 ## [1.9.25] - 2026-04-10
 

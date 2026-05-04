@@ -431,9 +431,11 @@ test("Setup guide panel uses local right-slide overlay with sidebar-aligned timi
     "Banner",
     "Button as KumoButton",
     "ClipboardText",
-    "Surface",
+    "LayerCard",
     "Text",
   ])
+  assert.doesNotMatch(source, /\bSurface\b/)
+  assert.match(source, /const STEP_CARD_LAYER_CLASSNAME = "space-y-2 rounded-lg border border-kumo-line bg-kumo-control px-3 py-3 ring-0 shadow-none"/)
   assert.match(source, /<header className="relative flex items-start border-b border-kumo-line px-4 py-4">/)
   assert.match(source, /<Text as="h3" variant="heading3" DANGEROUS_className="leading-6">/)
   assert.match(source, /<Text as="h4" variant="body" size="sm" bold>/)

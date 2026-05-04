@@ -19,7 +19,7 @@ HomeSettingsPaneBottomTabsLayout.jsx: md bottom-tabs 私有完整视图组件；
 use-md-bottom-tabs-metrics.js: md bottom-tabs 私有测量 hook；输入 `tabsContainerRef/measureTriggerRefs/measureLabels`，统一首帧同步自然宽测量、`document.fonts.ready` 补测、tablist-only ResizeObserver、1px deadzone 与 live-resize indicator 显隐/禁过渡策略，输出 `distributedTabWidths/indicatorClassName`
 md-bottom-tabs-widths.js: md 底部 Tabs 宽度算法层；输入自然宽与容器宽，输出“余量均分 / 最长项先压到次长项 / 压平后再联动收缩”的目标宽数组，供 `HomeSettingsPane` 单向投影到 trigger 本体。
 SettingsCardShell.jsx: 右侧卡片统一壳组件，复刻 Kumo HomeGrid 单卡结构（可选左上标题 + 可选问号提示 + 右上序号 ➊~➏ + 中央内容）并提供 `data-home-settings-card` 业务选择器；支持 `className` 承接 type 专属跨列布局，并通过 `compactAtDesktop` 控制是否启用 `lg:min-h-0`
-SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；支持 `containerClassName/asideClassName/visibilityClassName` 宿主样式注入以复用到 HomeGrid 的 md 整区覆盖场景；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo Surface 组件与提取常量化 className，并收敛为“仅步骤区滚动”；关闭态通过 `inert + aria-hidden` 严格隔离可访问性与事件焦点。
+SetupGuidePanel.jsx: Goal 第⑥卡后的局部覆盖式设置引导层（右侧滑入），按设备类别自动分流 iOS/Android 步骤并承载关闭交互；支持 `containerClassName/asideClassName/visibilityClassName` 宿主样式注入以复用到 HomeGrid 的 md 整区覆盖场景；iOS 第3步使用 ClipboardText 展示与 URL 卡同源的长链接；步骤卡统一使用 Kumo LayerCard 组件与提取常量化 className，并收敛为“仅步骤区滚动”；关闭态通过 `inert + aria-hidden` 严格隔离可访问性与事件焦点。
 cards/: Setting Panel 业务卡子模块目录，承载 location/wallpaper/goal/life/colors/device/url 卡片实现与聚合入口（详见 cards/CLAUDE.md）
 lock-screen-overlay/: 锁屏 overlay 私有子模块目录，承载来自 jikan Sketch `iPhone locked` live 层级的 overlay；含 Widgets/Status/Stack 的几何与运行时协议（详见 lock-screen-overlay/CLAUDE.md）
 
@@ -103,6 +103,7 @@ workspace/ - Home 双栏工作区子模块 (17 files + cards/ + lock-screen-over
 2026-02-24: SetupGuidePanel 顶部标题从双行（`Setup` + 平台副标题）改为单行平台标题（`iOS Setup` / `Android Setup`），减少视觉跳行并提升标题识别速度。
 2026-02-25: `useHomeWallpaperConfig` 新增 `foregroundOverride` 状态（null=自动, #FFF=亮, #000=暗）+ `setForegroundOverride/resetForeground` 动作 + URL fg 参数序列化。
 2026-02-25: SetupGuidePanel 步骤卡从原生 `<article>` 迁移到 Kumo `<Surface>` 组件，提取重复样式为 `STEP_CARD_SURFACE_CLASSNAME`/`STEP_INDEX_BADGE_CLASSNAME`/`STEP_DESC_TEXT_CLASSNAME` 常量。
+2026-05-05: SetupGuidePanel 步骤卡外壳从 Kumo 2 deprecated `Surface` 迁移到 `LayerCard`，保留原有 class 常量样式语义与滚动职责。
 2026-02-25: Goal 日期状态更新逻辑收敛：`setGoalRange/setGoalStart/setGoalDate` 改为统一委托 `applyGoalDateUpdate`，仅做内部去重重构，保持外部 actions 签名、URL 序列化与 UI/UX 行为不变。
 2026-02-25: Setup flow 状态从 `HomeSettingsPane` 上提到 `HomeGrid`，并在 `md` 新增整区 Guide 宿主（覆盖 HomeGrid 边界，`h-[calc(100dvh-48px)]`）；`HomeSettingsPane` 保留 `sm/lg` 宿主（`md:hidden lg:block`），`SetupGuidePanel` 新增宿主样式注入 props 以复用同一动画与步骤渲染。
 2026-02-26: SetupGuidePanel 收敛滚动职责：外层容器固定 `overflow-hidden overscroll-none`，仅内容区 `overflow-y-auto overscroll-y-contain` 可滚；补充 `role="dialog"`/`aria-modal` 语义，消除外层滚动链串扰。

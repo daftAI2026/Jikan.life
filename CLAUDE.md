@@ -1,5 +1,5 @@
 # JIKAN - 动态人生进度墙纸生成器
-React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Cloudflare Workers
+React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 2.0.2 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
@@ -31,7 +31,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 </config>
 
 ## 技术栈
-- **Frontend**: React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 1.19.0 (Base UI 1.4.1)
+- **Frontend**: React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 2.0.2 (Base UI 1.4.1)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
@@ -60,7 +60,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 - **文档真相源收口**: 根目录不再保留独立 `CONTRIBUTING.md` / `MULTILINGUAL.md`；贡献约束统一看本文件，i18n 真相源统一看 `src/data/i18n.js` 与 `src/lib/I18nContext.jsx`
 - **上游消费策略**: 仅通过 npm 包 `@cloudflare/kumo` + `src/components/ui/` 适配层消费上游能力，禁止页面层直引上游包
 - **跨日一致**: Registry Year 预览以本地午夜为边界自动刷新，避免页面常驻时点阵与百分比停留在前一天
-- **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `Surface`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）
+- **步骤卡同构**: Setup 引导步骤卡外框统一使用 Kumo `LayerCard`，视觉差异只允许通过 class 常量覆盖（禁止回退为分散字符串）
 - **局部变量覆盖优先**: 需要调整单区域颜色语义时，优先通过作用域变量覆盖（如 `--step-list-bullet-color`），禁止直接改全局品牌色 token
 - **Vendor 不可变**: 第三方包源码（`@cloudflare/kumo`）不可直接改写。需要定制样式时，在使用端通过 `className` 覆盖，或在 `src/components/ui/` 编写适配器包裹原生组件
 - **样式覆盖优先级**: Kumo 组件自定义样式通过 `className` 在**使用侧**注入（如 `items-start` 覆盖 `items-center`），绝不回溯到组件声明层。图标对齐等微调用 `mt-*` / `shrink-0` 等 utility 在 icon 元素上完成

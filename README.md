@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://github.com/daftAI2026/Jikan.life/actions"><img src="https://github.com/daftAI2026/Jikan.life/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.9.25-green" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.9.26-green" alt="Version" />
   <img src="https://img.shields.io/badge/i18n-EN%20%7C%20zh--CN%20%7C%20zh--TW%20%7C%20ja-orange" alt="i18n" />
 </p>
 
@@ -47,8 +47,8 @@ Browser (React)                     Cloudflare Worker
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | React 19.2.5 · Vite 8.0.10 · Tailwind CSS 4.2.4 |
-| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 1.19.0 · Base UI 1.4.1 |
-| **Backend** | Cloudflare Workers · Wrangler 4.84.1 · Resvg WASM |
+| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 2.0.2 · Base UI 1.4.1 |
+| **Backend** | Cloudflare Workers · Wrangler 4.87.0 · Resvg WASM |
 | **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
 | **CI/CD** | GitHub Actions · Cloudflare Static Assets |
@@ -76,10 +76,12 @@ npm run build
 
 Current maintenance baseline:
 
-- `@cloudflare/kumo` `1.19.0`
+- `@cloudflare/kumo` `2.0.2`
 - `@base-ui/react` `1.4.1`
 - `react-router-dom` `7.14.2`
-- `playwright` `1.60.0-alpha-2026-04-23`
+- `playwright` `1.60.0-alpha-2026-05-04`
+- `wrangler` `4.87.0`
+- `zod` `4.4.3`
 
 ### Deploy
 
