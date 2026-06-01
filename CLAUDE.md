@@ -1,5 +1,5 @@
 # JIKAN - 动态人生进度墙纸生成器
-React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 2.0.2 + Cloudflare Workers
+React 19.2.6 + Vite 8.0.15 + Tailwind CSS 4.3.0 + Kumo UI 2.4.1 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
@@ -31,7 +31,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 </config>
 
 ## 技术栈
-- **Frontend**: React 19.2.5 + Vite 8.0.10 + Tailwind CSS 4.2.4 + Kumo UI 2.0.2 (Base UI 1.4.1)
+- **Frontend**: React 19.2.6 + Vite 8.0.15 + Tailwind CSS 4.3.0 + Kumo UI 2.4.1 (Base UI 1.5.0)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
@@ -44,7 +44,8 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 
 ## 架构法则
 - **分形同构**: 代码与文档必须保持一致 (GEB Protocol)
-- **CI 依赖收敛**: React / React DOM 固定稳定 `19.2.5`，禁止回退到 canary 破坏 Base UI peer range 与 `npm ci`
+- **CI 依赖收敛**: React / React DOM 固定稳定 `19.2.6`，禁止回退到 canary 破坏 Base UI peer range 与 `npm ci`
+- **依赖轨道收敛**: 默认使用 registry stable 版本；alpha/nightly/canary 只能在有明确验证收益与文档理由时引入，禁止把实验轨道混入常规升级
 - **渲染统一**: 前端浏览器原生 inline SVG 预览与后端 SVG 生成必须共享同一渲染真相源（模块化核心通过 `shared/wallpaper-core.js` facade 暴露）
 - **设计规范**: 一切 UI 必须基于 Kumo UI 组件与 CSS 变量
 - **弹层同构**: ColorPicker 链路统一使用 Kumo Popover + Kumo Select，禁止跨体系混搭导致 z-index 竞争

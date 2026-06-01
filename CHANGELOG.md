@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.27] - 2026-06-01
+
+### Infrastructure
+- **Stable Dependency Rail**: Refreshed the frontend and Worker toolchain to the latest stable-compatible baseline, including React `19.2.6`, React DOM `19.2.6`, Vite `8.0.15`, Tailwind CSS `4.3.0`, Kumo UI `2.4.1`, Base UI `1.5.0`, React Router `7.16.0`, Playwright `1.60.0`, and Wrangler `4.95.0`.
+- **Experimental Package Cleanup**: Replaced alpha/nightly dependency tracks for Resvg WASM, Framer Motion, Playwright, and React Aria Components with registry stable releases to keep `npm ci` deterministic on GitHub Actions.
+
+### Documentation
+- **Version Matrix Sync**: Updated the root maintenance documentation so the documented React/Vite/Tailwind/Kumo stack and dependency policy match the live package graph.
+
 ## [1.9.26] - 2026-05-05
 
 ### UI & UX
