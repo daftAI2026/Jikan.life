@@ -93,6 +93,8 @@ npm run worker:deploy
 ## 📂 Project Structure
 
 ```
+AGENTS.md           AI / Agent guide: repo map, invariants, commands, anti-patterns
+CLAUDE.md           Architecture constitution for the GEB fractal docs system
 package.json          Dependency truth source
 package-lock.json     Reproducible npm install graph
 src/                  React frontend
