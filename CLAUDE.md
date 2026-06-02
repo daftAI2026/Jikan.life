@@ -3,7 +3,6 @@ React 19.2.6 + Vite 8.0.15 + Tailwind CSS 4.3.0 + Kumo UI 2.4.1 + Cloudflare Wor
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
-doc/ - 项目文档与知识库
 public/ - 前端静态资源 (Vite public)
   └── api/ - 静态接口资源 (如 component-registry)
 dist-worker/ - Worker 构建产物 (生成)
@@ -22,12 +21,12 @@ scripts/ - 开发校验脚本
 </directory>
 
 <config>
+AGENTS.md - Agent 行动地图，仿 Kumo Knowledge Base 结构记录查找入口、约定、反模式、命令、流水线、工具链与安全边界
 index.html - SPA 入口模板，同时承载首页最小离屏 SEO 语义、结构化数据、主题引导与统计脚本
 vite.config.js - Vite 构建配置 (含 manualChunks 拆包策略)
 wrangler.toml - Cloudflare Workers 部署与观测配置（含 `/`、`/app`、`/app/` 与 `/og-image.png` 的边缘层优先路由、Workers Logs 开关与采样率）
 package.json - 统一依赖管理
 package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler 兼容组合
-doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abstraction / Documentation Protocol)
 </config>
 
 ## 技术栈
@@ -44,6 +43,7 @@ doc/CODE_REVIEW_STYLE.md - Code Review 风格指南 (Core Philosophy / Anti-Abst
 
 ## 架构法则
 - **分形同构**: 代码与文档必须保持一致 (GEB Protocol)
+- **Agent 行动地图**: 根 `AGENTS.md` 是 Codex/AI Agent 的第一导航入口；当查找入口、命令、工具链、反模式或安全边界变化时，必须同步更新
 - **CI 依赖收敛**: React / React DOM 固定稳定 `19.2.6`，禁止回退到 canary 破坏 Base UI peer range 与 `npm ci`
 - **依赖轨道收敛**: 默认使用 registry stable 版本；alpha/nightly/canary 只能在有明确验证收益与文档理由时引入，禁止把实验轨道混入常规升级
 - **渲染统一**: 前端浏览器原生 inline SVG 预览与后端 SVG 生成必须共享同一渲染真相源（模块化核心通过 `shared/wallpaper-core.js` facade 暴露）

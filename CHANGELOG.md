@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.28] - 2026-06-02
+
+### Documentation
+- **Agent Knowledge Base**: Added a Kumo-inspired `AGENTS.md` root navigation map with project-specific lookup paths, conventions, anti-patterns, commands, build pipeline, toolchain, security boundaries, and notes for future coding agents.
+- **Fractal Map Sync**: Updated the root architecture map to recognize `AGENTS.md` as the agent entry point and removed stale `doc/` references now that `doc/` is an ignored local/process directory.
+
 ## [1.9.27] - 2026-06-01
 
 ### Infrastructure
