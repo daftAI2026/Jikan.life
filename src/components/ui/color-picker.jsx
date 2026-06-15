@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/kumo(Button), @/components/ui/input(Kumo), @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本与即时 hover HEX 提示）
+ * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/kumo(Button), @/components/ui/input(Kumo), @/components/ui/tooltip(Kumo), @phosphor-icons/react
+ * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本与通过 Kumo Tooltip Portal 即时 hover HEX 提示）
  * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏 `36px + 2fr + 2fr` 比例布局
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/kumo"
 import { Input } from "@/components/ui/input"
 import { Popover } from "@/components/ui/popover"
 import { Select } from "@/components/ui/select"
+import { Tooltip, TooltipProvider } from "@/components/ui/tooltip"
 import { useColorPickerStateBridge } from "@/components/ui/use-color-picker-state-bridge"
 import { cn } from "@/lib/utils"
 import { Eyedropper } from "@phosphor-icons/react"
@@ -113,29 +114,26 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                         variant="outline"
                         disabled={disabled}
                         className={cn(
-                            "group/color-picker-trigger relative w-full justify-start rounded-lg px-2 text-left font-normal",
+                            "relative w-full justify-start rounded-lg px-2 text-left font-normal",
                             className
                         )}
                         aria-label={`Color picker, selected ${triggerHexValue}`}
                     >
                         <div className="w-full flex items-center gap-2">
-                            <ColorSwatch
-                                color={internalColor}
-                                className={triggerSwatchClassName}
-                            />
+                            <TooltipProvider>
+                                <Tooltip content={triggerHexValue} delay={0} closeDelay={0} asChild>
+                                    <ColorSwatch
+                                        color={internalColor}
+                                        className={triggerSwatchClassName}
+                                    />
+                                </Tooltip>
+                            </TooltipProvider>
                             {showValue && (
                                 <span className="truncate font-mono text-sm uppercase text-kumo-subtle">
                                     {internalColor.toString('hex')}
                                 </span>
                             )}
                         </div>
-                        <span
-                            role="tooltip"
-                            aria-hidden="true"
-                            className="pointer-events-none absolute left-1/2 top-0 z-50 -translate-x-1/2 -translate-y-[calc(100%+6px)] rounded-md bg-kumo-default px-2 py-1 font-mono text-xs font-medium uppercase text-kumo-inverse opacity-0 shadow-md transition-opacity duration-75 group-hover/color-picker-trigger:opacity-100 group-focus-visible/color-picker-trigger:opacity-100"
-                        >
-                            {triggerHexValue}
-                        </span>
                     </Button>
                 </Popover.Trigger>
                 <Popover.Content className="w-64 p-3" sideOffset={8}>

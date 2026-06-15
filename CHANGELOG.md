@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.30] - 2026-06-16
+
 ### UI & UX
-- **Color Picker Hover Feedback**: Added an immediate HEX tooltip to the Background and Accent color triggers without relying on the browser-native `title` delay.
+- **Color Picker Hover Feedback**: Added an instant HEX tooltip to the Background and Accent color triggers via Kumo Tooltip, using portal rendering to escape ancestor `overflow: hidden` clipping and deliver zero-delay hover feedback.
 - **Color Channel Typography**: Aligned RGB, HSL, and HSB channel inputs on the same numeric typography so percentage and degree values keep the same visual weight as RGB values.
 
 ### Documentation & Tests
-- **ColorPicker Guard Sync**: Updated the UI foundation guard and fractal `CLAUDE.md` maps to lock the new hover feedback, channel typography, and non-`title` tooltip behavior.
+- **ColorPicker Guard Sync**: Updated the UI foundation guard and fractal `CLAUDE.md` maps to lock the portal-based hover tooltip, channel typography, and instant-delay behavior.
 
 ## [1.9.29] - 2026-06-15
 

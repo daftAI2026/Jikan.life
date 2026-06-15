@@ -207,24 +207,25 @@ test("ColorPicker uses Kumo popover trigger/content structure without shadcn sel
   assert.doesNotMatch(source, /SelectValue/)
 })
 
-test("ColorPicker uses KUMO visual tokens without changing state bridge behavior", () => {
+test("ColorPicker uses Kumo Tooltip Portal for trigger HEX hover instead of inline CSS tooltip", () => {
   const source = readSource("src/components/ui/color-picker.jsx")
   const bridgeSource = readSource("src/components/ui/use-color-picker-state-bridge.js")
 
   assert.doesNotMatch(source, /rounded-xl/)
-  assert.match(source, /className=\{cn\(\s*"group\/color-picker-trigger relative w-full justify-start rounded-lg px-2 text-left font-normal"/)
+  assert.match(source, /className=\{cn\(\s*"relative w-full justify-start rounded-lg px-2 text-left font-normal"/)
   assert.match(
     source,
     /showValue\s*\?\s*"size-6 shrink-0 rounded-md ring ring-kumo-line"\s*:\s*"h-5 w-full rounded-md ring ring-kumo-line"/
   )
   assert.match(source, /const triggerHexValue = internalColor\.toString\('hex'\)\.toUpperCase\(\)/)
   assert.match(source, /aria-label=\{`Color picker, selected \$\{triggerHexValue\}`\}/)
-  assert.doesNotMatch(source, /@\/components\/ui\/tooltip/)
-  assert.match(source, /group\/color-picker-trigger/)
-  assert.match(source, /role="tooltip"/)
-  assert.match(source, /duration-75/)
-  assert.match(source, /group-hover\/color-picker-trigger:opacity-100/)
-  assert.match(source, /\{triggerHexValue\}\s*<\/span>/)
+  assert.match(source, /@\/components\/ui\/tooltip/)
+  assert.match(source, /<TooltipProvider>/)
+  assert.match(source, /<Tooltip content=\{triggerHexValue\} delay=\{0\} closeDelay=\{0\} asChild>/)
+  assert.doesNotMatch(source, /group\/color-picker-trigger/)
+  assert.doesNotMatch(source, /role="tooltip"/)
+  assert.doesNotMatch(source, /duration-75/)
+  assert.doesNotMatch(source, /group-hover\/color-picker-trigger:opacity-100/)
   assert.doesNotMatch(source, /title=\{triggerHexValue\}/)
   assert.match(source, /className="truncate font-mono text-sm uppercase text-kumo-subtle"/)
   assert.match(source, /<Popover\.Content className="w-64 p-3" sideOffset=\{8\}>/)
