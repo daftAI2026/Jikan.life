@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Color Picker Hover Feedback**: Added an immediate HEX tooltip to the Background and Accent color triggers without relying on the browser-native `title` delay.
+- **Color Channel Typography**: Aligned RGB, HSL, and HSB channel inputs on the same numeric typography so percentage and degree values keep the same visual weight as RGB values.
+
+### Documentation & Tests
+- **ColorPicker Guard Sync**: Updated the UI foundation guard and fractal `CLAUDE.md` maps to lock the new hover feedback, channel typography, and non-`title` tooltip behavior.
+
 ## [1.9.29] - 2026-06-15
 
 ### Fixed

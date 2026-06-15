@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/kumo(Button), @/components/ui/input(Kumo), @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本）
- * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏比例布局
+ * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本与即时 hover HEX 提示）
+ * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏 `36px + 2fr + 2fr` 比例布局
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Button } from "@/components/ui/kumo"
@@ -28,7 +28,7 @@ import {
 } from "react-aria-components"
 
 const COLOR_CHANNEL_INPUT_CLASS =
-    "flex h-9 w-full rounded-lg bg-kumo-control px-2 py-1 text-center text-xs font-mono text-kumo-default ring ring-kumo-line placeholder:text-kumo-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kumo-hairline disabled:cursor-not-allowed disabled:opacity-50"
+    "flex h-9 w-full rounded-lg bg-kumo-control px-2 py-1 text-center text-sm font-medium tabular-nums text-kumo-default ring ring-kumo-line placeholder:text-kumo-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kumo-hairline disabled:cursor-not-allowed disabled:opacity-50"
 
 const COLOR_SPACE_CHANNELS = {
     rgb: ["red", "green", "blue"],
@@ -78,6 +78,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
     const triggerSwatchClassName = showValue
         ? "size-6 shrink-0 rounded-md ring ring-kumo-line"
         : "h-5 w-full rounded-md ring ring-kumo-line"
+    const triggerHexValue = internalColor.toString('hex').toUpperCase()
 
     const handleColorChange = (newColor) => {
         setInternalColor(newColor)
@@ -112,9 +113,10 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                         variant="outline"
                         disabled={disabled}
                         className={cn(
-                            "w-full justify-start rounded-lg px-2 text-left font-normal",
+                            "group/color-picker-trigger relative w-full justify-start rounded-lg px-2 text-left font-normal",
                             className
                         )}
+                        aria-label={`Color picker, selected ${triggerHexValue}`}
                     >
                         <div className="w-full flex items-center gap-2">
                             <ColorSwatch
@@ -127,6 +129,13 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                                 </span>
                             )}
                         </div>
+                        <span
+                            role="tooltip"
+                            aria-hidden="true"
+                            className="pointer-events-none absolute left-1/2 top-0 z-50 -translate-x-1/2 -translate-y-[calc(100%+6px)] rounded-md bg-kumo-default px-2 py-1 font-mono text-xs font-medium uppercase text-kumo-inverse opacity-0 shadow-md transition-opacity duration-75 group-hover/color-picker-trigger:opacity-100 group-focus-visible/color-picker-trigger:opacity-100"
+                        >
+                            {triggerHexValue}
+                        </span>
                     </Button>
                 </Popover.Trigger>
                 <Popover.Content className="w-64 p-3" sideOffset={8}>
@@ -149,13 +158,13 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                         </ColorSlider>
 
                         {/* 3. Toolbar: EyeDropper + ColorSpace Select */}
-                        <div className="flex min-w-0 items-center gap-2">
+                        <div className="grid min-w-0 grid-cols-[36px_minmax(0,2fr)_minmax(0,2fr)] items-center gap-2">
                             <EyeDropperButton />
 
                             <Select
                                 value={colorSpace}
                                 onValueChange={setColorSpace}
-                                className="h-9 w-[72px] shrink-0 rounded-lg text-sm font-medium uppercase"
+                                className="h-9 min-w-0 w-full rounded-lg text-sm font-medium uppercase"
                             >
                                 <Select.Option value="hex">HEX</Select.Option>
                                 <Select.Option value="rgb">RGB</Select.Option>
@@ -173,7 +182,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                                     }
                                 }}
                                 maxLength={7}
-                                className="h-9 min-w-0 w-0 flex-1 rounded-lg text-center font-mono text-sm uppercase"
+                                className="h-9 min-w-0 w-full rounded-lg text-center font-mono text-sm uppercase"
                                 placeholder="HEX"
                                 aria-label="Hex color value"
                             />
