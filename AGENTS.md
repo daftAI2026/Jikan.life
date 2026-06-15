@@ -172,15 +172,16 @@ Cloudflare Worker routes /, /generate, /og-image.png, /health, /app, /app/
 | --- | --- | --- |
 | Node | CI uses 20 | GitHub Actions `setup-node@v4` |
 | npm | lockfile-driven | Use `npm ci`, not ad-hoc installs |
-| React / React DOM | 19.2.6 | Stable dependency rail |
-| Vite | 8.0.15 | Frontend build and dev server |
-| Tailwind CSS | 4.3.0 | Kumo-token styling |
-| Kumo UI | 2.4.1 | UI system via local adapters |
+| React / React DOM | 19.2.7 | Stable dependency rail |
+| Vite | 8.0.16 | Frontend build and dev server |
+| Tailwind CSS | 4.3.1 | Kumo-token styling |
+| Kumo UI | 2.5.2 | UI system via local adapters |
 | @base-ui/react | 1.5.0 | Kumo primitive foundation |
-| react-router-dom | 7.16.0 | SPA routing |
+| react-router-dom | 7.17.0 | SPA routing |
 | Framer Motion | 12.40.0 | Motion presets in `src/lib/motion.js` |
 | Playwright | 1.60.0 | Browser verification dependency |
-| Wrangler | 4.95.0 | Worker dev/deploy |
+| Wrangler | 4.100.0 | Worker dev/deploy |
+| esbuild | 0.28.1 | npm override for Vite/Wrangler audit closure |
 | Zod | 4.4.3 | Worker parameter validation |
 | Resvg WASM | 2.6.2 | SVG to PNG conversion |
 

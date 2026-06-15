@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 Kumo Button、ColorPicker、CardField、@phosphor-icons/react(Shuffle)、palettePresets 与颜色 actions/config/effectiveLayoutTier/i18n 链路
  * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡）
- * [POS]: workspace/cards 的颜色配置卡，承接 background/accent、Accent 字段 tooltip 与 presets 应用；preset-8 额外收口为黑色 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
+ * [POS]: workspace/cards 的颜色配置卡，承接 background/accent、Accent 字段 tooltip 与 presets 应用；preset-8 额外收口为主题对比 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Shuffle } from "@phosphor-icons/react"
@@ -11,7 +11,7 @@ import { CardField, CardFieldsStack } from "./CardField"
 
 function RandomPresetIcon() {
     return (
-        <Shuffle aria-hidden="true" color="var(--color-black)" size={20} weight="duotone" />
+        <Shuffle aria-hidden="true" size={20} weight="duotone" />
     )
 }
 
@@ -29,7 +29,7 @@ function renderPresetButtons({ actions, palettePresets, className, t }) {
                     title={preset.kind === "random" ? t("config.randomPreset") : undefined}
                 >
                     {preset.kind === "random" ? (
-                        <span className="inline-flex w-7 items-center justify-center">
+                        <span className="inline-flex w-7 items-center justify-center text-kumo-default">
                             <RandomPresetIcon />
                         </span>
                     ) : (

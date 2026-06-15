@@ -22,7 +22,7 @@ worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/`
 og-image.behavior.test.js: OG 分享卡护栏，锁定 `/og-image.png` 的动态渲染入口、`?yes=1` 语义、参考图构图与白底 25x5 点阵布局。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
 accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
-random-preset.behavior.test.js: 随机 preset 行为护栏，锁定 `preset-8` 的随机语义、workspace 候选色状态与 colors 卡的黑色 Shuffle 入口。
+random-preset.behavior.test.js: 随机 preset 行为护栏，锁定 `preset-8` 的随机语义、workspace 候选色状态与 colors 卡的主题对比 Shuffle 入口。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
 wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固定 Date 后校验 Year/Life/Goal 输出哈希不漂移。
 
@@ -33,9 +33,10 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-06-15: `random-preset.behavior.test.js` 将随机入口视觉护栏从“黑色 Shuffle”改为“主题对比 Shuffle”，禁止 `color="var(--color-black)"` 回流导致暗色主题不可见。
 2026-04-10: 对齐 `kumo-migration.ui.behavior.test.js` / `kumo-migration.ui.foundation.behavior.test.js` 到当前实现：`device-card` 分组断言从旧 `SelectBase.Group` 收敛为 `Select.Group`，Kumo 基础 token 护栏统一改看 `outline/focus ring-kumo-hairline`，避免测试继续卡在过时命名而误报 CI 红灯。
 2026-03-28: 更新 `kumo-migration.ui.behavior.test.js` 与 `kumo-migration.core.behavior.test.js`，新增 Accent 字段级 tooltip 护栏：要求 `CardField` 支持通用字段 tooltip、`colors-card.jsx` 将 `config.accentTooltip` 接到 Accent 标签右侧 info 图标，并锁定 `i18n.js` 四语词条齐全。
-2026-03-27: 新增 `random-preset.behavior.test.js`，锁定 `shared/palettes.js` 的 `preset-8 kind="random"` 元数据、`useHomeWallpaperConfig` 的随机候选色状态与 `applyRandomPalette()` 接线、`colors-card.jsx` 的黑色 `Shuffle` 入口，以及 `config.randomPreset` 四语无障碍文案。
+2026-03-27: 新增 `random-preset.behavior.test.js`，锁定 `shared/palettes.js` 的 `preset-8 kind="random"` 元数据、`useHomeWallpaperConfig` 的随机候选色状态与 `applyRandomPalette()` 接线、`colors-card.jsx` 的 `Shuffle` 入口，以及 `config.randomPreset` 四语无障碍文案。
 2026-03-26: 新增 `seo-homepage.behavior.test.js`，锁定首页 `index.html` 的 `canonical`、`WebSite/WebApplication` 两段 JSON-LD、`#root` 内最小离屏 SEO 语义、字体 preload + noscript fallback、`public/sitemap.xml` 单 URL 策略，以及设备支持/语言能力与真相源一致；`kumo-migration.ui.registry-shell.behavior.test.js` 同步新增 `HomeSidebar` 不再输出 `h1` 与 `HomePage` 运行时离屏 H1 的语义护栏。
 2026-03-26: 新增 `og-image.behavior.test.js`，锁定 OG 分享卡的动态 `/og-image.png?yes=1` 入口、`1200x630` 分享尺寸、参考图式左上 wordmark / 右上 favicon / 25x5 点阵构图，以及白底黑字的极简视觉语义。
 2026-03-21: 修正 `kumo-migration.ui.behavior.test.js` 的 YearPreviewSvg 源码断言，完成态 dot 的 `fillOpacity` 现在只作用于 `!today && completed`，与 `src/pages/registry/sections/workspace/YearPreviewSvg.jsx` 的现实现一致，避免把 today 高亮误判为回退。

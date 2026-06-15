@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test, node:assert/strict, shared/palettes, tests/helpers/source-test-helpers
  * [OUTPUT]: random preset 语义与随机入口 UI 护栏测试
- * [POS]: tests/ 颜色预设行为护栏，锁定 preset-8 的随机语义、随机色生成器接入与黑色 Shuffle 入口
+ * [POS]: tests/ 颜色预设行为护栏，锁定 preset-8 的随机语义、随机色生成器接入与主题对比 Shuffle 入口
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -42,14 +42,15 @@ test("random palette generator emits readable background and accent pairs", () =
     }
 })
 
-test("colors card renders preset-8 as a black Shuffle icon instead of two swatches", () => {
+test("colors card renders preset-8 as a theme-contrast Shuffle icon instead of two swatches", () => {
     const source = readSource("src/pages/registry/sections/workspace/cards/colors-card.jsx")
 
     assertNamedImports(source, "@phosphor-icons/react", ["Shuffle"])
     assert.match(source, /preset\.kind === "random"/)
     assert.match(source, /aria-label=\{preset\.kind === "random" \? t\("config\.randomPreset"\) : undefined\}/)
     assert.match(source, /title=\{preset\.kind === "random" \? t\("config\.randomPreset"\) : undefined\}/)
-    assert.match(source, /color="var\(--color-black\)"/)
+    assert.match(source, /text-kumo-default/)
+    assert.doesNotMatch(source, /color="var\(--color-black\)"/)
     assert.match(source, /size=\{20\}/)
     assert.match(source, /<Shuffle/)
     assert.doesNotMatch(source, /linearGradient/)

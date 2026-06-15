@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.29] - 2026-06-15
+
+### Fixed
+- **Random Preset Contrast**: Removed the hard-coded black Shuffle icon color from the random color preset. The icon now inherits `text-kumo-default`, so it stays visible in dark mode while preserving the existing random palette behavior.
+
+### Infrastructure
+- **Stable Dependency Refresh**: Updated the stable toolchain to React `19.2.7`, React DOM `19.2.7`, Vite `8.0.16`, Tailwind CSS `4.3.1`, Kumo UI `2.5.2`, React Router `7.17.0`, and Wrangler `4.100.0`.
+- **Audit Closure**: Added an npm override for `esbuild@0.28.1` to close the Vite/Wrangler transitive audit finding without downgrading Wrangler.
+
+### Documentation & Tests
+- **Fractal Map Sync**: Updated README, AGENTS, root/workspace/cards/tests `CLAUDE.md` files, and the random preset behavior guard so the documented map matches the live dark-mode contrast behavior and dependency baseline.
+
 ## [1.9.28] - 2026-06-02
 
 ### Documentation
