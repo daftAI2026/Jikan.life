@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: 向 `node --test` 注册 UI 基础层迁移护栏用例，覆盖依赖、同步脚本链路、全局入口、基础 UI 组件与通用禁用项
- * [POS]: tests/ UI 迁移护栏的基础层，锁定依赖、脚本链路、全局入口、基础组件与通用禁用项
+ * [OUTPUT]: 向 `node --test` 注册 UI 基础层迁移护栏用例，覆盖依赖、同步脚本链路、文档矩阵、全局入口、基础 UI 组件与通用禁用项
+ * [POS]: tests/ UI 迁移护栏的基础层，锁定依赖、脚本链路、文档矩阵、全局入口、基础组件与通用禁用项
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -69,6 +69,18 @@ test("version metadata sync script uses explicit lock-field checks instead of st
   )
 })
 
+test("version metadata sync script enforces documented toolchain versions", () => {
+  const source = readSource("scripts/sync-version-metadata.js")
+
+  assert.match(source, /toolchainDocsChanged/)
+  assert.match(source, /README toolchain baseline/)
+  assert.match(source, /AGENTS toolchain table/)
+  assert.match(source, /CLAUDE stack summary/)
+  assert.match(source, /getPackageVersion\("vite"\)/)
+  assert.match(source, /getPackageVersion\("@cloudflare\/kumo"\)/)
+  assert.match(source, /getPackageVersion\("wrangler"\)/)
+})
+
 test("git pre-commit hook auto-syncs version metadata", () => {
   const pkg = readJson("package.json")
   const scripts = pkg.scripts || {}
@@ -96,8 +108,8 @@ test("git pre-commit hook auto-syncs version metadata", () => {
   )
   assert.match(
     hookSource,
-    /git add package\.json README\.md package-lock\.json/,
-    "pre-commit hook should stage all synchronized metadata files"
+    /git add package\.json README\.md AGENTS\.md CLAUDE\.md package-lock\.json/,
+    "pre-commit hook should stage all synchronized metadata and toolchain docs"
   )
 })
 
