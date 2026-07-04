@@ -1,6 +1,6 @@
 # JIKAN AGENT KNOWLEDGE BASE
 
-**Last verified:** 2026-06-02
+**Last verified:** 2026-07-04
 
 ## OVERVIEW
 
@@ -100,12 +100,12 @@ Jikan.life/
 - Test runner is Node native: `npm run test`.
 - Guard files intentionally combine behavior checks with selected source-contract checks. Do not loosen assertions to hide regressions.
 - If Year/Life/Goal SVG rendering legitimately changes, update snapshot hashes only through `npm run sync:wallpaper-snapshots`.
-- Version metadata must pass `npm run check:version-metadata`; package version drives README badge and package-lock top metadata.
+- Version metadata must pass `npm run check:version-metadata`; package metadata drives the README badge, package-lock top metadata, and README/AGENTS/CLAUDE toolchain version matrices.
 - For UI changes, run tests and inspect the browser when practical. Visual tasks require real screenshots, not code-only confidence.
 
 ### Versioning
 
-- Keep `package.json`, `README.md`, `package-lock.json`, `CHANGELOG.md` in sync.
+- Keep `package.json`, `README.md`, `AGENTS.md`, `CLAUDE.md`, `package-lock.json`, `CHANGELOG.md` in sync when dependency or version metadata changes.
 - `npm version` triggers `sync:version-metadata`; pre-commit also stages metadata fixes through `scripts/git-hooks/pre-commit`.
 - Prefer stable registry releases. Alpha/nightly/canary packages need explicit justification in docs.
 - Do not run deploy/release commands unless the user explicitly asks.
@@ -172,15 +172,15 @@ Cloudflare Worker routes /, /generate, /og-image.png, /health, /app, /app/
 | --- | --- | --- |
 | Node | CI uses 20 | GitHub Actions `setup-node@v4` |
 | npm | lockfile-driven | Use `npm ci`, not ad-hoc installs |
-| React / React DOM | 19.2.7 | Stable dependency rail |
-| Vite | 8.0.16 | Frontend build and dev server |
-| Tailwind CSS | 4.3.1 | Kumo-token styling |
-| Kumo UI | 2.5.2 | UI system via local adapters |
-| @base-ui/react | 1.5.0 | Kumo primitive foundation |
-| react-router-dom | 7.17.0 | SPA routing |
-| Framer Motion | 12.40.0 | Motion presets in `src/lib/motion.js` |
-| Playwright | 1.60.0 | Browser verification dependency |
-| Wrangler | 4.100.0 | Worker dev/deploy |
+| React / React DOM | 19.2.7 / 19.2.7 | Stable dependency rail |
+| Vite | 8.1.3 | Frontend build and dev server |
+| Tailwind CSS | 4.3.2 | Kumo-token styling |
+| Kumo UI | 2.6.0 | UI system via local adapters |
+| @base-ui/react | 1.6.0 | Kumo primitive foundation |
+| react-router-dom | 7.18.1 | SPA routing |
+| Framer Motion | 12.42.2 | Motion presets in `src/lib/motion.js` |
+| Playwright | 1.61.1 | Browser verification dependency |
+| Wrangler | 4.107.0 | Worker dev/deploy |
 | esbuild | 0.28.1 | npm override for Vite/Wrangler audit closure |
 | Zod | 4.4.3 | Worker parameter validation |
 | Resvg WASM | 2.6.2 | SVG to PNG conversion |

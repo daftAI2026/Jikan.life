@@ -7,7 +7,7 @@ seo-homepage.behavior.test.js: 首页 SEO 护栏，锁定 index.html 的最小�
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
 lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
 lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
-kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、全局入口、基础 UI 封装、ColorPicker 触发器提示/通道 typography 语义与通用禁用项。
+kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、文档矩阵同步、全局入口、基础 UI 封装、ColorPicker 触发器提示/通道 typography 语义与通用禁用项。
 kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
 kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与底栏 skeleton 语义。
 kumo-migration.ui.behavior.test.js: Kumo Workspace/Settings 护栏，约束 workspace 配置、设备与日期卡片、SetupGuidePanel、HomeGrid、Year/Goal inline SVG 预览与通用 skeleton 语义。
@@ -33,6 +33,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-07-04: 更新 `kumo-migration.ui.foundation.behavior.test.js`，要求 `sync-version-metadata.js` 将 README/AGENTS/CLAUDE 工具链矩阵纳入 package.json 驱动校验，并要求 pre-commit 暂存同步后的工具链文档。
 2026-06-16: `kumo-migration.ui.foundation.behavior.test.js` 新增 ColorPicker 触发器即时 HEX hover/aria 与通道输入 `text-sm font-medium tabular-nums` 护栏，防止原生 `title` 慢提示和 HSL/HSB 百分比视觉重量偏离 RGB。
 2026-06-15: `random-preset.behavior.test.js` 将随机入口视觉护栏从“黑色 Shuffle”改为“主题对比 Shuffle”，禁止 `color="var(--color-black)"` 回流导致暗色主题不可见。
 2026-04-10: 对齐 `kumo-migration.ui.behavior.test.js` / `kumo-migration.ui.foundation.behavior.test.js` 到当前实现：`device-card` 分组断言从旧 `SelectBase.Group` 收敛为 `Select.Group`，Kumo 基础 token 护栏统一改看 `outline/focus ring-kumo-hairline`，避免测试继续卡在过时命名而误报 CI 红灯。

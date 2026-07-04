@@ -1,5 +1,5 @@
 # JIKAN - 动态人生进度墙纸生成器
-React 19.2.7 + Vite 8.0.16 + Tailwind CSS 4.3.1 + Kumo UI 2.5.2 + Cloudflare Workers
+React 19.2.7 + Vite 8.1.3 + Tailwind CSS 4.3.2 + Kumo UI 2.6.0 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
@@ -30,7 +30,7 @@ package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler �
 </config>
 
 ## 技术栈
-- **Frontend**: React 19.2.7 + Vite 8.0.16 + Tailwind CSS 4.3.1 + Kumo UI 2.5.2 (Base UI 1.5.0)
+- **Frontend**: React 19.2.7 + Vite 8.1.3 + Tailwind CSS 4.3.2 + Kumo UI 2.6.0 (Base UI 1.6.0)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)
@@ -46,6 +46,7 @@ package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler �
 - **Agent 行动地图**: 根 `AGENTS.md` 是 Codex/AI Agent 的第一导航入口；当查找入口、命令、工具链、反模式或安全边界变化时，必须同步更新
 - **CI 依赖收敛**: React / React DOM 固定稳定 `19.2.7`，禁止回退到 canary 破坏 Base UI peer range 与 `npm ci`
 - **依赖轨道收敛**: 默认使用 registry stable 版本；alpha/nightly/canary 只能在有明确验证收益与文档理由时引入，禁止把实验轨道混入常规升级
+- **版本矩阵同构**: `scripts/sync-version-metadata.js --check` 必须同时校验 README/AGENTS/CLAUDE 的工具链版本矩阵，防止 package.json 与维护文档分裂
 - **审计覆盖收口**: `package.json` 使用 `overrides.esbuild=0.28.1` 修复 Vite/Wrangler 共享 esbuild 链路的 npm audit 漏洞；移除前必须先确认上游已正式跟进。
 - **渲染统一**: 前端浏览器原生 inline SVG 预览与后端 SVG 生成必须共享同一渲染真相源（模块化核心通过 `shared/wallpaper-core.js` facade 暴露）
 - **设计规范**: 一切 UI 必须基于 Kumo UI 组件与 CSS 变量

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Infrastructure
+- **Stable Dependency Refresh**: Updated the stable toolchain to Vite `8.1.3`, Tailwind CSS `4.3.2`, Kumo UI `2.6.0`, Base UI `1.6.0`, React Router `7.18.1`, Framer Motion `12.42.2`, Playwright `1.61.1`, React Aria Components `1.19.0`, and Wrangler `4.107.0`.
+- **Audit Closure**: Refreshed the Vite/Wrangler dependency graph so `npm audit` reports zero vulnerabilities while preserving the `esbuild@0.28.1` override.
+- **Toolchain Matrix Guard**: Extended `sync-version-metadata.js` so `package.json` now drives the README, AGENTS, and root `CLAUDE.md` toolchain version matrices in both sync and `--check` modes.
+
+### Documentation
+- **Version Matrix Sync**: Updated README, AGENTS, root/scripts/tests `CLAUDE.md` maps, and the pre-commit hook staging list so the documented maintenance baseline matches the live package graph.
+
 ## [1.9.30] - 2026-06-16
 
 ### UI & UX
