@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 无依赖
  * [OUTPUT]: 对外提供 i18nData/countryToLang/LANGUAGE_META/DEFAULT_LANG/SUPPORTED_LANGS
- * [POS]: data/ 的翻译字符串管理模块，被 I18nContext 与 workspace/registry 文案渲染链路消费
+ * [POS]: data/ 的翻译字符串管理模块，被 I18nContext 与 workspace/registry 文案渲染链路消费，并集中承载 UI 可访问名称文案
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
@@ -69,6 +69,12 @@ export const i18nData = {
     'config.accentTooltip': 'Set lock screen time to this color for the best look',
     'config.colorPresets': 'Presets',
     'config.randomPreset': 'Random preset',
+    'config.colorPresetLabel': 'Color preset {number}',
+    'config.colorPicker': 'Color picker, selected {value}',
+    'config.colorPickerEyeDropper': 'Pick a color from screen',
+    'config.colorPickerColorSpace': 'Color space',
+    'config.colorPickerHex': 'Hex color value',
+    'config.colorPickerChannel': '{channel} channel',
     'config.device': 'Device',
     'config.deviceTooltip': 'iPhone only. Android support is planned.',
     'config.deviceResolution': 'Resolution',
@@ -80,15 +86,18 @@ export const i18nData = {
     // Preview
     'preview.hint': 'Live Preview',
     'preview.selectType': 'Select a wallpaper type',
+    'preview.liveWallpaper': 'Wallpaper live preview',
 
     // URL & Copy
     'url.copy': 'Copy',
     'url.set': 'Copy & Set Up',
     'url.copySuccess': 'Link copied',
+    'url.copyError': 'Could not copy link. Copy it manually.',
     'url.placeholder': 'Complete the options above first...',
 
     // Setup Section
     'setup.title': 'Setup',
+    'setup.close': 'Close setup guide',
     'setup.step.completed': 'Completed',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
@@ -136,6 +145,10 @@ export const i18nData = {
     'registry.menu.open': 'Open menu',
     'registry.menu.close': 'Close menu',
     'registry.sidebar.toggle': 'Expand or collapse sidebar',
+    'theme.switchToLight': 'Switch to light mode',
+    'theme.switchToDark': 'Switch to dark mode',
+    'settings.revealAll': 'Reveal all settings cards',
+    'help.label': '{label} help',
 
     // Goal-related
     'error.goalStart.outOfRange': 'Start Date must be between 1900-01-01 and 2100-12-31.',
@@ -219,6 +232,12 @@ export const i18nData = {
     'config.accentTooltip': '建议将锁屏时间设为此色，效果更佳',
     'config.colorPresets': '预设',
     'config.randomPreset': '随机预设',
+    'config.colorPresetLabel': '颜色预设 {number}',
+    'config.colorPicker': '颜色选择器，当前为 {value}',
+    'config.colorPickerEyeDropper': '从屏幕取色',
+    'config.colorPickerColorSpace': '颜色空间',
+    'config.colorPickerHex': '十六进制颜色值',
+    'config.colorPickerChannel': '{channel} 通道',
     'config.device': '设备',
     'config.deviceTooltip': '目前仅支持 iPhone，Android 支持规划中',
     'config.deviceResolution': '分辨率',
@@ -230,15 +249,18 @@ export const i18nData = {
     // 预览
     'preview.hint': '实时预览',
     'preview.selectType': '选择一种壁纸类型',
+    'preview.liveWallpaper': '壁纸实时预览',
 
     // URL 和复制
     'url.copy': '复制',
     'url.set': '复制并设置',
     'url.copySuccess': '链接已复制',
+    'url.copyError': '无法复制链接，请手动复制。',
     'url.placeholder': '请先在上方完成配置...',
 
     // 设置部分
     'setup.title': '设置',
+    'setup.close': '关闭设置引导',
     'setup.step.completed': '已完成',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
@@ -286,6 +308,10 @@ export const i18nData = {
     'registry.menu.open': '打开菜单',
     'registry.menu.close': '关闭菜单',
     'registry.sidebar.toggle': '展开或收起侧栏',
+    'theme.switchToLight': '切换到浅色模式',
+    'theme.switchToDark': '切换到深色模式',
+    'settings.revealAll': '显示所有设置卡片',
+    'help.label': '{label} 帮助',
 
     // 目标相关
     'error.goalStart.outOfRange': '开始日期必须在 1900-01-01 到 2100-12-31 之间。',
@@ -369,6 +395,12 @@ export const i18nData = {
     'config.accentTooltip': '建議將鎖定畫面時間設為此色，效果更佳',
     'config.colorPresets': '預設',
     'config.randomPreset': '隨機預設',
+    'config.colorPresetLabel': '顏色預設 {number}',
+    'config.colorPicker': '顏色選擇器，目前為 {value}',
+    'config.colorPickerEyeDropper': '從螢幕取色',
+    'config.colorPickerColorSpace': '色彩空間',
+    'config.colorPickerHex': '十六進位顏色值',
+    'config.colorPickerChannel': '{channel} 通道',
     'config.device': '裝置',
     'config.deviceTooltip': '目前僅支援 iPhone，Android 支援規劃中',
     'config.deviceResolution': '解析度',
@@ -380,15 +412,18 @@ export const i18nData = {
     // 預覽
     'preview.hint': '即時預覽',
     'preview.selectType': '選擇一種桌布類型',
+    'preview.liveWallpaper': '桌布即時預覽',
 
     // URL 和複製
     'url.copy': '複製',
     'url.set': '複製並設定',
     'url.copySuccess': '連結已複製',
+    'url.copyError': '無法複製連結，請手動複製。',
     'url.placeholder': '請先在上方完成設定...',
 
     // 設定部分
     'setup.title': '設定',
+    'setup.close': '關閉設定引導',
     'setup.step.completed': '已完成',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
@@ -436,6 +471,10 @@ export const i18nData = {
     'registry.menu.open': '開啟選單',
     'registry.menu.close': '關閉選單',
     'registry.sidebar.toggle': '展開或收合側欄',
+    'theme.switchToLight': '切換到淺色模式',
+    'theme.switchToDark': '切換到深色模式',
+    'settings.revealAll': '顯示所有設定卡片',
+    'help.label': '{label} 說明',
 
     // 目標相關
     'error.goalStart.outOfRange': '開始日期必須在 1900-01-01 到 2100-12-31 之間。',
@@ -519,6 +558,12 @@ export const i18nData = {
     'config.accentTooltip': 'ロック画面の時刻をこの色に設定して、最高の視認性を',
     'config.colorPresets': 'プリセット',
     'config.randomPreset': 'ランダムプリセット',
+    'config.colorPresetLabel': 'カラープリセット {number}',
+    'config.colorPicker': 'カラーピッカー、現在の値は {value}',
+    'config.colorPickerEyeDropper': '画面から色を取得',
+    'config.colorPickerColorSpace': '色空間',
+    'config.colorPickerHex': 'HEX カラー値',
+    'config.colorPickerChannel': '{channel} チャンネル',
     'config.device': 'デバイス',
     'config.deviceTooltip': '現在は iPhone のみ対応。Android 版は開発検討中です。',
     'config.deviceResolution': '解像度',
@@ -530,15 +575,18 @@ export const i18nData = {
     // プレビュー
     'preview.hint': 'ライブプレビュー',
     'preview.selectType': '壁紙タイプを選択してください',
+    'preview.liveWallpaper': '壁紙ライブプレビュー',
 
     // URL とコピー
     'url.copy': 'コピー',
     'url.set': 'コピーして設定',
     'url.copySuccess': 'リンクをコピーしました',
+    'url.copyError': 'リンクをコピーできませんでした。手動でコピーしてください。',
     'url.placeholder': '先に上の設定を完了してください...',
 
     // セットアップセクション
     'setup.title': 'セットアップ',
+    'setup.close': 'セットアップガイドを閉じる',
     'setup.step.completed': '完了',
     'setup.ios': 'iOS',
     'setup.android': 'Android',
@@ -586,6 +634,10 @@ export const i18nData = {
     'registry.menu.open': 'メニューを開く',
     'registry.menu.close': 'メニューを閉じる',
     'registry.sidebar.toggle': 'サイドバーを開閉',
+    'theme.switchToLight': 'ライトモードに切り替え',
+    'theme.switchToDark': 'ダークモードに切り替え',
+    'settings.revealAll': 'すべての設定カードを表示',
+    'help.label': '{label} のヘルプ',
 
     // ゴール関連
     'error.goalStart.outOfRange': '開始日は 1900-01-01 から 2100-12-31 までの範囲で入力してください。',

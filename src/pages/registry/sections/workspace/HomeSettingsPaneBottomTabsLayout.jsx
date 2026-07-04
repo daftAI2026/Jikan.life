@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useRef)、@/components/ui/kumo(Tabs)、use-md-bottom-tabs-metrics、SettingsCardShell、SetupGuidePanel，以及 HomeSettingsPane 透传的 bottom-tabs 编排结果与 skeleton 组件
- * [OUTPUT]: 对外提供 HomeSettingsPaneBottomTabsLayout 私有组件，承载 md bottom-tabs 完整视图链
- * [POS]: registry/sections/workspace 的 bottom-tabs 视图层，负责 active card 壳、tabs rail、隐藏测量节点与 tab label skeleton；不持有业务编排真相源
+ * [OUTPUT]: 对外提供 HomeSettingsPaneBottomTabsLayout 私有组件，承载 md bottom-tabs 完整视图链与本地化 help/reveal labels
+ * [POS]: registry/sections/workspace 的 bottom-tabs 视图层，负责 active card 壳、tabs rail、隐藏测量节点、tab label skeleton 与可访问标签透传；不持有业务编排真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useRef } from "react"
@@ -74,6 +74,7 @@ function resolveMdBottomTabsActiveTitle({
         return {
             title: <SettingsCardTitleSkeleton />,
             titleTooltip: undefined,
+            helpAriaLabel: undefined,
             isIndexActive: false,
         }
     }
@@ -81,6 +82,7 @@ function resolveMdBottomTabsActiveTitle({
     return {
         title: activeCardDefinition.resolvedTitle,
         titleTooltip: activeCardDefinition.resolvedTitleTooltip,
+        helpAriaLabel: activeCardDefinition.helpAriaLabel,
         isIndexActive: true,
     }
 }
@@ -129,13 +131,14 @@ export function HomeSettingsPaneBottomTabsLayout({
                         cardId={currentActiveTab}
                         title={activeTitleState.title}
                         titleTooltip={activeTitleState.titleTooltip}
+                        helpAriaLabel={activeTitleState.helpAriaLabel}
                         indexMark={slotMarks[Math.max(0, activeSlotIndex)]}
                         isIndexActive={activeTitleState.isIndexActive}
                         compactAtDesktop={false}
                     >
                         {isActiveTabRevealed && activeCardDefinition
                             ? activeCardDefinition.card.render(cardViewModel)
-                            : <SettingsCardSkeleton onRequestRevealAll={cardViewModel.config.selectedType ? onRequestRevealAll : undefined} />}
+                            : <SettingsCardSkeleton onRequestRevealAll={cardViewModel.config.selectedType ? onRequestRevealAll : undefined} t={t} />}
                     </SettingsCardShell>
                 ) : (
                     <SettingsCardShell

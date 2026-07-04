@@ -3,13 +3,13 @@
 
 成员清单
 index.js: 业务卡聚合入口，导出 `CARD_REGISTRY` 并作为 HomeSettingsPane 的唯一卡片注册源。
-CardField.jsx: 通用字段布局壳，提供 `CardFieldsStack/CardField` 统一字段栈、200px 列宽与可选字段级 tooltip 语义（仅布局，不承载业务分支）。
+CardField.jsx: 通用字段布局壳，提供 `CardFieldsStack/CardField` 统一字段栈、200px 列宽与可选字段级 tooltip 语义，并通过 `t("help.label")` 生成本地化 tooltip aria-label（仅布局，不承载业务分支）。
 goal-date-range-field.jsx: Goal 区间日期字段组件，使用 vendored Kumo `DatePicker(mode="range")` + Popover 触发；以 committed/draft 分层承接 `rangeSelectionBehavior="restart"` 与 `onRangeComplete`，并继续用 viewport 驱动 compact/wide 模式切换弹层宽度、对齐与 presets 裁剪。
-location-card.jsx: Location 业务卡，实现国家下拉与 `config.country/actions.setCountry` 绑定。
-wallpaper-lang-card.jsx: Wallpaper Language 业务卡，实现国旗+语言名渲染与 `config.wallpaperLang/actions.setWallpaperLang` 绑定。
+location-card.jsx: Location 业务卡，实现国家下拉与 `config.country/actions.setCountry` 绑定，并向 Kumo Select 注入本地化 label。
+wallpaper-lang-card.jsx: Wallpaper Language 业务卡，实现国旗+语言名渲染与 `config.wallpaperLang/actions.setWallpaperLang` 绑定，并向 Kumo Select 注入本地化 label。
 goal-fields-card.jsx: Goal 第③卡，实现 Goal Name / Date Range 两段字段与错误提示（通过 `actions.setGoalRange` 原子写入；effective `mid` 时切为等宽左右并排）。
 life-fields-card.jsx: Life 第③卡，实现 DOB / Lifespan 字段与输入约束，DOB 使用官方 Kumo `DatePicker(mode="single")` + Popover 壳。
-colors-card.jsx: Colors 业务卡，实现 Background/Accent 双 ColorPicker、Accent 字段 tooltip 与 presets 应用动作；`preset-8` 使用主题对比 token 的 `Shuffle` 随机入口（effective `mid` 时 year/goal 隐藏 presets）。
+colors-card.jsx: Colors 业务卡，实现 Background/Accent 双 ColorPicker、Accent 字段 tooltip、ColorPicker/预设本地化 labels 与 presets 应用动作；`preset-8` 使用主题对比 token 的 `Shuffle` 随机入口（effective `mid` 时 year/goal 隐藏 presets）。
 device-card.jsx: Device 业务卡，实现 iPhone 可见机型下拉；本地 `SHOW_DEVICE_RESOLUTION_HINT` 开关控制分辨率注释，默认关闭（Android/iPad 数据保留但默认隐藏）。
 url-card.jsx: URL 收口卡，实现 Year 第⑤与 Goal 第⑥的布局分支、Set-it 触发与文案分流；单卡收口语义（effective `mid` 或 `md` bottom-tabs）时复用紧凑锚点行，点击时透传触发元素供关闭后回焦。
 
@@ -20,6 +20,7 @@ url-card.jsx: URL 收口卡，实现 Year 第⑤与 Goal 第⑥的布局分支�
 所有卡片必须遵循统一入参视图模型（`actions/config/t/...`），仅渲染自身职责字段；跨卡流程状态（如 Set-it 抽屉开关）必须留在 HomeSettingsPane，不得回流到单卡。
 
 变更日志
+2026-07-04: cards 层把可交互控件的 aria-label 收口到 i18n：ColorPicker、颜色预设、字段 help、Location Select 与 Wallpaper Language Select 不再泄漏英文默认文案。
 2026-06-15: `colors-card.jsx` 的随机 preset 图标去掉写死黑色，改为继承 `text-kumo-default` 主题对比色，保证暗色主题下 `Shuffle` 入口可见；交互与随机候选色逻辑不变。
 2026-03-28: `CardField.jsx` 新增字段级 tooltip 能力，`colors-card.jsx` 将 Accent 标签接入 `config.accentTooltip`，用字段右侧 info 图标承载“锁屏时间建议同色”的说明，避免把字段提示散落成局部自写分支。
 2026-03-27: `colors-card.jsx` 将 `preset-8` 从静态双色圆点升级为 `Shuffle` 随机入口：点击后重新随机并立即应用；其余 7 个 presets 继续保持双色圆点与原有交互。

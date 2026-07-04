@@ -7,12 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI & UX
+- **Route Recovery**: Added a client-side catch-all route so invalid SPA paths recover to `/` instead of leaving users on a blank application shell.
+- **Localized Control Names**: Localized accessible labels for theme switching, ColorPicker triggers/tools, palette presets, card help controls, setup close actions, reveal-all controls, and inline preview SVGs across EN / zh-CN / zh-TW / JA.
+- **ColorPicker Popover Cleanup**: Kept the ColorPicker color-space selector accessible via `aria-label` without rendering the unwanted visible "Color space" / "色彩空间" label inside the compact popover.
+- **Keyboard Style Selection**: Made sidebar wallpaper style cards focusable, stateful, and keyboard-activatable with Enter/Space, including `aria-pressed` state.
+- **Clipboard Failure Feedback**: Added a localized error toast when clipboard writes fail so the setup flow no longer fails silently.
+
+### Security & API
+- **Worker-first Routing Guard**: Switched Cloudflare static asset routing to `run_worker_first = true`, keeping internal `CLAUDE.md` files and the component registry blocked before assets fallback.
+- **Generate Method Guard**: Added a Worker method guard so unsupported methods return `405 Method Not Allowed` with `Allow: GET, OPTIONS` instead of executing public endpoints.
+- **Safe Generate Cache Keys**: Rebuilt `/generate` cache identity to include foreground overrides and hash user-controlled goal text, preventing wrong-image cache reuse and non-ASCII response headers.
+
 ### Infrastructure
 - **Stable Dependency Refresh**: Updated the stable toolchain to Vite `8.1.3`, Tailwind CSS `4.3.2`, Kumo UI `2.6.0`, Base UI `1.6.0`, React Router `7.18.1`, Framer Motion `12.42.2`, Playwright `1.61.1`, React Aria Components `1.19.0`, and Wrangler `4.107.0`.
 - **Audit Closure**: Refreshed the Vite/Wrangler dependency graph so `npm audit` reports zero vulnerabilities while preserving the `esbuild@0.28.1` override.
 - **Toolchain Matrix Guard**: Extended `sync-version-metadata.js` so `package.json` now drives the README, AGENTS, and root `CLAUDE.md` toolchain version matrices in both sync and `--check` modes.
 
-### Documentation
+### Documentation & Tests
+- **Full Feature Audit Ledger**: Created and verified a canonical feature/user-story ledger covering 100 observed behaviours, their expected outcomes, initial failures, fixes, and post-fix retest status.
+- **Regression Guard Expansion**: Expanded UI, i18n, Worker routing, OG routing, random preset, and registry shell behavior tests to lock the audit fixes and prevent the documented UX/logistical regressions from returning.
+- **Fractal Protocol Sync**: Updated the relevant `CLAUDE.md` maps so the documented architecture matches the route recovery, accessibility, ColorPicker, Worker routing, and test-guard changes.
 - **Version Matrix Sync**: Updated README, AGENTS, root/scripts/tests `CLAUDE.md` maps, and the pre-commit hook staging list so the documented maintenance baseline matches the live package graph.
 
 ## [1.9.30] - 2026-06-16

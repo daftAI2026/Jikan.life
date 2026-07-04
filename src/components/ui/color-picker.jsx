@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 @/components/ui/color, @/components/ui/use-color-picker-state-bridge, react-aria-components, @/components/ui/popover(Kumo), @/components/ui/select(Kumo), @/components/ui/kumo(Button), @/components/ui/input(Kumo), @/components/ui/tooltip(Kumo), @phosphor-icons/react
- * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本与通过 Kumo Tooltip Portal 即时 hover HEX 提示）
+ * [OUTPUT]: ColorPicker 组件（保持对外 hex 协议，内部通过状态桥 Hook 维持 Color 对象语义，通道输入使用配置映射渲染；支持可选隐藏触发器 hex 文本、可注入无障碍 labels 与通过 Kumo Tooltip Portal 即时 hover HEX 提示）
  * [POS]: UI组件层 - 统一颜色编辑入口，被 Landing 与 Registry 共用；采用 KUMO token 样式、`aspect-square` 色域和工具栏 `36px + 2fr + 2fr` 比例布局
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -37,10 +37,28 @@ const COLOR_SPACE_CHANNELS = {
     hsb: ["hue", "saturation", "brightness"],
 }
 
+const DEFAULT_COLOR_PICKER_LABELS = {
+    trigger: (value) => `Color picker, selected ${value}`,
+    eyeDropper: "Pick a color from screen",
+    colorSpace: "Color space",
+    hex: "Hex color value",
+    channel: (channel) => `${channel} channel`,
+}
+
+function resolveColorPickerLabels(labels) {
+    return {
+        trigger: labels.trigger ?? DEFAULT_COLOR_PICKER_LABELS.trigger,
+        eyeDropper: labels.eyeDropper ?? DEFAULT_COLOR_PICKER_LABELS.eyeDropper,
+        colorSpace: labels.colorSpace ?? DEFAULT_COLOR_PICKER_LABELS.colorSpace,
+        hex: labels.hex ?? DEFAULT_COLOR_PICKER_LABELS.hex,
+        channel: labels.channel ?? DEFAULT_COLOR_PICKER_LABELS.channel,
+    }
+}
+
 /* ========================================================================
    EyeDropper Button
    ======================================================================== */
-function EyeDropperButton() {
+function EyeDropperButton({ label }) {
     const state = useContext(ColorPickerStateContext) // JollyUI uses context
 
     // Check browser support
@@ -54,6 +72,7 @@ function EyeDropperButton() {
             size="sm"
             shape="square"
             className="h-9 w-9 shrink-0"
+            aria-label={label}
             onClick={() => {
                 // @ts-expect-error
                 new window.EyeDropper()
@@ -61,7 +80,6 @@ function EyeDropperButton() {
                     .then((result) => state.setColor(parseColor(result.sRGBHex)))
                     .catch(() => { })
             }}
-            title="Pick a color from screen"
         >
             <Eyedropper className="h-4 w-4" weight="bold" />
         </Button>
@@ -71,8 +89,9 @@ function EyeDropperButton() {
 /* ========================================================================
    ColorPicker Component
    ======================================================================== */
-export function ColorPicker({ value, onChange, className, disabled, showValue = true }) {
+export function ColorPicker({ value, onChange, className, disabled, labels = {}, showValue = true }) {
     const { internalColor, setInternalColor } = useColorPickerStateBridge(value)
+    const resolvedLabels = resolveColorPickerLabels(labels)
 
     const [colorSpace, setColorSpace] = useState("hex")
     const channels = COLOR_SPACE_CHANNELS[colorSpace] ?? null
@@ -100,6 +119,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                     <AriaInput
                         className={COLOR_CHANNEL_INPUT_CLASS}
                         placeholder={channel[0].toUpperCase()}
+                        aria-label={resolvedLabels.channel(channel)}
                     />
                 </ColorField>
             ))}
@@ -117,7 +137,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                             "relative w-full justify-start rounded-lg px-2 text-left font-normal",
                             className
                         )}
-                        aria-label={`Color picker, selected ${triggerHexValue}`}
+                        aria-label={resolvedLabels.trigger(triggerHexValue)}
                     >
                         <div className="w-full flex items-center gap-2">
                             <TooltipProvider>
@@ -157,11 +177,12 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
 
                         {/* 3. Toolbar: EyeDropper + ColorSpace Select */}
                         <div className="grid min-w-0 grid-cols-[36px_minmax(0,2fr)_minmax(0,2fr)] items-center gap-2">
-                            <EyeDropperButton />
+                            <EyeDropperButton label={resolvedLabels.eyeDropper} />
 
                             <Select
                                 value={colorSpace}
                                 onValueChange={setColorSpace}
+                                aria-label={resolvedLabels.colorSpace}
                                 className="h-9 min-w-0 w-full rounded-lg text-sm font-medium uppercase"
                             >
                                 <Select.Option value="hex">HEX</Select.Option>
@@ -182,7 +203,7 @@ export function ColorPicker({ value, onChange, className, disabled, showValue = 
                                 maxLength={7}
                                 className="h-9 min-w-0 w-full rounded-lg text-center font-mono text-sm uppercase"
                                 placeholder="HEX"
-                                aria-label="Hex color value"
+                                aria-label={resolvedLabels.hex}
                             />
                         </div>
 

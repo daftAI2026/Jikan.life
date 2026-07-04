@@ -1,11 +1,12 @@
 /**
- * [INPUT]: 依赖 react(useEffect/useState), @/components/ui/kumo(Button), @phosphor-icons/react(SunIcon/MoonIcon)
- * [OUTPUT]: 对外提供 ThemeToggle 主题切换按钮（light/dark）
- * [POS]: registry/sections 的本地主题开关实现，避免跨包引用上游 docs 源码导致构建耦合
+ * [INPUT]: 依赖 react(useEffect/useState), @/components/ui/kumo(Button), @/lib/I18nContext(useI18n), @phosphor-icons/react(SunIcon/MoonIcon)
+ * [OUTPUT]: 对外提供 ThemeToggle 主题切换按钮（light/dark，本地化 aria-label）
+ * [POS]: registry/sections 的本地主题开关实现，避免跨包引用上游 docs 源码导致构建耦合，并保持可访问名称跟随 UI 语言
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/kumo"
+import { useI18n } from "@/lib/I18nContext"
 import { MoonIcon, SunIcon } from "@phosphor-icons/react"
 
 const MODES = new Set(["light", "dark"])
@@ -30,6 +31,7 @@ function getInitialMode() {
 }
 
 function ThemeToggle() {
+    const { t } = useI18n()
     const [mode, setMode] = useState(getInitialMode)
 
     useEffect(() => {
@@ -47,7 +49,7 @@ function ThemeToggle() {
         <Button
             variant="ghost"
             shape="square"
-            aria-label={`Switch to ${mode === "light" ? "dark" : "light"} mode`}
+            aria-label={t(mode === "light" ? "theme.switchToDark" : "theme.switchToLight")}
             onClick={toggleMode}
         >
             {mode === "light" ? <MoonIcon size={20} /> : <SunIcon size={20} />}

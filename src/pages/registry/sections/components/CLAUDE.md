@@ -2,7 +2,7 @@
 > L2 | 父级: /src/pages/registry/sections/CLAUDE.md
 
 成员清单
-HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流）、首次 AutoFlow `revealStage` 与 preview chrome 独立收尾 reveal；外层桌面壳与 segmented workspace 由 helper 决定，`mobile + md drawer open` 共用 segmented 壳，guide 宿主覆盖 header 以下，`md + drawer closed` 只在 pane 局部复用 mid 路径，同时测量 workspace 高度并下发 segmented 预览 target height
+HomeGrid.jsx: Registry 主工作区编排层，承载 preview|settings 与 selectedStyle/effectiveLayoutTier/sidebarOpen 联动，并上提 Set-it 流程状态（copy success 后平台分流，copy failure 本地化 toast 后中止）、首次 AutoFlow `revealStage` 与 preview chrome 独立收尾 reveal；外层桌面壳与 segmented workspace 由 helper 决定，`mobile + md drawer open` 共用 segmented 壳，guide 宿主覆盖 header 以下，`md + drawer closed` 只在 pane 局部复用 mid 路径，同时测量 workspace 高度并下发 segmented 预览 target height
 
 结构
 components/ - 工作区编排子模块 (1 file)
@@ -14,6 +14,7 @@ HomeGrid 从 vendor 薄包装切换为本地编排实现；2026-03-27 起，旧�
 只使用 `@/components/ui/*` 统一入口组件与 Kumo token，禁止引入 shadcn 子组件或自定义颜色。
 
 变更日志
+2026-07-04: HomeGrid 的 Set-it 流程补齐剪贴板失败分支，复制失败时显示本地化错误 toast 并停止打开 SetupGuide，避免用户进入不可执行的安装步骤。
 2026-03-27: 删除 `ComponentCell.jsx`、`ComponentGrid.jsx` 与 `ComponentData.js`；components/ 从“工作区 + 旧组件墙”收口为纯 `HomeGrid.jsx` 单文件子模块。
 2026-02-10: 新增 HomeGrid 复刻 Kumo 首页组件墙。
 2026-02-11: HomeGrid 曾改为上游组件薄包装挂载（历史）。

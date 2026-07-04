@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 react(useCallback/useEffect/useRef/useState), @/components/ui/kumo(useKumoToastManager), sections/useRegistryBlockingScrollLock, workspace/useHomeWallpaperConfig, HomePreviewPane, HomeSettingsPane, SetupGuidePanel, workspace/mobile-preview-sizing 与 effective-layout-tier 的桌面壳/segmented helper，以及 effectiveLayoutTier/sidebarOpen
- * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 首次 AutoFlow 卡片 stage 管理 + preview chrome 独立收尾 reveal + onboarding=force 测试覆盖；mobile 与 `md + 抽屉打开` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下整块内容，并向 segmented 预览链路下发首卡保底后的可变 target height）
+ * [OUTPUT]: 对外提供 HomeGrid 组件（preview|settings 工作区 + Set-it 流程状态上提 + 剪贴板失败反馈 + 首次 AutoFlow 卡片 stage 管理 + preview chrome 独立收尾 reveal + onboarding=force 测试覆盖；mobile 与 `md + 抽屉打开` 共用 segmented workspace，mobile guide 宿主覆盖 header 以下整块内容，并向 segmented 预览链路下发首卡保底后的可变 target height）
  * [POS]: registry/components 的主页工作区编排层，承接 selectedStyle/forceOnboarding/effectiveLayoutTier/sidebarOpen 并统一驱动预览、配置、AutoFlow 与 Set-it 引导链路；`revealStage` 只负责右侧卡片解锁，左侧锁屏 overlay 改为独立布尔状态，并在首次引导最后一张卡后额外停顿 150ms 再于下一帧收尾 reveal（Guide 打开时锁背景滚动；segmented workspace 的壳层判定与 segmented 预览高度预算都在此收口，空态也直接进入该模式）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -175,7 +175,10 @@ function HomeGrid({
 
     const handleSetIt = async (triggerElement) => {
         const ok = await viewModel.actions.copyUrl()
-        if (!ok) return
+        if (!ok) {
+            toastManager.add({ description: viewModel.t("url.copyError"), variant: "error", timeout: 3000 })
+            return
+        }
         setupTriggerRef.current = triggerElement ?? null
         toastManager.add({ description: viewModel.t("url.copySuccess"), timeout: 3000 })
         setSetupPlatform(viewModel.selectedDevice.category === "Android" ? "android" : "ios")

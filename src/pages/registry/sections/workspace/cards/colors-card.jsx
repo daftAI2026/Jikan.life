@@ -1,13 +1,23 @@
 /**
  * [INPUT]: 依赖 Kumo Button、ColorPicker、CardField、@phosphor-icons/react(Shuffle)、palettePresets 与颜色 actions/config/effectiveLayoutTier/i18n 链路
- * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡）
- * [POS]: workspace/cards 的颜色配置卡，承接 background/accent、Accent 字段 tooltip 与 presets 应用；preset-8 额外收口为主题对比 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
+ * [OUTPUT]: 对外提供 colorsCard 定义（Colors 业务卡，向 ColorPicker/preset 按钮注入本地化可访问标签）
+ * [POS]: workspace/cards 的颜色配置卡，承接 background/accent、Accent 字段 tooltip、ColorPicker labels 与 presets 应用；preset-8 额外收口为主题对比 Shuffle 随机入口（effective mid 时 year/goal 仅保留与 lg 同构的 picker 区）
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Shuffle } from "@phosphor-icons/react"
 import { Button as KumoButton } from "@/components/ui/kumo"
 import { ColorPicker } from "@/components/ui/color-picker"
 import { CardField, CardFieldsStack } from "./CardField"
+
+function createColorPickerLabels(t) {
+    return {
+        trigger: (value) => t("config.colorPicker", { value }),
+        eyeDropper: t("config.colorPickerEyeDropper"),
+        colorSpace: t("config.colorPickerColorSpace"),
+        hex: t("config.colorPickerHex"),
+        channel: (channel) => t("config.colorPickerChannel", { channel: channel.toUpperCase() }),
+    }
+}
 
 function RandomPresetIcon() {
     return (
@@ -18,15 +28,14 @@ function RandomPresetIcon() {
 function renderPresetButtons({ actions, palettePresets, className, t }) {
     return (
         <div className={className}>
-            {palettePresets.map((preset) => (
+            {palettePresets.map((preset, index) => (
                 <KumoButton
                     key={preset.id}
-                    aria-label={preset.kind === "random" ? t("config.randomPreset") : undefined}
+                    aria-label={preset.kind === "random" ? t("config.randomPreset") : t("config.colorPresetLabel", { number: String(index + 1) })}
                     variant="secondary"
                     size="sm"
                     className="min-w-0 px-2"
                     onClick={() => preset.kind === "random" ? actions.applyRandomPalette() : actions.applyPalette(preset.bg, preset.accent)}
-                    title={preset.kind === "random" ? t("config.randomPreset") : undefined}
                 >
                     {preset.kind === "random" ? (
                         <span className="inline-flex w-7 items-center justify-center text-kumo-default">
@@ -57,14 +66,16 @@ function renderColorPickers({ actions, className, config, t }) {
                 <ColorPicker
                     className="w-full"
                     value={config.bgColor}
+                    labels={createColorPickerLabels(t)}
                     showValue={false}
                     onChange={(value) => actions.setBackgroundColor(value)}
                 />
             </CardField>
-            <CardField label={t("config.accent")} tooltip={t("config.accentTooltip")} className="min-w-0 w-full">
+            <CardField label={t("config.accent")} tooltip={t("config.accentTooltip")} t={t} className="min-w-0 w-full">
                 <ColorPicker
                     className="w-full"
                     value={config.accentColor}
+                    labels={createColorPickerLabels(t)}
                     showValue={false}
                     onChange={(value) => actions.setAccentColor(value)}
                 />

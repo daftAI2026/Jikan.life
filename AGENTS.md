@@ -43,7 +43,7 @@ Jikan.life/
 | Text/font logic | `shared/wallpaper-text.js` | Wallpaper i18n text and goalName script-aware font strategy |
 | Inline previews | `src/pages/registry/sections/workspace/YearPreviewSvg.jsx`, `src/pages/registry/sections/workspace/GoalPreviewSvg.jsx`, `src/pages/registry/sections/workspace/LockScreenPreviewFrame.jsx` | Browser SVG preview must match Worker output semantics |
 | Lock-screen chrome | `src/pages/registry/sections/workspace/lock-screen-overlay/` | Live overlay runtime, colors, controls, symbols and constants |
-| Worker routes | `worker/index.js`, `wrangler.toml` | `/`, `/generate`, `/og-image.png`, `/health`, `/app` routing |
+| Worker routes | `worker/index.js`, `wrangler.toml` | All requests run Worker-first; APIs include `/generate`, `/og-image.png`, `/health`, with `/app` deprecated redirect |
 | Worker SVG | `worker/svg.js`, `worker/generators/*.js` | SVG primitives and Year/Life/Goal/OG generators |
 | UI adapters | `src/components/ui/kumo.jsx`, `src/components/ui/*.jsx` | Pages consume Kumo through local adapters only |
 | Vendor bridge | `src/components/ui/vendor/kumo-date-picker/` | Temporary Kumo DatePicker snapshot; do not generalize it |
@@ -76,7 +76,7 @@ Jikan.life/
 - UI is Kumo UI + Tailwind v4 + Kumo tokens. Page code must not direct-import `@cloudflare/kumo`; use `@/components/ui/*`.
 - Prefer Kumo `LayerCard`, `Tabs`, `ClipboardText`, `SkeletonLine`, `DatePicker` through `src/components/ui/kumo.jsx`.
 - Do not hard-code component colors with raw hex. Use Kumo CSS variables or scoped variables such as `--step-list-bullet-color`.
-- ColorPicker uses Kumo Popover + Kumo Select and exposes hex only; keep Color object bridging in `use-color-picker-state-bridge.js`.
+- ColorPicker uses Kumo Popover + Kumo Select, exposes hex only, and receives localized labels from callers; keep Color object bridging in `use-color-picker-state-bridge.js`.
 - Icons use `@phosphor-icons/react` unless an existing static brand SVG is already the source of truth.
 - Public preview shell assets live under `public/preview/`; live overlay behavior stays in React workspace modules.
 
@@ -90,7 +90,7 @@ Jikan.life/
 ### Worker And Edge
 
 - `wrangler.toml` is the deployment and observability truth source.
-- `/`, `/generate`, `/og-image.png`, `/health`, `/app`, `/app/` must run Worker before static asset fallback.
+- All requests must run Worker before static asset fallback (`run_worker_first = true`) so route guards, HTML rewriting, API method checks, and deprecated redirects share one edge boundary.
 - `/app` and `/app/` are deprecated and must stay `308 -> /` at the edge.
 - Public access to internal `CLAUDE.md` files and `/api/component-registry` is blocked by Worker route guards; do not weaken this.
 - `worker/svg.js` must keep XML-safe font-family attributes.
@@ -161,9 +161,9 @@ shared/wallpaper-core.js facade
 
 index.html + dist assets
    ↓
-wrangler.toml run_worker_first
+wrangler.toml run_worker_first=true
    ↓
-Cloudflare Worker routes /, /generate, /og-image.png, /health, /app, /app/
+Cloudflare Worker guards all requests; API routes /generate, /og-image.png, /health; /app redirects
 ```
 
 ## TOOLCHAIN

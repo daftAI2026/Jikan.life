@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 ./timezone.js, ./generators/{year,life,goal,og}.js, ./validation.js, ../shared/wallpaper-core.js(resolveFontBufferLanguages), @resvg/resvg-wasm
  * [OUTPUT]: 对外提供 default.fetch (Cloudflare Worker Handler)
- * [POS]: worker/index.js - Worker 核心入口，负责历史入口重定向、路由分发、WASM 初始化、goalName 感知字体加载、OG 分享卡与壁纸图像生成
+ * [POS]: worker/index.js - Worker 核心入口，负责只读方法守卫、历史入口重定向、路由分发、WASM 初始化、goalName 感知字体加载、ASCII-safe 缓存键、OG 分享卡与壁纸图像生成
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * 
  * Life Calendar Wallpaper - Cloudflare Worker
@@ -32,6 +32,42 @@ async function initializeWasm() {
         await initWasm(resvgWasm);
         wasmInitialized = true;
     }
+}
+
+function toHex(buffer) {
+    return [...new Uint8Array(buffer)]
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+async function sha256Hex(value) {
+    const data = new TextEncoder().encode(value);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return toHex(digest);
+}
+
+async function createGenerateCacheKey(validated, cacheDay) {
+    const goalNameHash = validated.goalName ? await sha256Hex(validated.goalName) : 'none';
+    const cacheParts = [
+        'generate',
+        validated.country,
+        validated.type,
+        validated.bg,
+        validated.accent,
+        validated.fg ?? 'auto',
+        `${validated.width}x${validated.height}`,
+        validated.clockHeight,
+        validated.cols ?? 'default',
+        validated.padding ?? 'default',
+        validated.lang,
+        validated.goal ?? 'none',
+        validated.goalStart ?? 'none',
+        goalNameHash,
+        validated.format,
+        cacheDay,
+    ];
+
+    return `generate-${await sha256Hex(cacheParts.join('|'))}-${cacheDay}`;
 }
 
 // ============================================================================
@@ -127,6 +163,16 @@ export default {
         // 处理预检请求 (OPTIONS)
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
+        }
+
+        if (request.method !== 'GET') {
+            return new Response('Method Not Allowed', {
+                status: 405,
+                headers: {
+                    ...corsHeaders,
+                    Allow: 'GET, OPTIONS',
+                },
+            });
         }
 
         // ====================================================================
@@ -244,7 +290,7 @@ async function handleGenerate(request, url, corsHeaders, ctx) {
         // Generate cache key based on parameters and current date in user timezone
         const cacheDate = getDateInTimezone(timezone);
         const cacheDay = `${cacheDate.year}-${String(cacheDate.month).padStart(2, '0')}-${String(cacheDate.day).padStart(2, '0')}`;
-        const cacheKey = `${validated.country}-${validated.type}-${validated.bg}-${validated.accent}-${validated.width}x${validated.height}-${validated.clockHeight}-${validated.cols ?? 'default'}-${validated.padding ?? 'default'}-${validated.lang}-${validated.goal ?? 'none'}-${validated.goalStart ?? 'none'}-${validated.goalName}-${validated.format}-${cacheDay}`;
+        const cacheKey = await createGenerateCacheKey(validated, cacheDay);
 
         // Build a cache request URL to use with caches.default (Cloudflare Workers)
         // Only enable server-side caching for the non-user-specific `year` type

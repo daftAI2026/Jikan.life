@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useState)、@/components/ui/kumo(SkeletonLine)、HomeSettingsPaneBottomTabsLayout、SettingsCardShell、SetupGuidePanel、cards/CARD_REGISTRY，以及父级传入的 Set-it/AutoFlow/effectiveLayoutTier/segmented-workspace/guide-host 参数
- * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、grid 布局与 segmented workspace 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
- * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；segmented workspace 专属视图已提取到私有文件，pane 只保留分流与业务编排
+ * [OUTPUT]: 对外提供 HomeSettingsPane（右侧设置面板，支持空态 6 卡 Skeleton Base、本地化 help/reveal labels、grid 布局与 segmented workspace 的底部 Tabs 单卡布局；空态也支持全量 tabs + 单卡 skeleton，且 tabs/title 壳层常驻后仅切换文案 skeleton 态）与 SETTINGS_CARD_IDS 常量
+ * [POS]: registry/sections/workspace 的右侧设置面板编排层，负责卡片顺序、reveal/skeleton、本地化可访问标签、pane 级 Guide 宿主与 `useAnchoredSetupRow` 语义收口；segmented workspace 专属视图已提取到私有文件，pane 只保留分流与业务编排
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useState } from "react"
@@ -76,16 +76,17 @@ function resolveCardDefinition(cardId, cardViewModel, t) {
         card,
         resolvedTitle,
         resolvedTitleTooltip,
+        helpAriaLabel: card.titleTooltipKey ? t("help.label", { label: resolvedTitle }) : undefined,
     }
 }
 
-function SettingsCardSkeleton({ onRequestRevealAll }) {
+function SettingsCardSkeleton({ onRequestRevealAll, t = (key) => key }) {
     const canFastForward = typeof onRequestRevealAll === "function"
 
     return (
         <button
             type="button"
-            aria-label={canFastForward ? "Reveal all settings cards" : undefined}
+            aria-label={canFastForward ? t("settings.revealAll") : undefined}
             className={canFastForward ? "w-full cursor-pointer px-4 py-2 text-left" : "w-full cursor-default px-4 py-2 text-left"}
             onClick={canFastForward ? onRequestRevealAll : undefined}
             disabled={!canFastForward}
@@ -164,6 +165,7 @@ function HomeSettingsPaneGridLayout({
                         const isUnlocked = slotIndex < unlockedCount
                         const resolvedTitle = cardDefinition.resolvedTitle
                         const resolvedTitleTooltip = cardDefinition.resolvedTitleTooltip
+                        const helpAriaLabel = cardDefinition.helpAriaLabel
                         const title = isUnlocked ? resolvedTitle : <SettingsCardTitleSkeleton />
                         const titleTooltip = isUnlocked ? resolvedTitleTooltip : undefined
 
@@ -173,6 +175,7 @@ function HomeSettingsPaneGridLayout({
                                 cardId={cardId}
                                 title={title}
                                 titleTooltip={titleTooltip}
+                                helpAriaLabel={isUnlocked ? helpAriaLabel : undefined}
                                 indexMark={SETTINGS_SLOT_MARKS[slotIndex]}
                                 isIndexActive={isUnlocked}
                                 className={resolveCardShellClassName({ selectedType: config.selectedType, cardId, isMid })}
@@ -180,7 +183,7 @@ function HomeSettingsPaneGridLayout({
                             >
                                 {isUnlocked
                                     ? cardDefinition.card.render(cardViewModel)
-                                    : <SettingsCardSkeleton onRequestRevealAll={onRequestRevealAll} />}
+                                    : <SettingsCardSkeleton onRequestRevealAll={onRequestRevealAll} t={t} />}
                             </SettingsCardShell>
                         )
                     })}

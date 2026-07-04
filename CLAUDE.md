@@ -24,7 +24,7 @@ scripts/ - 开发校验脚本
 AGENTS.md - Agent 行动地图，仿 Kumo Knowledge Base 结构记录查找入口、约定、反模式、命令、流水线、工具链与安全边界
 index.html - SPA 入口模板，同时承载首页最小离屏 SEO 语义、结构化数据、主题引导与统计脚本
 vite.config.js - Vite 构建配置 (含 manualChunks 拆包策略)
-wrangler.toml - Cloudflare Workers 部署与观测配置（含 `/`、`/app`、`/app/` 与 `/og-image.png` 的边缘层优先路由、Workers Logs 开关与采样率）
+wrangler.toml - Cloudflare Workers 部署与观测配置（`run_worker_first = true`，全请求先过 Worker 再回源静态资产；含 Workers Logs 开关与采样率）
 package.json - 统一依赖管理
 package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler 兼容组合
 </config>
@@ -54,11 +54,11 @@ package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler �
 - **颜色桥接**: ColorPicker 对外仅传 `hex`，内部必须维持 Color 对象状态桥，避免触底拖拽时 HSB 通道被回流重置
 - **职责隔离**: ColorPicker 的状态桥接逻辑独立在 `src/components/ui/use-color-picker-state-bridge.js`，渲染组件不再内嵌同步实现
 - **布局一致**: ColorPicker 色域区使用 `aspect-square` 跟随弹层内容宽度，工具栏保持 `36px + 2fr + 2fr`，吸管固定 36×36，颜色空间与 HEX 输入平分剩余宽度
-- **颜色输入一致**: ColorPicker 触发按钮必须即时暴露当前 HEX，禁止回退浏览器原生 `title` 慢提示；RGB/HSL/HSB 通道输入共用统一数字 typography，禁止百分比/角度值漂移成另一套视觉语言
+- **颜色输入一致**: ColorPicker 触发按钮必须即时暴露当前 HEX，禁止回退浏览器原生 `title` 慢提示；所有可见控件必须由调用方注入本地化 label；RGB/HSL/HSB 通道输入共用统一数字 typography，禁止百分比/角度值漂移成另一套视觉语言
 - **手柄分层**: ColorThumb 使用外圈/中心点分层渲染（伪元素 + token），避免单层叠色造成的圆角边缘混色
 - **状态驱动**: 所有个性化配置通过 URL 参数传递 (Stateless)
 - **首页双相职责**: `index.html` 同时承担 React SPA 挂载入口与首页最小离屏 SEO 语义；离屏语义中的产品事实必须与 `src/data/*` 和设备可见性真相源保持一致，且不得凭空扩写 FAQ/说明页内容或打断用户首屏
-- **首页 OG 可改写**: 首页 HTML 必须先经过 Worker 再回源静态资源，确保 `og:image` 能按当前请求 origin 动态改写，禁止直接从静态资产绕过 Worker 输出首页元数据
+- **Worker 优先边界**: 全请求必须先经过 Worker 再回源静态资源，确保首页 `og:image` 动态改写、内部文档/API 防直出、废弃入口重定向与 API 方法约束都在同一边缘层生效
 - **废弃入口前移**: 历史入口 `/app` 与 `/app/` 必须在边缘层返回 HTTP 308，禁止继续依赖 SPA 壳页面 + 前端 Navigate 作为线上主重定向路径
 - **观测配置收口**: Workers Logs 开关、调用日志与采样率统一收口在 `wrangler.toml`，禁止面板手改后让本地配置失真
 - **文档真相源收口**: 根目录不再保留独立 `CONTRIBUTING.md` / `MULTILINGUAL.md`；贡献约束统一看本文件，i18n 真相源统一看 `src/data/i18n.js` 与 `src/lib/I18nContext.jsx`

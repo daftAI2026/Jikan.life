@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react(useMemo), @/components/ui/kumo(Tabs), @/lib/utils(cn), MobileFooter, home-sidebar-visuals 预览组件、home-sidebar-style-cards 纯 helper、home-sidebar-date-stats 的 Year 统计文案 helper、home-sidebar-mixed-text 的日文混排分段 helper 与 i18n/date 视图数据
- * [OUTPUT]: 对外提供 HomeSidebarCards（桌面多卡列表 + 移动 segmented 单卡查看器）
- * [POS]: registry/sections 的 HomeSidebar 卡片层，封装 year/life/goal 卡片字典、可见卡过滤与移动/桌面双布局渲染细节；移动端 tabs 只负责查看卡片，不直接提交 selectedStyle
+ * [OUTPUT]: 对外提供 HomeSidebarCards（桌面多卡列表 + 移动 segmented 单卡查看器 + 键盘可选 style card）
+ * [POS]: registry/sections 的 HomeSidebar 卡片层，封装 year/life/goal 卡片字典、可见卡过滤与移动/桌面双布局渲染细节；移动端 tabs 只负责查看卡片，不直接提交 selectedStyle，卡片本体统一 click/Enter/Space 提交
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { useMemo } from "react"
@@ -35,10 +35,21 @@ function StyleCard({ isSelected, layoutMode, onSelect, style }) {
     const isMobileSegmented = layoutMode === "mobile-segmented"
     const hasInlineStatsLayout = stats.every((stat) => Boolean(stat.inlineText))
     const titleToneClass = isSelected ? "text-kumo-default" : "text-kumo-strong group-hover:text-kumo-default"
+    function handleStyleCardKeyDown(event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault()
+            onSelect?.()
+        }
+    }
 
     return (
         <article
+            role="button"
+            tabIndex={0}
+            aria-pressed={isSelected}
+            aria-label={style.plainTitle}
             onClick={onSelect}
+            onKeyDown={handleStyleCardKeyDown}
             className={cn(
                 "group flex cursor-pointer flex-col",
                 isMobileSegmented ? "h-full min-h-0 flex-1" : "min-h-0 flex-1",
@@ -157,6 +168,7 @@ function HomeSidebarCards({
         () => [
             {
                 id: "year",
+                plainTitle: t("type.year.name", { year: String(yearStats.year) }),
                 title: renderMixedSidebarText(t("type.year.name", { year: String(yearStats.year) }), lang),
                 description: t("type.year.description"),
                 preview: (
@@ -176,6 +188,7 @@ function HomeSidebarCards({
             },
             {
                 id: "life",
+                plainTitle: t("type.life.name"),
                 title: t("type.life.name"),
                 description: t("type.life.description"),
                 preview: (
@@ -190,6 +203,7 @@ function HomeSidebarCards({
             },
             {
                 id: "goal",
+                plainTitle: t("type.goal.name"),
                 title: t("type.goal.name"),
                 description: t("type.goal.description"),
                 preview: (

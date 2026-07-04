@@ -1,17 +1,18 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: 向 `node --test` 注册 Worker 路由护栏用例，锁定废弃入口 `/app` 的边缘层永久重定向、内部资源拦截与首页 HTML 前导构建注释剥离契约
- * [POS]: tests/ Worker 路由与部署契约护栏，防止 `/app` 再次回流为 SPA 200 壳页面，并锁定公开资源边界与首页 HTML 改写边界
+ * [OUTPUT]: 向 `node --test` 注册 Worker 路由护栏用例，锁定废弃入口 `/app` 的边缘层永久重定向、内部资源拦截、只读方法契约、ASCII-safe 缓存键与首页 HTML 前导构建注释剥离契约
+ * [POS]: tests/ Worker 路由与部署契约护栏，防止 `/app` 再次回流为 SPA 200 壳页面，并锁定公开资源边界、HTTP 契约、缓存正确性与首页 HTML 改写边界
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import { readSource } from "./helpers/source-test-helpers.js"
 
-test("Wrangler routes / and /app through worker before SPA assets fallback", () => {
+test("Wrangler routes every request through worker before SPA assets fallback", () => {
   const source = readSource("wrangler.toml")
 
-  assert.match(source, /run_worker_first\s*=\s*\[[^\]]*"\/"[^\]]*"\/generate"[^\]]*"\/health"[^\]]*"\/app"[^\]]*"\/app\/"[^\]]*\]/s)
+  assert.match(source, /run_worker_first\s*=\s*true/)
+  assert.doesNotMatch(source, /run_worker_first\s*=\s*\[/)
   assert.match(source, /not_found_handling\s*=\s*"single-page-application"/)
 })
 
@@ -54,6 +55,32 @@ test("Worker blocks internal CLAUDE docs and component registry before assets fe
   assert.ok(
     internalBlockIndex < assetsFetchIndex,
     "internal resource block must happen before static asset fallback"
+  )
+})
+
+test("Worker rejects unsupported methods before route execution", () => {
+  const source = readSource("worker/index.js")
+  const methodGuardIndex = source.indexOf("request.method !== 'GET'")
+  const generateIndex = source.indexOf("url.pathname === '/generate'")
+
+  assert.notEqual(methodGuardIndex, -1, "worker should guard non-GET methods after OPTIONS")
+  assert.ok(methodGuardIndex < generateIndex, "method guard must happen before route execution")
+  assert.match(source, /status:\s*405/)
+  assert.match(source, /Allow:\s*['"]GET, OPTIONS['"]/)
+})
+
+test("Generate cache key includes foreground override and never exposes raw goal names", () => {
+  const source = readSource("worker/index.js")
+
+  assert.match(source, /async function createGenerateCacheKey\(/)
+  assert.match(source, /crypto\.subtle\.digest\(['"]SHA-256['"]/)
+  assert.match(source, /validated\.fg \?\? ['"]auto['"]/)
+  assert.match(source, /goalNameHash/)
+  assert.match(source, /TextEncoder/)
+  assert.doesNotMatch(
+    source,
+    /\$\{validated\.goalName\}/,
+    "cache keys and X-Cache-Key headers must not include raw Unicode/user goal names"
   )
 })
 

@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js 的 computeYearLayout/getDatePartsInTimezone/getWallpaperFontFamily/contrastAlpha
- * [OUTPUT]: 对外提供 YearPreviewSvg 组件
+ * [OUTPUT]: 对外提供 YearPreviewSvg 组件（aria-label 由父层本地化传入）
  * [POS]: workspace 的 Year inline SVG 预览渲染器，直接消费共享布局真相源并只负责浏览器侧矢量绘制
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -11,7 +11,7 @@ import {
     getWallpaperFontFamily,
 } from "../../../../../shared/wallpaper-core.js"
 
-function YearPreviewSvg({ config, selectedDevice }) {
+function YearPreviewSvg({ config, selectedDevice, ariaLabel }) {
     const baseWidth = selectedDevice.width
     const baseHeight = selectedDevice.height
     const today = getDatePartsInTimezone(config.timezone)
@@ -34,7 +34,7 @@ function YearPreviewSvg({ config, selectedDevice }) {
 
     return (
         <svg
-            aria-label="Wallpaper live preview"
+            aria-label={ariaLabel}
             className="block"
             role="img"
             viewBox={`0 0 ${baseWidth} ${baseHeight}`}

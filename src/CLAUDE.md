@@ -2,7 +2,7 @@
 > L2 | 父级: /CLAUDE.md
 
 成员清单
-App.jsx: 根组件，控制路由与核心布局
+App.jsx: 根组件，控制路由与核心布局，未知路径统一回落到首页避免空白 SPA 状态
 main.jsx: Vite 入口文件，初始化 React 根节点
 index.css: Tailwind CSS v4 样式入口，使用 Kumo 原生 token，并通过 `--step-list-bullet-color` 支持 Setup 面板列表 bullet 局部颜色覆盖
 components/: 原子组件 (ui/ Kumo 适配层) + 品牌图标 (icons/)

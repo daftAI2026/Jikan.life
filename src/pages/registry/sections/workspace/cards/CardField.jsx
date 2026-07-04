@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖 react JSX、Tooltip 原语、Info 图标与可选 className
- * [OUTPUT]: 对外提供 CardFieldsStack、CardField 两个布局壳组件；CardField 支持可选字段级 tooltip
+ * [INPUT]: 依赖 react JSX、Tooltip 原语、Info 图标、可选 i18n t 函数与可选 className
+ * [OUTPUT]: 对外提供 CardFieldsStack、CardField 两个布局壳组件；CardField 支持可选字段级 tooltip 与本地化 help aria-label
  * [POS]: workspace/cards 的字段布局骨架，统一 200px 列宽与标题/提示排版，并承接字段级帮助提示
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -16,8 +16,8 @@ function CardFieldsStack({ children, className = "", gap = "gap-4" }) {
     )
 }
 
-function CardField({ label, hint, tooltip, children, className = "", labelClassName = "" }) {
-    const tooltipAriaLabel = typeof label === "string" ? `${label} help` : "Field help"
+function CardField({ label, hint, tooltip, children, className = "", labelClassName = "", t = (_key, { label: fieldLabel } = {}) => `${fieldLabel} help` }) {
+    const tooltipAriaLabel = tooltip ? t("help.label", { label }) : undefined
 
     return (
         <div className={cn("w-[200px] max-w-full", className)}>

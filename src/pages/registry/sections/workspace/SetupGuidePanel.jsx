@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @/components/ui/kumo(Button/ClipboardText/LayerCard/Text/Banner/Badge), @phosphor-icons/react(XIcon/Warning), @/lib/utils(cn), i18n t() 与平台参数，以及可选宿主样式注入（containerClassName/asideClassName/visibilityClassName）
- * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚；关闭态 inert + aria 隔离）
- * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo LayerCard 组件并收敛滚动职责
+ * [OUTPUT]: 对外提供 SetupGuidePanel 组件（右侧设置区或 HomeGrid 中档整区的局部覆盖层 + 右滑引导面板 + iOS/Android 步骤渲染，仅内容区可滚；关闭态 inert + aria 隔离；关闭按钮 aria-label 本地化）
+ * [POS]: registry/sections/workspace 的 Year/Goal 收口卡后续动作承载层，被 HomeGrid/HomeSettingsPane 双宿主复用；步骤卡统一使用 Kumo LayerCard 组件并收敛滚动职责，同时消费 i18n 文案作为可访问名称真相源
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { Badge, Banner, Button as KumoButton, ClipboardText, LayerCard, Text } from "@/components/ui/kumo"
@@ -124,7 +124,7 @@ function SetupGuidePanel({
                         className="absolute top-2 right-2"
                         variant="ghost"
                         shape="square"
-                        aria-label={t("registry.menu.close")}
+                        aria-label={t("setup.close")}
                         onClick={onClose}
                     >
                         <XIcon size={16} weight="bold" />

@@ -536,6 +536,31 @@ test("i18n includes set button key in all languages", () => {
   assert.equal(setKeyCount, 4)
 })
 
+test("i18n includes clipboard failure and accessibility label keys in all languages", () => {
+  const source = readSource("src/data/i18n.js")
+  const keys = [
+    "url.copyError",
+    "theme.switchToLight",
+    "theme.switchToDark",
+    "config.colorPicker",
+    "config.colorPickerEyeDropper",
+    "config.colorPickerColorSpace",
+    "config.colorPickerHex",
+    "config.colorPickerChannel",
+    "config.colorPresetLabel",
+    "preview.liveWallpaper",
+    "setup.close",
+    "settings.revealAll",
+    "help.label",
+  ]
+
+  keys.forEach((key) => {
+    const escapedKey = key.replaceAll(".", "\\.")
+    const count = (source.match(new RegExp(`'${escapedKey}':`, "g")) || []).length
+    assert.equal(count, 4, `${key} should exist in all four UI languages`)
+  })
+})
+
 test("i18n includes device tooltip key in all languages", () => {
   const source = readSource("src/data/i18n.js")
   const deviceTooltipCount = (source.match(/'config\.deviceTooltip':/g) || []).length
@@ -585,6 +610,9 @@ test("i18n includes inline stat copy keys in all languages", () => {
 test("ThemeToggle uses single 'mode' key without 'theme' dual-write", () => {
   const source = readSource("src/pages/registry/sections/ThemeToggle.jsx")
 
+  assert.match(source, /useI18n\(\)/)
+  assert.match(source, /aria-label=\{t\(mode === "light" \? "theme\.switchToDark" : "theme\.switchToLight"\)\}/)
+  assert.doesNotMatch(source, /Switch to \$\{mode === "light" \? "dark" : "light"\} mode/)
   assert.match(source, /localStorage\.setItem\("mode"/)
   assert.doesNotMatch(source, /localStorage\.setItem\("theme"/)
   assert.doesNotMatch(source, /localStorage\.getItem\("theme"\)/)

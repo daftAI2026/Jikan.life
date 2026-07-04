@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 shared/wallpaper-core.js 的 computeGoalLayout/getDatePartsInTimezone/getWallpaperText/getWallpaperFontFamily/resolveTextFontFamily/contrastAlpha 与 shared/goal-ring-geometry.js
- * [OUTPUT]: 对外提供 GoalPreviewSvg 组件
+ * [OUTPUT]: 对外提供 GoalPreviewSvg 组件（aria-label 由父层本地化传入）
  * [POS]: workspace 的 Goal inline SVG 预览渲染器，直接消费共享布局真相源与圆环几何，只负责浏览器侧矢量绘制
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -14,7 +14,7 @@ import {
 } from "../../../../../shared/wallpaper-core.js"
 import { getGoalRingGeometry } from "../../../../../shared/goal-ring-geometry.js"
 
-function GoalPreviewSvg({ config, selectedDevice }) {
+function GoalPreviewSvg({ config, selectedDevice, ariaLabel }) {
     const baseWidth = selectedDevice.width
     const baseHeight = selectedDevice.height
     const today = getDatePartsInTimezone(config.timezone)
@@ -40,7 +40,7 @@ function GoalPreviewSvg({ config, selectedDevice }) {
 
     return (
         <svg
-            aria-label="Wallpaper live preview"
+            aria-label={ariaLabel}
             className="block"
             role="img"
             viewBox={`0 0 ${baseWidth} ${baseHeight}`}
