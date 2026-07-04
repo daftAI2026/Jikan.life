@@ -152,6 +152,8 @@ test("App routes include home entry and /app redirect", () => {
   assert.match(source, /HomePage/)
   assert.match(source, /path=["']\/app["']/)
   assert.match(source, /Navigate to=["']\/["'] replace/)
+  assert.match(source, /path=["']\*["']/)
+  assert.match(source, /path=["']\*["'][\s\S]*?<Navigate to=["']\/["'] replace/)
   assert.doesNotMatch(source, /path=["']\/design["']/)
 })
 
@@ -230,7 +232,7 @@ test("ColorPicker uses Kumo Tooltip Portal for trigger HEX hover instead of inli
     /showValue\s*\?\s*"size-6 shrink-0 rounded-md ring ring-kumo-line"\s*:\s*"h-5 w-full rounded-md ring ring-kumo-line"/
   )
   assert.match(source, /const triggerHexValue = internalColor\.toString\('hex'\)\.toUpperCase\(\)/)
-  assert.match(source, /aria-label=\{`Color picker, selected \$\{triggerHexValue\}`\}/)
+  assert.match(source, /aria-label=\{resolvedLabels\.trigger\(triggerHexValue\)\}/)
   assert.match(source, /@\/components\/ui\/tooltip/)
   assert.match(source, /<TooltipProvider>/)
   assert.match(source, /<Tooltip content=\{triggerHexValue\} delay=\{0\} closeDelay=\{0\} asChild>/)
@@ -286,6 +288,27 @@ test("ColorPicker uses Kumo Tooltip Portal for trigger HEX hover instead of inli
   assert.doesNotMatch(source, /BOTTOM_EPSILON/)
   assert.doesNotMatch(source, /h-40 w-full[^\n]*border/)
   assert.doesNotMatch(source, /h-3 w-full rounded-full[^\n]*border/)
+})
+
+test("ColorPicker exposes localized accessible labels for every control surface", () => {
+  const source = readSource("src/components/ui/color-picker.jsx")
+
+  assert.match(source, /labels = \{\}/)
+  assert.match(source, /labels\.trigger/)
+  assert.match(source, /labels\.eyeDropper/)
+  assert.match(source, /labels\.colorSpace/)
+  assert.match(source, /labels\.hex/)
+  assert.match(source, /labels\.channel/)
+  assert.match(source, /aria-label=\{resolvedLabels\.trigger\(triggerHexValue\)\}/)
+  assert.match(source, /label=\{resolvedLabels\.eyeDropper\}/)
+  assert.match(source, /aria-label=\{label\}/)
+  assert.match(source, /aria-label=\{resolvedLabels\.colorSpace\}/)
+  assert.doesNotMatch(source, /\n\s*label=\{resolvedLabels\.colorSpace\}/)
+  assert.match(source, /aria-label=\{resolvedLabels\.hex\}/)
+  assert.match(source, /aria-label=\{resolvedLabels\.channel\(channel\)\}/)
+  assert.doesNotMatch(source, /aria-label=\{`Color picker, selected \$\{triggerHexValue\}`\}/)
+  assert.doesNotMatch(source, /title="Pick a color from screen"/)
+  assert.doesNotMatch(source, /aria-label="Hex color value"/)
 })
 
 test("Color primitives avoid overflow clipping so thumbs stay visible", () => {

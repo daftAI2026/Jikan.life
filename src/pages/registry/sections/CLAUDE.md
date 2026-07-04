@@ -5,12 +5,12 @@
 HomeTopbar.jsx: 顶栏区域（仅 md+ 渲染），支持 hideLanguage（侧栏收起时隐藏左侧语言切换），右侧展示 GitHub 与小红书社交入口
 MobileFooter.jsx: 移动端底部栏（仅 md 以下渲染），默认三段布局为左 GitHub / 中语言切换 / 右小红书；支持 `fixed=false` 后也可作为 sidebar tabs 下方的真实 footer
 HomeSidebar.jsx: 本地侧栏布局容器层，负责侧栏开合交互、移动端抽屉滚动锁与卡片层挂载（支持 sidebarOpen/onSidebarOpenChange 受控接口，并在移动端分离 viewingStyle 与 selectedStyle；品牌字样使用非标题标签，避免占用页面唯一 H1）
-home-sidebar-cards.jsx: HomeSidebar 卡片层，封装 year/life/goal 卡片数据构造、过滤策略与渲染循环；Year/Goal 卡统计文案委托 date-stats helper 决策单行语义，其中 Year 左侧 inline 文案当前只显示 day 句式，并在日文混排场景通过本地 mixed-text helper 显式拆分数字/英文与日文 run，移动端 tabs 只负责查看卡片，真正选中仍由卡片点击提交
+home-sidebar-cards.jsx: HomeSidebar 卡片层，封装 year/life/goal 卡片数据构造、过滤策略与渲染循环；Year/Goal 卡统计文案委托 date-stats helper 决策单行语义，其中 Year 左侧 inline 文案当前只显示 day 句式，并在日文混排场景通过本地 mixed-text helper 显式拆分数字/英文与日文 run，移动端 tabs 只负责查看卡片，真正选中由可点击/键盘 Enter/Space 激活的卡片提交
 home-sidebar-mixed-text.js: HomeSidebar 本地 mixed-text helper，仅处理 Year 卡日文混排句式，把 ASCII run 与日文 run 显式分段，供卡片层局部指定 `Noto Sans JP`
 home-sidebar-style-cards.js: HomeSidebar 卡片语义层，封装隐藏卡过滤与移动端 active style 回退真相源
 home-sidebar-visuals.jsx: HomeSidebar 视觉层，封装 Year/Life/Goal 三类卡片预览（Year 10x10 点阵、GoalVisual 文本定位参数）
 home-sidebar-date-stats.js: HomeSidebar 日期统计层，封装 yearStats 计算（含动态年份）、Year/Goal 卡统计文案语义与 Goal 卡片预览专用布局真相源（Year 复用 `src/lib/date-utils.js`，Goal 标签文案复用 `shared/wallpaper-text.js`）
-ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage
+ThemeToggle.jsx: Home 本地主题切换按钮（light/dark），写入 data-mode 与 localStorage，并通过 i18n 输出当前动作的本地化 aria-label
 LanguageSelect.jsx: Home UI 语言切换组件（触发器为“线框地球图标+语言名”，菜单为“国旗+语言名”且保留默认选中勾，二者间距统一；桌面顶栏左侧挂载，移动端挂载于底部 footer 中置入口）
 SearchDialog.jsx: Home 搜索入口占位组件（兼容 open/onOpenChange 接口）
 JikanMenuIcon.jsx: Home 本地菜单动效图标（避免跨包引用上游 docs 源码）
@@ -26,6 +26,7 @@ HomeSidebar 采用“容器/卡片/视觉/统计”四层拆分：容器只管�
 移动端 style selector 采用“单卡主视觉 + 底部 segmented tabs”语义：桌面继续保留多卡列表，移动端切到固定 tabs rail + 单卡内容区，避免矮屏设备把主视觉压扁。
 
 变更日志
+2026-07-04: HomeSidebar style cards 补齐 `role=button`、`aria-pressed` 与 Enter/Space 键盘激活；ThemeToggle 改为四语本地化 aria-label，避免英文无障碍标签泄漏到非英文 UI。
 2026-03-27: 删除 `RegistryHeader/Overview/Blocks/Components/Section` 旧 demo 区块链路；`sections/` 回到纯 Home 运行层，只保留 `SearchDialog.jsx` 作为测试锁定的占位接口。
 2026-03-26: `HomeSidebar.jsx` 的 3 处品牌字样从 `h1` 降为普通文本标签，首页唯一 H1 改由最小离屏 SEO 语义层与运行时离屏 H1 承载；保持现有 class、布局与交互不变。
 2026-03-16: 新增 `home-sidebar-style-cards.js`，将隐藏卡过滤与 active style 回退收口为纯 helper；`HomeSidebar` 移动端切到 segmented 单卡布局并复用 Kumo `Tabs` 固定底栏高度，桌面侧栏保持原多卡列表。`MobileFooter.jsx` 同步支持 `fixed=false`，作为 sidebar tabs 下方的真实 footer 行挂载。

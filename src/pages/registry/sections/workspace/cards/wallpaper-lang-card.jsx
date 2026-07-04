@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖 Kumo Select 组件、languageOptions 与 config.wallpaperLang/actions.setWallpaperLang
- * [OUTPUT]: 对外提供 wallpaperLangCard 定义（Wallpaper Language 业务卡）
+ * [INPUT]: 依赖 Kumo Select 组件、languageOptions、i18n t 与 config.wallpaperLang/actions.setWallpaperLang
+ * [OUTPUT]: 对外提供 wallpaperLangCard 定义（Wallpaper Language 业务卡，带本地化 Select label）
  * [POS]: workspace/cards 的第②卡业务实现，承接壁纸语言选择
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -8,9 +8,10 @@ import { Select } from "@/components/ui/kumo"
 
 const wallpaperLangCard = {
     titleKey: "config.wallpaperLang",
-    render: ({ actions, config, languageOptions }) => (
+    render: ({ actions, config, languageOptions, t }) => (
         <Select
             className="w-[200px] max-w-full"
+            label={t("config.wallpaperLang")}
             value={config.wallpaperLang}
             onValueChange={(value) => {
                 if (value) actions.setWallpaperLang(value)

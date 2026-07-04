@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 react-router-dom, framer-motion, react-aria-components (I18nProvider), @cloudflare/kumo(Toasty)
- * [OUTPUT]: 对外提供 App 根组件 (Apple 级页面过渡 + 国际化)
- * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步
+ * [OUTPUT]: 对外提供 App 根组件 (Apple 级页面过渡 + 国际化 + 未知路由回首页)
+ * [POS]: 项目根组件，负责路由配置、骨架布局、国际化同步，并用 catch-all 路由避免空白壳
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
@@ -29,6 +29,7 @@ function AnimatedRoutes() {
                 <Routes location={location}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/app" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </motion.div>
         </AnimatePresence>

@@ -9,7 +9,7 @@ switch.jsx: 开关切换，Kumo Switch 适配层
 popover.jsx: 气泡弹出，直接 re-export Kumo Popover 原语（避免自写 overlay 链）
 tooltip.jsx: 工具提示，Kumo Tooltip 适配层
 color.jsx: 颜色原语组件，基于 react-aria-components，导出 ColorWheel/ColorArea/ColorSwatch 等，ColorThumb 采用外圈+中心点分层常量，作为颜色面板视觉样式单一来源
-color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `36px + 2fr + 2fr` 布局，通道输入使用配置映射和统一数字 typography，并在触发按钮内通过 Kumo Tooltip Portal 在 ColorSwatch 上暴露即时 HEX 提示
+color-picker.jsx: 颜色选择器，采用 Kumo Popover.Trigger/Content + Kumo Select，色域 `aspect-square` + 工具栏 `36px + 2fr + 2fr` 布局，通道输入使用配置映射和统一数字 typography，调用方注入本地化 labels，颜色空间 Select 用 `aria-label` 保持无可见标题，并在触发按钮内通过 Kumo Tooltip Portal 在 ColorSwatch 上暴露即时 HEX 提示
 use-color-picker-state-bridge.js: ColorPicker 状态桥 hook，负责外部受控 hex 与内部 Color 对象同步保护
 kumo.jsx: Registry 页面层统一 Kumo 组件导出入口，收敛 pages 对上游包的直接引用（含 `DatePicker` / `ClipboardText` / `SkeletonLine` / `Tabs` 对外导出）
 vendor/: 临时 vendored 上游运行时快照区，仅用于 npm 未发版前桥接最小闭包（当前承载 Goal range restartable DatePicker）
@@ -21,6 +21,7 @@ vendor/: 临时 vendored 上游运行时快照区，仅用于 npm 未发版前�
 - 动画: 交互使用 lib/motion.js 的 Spring 预设
 
 变更日志
+2026-07-04: ColorPicker 新增 `labels` 注入契约，触发器、吸管、颜色空间、HEX 与通道输入都可由页面层按 UI 语言本地化；颜色空间 Select 使用 `aria-label` 不渲染可见标题，同时继续禁止原生 `title` 慢提示回流。
 2026-02-12: ColorPicker 弹层链路回归主线同构（Kumo Popover + Kumo Select），移除跨体系弹层混搭。
 2026-02-12: ColorArea/SliderTrack 禁止 `overflow-hidden` 裁切 Thumb，确保颜色手柄完整可见。
 2026-02-12: ColorPicker 增加 `useColorPickerStateBridge`，修复触底时 `hex` 回流导致 hue/brightness 通道重置和双拇指跳左锁死。

@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 LockScreenPreviewFrame、workspace/mobile-preview-sizing、YearPreviewSvg、GoalPreviewSvg、lock-screen-overlay 配色/材质映射 helper，以及父级显式透传的 showOverlay/previewTargetHeight
- * [OUTPUT]: 对外提供 HomePreviewPane 组件（Figma 锁屏壳 + 空态提示文案/Year-Goal inline SVG 预览；segmented 下消费父级预算后的预览目标高度）
- * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并以浏览器原生 SVG 直接贴合锁屏 Wallpaper 槽位；同时把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏 token 配色与底部 action glass 材质，并把父级控制的 preview chrome reveal、wallpaperLang、goal-only widget 可见性与 segmented 预算后的 target height 透传给锁屏 overlay
+ * [OUTPUT]: 对外提供 HomePreviewPane 组件（Figma 锁屏壳 + 空态提示文案/Year-Goal inline SVG 预览 + 本地化预览 aria-label；segmented 下消费父级预算后的预览目标高度）
+ * [POS]: registry/sections/workspace 的左侧预览面板，根据选型状态切换提示文案与真实壁纸渲染，并以浏览器原生 SVG 直接贴合锁屏 Wallpaper 槽位；同时把 workspace accentColor 投影到主时钟/日期/widgets，把 bgColor 投影到 top 状态栏 token 配色与底部 action glass 材质，并把父级控制的 preview chrome reveal、wallpaperLang、goal-only widget 可见性、预览可访问名称与 segmented 预算后的 target height 透传给锁屏 overlay
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { GoalPreviewSvg } from "./GoalPreviewSvg"
@@ -21,10 +21,10 @@ function HomePreviewPane({ config, previewTargetHeight, selectedDevice, showOver
         ...createLockScreenAccentOverlayColors(config.accentColor),
     }
     const previewContent = config.selectedType === "year"
-        ? <YearPreviewSvg config={config} selectedDevice={selectedDevice} />
-        : config.selectedType === "goal"
-            ? <GoalPreviewSvg config={config} selectedDevice={selectedDevice} />
-            : null
+            ? <YearPreviewSvg config={config} selectedDevice={selectedDevice} ariaLabel={t("preview.liveWallpaper")} />
+            : config.selectedType === "goal"
+                ? <GoalPreviewSvg config={config} selectedDevice={selectedDevice} ariaLabel={t("preview.liveWallpaper")} />
+                : null
 
     return (
         <div

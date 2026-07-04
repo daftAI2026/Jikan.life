@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 node:test/node:assert 与 tests/helpers/source-test-helpers
- * [OUTPUT]: 向 `node --test` 注册 md bottom-tabs 护栏用例，覆盖 HomeSettingsPane 视图拆分、tabs 测量链、宽度分配与底栏 skeleton 语义
- * [POS]: tests/ UI 迁移护栏的底栏导航层，锁定 HomeSettingsPane bottom-tabs 视图拆分、测量链与 skeleton 语义
+ * [OUTPUT]: 向 `node --test` 注册 md bottom-tabs 护栏用例，覆盖 HomeSettingsPane 视图拆分、tabs 测量链、宽度分配与本地化底栏 skeleton 语义
+ * [POS]: tests/ UI 迁移护栏的底栏导航层，锁定 HomeSettingsPane bottom-tabs 视图拆分、测量链与 skeleton/reveal label 语义
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 import { test } from "node:test"
@@ -140,7 +140,7 @@ test("HomeSettingsPane md bottom-tabs keep shell mounted and reveal title-label 
   assert.match(viewSource, /title=\{activeTitleState\.title\}/)
   assert.match(viewSource, /titleTooltip=\{activeTitleState\.titleTooltip\}/)
   assert.match(viewSource, /isIndexActive=\{activeTitleState\.isIndexActive\}/)
-  assert.match(viewSource, /isActiveTabRevealed && activeCardDefinition[\s\S]*?\? activeCardDefinition\.card\.render\(cardViewModel\)\s*:\s*<SettingsCardSkeleton onRequestRevealAll=\{cardViewModel\.config\.selectedType \? onRequestRevealAll : undefined\} \/>/)
+  assert.match(viewSource, /isActiveTabRevealed && activeCardDefinition[\s\S]*?\? activeCardDefinition\.card\.render\(cardViewModel\)\s*:\s*<SettingsCardSkeleton onRequestRevealAll=\{cardViewModel\.config\.selectedType \? onRequestRevealAll : undefined\} t=\{t\} \/>/)
   assert.match(viewSource, /if \(!currentActiveTab \|\| !isActiveTabRevealed \|\| !activeCardDefinition\)/)
   assert.match(viewSource, /title: <SettingsCardTitleSkeleton \/>/)
   assert.match(viewSource, /if \(!isLabelRevealed\) return <SettingsTabLabelSkeleton \/>/)

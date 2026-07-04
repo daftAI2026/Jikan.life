@@ -7,22 +7,22 @@ seo-homepage.behavior.test.js: 首页 SEO 护栏，锁定 index.html 的最小�
 registry-effective-layout.unit.test.js: 抽屉开关驱动的布局 helper 单测，锁定真实 tier 与桌面壳启用矩阵（含 `md + 抽屉关闭 => desktop shell`）。
 lock-screen-overlay-runtime.unit.test.js: 锁屏 overlay runtime helper 单测，锁定 `wallpaperLang` 驱动的多语言真实日期格式、24 小时制时间格式、Apple 判定、字体分流与分钟/午夜刷新计时。
 lock-screen-overlay-colors.unit.test.js: 锁屏 overlay 配色/材质映射单测，锁定主时钟/日期/widgets 前景跟随 accent、widgets 背景为 accent 的 15% alpha，并锁定 top 整条状态栏与 home indicator 只按 bgColor 明暗切 `kumo default/inverse` token，同时为 `swipe-indicator` 与底部 action glass 校验深/浅/彩色背景样本。
-kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、文档矩阵同步、全局入口、基础 UI 封装、ColorPicker 触发器提示/通道 typography 语义与通用禁用项。
-kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar 与壳层导入边界。
-kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与底栏 skeleton 语义。
-kumo-migration.ui.behavior.test.js: Kumo Workspace/Settings 护栏，约束 workspace 配置、设备与日期卡片、SetupGuidePanel、HomeGrid、Year/Goal inline SVG 预览与通用 skeleton 语义。
+kumo-migration.ui.foundation.behavior.test.js: Kumo UI 基础层护栏，锁定依赖、版本同步链路、文档矩阵同步、全局入口、App catch-all、基础 UI 封装、ColorPicker 触发器/通道本地化 labels、颜色空间 Select hidden aria-label、提示/通道 typography 语义与通用禁用项。
+kumo-migration.ui.registry-shell.behavior.test.js: Registry 壳层护栏，锁定 HomePage 布局、Topbar/MobileFooter、LanguageSelect、Sidebar、键盘可激活 style cards 与壳层导入边界。
+kumo-migration.ui.bottom-tabs.behavior.test.js: Kumo md bottom-tabs 护栏，锁定 HomeSettingsPane 视图拆分、tabs 测量链、指标条过渡与本地化底栏 skeleton/reveal label 语义。
+kumo-migration.ui.behavior.test.js: Kumo Workspace/Settings 护栏，约束 workspace 配置、设备与日期卡片、SetupGuidePanel、HomeGrid 复制失败、Year/Goal inline SVG 本地化 aria-label 与通用 skeleton 语义。
 md-bottom-tabs-widths.unit.test.js: md 底部 tabs 宽度分配算法单测，锁定“余量均分 + 最长项先压到次长项 + 压平后再联动收缩”语义。
 mobile-preview-sizing.unit.test.js: segmented 预览尺寸单测，锁定 iPhone SE / 12 / 14 Pro Max 的首屏预算，以及 `mobile + md segmented` 共享同一 `targetHeight` 最大尺度的语义。
-kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/inline SVG preview/i18n 关键语义与 Goal 日期兼容链路。
+kumo-migration.core.behavior.test.js: Kumo 迁移核心域护栏，约束 shared/worker/inline SVG preview/i18n 四语无障碍文案、ThemeToggle label 与 Goal 日期兼容链路。
 goal-date-updater.unit.test.js: Goal 日期更新器语义单测，覆盖 range/start/date 更新与错误回填矩阵。
 date-math.unit.test.js: shared/date-math 单测，覆盖闰年规则、年天数、年内序号与 day number 连续性。
 helpers/: 测试辅助模块，提供源码读取、目录扫描、named import 断言等复用能力（详见 helpers/CLAUDE.md）。
 worker-svg.behavior.test.js: Worker SVG 字体属性护栏，防止 `font-family` 发生双引号拼接错误导致 XML 解析失败。
-worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `/` `/app` `/app/` 先走 Worker、内部 `CLAUDE.md` / `component-registry` 不得公网直出，并约束首页 HTML 只剥离 `<!doctype>` 之前的前导构建注释。
-og-image.behavior.test.js: OG 分享卡护栏，锁定 `/og-image.png` 的动态渲染入口、`?yes=1` 语义、参考图构图与白底 25x5 点阵布局。
+worker-routing.behavior.test.js: Worker 路由与部署契约护栏，锁定 `run_worker_first = true` 全请求先走 Worker、内部 `CLAUDE.md` / `component-registry` 不得公网直出、`/generate` 非 GET 返回 405、缓存键纳入 `fg` 与 hash 后的 `goalName`，并约束首页 HTML 只剥离 `<!doctype>` 之前的前导构建注释。
+og-image.behavior.test.js: OG 分享卡护栏，锁定全请求 Worker-first 下 `/og-image.png` 的动态渲染入口、`?yes=1` 语义、参考图构图与白底 25x5 点阵布局。
 contrast-threshold.behavior.test.js: 颜色对比度护栏，约束共享核心按 WCAG contrast ratio 选择黑/白前景，并保留 resolveContrastBase/contrastAlpha 覆盖兼容。
 accent-mode.behavior.test.js: 颜色配置状态护栏，锁定 accent auto/manual 模式、背景联动边界与 preset 恢复自动语义。
-random-preset.behavior.test.js: 随机 preset 行为护栏，锁定 `preset-8` 的随机语义、workspace 候选色状态与 colors 卡的主题对比 Shuffle 入口。
+random-preset.behavior.test.js: 随机 preset 行为护栏，锁定 `preset-8` 的随机语义、workspace 候选色状态、colors 卡的主题对比 Shuffle 入口与全部 preset 本地化 aria-label。
 wallpaper-core-api.behavior.test.js: wallpaper-core Facade API 护栏，锁定导出集合与关键常量/文案/日期校验语义。
 wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固定 Date 后校验 Year/Life/Goal 输出哈希不漂移。
 
@@ -33,6 +33,7 @@ wallpaper-visual-snapshots.behavior.test.js: 壁纸 SVG 视觉快照护栏，固
 新增 UI 迁移类改动时，必须按职责同步补充 `kumo-migration.ui.foundation.behavior.test.js` / `kumo-migration.ui.registry-shell.behavior.test.js` / `kumo-migration.ui.behavior.test.js` 或 `kumo-migration.core.behavior.test.js` 的关键断言。
 
 变更日志
+2026-07-04: 增加全功能用户故事审计回归：App catch-all、ColorPicker/Select/preview/Theme/Setup 无障碍四语文案、style card 键盘激活、clipboard failure toast、Worker 全请求优先、`/generate` 405 与 ASCII-safe cache key 均进入护栏。
 2026-07-04: 更新 `kumo-migration.ui.foundation.behavior.test.js`，要求 `sync-version-metadata.js` 将 README/AGENTS/CLAUDE 工具链矩阵纳入 package.json 驱动校验，并要求 pre-commit 暂存同步后的工具链文档。
 2026-06-16: `kumo-migration.ui.foundation.behavior.test.js` 新增 ColorPicker 触发器即时 HEX hover/aria 与通道输入 `text-sm font-medium tabular-nums` 护栏，防止原生 `title` 慢提示和 HSL/HSB 百分比视觉重量偏离 RGB。
 2026-06-15: `random-preset.behavior.test.js` 将随机入口视觉护栏从“黑色 Shuffle”改为“主题对比 Shuffle”，禁止 `color="var(--color-black)"` 回流导致暗色主题不可见。

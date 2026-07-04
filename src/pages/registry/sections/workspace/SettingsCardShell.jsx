@@ -1,6 +1,6 @@
 /**
- * [INPUT]: 依赖父层传入 cardId/title/titleTooltip/indexMark/children/className/compactAtDesktop、Tooltip 原语、cn() 与 Kumo token 样式
- * [OUTPUT]: 对外提供 SettingsCardShell 组件（可选左上标题 + 可选问号提示 + 右上序号 + 居中内容 + 壳层布局扩展）
+ * [INPUT]: 依赖父层传入 cardId/title/titleTooltip/helpAriaLabel/indexMark/children/className/compactAtDesktop、Tooltip 原语、cn() 与 Kumo token 样式
+ * [OUTPUT]: 对外提供 SettingsCardShell 组件（可选左上标题 + 可选本地化问号提示 + 右上序号 + 居中内容 + 壳层布局扩展）
  * [POS]: registry/sections/workspace 的右侧六卡视觉壳层，复刻 Kumo HomeGrid 单卡骨架
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
@@ -12,6 +12,7 @@ function SettingsCardShell({
     cardId,
     title,
     titleTooltip,
+    helpAriaLabel,
     indexMark,
     isIndexActive = true,
     children,
@@ -35,7 +36,7 @@ function SettingsCardShell({
                             <Tooltip content={titleTooltip} asChild>
                                 <button
                                     type="button"
-                                    aria-label={`${title} help`}
+                                    aria-label={helpAriaLabel}
                                     className="inline-flex cursor-help text-kumo-subtle transition-colors hover:text-kumo-default"
                                 >
                                     <Info size={14} weight="bold" />
