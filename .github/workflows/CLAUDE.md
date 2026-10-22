@@ -7,3 +7,5 @@ ci.yml: GitHub Actions 主 CI 工作流，在 push/pull_request 到 `main` 时�
 法则: 工作流即闸门·本地命令与 CI 命令必须同构·失败即阻断
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+
+2026-10-22: CI Node 从 20 升到 24.22.1 LTS。
