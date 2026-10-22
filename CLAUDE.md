@@ -1,5 +1,5 @@
 # JIKAN - 动态人生进度墙纸生成器
-React 19.2.7 + Vite 8.1.3 + Tailwind CSS 4.3.2 + Kumo UI 2.6.0 + Cloudflare Workers
+React 19.3.1 + Vite 8.3.5 + Tailwind CSS 4.3.3 + Kumo UI 2.15.0 + Cloudflare Workers
 
 <directory>
 .github/ - GitHub 自动化配置 (Actions, Workflow)
@@ -30,7 +30,7 @@ package-lock.json - npm ci 可复现安装图，锁定 React/Base UI/Wrangler �
 </config>
 
 ## 技术栈
-- **Frontend**: React 19.2.7 + Vite 8.1.3 + Tailwind CSS 4.3.2 + Kumo UI 2.6.0 (Base UI 1.6.0)
+- **Frontend**: React 19.3.1 + Vite 8.3.5 + Tailwind CSS 4.3.3 + Kumo UI 2.15.0 (Base UI 1.9.0)
 - **Backend**: Cloudflare Workers + Resvg WASM
 - **Core**: Shared Rendering Logic (Browser inline SVG preview + Worker SVG unified)
 - **Theme**: Kumo 默认主题 (light/dark)

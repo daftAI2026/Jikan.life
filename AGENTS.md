@@ -170,19 +170,19 @@ Cloudflare Worker guards all requests; API routes /generate, /og-image.png, /hea
 
 | Tool | Version | Notes |
 | --- | --- | --- |
-| Node | CI uses 20 | GitHub Actions `setup-node@v4` |
+| Node | CI uses 24.22.1 | GitHub Actions `setup-node@v4` |
 | npm | lockfile-driven | Use `npm ci`, not ad-hoc installs |
-| React / React DOM | 19.2.7 / 19.2.7 | Stable dependency rail |
-| Vite | 8.1.3 | Frontend build and dev server |
-| Tailwind CSS | 4.3.2 | Kumo-token styling |
-| Kumo UI | 2.6.0 | UI system via local adapters |
-| @base-ui/react | 1.6.0 | Kumo primitive foundation |
-| react-router-dom | 7.18.1 | SPA routing |
-| Framer Motion | 12.42.2 | Motion presets in `src/lib/motion.js` |
-| Playwright | 1.61.1 | Browser verification dependency |
-| Wrangler | 4.107.0 | Worker dev/deploy |
+| React / React DOM | 19.3.1 / 19.3.1 | Stable dependency rail |
+| Vite | 8.3.5 | Frontend build and dev server |
+| Tailwind CSS | 4.3.3 | Kumo-token styling |
+| Kumo UI | 2.15.0 | UI system via local adapters |
+| @base-ui/react | 1.9.0 | Kumo primitive foundation |
+| react-router-dom | 7.18.4 | SPA routing |
+| Framer Motion | 14.5.0 | Motion presets in `src/lib/motion.js` |
+| Playwright | 1.64.1 | Browser verification dependency |
+| Wrangler | 4.151.3 | Worker dev/deploy |
 | esbuild | 0.28.1 | npm override for Vite/Wrangler audit closure |
-| Zod | 4.4.3 | Worker parameter validation |
+| Zod | 4.6.7 | Worker parameter validation |
 | Resvg WASM | 2.6.2 | SVG to PNG conversion |
 
 ## SECURITY

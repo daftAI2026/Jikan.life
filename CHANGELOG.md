@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Safe Generate Cache Keys**: Rebuilt `/generate` cache identity to include foreground overrides and hash user-controlled goal text, preventing wrong-image cache reuse and non-ASCII response headers.
 
 ### Infrastructure
-- **Stable Dependency Refresh**: Updated the stable toolchain to Vite `8.1.3`, Tailwind CSS `4.3.2`, Kumo UI `2.6.0`, Base UI `1.6.0`, React Router `7.18.1`, Framer Motion `12.42.2`, Playwright `1.61.1`, React Aria Components `1.19.0`, and Wrangler `4.107.0`.
+- **Stable Dependency Refresh**: Updated the stable toolchain to Vite `8.3.5`, Tailwind CSS `4.3.3`, Kumo UI `2.15.0`, Base UI `1.9.0`, React `19.3.1`, React Router `7.18.4`, Framer Motion `14.5.0`, Playwright `1.64.1`, React Aria Components `1.22.1`, Zod `4.6.7`, and Wrangler `4.151.3`. `@vitejs/plugin-react` stays on `6.1.1` because `6.1.2` pulls an optional Babel 8 peer.
 - **Audit Closure**: Refreshed the Vite/Wrangler dependency graph so `npm audit` reports zero vulnerabilities while preserving the `esbuild@0.28.1` override.
 - **Toolchain Matrix Guard**: Extended `sync-version-metadata.js` so `package.json` now drives the README, AGENTS, and root `CLAUDE.md` toolchain version matrices in both sync and `--check` modes.
 

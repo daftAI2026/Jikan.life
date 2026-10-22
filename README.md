@@ -46,9 +46,9 @@ Browser (React)                     Cloudflare Worker
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 19.2.7 · Vite 8.1.3 · Tailwind CSS 4.3.2 |
-| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 2.6.0 · Base UI 1.6.0 |
-| **Backend** | Cloudflare Workers · Wrangler 4.107.0 · Resvg WASM |
+| **Frontend** | React 19.3.1 · Vite 8.3.5 · Tailwind CSS 4.3.3 |
+| **UI System** | [Kumo UI](https://github.com/cloudflare/kumo) 2.15.0 · Base UI 1.9.0 |
+| **Backend** | Cloudflare Workers · Wrangler 4.151.3 · Resvg WASM |
 | **Shared** | Unified wallpaper-core (inline SVG + Worker SVG) |
 | **i18n** | 🇺🇸 English · 🇨🇳 简体中文 · 🇨🇳 繁體中文 · 🇯🇵 日本語 |
 | **CI/CD** | GitHub Actions · Cloudflare Static Assets |
@@ -76,13 +76,13 @@ npm run build
 
 Current maintenance baseline:
 
-- `@cloudflare/kumo` `2.6.0`
-- `@base-ui/react` `1.6.0`
-- `react-router-dom` `7.18.1`
-- `playwright` `1.61.1`
-- `wrangler` `4.107.0`
+- `@cloudflare/kumo` `2.15.0`
+- `@base-ui/react` `1.9.0`
+- `react-router-dom` `7.18.4`
+- `playwright` `1.64.1`
+- `wrangler` `4.151.3`
 - `esbuild` `0.28.1` via npm override
-- `zod` `4.4.3`
+- `zod` `4.6.7`
 
 ### Deploy
 
