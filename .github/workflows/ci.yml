@@ -49,6 +49,7 @@ jobs:
           JS
       
       - name: Setup Node.js
+        if: steps.scope.outputs.product != 'false'
         uses: actions/setup-node@v4
         with:
           node-version: '24.22.1'
@@ -56,7 +57,7 @@ jobs:
           
       - name: Install dependencies
         if: steps.scope.outputs.product != 'false'
-        run: npm ci
+        run: npm ci --prefer-offline
 
       - name: Run version metadata check
         run: npm run check:version-metadata
