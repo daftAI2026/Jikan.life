@@ -1,5 +1,6 @@
 # [INPUT]: 依赖 GitHub Actions 官方 checkout/setup-node 动作与 package.json 中的 `check:version-metadata`、`test`、`build` 脚本
-# [OUTPUT]: 对 `main` 分支的 push/pull_request 提供主 CI 工作流，执行依赖安装、版本元数据校验、测试与构建，并向构建注入 `VITE_APP_VERSION=${{ github.sha }}`
+# [OUTPUT]: 纯文档保留版本元数据门；PR 只保留最新运行，main 每次独立执行。
+# 原有验收: 对 `main` 分支的 push/pull_request 提供主 CI 工作流，执行依赖安装、版本元数据校验、测试与构建，并向构建注入 `VITE_APP_VERSION=${{ github.sha }}`
 # [POS]: .github/workflows 的自动化闸门文件，被 GitHub Actions 直接消费；用于阻断版本漂移、回归失败与不可构建提交
 # [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 
@@ -11,6 +12,10 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: Build and Validate
@@ -18,6 +23,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Classify documentation-only changes
+        id: scope
+        env:
+          DIFF_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          DIFF_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          node <<'JS'
+          const { execFileSync } = require('node:child_process');
+          const { appendFileSync } = require('node:fs');
+          let product = true;
+          const { DIFF_BASE: base, DIFF_HEAD: head, IS_PR } = process.env;
+          if ([base, head].every(sha => /^[a-f0-9]{40}$/.test(sha || '') && !/^0+$/.test(sha))) {
+            try {
+              const range = IS_PR === 'true' ? [`${base}...${head}`] : [base, head];
+              const files = execFileSync('git', ['diff', '--no-renames', '--name-only', '-z', ...range, '--']).toString().split('\0').filter(Boolean);
+              product = !files.length || files.some(file => !/^(README(?:_[A-Z]+)?\.md|CONTRIBUTING\.md|CHANGELOG\.md|LICENSE|CODE_OF_CONDUCT\.md)$/.test(file));
+            } catch { /* Missing evidence retains all checks. */ }
+          }
+          appendFileSync(process.env.GITHUB_OUTPUT, `product=${product}\n`);
+          JS
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,15 +55,18 @@ jobs:
           cache: 'npm'
           
       - name: Install dependencies
+        if: steps.scope.outputs.product != 'false'
         run: npm ci
 
       - name: Run version metadata check
         run: npm run check:version-metadata
 
       - name: Run tests
+        if: steps.scope.outputs.product != 'false'
         run: npm run test
         
       - name: Build project
+        if: steps.scope.outputs.product != 'false'
         run: npm run build
         env:
           VITE_APP_VERSION: ${{ github.sha }}
