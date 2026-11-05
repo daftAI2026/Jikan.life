@@ -9,3 +9,5 @@ ci.yml: GitHub Actions 主 CI 工作流，在 push/pull_request 到 `main` 时�
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 
 2026-10-22: CI Node 从 20 升到 24.22.1 LTS。
+
+2026-11-05: 同 PR 取消旧运行；main 独立分组。纯说明文档跳过安装/测试/构建，但仍校验版本元数据并保留 Build and Validate 检查名。
